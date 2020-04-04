@@ -4,12 +4,16 @@ import (
 	"gin-vue-admin/init/initlog"
 	"gin-vue-admin/model/dbModel"
 	"gin-vue-admin/model/sysModel"
+	"gin-vue-admin/model/userJobs"
+
 	"github.com/jinzhu/gorm"
 )
 
 //注册数据库表专用
 func RegisterTable(db *gorm.DB) {
-	db.AutoMigrate(sysModel.SysUser{},
+	db.AutoMigrate(
+		userJobs.Joblist{},
+		sysModel.SysUser{},
 		sysModel.SysAuthority{},
 		sysModel.SysMenu{},
 		sysModel.SysApi{},

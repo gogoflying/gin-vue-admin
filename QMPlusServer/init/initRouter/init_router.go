@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/init/initlog"
 	"gin-vue-admin/middleware"
 	"gin-vue-admin/router"
+
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -37,6 +38,7 @@ func InitRouter() *gin.Engine {
 	router.InitSystemRouter(ApiGroup)                // system相关路由
 	router.InitCustomerRouter(ApiGroup)              // 客户路由
 	router.InitAutoCodeRouter(ApiGroup)              // 创建自动化代码
+	router.InitJoblistRouter(ApiGroup)
 	log.L.Info("router register success")
 	return Router
 }

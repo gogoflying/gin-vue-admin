@@ -38,7 +38,10 @@ func InitRouter() *gin.Engine {
 	router.InitSystemRouter(ApiGroup)                // system相关路由
 	router.InitCustomerRouter(ApiGroup)              // 客户路由
 	router.InitAutoCodeRouter(ApiGroup)              // 创建自动化代码
-	router.InitJoblistRouter(ApiGroup)
+	router.InitJoblistRouter(ApiGroup)               //简历信息
+	router.InitCitynameRouter(ApiGroup)              //job城市信息
+	router.InitResumeStatusRouter(ApiGroup)          //投递简历状态
+	router.InitEnterpriseInfoRouter(ApiGroup)        //公司信息
 	log.L.Info("router register success")
 	return Router
 }

@@ -33,7 +33,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/api.CreateApiParams"
                         }
                     }
@@ -72,7 +71,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/sysModel.SysApi"
                         }
                     }
@@ -138,7 +136,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/modelInterface.PageInfo"
                         }
                     }
@@ -177,7 +174,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/modelInterface.PageInfo"
                         }
                     }
@@ -216,7 +212,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/api.CreateApiParams"
                         }
                     }
@@ -255,8 +250,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/api.CreateAuthorityParams"
+                            "$ref": "#/definitions/sysModel.SysAuthority"
                         }
                     }
                 ],
@@ -294,8 +288,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/api.DeleteAuthorityPatams"
+                            "$ref": "#/definitions/sysModel.SysAuthority"
                         }
                     }
                 ],
@@ -333,7 +326,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/modelInterface.PageInfo"
                         }
                     }
@@ -372,7 +364,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/sysModel.SysAuthority"
                         }
                     }
@@ -380,6 +371,44 @@
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"设置成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/autoCode/createTemp": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysApi"
+                ],
+                "summary": "自动代码模板",
+                "parameters": [
+                    {
+                        "description": "创建自动代码",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/autoCodeModel.AutoCodeStruct"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -414,7 +443,7 @@
                 }
             }
         },
-        "/base/captcha/": {
+        "/base/captcha/:captchaId": {
             "get": {
                 "security": [
                     {
@@ -457,7 +486,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/api.RegisterAndLoginStuct"
                         }
                     }
@@ -488,7 +516,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/sysModel.SysUser"
                         }
                     }
@@ -527,8 +554,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/api.CreateAuthorityParams"
+                            "$ref": "#/definitions/sysModel.CasbinInReceive"
                         }
                     }
                 ],
@@ -566,7 +592,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/sysModel.CasbinInReceive"
                         }
                     }
@@ -605,8 +630,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/api.CreateAuthorityParams"
+                            "$ref": "#/definitions/sysModel.CasbinInReceive"
                         }
                     }
                 ],
@@ -644,7 +668,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/dbModel.ExaCustomer"
                         }
                     }
@@ -683,7 +706,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/dbModel.ExaCustomer"
                         }
                     }
@@ -722,7 +744,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/dbModel.ExaCustomer"
                         }
                     }
@@ -761,7 +782,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/modelInterface.PageInfo"
                         }
                     }
@@ -800,7 +820,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/dbModel.ExaCustomer"
                         }
                     }
@@ -872,7 +891,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/dbModel.ExaFileUploadAndDownload"
                         }
                     }
@@ -947,7 +965,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/modelInterface.PageInfo"
                         }
                     }
@@ -1034,6 +1051,196 @@
                 }
             }
         },
+        "/jl/createJoblist": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Joblist"
+                ],
+                "summary": "创建Joblist",
+                "parameters": [
+                    {
+                        "description": "创建Joblist",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userJobs.Joblist"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/jl/deleteJoblist": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Joblist"
+                ],
+                "summary": "删除Joblist",
+                "parameters": [
+                    {
+                        "description": "删除Joblist",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userJobs.Joblist"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"删除成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/jl/findJoblist": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Joblist"
+                ],
+                "summary": "用id查询Joblist",
+                "parameters": [
+                    {
+                        "description": "用id查询Joblist",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userJobs.Joblist"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/jl/getJoblistList": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Joblist"
+                ],
+                "summary": "分页获取Joblist列表",
+                "parameters": [
+                    {
+                        "description": "分页获取Joblist列表",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelInterface.PageInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/jl/updateJoblist": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Joblist"
+                ],
+                "summary": "更新Joblist",
+                "parameters": [
+                    {
+                        "description": "更新Joblist",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userJobs.Joblist"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"更新成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/jwt/jsonInBlacklist": {
             "post": {
                 "security": [
@@ -1085,7 +1292,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/sysModel.SysBaseMenu"
                         }
                     }
@@ -1124,7 +1330,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/api.AuthorityIdInfo"
                         }
                     }
@@ -1163,7 +1368,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/api.IdInfo"
                         }
                     }
@@ -1202,7 +1406,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/api.GetById"
                         }
                     }
@@ -1238,7 +1441,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/api.RegisterAndLoginStuct"
                         }
                     }
@@ -1274,7 +1476,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/api.RegisterAndLoginStuct"
                         }
                     }
@@ -1313,7 +1514,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/modelInterface.PageInfo"
                         }
                     }
@@ -1328,7 +1528,7 @@
                 }
             }
         },
-        "/menu/updateBaseMen": {
+        "/menu/updateBaseMenu": {
             "post": {
                 "security": [
                     {
@@ -1352,7 +1552,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/sysModel.SysBaseMenu"
                         }
                     }
@@ -1388,7 +1587,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/sysModel.System"
                         }
                     }
@@ -1448,7 +1646,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/sysModel.System"
                         }
                     }
@@ -1484,7 +1681,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/api.ChangePasswordStutrc"
                         }
                     }
@@ -1523,7 +1719,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/modelInterface.PageInfo"
                         }
                     }
@@ -1562,7 +1757,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/api.SetUserAuth"
                         }
                     }
@@ -1636,7 +1830,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/sysModel.SysWorkflow"
                         }
                     }
@@ -1700,25 +1893,6 @@
                 }
             }
         },
-        "api.CreateAuthorityParams": {
-            "type": "object",
-            "properties": {
-                "authorityId": {
-                    "type": "string"
-                },
-                "authorityName": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.DeleteAuthorityPatams": {
-            "type": "object",
-            "properties": {
-                "authorityId": {
-                    "type": "integer"
-                }
-            }
-        },
         "api.GetById": {
             "type": "object",
             "properties": {
@@ -1763,6 +1937,57 @@
                 }
             }
         },
+        "autoCodeModel.AutoCodeStruct": {
+            "type": "object",
+            "properties": {
+                "abbreviation": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/autoCodeModel.Field"
+                    }
+                },
+                "packageName": {
+                    "type": "string"
+                },
+                "structName": {
+                    "type": "string"
+                }
+            }
+        },
+        "autoCodeModel.Field": {
+            "type": "object",
+            "properties": {
+                "columnName": {
+                    "type": "string"
+                },
+                "fieldJson": {
+                    "type": "string"
+                },
+                "fieldName": {
+                    "type": "string"
+                },
+                "fieldType": {
+                    "type": "string"
+                }
+            }
+        },
+        "config.Captcha": {
+            "type": "object",
+            "properties": {
+                "imgHeight": {
+                    "type": "integer"
+                },
+                "imgWidth": {
+                    "type": "integer"
+                },
+                "keyLong": {
+                    "type": "integer"
+                }
+            }
+        },
         "config.CasbinConfig": {
             "type": "object",
             "properties": {
@@ -1775,6 +2000,10 @@
         "config.Config": {
             "type": "object",
             "properties": {
+                "captcha": {
+                    "type": "object",
+                    "$ref": "#/definitions/config.Captcha"
+                },
                 "casbinConfig": {
                     "type": "object",
                     "$ref": "#/definitions/config.CasbinConfig"
@@ -1782,6 +2011,10 @@
                 "jwt": {
                     "type": "object",
                     "$ref": "#/definitions/config.JWT"
+                },
+                "log": {
+                    "type": "object",
+                    "$ref": "#/definitions/config.Log"
                 },
                 "mysqlAdmin": {
                     "type": "object",
@@ -1809,6 +2042,33 @@
                 }
             }
         },
+        "config.Log": {
+            "type": "object",
+            "properties": {
+                "file": {
+                    "description": "在文件中打印log的级别   []默认不打印",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "logFile": {
+                    "description": "是否显示打印log的文件具体路径",
+                    "type": "boolean"
+                },
+                "prefix": {
+                    "description": "log 打印的前缀",
+                    "type": "string"
+                },
+                "stdout": {
+                    "description": "在控制台打印log的级别， []默认不打印",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "config.MysqlAdmin": {
             "type": "object",
             "properties": {
@@ -1817,6 +2077,12 @@
                 },
                 "dbname": {
                     "type": "string"
+                },
+                "maxIdleConns": {
+                    "type": "integer"
+                },
+                "maxOpenConns": {
+                    "type": "boolean"
                 },
                 "password": {
                     "type": "string"
@@ -2106,6 +2372,44 @@
                 "config": {
                     "type": "object",
                     "$ref": "#/definitions/config.Config"
+                }
+            }
+        },
+        "userJobs.Joblist": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "integer"
+                },
+                "company_img": {
+                    "type": "string"
+                },
+                "company_name": {
+                    "type": "string"
+                },
+                "job_city": {
+                    "type": "string"
+                },
+                "job_city_id": {
+                    "type": "integer"
+                },
+                "job_edu": {
+                    "type": "string"
+                },
+                "job_name": {
+                    "type": "string"
+                },
+                "job_salary_high": {
+                    "type": "integer"
+                },
+                "job_salary_low": {
+                    "type": "integer"
+                },
+                "job_type": {
+                    "type": "string"
+                },
+                "job_years": {
+                    "type": "string"
                 }
             }
         }

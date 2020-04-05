@@ -7,7 +7,7 @@ import (
 )
 
 func InitJoblistRouter(Router *gin.RouterGroup) {
-	JoblistRouter := Router.Group("joblist")
+	JoblistRouter := Router.Group("jl")
 	{
 		JoblistRouter.POST("createJoblist", api.CreateJoblist)   // 新建Joblist
 		JoblistRouter.POST("deleteJoblist", api.DeleteJoblist)   //删除Joblist

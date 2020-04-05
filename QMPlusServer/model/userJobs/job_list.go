@@ -11,17 +11,19 @@ import (
 
 type Joblist struct {
 	gorm.Model
-	Jobname     string `json:"job_name" gorm:"column:job_name"`
-	JobsalaHigh int    `json:"job_salary_high" gorm:"column:job_salary_high"`
-	JobsalaLow  int    `json:"job_salary_low" gorm:"column:job_salary_low"`
-	JobCity     string `json:"job_city" gorm:"column:job_city"`
-	JobYears    string `json:"job_years" gorm:"column:job_years"`
-	JobEdu      string `json:"job_edu" gorm:"column:job_edu"`
-	JobType     string `json:"job_type" gorm:"column:job_type"`
-	CompanyName string `json:"company_name" gorm:"column:company_name"`
-	CompanyImg  string `json:"company_img" gorm:"column:company_img"`
-	JobCityId   int    `json:"job_city_id" gorm:"column:job_city_id"`
-	CompanyId   int    `json:"company_id" gorm:"column:company_id"`
+	Jobname     string `json:"p_name" gorm:"column:job_name"`
+	JobsalaHigh int    `json:"p_salary_high" gorm:"column:job_salary_high"`
+	JobsalaLow  int    `json:"p_salary_low" gorm:"column:job_salary_low"`
+	JobCity     string `json:"p_address" gorm:"column:job_city"`
+	JobYears    string `json:"p_edujy" gorm:"column:job_years"`
+	JobEdu      string `json:"p_education" gorm:"column:job_edu"`
+	JobType     string `json:"p_type" gorm:"column:job_type"`
+	CompanyName string `json:"enterprise_name" gorm:"column:company_name"`
+	CompanyImg  string `json:"enterprise_logo" gorm:"column:company_img"`
+	JobCityId   int    `json:"p_address_id" gorm:"column:job_city_id"`
+	CompanyId   int    `json:"enterprise_id" gorm:"column:company_id"`
+	Wages       string `json:"p_wages" gorm:"column:job_salary"`
+	JobDes      string `json:"p_desc" gorm:"column:job_des"`
 }
 
 // 创建Joblist
@@ -62,7 +64,7 @@ func (jl *Joblist) GetInfoList(info modelInterface.PageInfo) (err error, list in
 }
 
 // 分页获取Joblist
-func (jl *Joblist) GetInfoListSearch(keyword string, low int, hight int, info modelInterface.PageInfo) (err error, list interface{}, total int) {
+func (jl *Joblist) GetInfoListSearch(keyword string, cityId int, low int, hight int, info modelInterface.PageInfo) (err error, list interface{}, total int) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	err = qmsql.DEFAULTDB.Model(jl).Count(&total).Error
@@ -71,8 +73,11 @@ func (jl *Joblist) GetInfoListSearch(keyword string, low int, hight int, info mo
 	}
 	var reJoblistList []Joblist
 	db := qmsql.DEFAULTDB.Model(jl)
+	if cityId > 0 {
+		db = db.Where("job_city_id = ?", cityId)
+	}
 	if len(keyword) > 0 {
-		db = db.Where("job_name LIKE ? or company_name LIKE ?", keyword, keyword)
+		db = db.Where("job_name LIKE ? or company_name LIKE ?", "%"+keyword+"%", "%"+keyword+"%")
 	}
 	if low > 0 {
 		db = db.Where("job_salary_low >= ?", low)
@@ -81,6 +86,5 @@ func (jl *Joblist) GetInfoListSearch(keyword string, low int, hight int, info mo
 		db = db.Where("job_salary_high <= ?", hight)
 	}
 	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&reJoblistList).Error
-	err = db.Find(&reJoblistList).Error
 	return err, reJoblistList, total
 }

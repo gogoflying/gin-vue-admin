@@ -6,6 +6,7 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/casbin/casbin v1.9.1
 	github.com/casbin/gorm-adapter v1.0.0
+	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dchest/captcha v0.0.0-20170622155422-6a29415a8364
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
@@ -32,6 +33,7 @@ require (
 	github.com/qiniu/api.v7 v7.2.5+incompatible
 	github.com/qiniu/x v7.0.8+incompatible // indirect
 	github.com/satori/go.uuid v1.2.0
+	github.com/signintech/gopdf v0.9.7 // indirect
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
@@ -40,11 +42,13 @@ require (
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.5
 	github.com/tebeka/strftime v0.1.3 // indirect
+	github.com/tiechui1994/gopdf v0.0.0-20191024073213-fc88d5b2a944 // indirect
 	github.com/unrolled/secure v1.0.7
+	github.com/urfave/cli v1.22.4 // indirect
 	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59 // indirect
-	golang.org/x/net v0.0.0-20200320220750-118fecf932d8 // indirect
+	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
 	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd // indirect
-	golang.org/x/tools v0.0.0-20200324003944-a576cf524670 // indirect
+	golang.org/x/tools v0.0.0-20200403190813-44a64ad78b9b // indirect
 	gopkg.in/ini.v1 v1.55.0 // indirect
 	qiniupkg.com/x v7.0.8+incompatible // indirect
 )

@@ -5,6 +5,8 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userJobs"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +16,7 @@ import (
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body userjobs.Joblist true "创建Joblist"
+// @Param data body userJobs.Joblist true "创建Joblist"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /jl/createJoblist [post]
 func CreateJoblist(c *gin.Context) {
@@ -33,7 +35,7 @@ func CreateJoblist(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body userjobs.Joblist true "删除Joblist"
+// @Param data body userJobs.Joblist true "删除Joblist"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /jl/deleteJoblist [post]
 func DeleteJoblist(c *gin.Context) {
@@ -52,7 +54,7 @@ func DeleteJoblist(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body userjobs.Joblist true "更新Joblist"
+// @Param data body userJobs.Joblist true "更新Joblist"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /jl/updateJoblist [post]
 func UpdateJoblist(c *gin.Context) {
@@ -73,7 +75,7 @@ func UpdateJoblist(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body userjobs.Joblist true "用id查询Joblist"
+// @Param data body userJobs.Joblist true "用id查询Joblist"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /jl/findJoblist [post]
 func FindJoblist(c *gin.Context) {
@@ -97,25 +99,40 @@ func FindJoblist(c *gin.Context) {
 // @Param data body modelInterface.PageInfo true "分页获取Joblist列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /jl/getJoblistList [post]
-type ReqJoblist struct {
-	modelInterface.PageInfo
-	KeyWord     string `json:"keyword"`
-	JobsalaHigh int    `json:"job_salary_high"`
-	JobsalaLow  int    `json:"job_salary_low"`
-}
-
 func GetJoblistList(c *gin.Context) {
-	var req ReqJoblist
+	var (
+		req   ReqJoblist
+		low   int64
+		hight int64
+		err   error
+		list  interface{}
+		total int
+	)
 	_ = c.ShouldBindJSON(&req)
-	err, list, total := new(userJobs.Joblist).GetInfoListSearch(req.KeyWord, req.JobsalaLow, req.JobsalaHigh, req.PageInfo)
+	if strings.Contains(req.KeyWord, "-") {
+		array := strings.Split(req.KeyWord, "-")
+		if len(array) == 2 {
+			low, _ = strconv.ParseInt(array[0], 10, 32)
+			hight, _ = strconv.ParseInt(array[1], 10, 32)
+		}
+		err, list, total = new(userJobs.Joblist).GetInfoListSearch("", req.CityId, int(low), int(hight), modelInterface.PageInfo{Page: req.Page, PageSize: req.PageSize})
+	} else {
+		err, list, total = new(userJobs.Joblist).GetInfoListSearch(req.KeyWord, req.CityId, 0, 0, modelInterface.PageInfo{Page: req.Page, PageSize: req.PageSize})
+	}
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
-			"RspJoblistList": list,
-			"total":          total,
-			"page":           req.PageInfo.Page,
-			"pageSize":       req.PageInfo.PageSize,
+			"jobs":     list,
+			"total":    total,
+			"page":     req.PageInfo.Page,
+			"pageSize": req.PageInfo.PageSize,
 		})
 	}
+}
+
+type ReqJoblist struct {
+	modelInterface.PageInfo
+	CityId  int    `json:"city_id"`
+	KeyWord string `json:"keyword"`
 }

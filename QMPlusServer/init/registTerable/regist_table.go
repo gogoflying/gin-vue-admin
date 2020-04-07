@@ -13,6 +13,10 @@ import (
 //注册数据库表专用
 func RegisterTable(db *gorm.DB) {
 	db.AutoMigrate(
+		userJobs.UserBaseInfo{},
+		userJobs.UserDream{},
+		userJobs.Usereducation{},
+		userJobs.UserWork{},
 		userJobs.EnterpriseInfo{},
 		userJobs.ResumeStatus{},
 		userCity.Cityname{},

@@ -42,6 +42,10 @@ func InitRouter() *gin.Engine {
 	router.InitCitynameRouter(ApiGroup)              //job城市信息
 	router.InitResumeStatusRouter(ApiGroup)          //投递简历状态
 	router.InitEnterpriseInfoRouter(ApiGroup)        //公司信息
+	router.InitUserBaseInfoRouter(ApiGroup)
+	router.InitUserDreamRouter(ApiGroup)
+	router.InitUserWorkRouter(ApiGroup)
+	router.InitUsereducationRouter(ApiGroup)
 	log.L.Info("router register success")
 	return Router
 }

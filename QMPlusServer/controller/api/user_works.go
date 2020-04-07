@@ -41,11 +41,13 @@ func CreateUserWork(c *gin.Context) {
 func DeleteUserWork(c *gin.Context) {
 	var wk userJobs.UserWork
 	_ = c.ShouldBindJSON(&wk)
-	err := wk.DeleteUserWork()
+	err, wks := wk.DeleteUserWork()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("删除失败：%v", err), gin.H{})
 	} else {
-		servers.ReportFormat(c, true, "创建成功", gin.H{})
+		servers.ReportFormat(c, true, "创建成功", gin.H{
+			"userJobsList": wks,
+		})
 	}
 }
 

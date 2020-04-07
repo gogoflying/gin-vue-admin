@@ -41,11 +41,13 @@ func CreateUsereducation(c *gin.Context) {
 func DeleteUsereducation(c *gin.Context) {
 	var ed userJobs.Usereducation
 	_ = c.ShouldBindJSON(&ed)
-	err := ed.DeleteUsereducation()
+	err, reed := ed.DeleteUsereducation()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("删除失败：%v", err), gin.H{})
 	} else {
-		servers.ReportFormat(c, true, "创建成功", gin.H{})
+		servers.ReportFormat(c, true, "删除成功", gin.H{
+			"userJobsList": reed,
+		})
 	}
 }
 

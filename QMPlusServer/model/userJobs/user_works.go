@@ -20,19 +20,17 @@ type UserWork struct {
 }
 
 // 创建UserWork
-func (wk *UserWork) CreateUserWork() (err error, rewk interface{}) {
-	err = qmsql.DEFAULTDB.Save(wk).Error
-	if err != nil {
-		return err, nil
-	}
-	err, list, _ := wk.GetInfoListOpenId(wk.Openid, 1, 20)
+func (wk *UserWork) CreateUserWork() (err error, list interface{}) {
+	qmsql.DEFAULTDB.Save(wk)
+	err, list, _ = wk.GetInfoListOpenId(wk.Openid, 1, 20)
 	return err, list
 }
 
 // 删除UserWork
-func (wk *UserWork) DeleteUserWork() (err error) {
-	err = qmsql.DEFAULTDB.Delete(wk).Error
-	return err
+func (wk *UserWork) DeleteUserWork() (err error, list interface{}) {
+	qmsql.DEFAULTDB.Delete(wk)
+	err, list, _ = wk.GetInfoListOpenId(wk.Openid, 1, 20)
+	return err, list
 }
 
 // 更新UserWork

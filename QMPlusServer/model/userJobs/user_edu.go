@@ -21,26 +21,21 @@ type Usereducation struct {
 
 // 创建Usereducation
 func (ed *Usereducation) CreateUsereducation() (err error, list interface{}) {
-	err = qmsql.DEFAULTDB.Create(ed).Error
-	if err != nil {
-		return err, nil
-	}
+	qmsql.DEFAULTDB.Create(ed)
 	err, eds, _ := ed.GetInfoListByOpenid(ed.Openid, 1, 20)
 	return err, eds
 }
 
 // 删除Usereducation
-func (ed *Usereducation) DeleteUsereducation() (err error) {
-	err = qmsql.DEFAULTDB.Delete(ed).Error
-	return err
+func (ed *Usereducation) DeleteUsereducation() (err error, list interface{}) {
+	qmsql.DEFAULTDB.Delete(ed)
+	err, eds, _ := ed.GetInfoListByOpenid(ed.Openid, 1, 20)
+	return err, eds
 }
 
 // 更新Usereducation
 func (ed *Usereducation) UpdateUsereducation() (err error, list interface{}) {
-	err = qmsql.DEFAULTDB.Save(ed).Error
-	if err != nil {
-		return err, nil
-	}
+	qmsql.DEFAULTDB.Save(ed)
 	err, eds, _ := ed.GetInfoListByOpenid(ed.Openid, 1, 20)
 	return err, eds
 }

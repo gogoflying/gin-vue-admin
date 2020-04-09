@@ -20,6 +20,12 @@ type UserDream struct {
 
 // 创建UserDream
 func (dm *UserDream) CreateUserDream() (err error) {
+	_, ndm := dm.FindByOpenid()
+	if ndm.ID > 0 {
+		dm.ID = ndm.ID
+		err = qmsql.DEFAULTDB.Model(dm).Update(dm).Error
+		return
+	}
 	err = qmsql.DEFAULTDB.Create(dm).Error
 	return err
 }
@@ -44,7 +50,7 @@ func (dm *UserDream) FindById() (err error, redm UserDream) {
 
 // 根据openid查看单条UserDream
 func (dm *UserDream) FindByOpenid() (err error, redm UserDream) {
-	err = qmsql.DEFAULTDB.Where("openid = ?", dm.Openid).First(&redm).Error
+	err = qmsql.DEFAULTDB.Model(dm).Where("openid = ?", dm.Openid).First(&redm).Error
 	return err, redm
 }
 

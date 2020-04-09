@@ -9,7 +9,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type Usereducation struct {
+type UserEducation struct {
 	gorm.Model
 	Graduation     string `json:"graduation" gorm:"column:graduation"`
 	Schoolname     string `json:"schoolname" gorm:"column:schoolname"`
@@ -20,49 +20,49 @@ type Usereducation struct {
 }
 
 // 创建Usereducation
-func (ed *Usereducation) CreateUsereducation() (err error, list interface{}) {
-	qmsql.DEFAULTDB.Create(ed)
+func (ed *UserEducation) CreateUsereducation() (err error, list interface{}) {
+	qmsql.DEFAULTDB.Save(ed)
 	err, eds, _ := ed.GetInfoListByOpenid(ed.Openid, 1, 20)
 	return err, eds
 }
 
 // 删除Usereducation
-func (ed *Usereducation) DeleteUsereducation() (err error, list interface{}) {
-	qmsql.DEFAULTDB.Delete(ed)
+func (ed *UserEducation) DeleteUsereducation() (err error, list interface{}) {
+	qmsql.DEFAULTDB.Model(ed).Where("openid = ? and id = ?", ed.Openid, ed.ID).Delete(&UserEducation{})
 	err, eds, _ := ed.GetInfoListByOpenid(ed.Openid, 1, 20)
 	return err, eds
 }
 
 // 更新Usereducation
-func (ed *Usereducation) UpdateUsereducation() (err error, list interface{}) {
+func (ed *UserEducation) UpdateUsereducation() (err error, list interface{}) {
 	qmsql.DEFAULTDB.Save(ed)
 	err, eds, _ := ed.GetInfoListByOpenid(ed.Openid, 1, 20)
 	return err, eds
 }
 
 // 根据ID查看单条Usereducation
-func (ed *Usereducation) FindById() (err error, reed Usereducation) {
+func (ed *UserEducation) FindById() (err error, reed UserEducation) {
 	err = qmsql.DEFAULTDB.Where("id = ?", ed.ID).First(&reed).Error
 	return err, reed
 }
 
 // 分页获取Usereducation
-func (ed *Usereducation) GetInfoList(info modelInterface.PageInfo) (err error, list interface{}, total int) {
+func (ed *UserEducation) GetInfoList(info modelInterface.PageInfo) (err error, list interface{}, total int) {
 	// 封装分页方法 调用即可 传入 当前的结构体和分页信息
 	err, db, total := servers.PagingServer(ed, info)
 	if err != nil {
 		return
 	} else {
-		var reUsereducationList []Usereducation
+		var reUsereducationList []UserEducation
 		err = db.Find(&reUsereducationList).Error
 		return err, reUsereducationList, total
 	}
 }
 
 // 分页获取Usereducation
-func (ed *Usereducation) GetInfoListByOpenid(openId string, page, pageSize int) (err error, list interface{}, total int) {
+func (ed *UserEducation) GetInfoListByOpenid(openId string, page, pageSize int) (err error, list interface{}, total int) {
 	offset := pageSize * (page - 1)
-	var reUserEduList []Usereducation
+	var reUserEduList []UserEducation
 	db := qmsql.DEFAULTDB.Model(ed).Where("openid = ?", openId).Count(&total)
 	err = db.Order("id desc").Offset(offset).Limit(pageSize).Find(&reUserEduList).Error
 	if err != nil {

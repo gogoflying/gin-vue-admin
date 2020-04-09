@@ -28,7 +28,7 @@ func (wk *UserWork) CreateUserWork() (err error, list interface{}) {
 
 // 删除UserWork
 func (wk *UserWork) DeleteUserWork() (err error, list interface{}) {
-	qmsql.DEFAULTDB.Delete(wk)
+	qmsql.DEFAULTDB.Model(wk).Where("openid = ? and id = ?", wk.Openid, wk.ID).Delete(&UserWork{})
 	err, list, _ = wk.GetInfoListOpenId(wk.Openid, 1, 20)
 	return err, list
 }

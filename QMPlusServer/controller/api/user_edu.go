@@ -9,16 +9,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Tags Usereducation
+// @Tags UserEducation
 // @Summary 创建Usereducation
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body userJobs.Usereducation true "创建Usereducation"
+// @Param data body userJobs.UserEducation true "创建Usereducation"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /ed/createUsereducation [post]
 func CreateUsereducation(c *gin.Context) {
-	var ed userJobs.Usereducation
+	var ed userJobs.UserEducation
 	_ = c.ShouldBindJSON(&ed)
 	err, reed := ed.CreateUsereducation()
 	if err != nil {
@@ -30,16 +30,16 @@ func CreateUsereducation(c *gin.Context) {
 	}
 }
 
-// @Tags Usereducation
+// @Tags UserEducation
 // @Summary 删除Usereducation
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body userJobs.Usereducation true "删除Usereducation"
+// @Param data body userJobs.UserEducation true "删除Usereducation"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /ed/deleteUsereducation [post]
 func DeleteUsereducation(c *gin.Context) {
-	var ed userJobs.Usereducation
+	var ed userJobs.UserEducation
 	_ = c.ShouldBindJSON(&ed)
 	err, reed := ed.DeleteUsereducation()
 	if err != nil {
@@ -51,16 +51,16 @@ func DeleteUsereducation(c *gin.Context) {
 	}
 }
 
-// @Tags Usereducation
+// @Tags UserEducation
 // @Summary 更新Usereducation
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body userJobs.Usereducation true "更新Usereducation"
+// @Param data body userJobs.UserEducation true "更新Usereducation"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /ed/updateUsereducation [post]
 func UpdateUsereducation(c *gin.Context) {
-	var ed userJobs.Usereducation
+	var ed userJobs.UserEducation
 	_ = c.ShouldBindJSON(&ed)
 	err, reed := ed.UpdateUsereducation()
 	if err != nil {
@@ -72,16 +72,16 @@ func UpdateUsereducation(c *gin.Context) {
 	}
 }
 
-// @Tags Usereducation
+// @Tags UserEducation
 // @Summary 用id查询Usereducation
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body userJobs.Usereducation true "用id查询Usereducation"
+// @Param data body userJobs.UserEducation true "用id查询Usereducation"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /ed/findUsereducation [post]
 func FindUsereducation(c *gin.Context) {
-	var ed userJobs.Usereducation
+	var ed userJobs.UserEducation
 	_ = c.ShouldBindJSON(&ed)
 	err, reed := ed.FindById()
 	if err != nil {
@@ -93,7 +93,7 @@ func FindUsereducation(c *gin.Context) {
 	}
 }
 
-// @Tags Usereducation
+// @Tags UserEducation
 // @Summary 分页获取Usereducation列表
 // @Security ApiKeyAuth
 // @accept application/json
@@ -104,7 +104,7 @@ func FindUsereducation(c *gin.Context) {
 func GetUsereducationList(c *gin.Context) {
 	var pageInfo modelInterface.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
-	err, list, total := new(userJobs.Usereducation).GetInfoList(pageInfo)
+	err, list, total := new(userJobs.UserEducation).GetInfoList(pageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
@@ -126,7 +126,7 @@ type ReqEduList struct {
 func GetUsereducationListByOpenid(c *gin.Context) {
 	var req ReqEduList
 	_ = c.ShouldBindJSON(&req)
-	err, list, total := new(userJobs.Usereducation).GetInfoListByOpenid(req.OpenId, req.Page, req.PageSize)
+	err, list, total := new(userJobs.UserEducation).GetInfoListByOpenid(req.OpenId, req.Page, req.PageSize)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {

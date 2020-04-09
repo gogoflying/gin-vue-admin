@@ -58,7 +58,7 @@ func (bf *UserBaseInfo) FindById() (err error, rebf UserBaseInfo) {
 
 // 根据openid查看单条UserBaseInfo
 func (bf *UserBaseInfo) FindByOpenid() (err error, rebf UserBaseInfo) {
-	err = qmsql.DEFAULTDB.Where("openid = ?", bf.Openid).First(&rebf).Error
+	err = qmsql.DEFAULTDB.Model(bf).Where("openid = ?", bf.Openid).First(&rebf).Error
 	return err, rebf
 }
 

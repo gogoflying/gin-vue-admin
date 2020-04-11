@@ -30,7 +30,7 @@ func (users *Users) DeleteUsers() (err error) {
 
 // 更新Users
 func (users *Users) UpdateUsers() (err error, reusers Users) {
-	err = qmsql.DEFAULTDB.Model(users).Where("openid = ?", users.Openid).Update("is_resume", users.IsResume).Error
+	err = qmsql.DEFAULTDB.Model(users).Where("openid = ? and status = 1", users.Openid).Update("is_resume", users.IsResume).Error
 	return err, *users
 }
 

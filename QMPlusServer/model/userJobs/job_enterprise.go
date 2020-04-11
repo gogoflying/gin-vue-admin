@@ -15,8 +15,10 @@ type EnterpriseInfo struct {
 	EnterpriseLogo    string    `json:"enterprise_logo" gorm:"column:enterprise_logo"`
 	EnterpriseImg     string    `json:"enterprise_img" gorm:"column:enterprise_img"`
 	EnterpriseAddress string    `json:"enterprise_address" gorm:"column:enterprise_address"`
-	EnterpriseScale   string    `json:"enterprise_scale" gorm:"column:enterprise_scale"`
-	EnterpriseType    string    `json:"enterprise_type" gorm:"column:enterprise_type"`
+	EnterpriseScale   int       `json:"enterprise_scale" gorm:"column:enterprise_scale"`
+	EnterpriseType    int       `json:"enterprise_type" gorm:"column:enterprise_type"`
+	EnterpriseHot     int       `json:"enterprise_hot" gorm:"column:enterprise_hot"`
+	IndustryType      int       `json:"industry_type" gorm:"column:industry_type"`
 	EnterpriseDesc    string    `json:"enterprise_desc" gorm:"column:enterprise_desc"`
 	EnterpriseCityId  int       `json:"city_id" gorm:"column:city_id"`
 	Results           []Joblist `json:"result" gorm:"-"`

@@ -15,6 +15,7 @@ type UserDream struct {
 	WorkTypeindex int    `json:"workTypeindex" gorm:"column:workTypeindex"`
 	Cityindex     int    `json:"cityindex" gorm:"column:cityindex"`
 	Salaryindex   int    `json:"salaryindex" gorm:"column:salaryindex"`
+	DutyTimeindex int    `json:"dutyTimeindex" gorm:"column:dutyTimeindex"`
 	Openid        string `json:"openid" gorm:"column:openid"`
 }
 

@@ -15,12 +15,28 @@ type ResumeStatus struct {
 	Jobid        int       `json:"resume_id" gorm:"column:job_id"`
 	ResumeStatus int       `json:"resume_status" gorm:"column:resume_status"`
 	Results      []Joblist `json:"result" gorm:"-"`
+	Jobname      string    `json:"p_name" gorm:"-"`
+	JobsalaLow   int       `json:"p_salary_low" gorm:"-"`
+	JobCityId    int       `json:"p_city_id" gorm:"-"`
+	JobYearsId   int       `json:"p_edujy_id" gorm:"-"`
+	JobEduId     int       `json:"p_education_id" gorm:"-"`
+	JobTypeId    int       `json:"p_type_id" gorm:"-"`
 }
 
 // 创建ResumeStatus
-func (rs *ResumeStatus) CreateResumeStatus() (err error) {
+func (rs *ResumeStatus) CreateResumeStatus() (list interface{}, err error) {
 	err = qmsql.DEFAULTDB.Create(rs).Error
-	return err
+	if err != nil {
+		return
+	}
+	var rss []ResumeStatus
+	qmsql.DEFAULTDB.Model(rs).Where("open_id = ?", rs.Openid).Find(&rss)
+	var ids []int
+	for _, r := range rss {
+		ids = append(ids, r.Jobid)
+	}
+	_, list = (new(Joblist)).GetInfoListSearchSimilar(ids, rs.Jobname, rs.JobYearsId, rs.JobEduId, rs.JobTypeId, rs.JobCityId, rs.JobsalaLow, 1, 5)
+	return
 }
 
 // 删除ResumeStatus

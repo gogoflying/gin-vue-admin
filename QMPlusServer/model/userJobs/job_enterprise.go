@@ -21,6 +21,7 @@ type EnterpriseInfo struct {
 	IndustryType      int       `json:"industry_type" gorm:"column:industry_type"`
 	EnterpriseDesc    string    `json:"enterprise_desc" gorm:"column:enterprise_desc"`
 	EnterpriseCityId  int       `json:"city_id" gorm:"column:city_id"`
+	JobCount          int       `json:"job_count" gorm:"column:job_count"`
 	Results           []Joblist `json:"result" gorm:"-"`
 }
 

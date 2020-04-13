@@ -53,6 +53,8 @@ func InitRouter() *gin.Engine {
 	router.InitJobDutyTimeRouter(ApiGroup)
 	router.InitJobSalaryRouter(ApiGroup)
 	router.InitJobWorkExpireRouter(ApiGroup)
+	router.InitEnterpriseCollectRouter(ApiGroup)
+	router.InitJobCollectRouter(ApiGroup)
 	log.L.Info("router register success")
 	return Router
 }

@@ -11,19 +11,24 @@ import (
 
 type Joblist struct {
 	gorm.Model
-	Jobname     string `json:"p_name" gorm:"column:job_name"`
-	JobsalaHigh int    `json:"p_salary_high" gorm:"column:job_salary_high"`
-	JobsalaLow  int    `json:"p_salary_low" gorm:"column:job_salary_low"`
-	JobCity     string `json:"p_address" gorm:"column:job_city"`
-	JobYears    string `json:"p_edujy" gorm:"column:job_years"`
-	JobEdu      string `json:"p_education" gorm:"column:job_edu"`
-	JobType     string `json:"p_type" gorm:"column:job_type"`
-	CompanyName string `json:"enterprise_name" gorm:"column:company_name"`
-	CompanyImg  string `json:"enterprise_logo" gorm:"column:company_img"`
-	JobCityId   int    `json:"p_address_id" gorm:"column:job_city_id"`
-	CompanyId   int    `json:"enterprise_id" gorm:"column:company_id"`
-	Wages       string `json:"p_wages" gorm:"column:job_salary"`
-	JobDes      string `json:"p_desc" gorm:"column:job_des"`
+	Jobname      string  `json:"p_name" gorm:"column:job_name"`
+	JobsalaHigh  int     `json:"p_salary_high" gorm:"column:job_salary_high"`
+	JobsalaLow   int     `json:"p_salary_low" gorm:"column:job_salary_low"`
+	JobLatitude  float32 `json:"p_latitude" gorm:"column:job_latitude"`
+	JobLongitude float32 `json:"p_longitude" gorm:"column:job_longitude"`
+	JobAddress   string  `json:"p_address" gorm:"column:job_address"`
+	JobCity      string  `json:"p_city" gorm:"column:job_city"`
+	JobCityId    int     `json:"p_city_id" gorm:"column:job_city_id"`
+	JobYears     string  `json:"p_edujy" gorm:"column:job_years"`
+	JobYearsId   int     `json:"p_edujy_id" gorm:"column:job_years_id"`
+	JobEdu       string  `json:"p_education" gorm:"column:job_edu"`
+	JobEduId     int     `json:"p_education_id" gorm:"column:job_edu_id"`
+	JobType      string  `json:"p_type" gorm:"column:job_type"`
+	JobTypeId    int     `json:"p_type_id" gorm:"column:job_type_id"`
+	CompanyName  string  `json:"enterprise_name" gorm:"column:company_name"`
+	CompanyId    int     `json:"enterprise_id" gorm:"column:company_id"`
+	CompanyImg   string  `json:"enterprise_logo" gorm:"column:company_img"`
+	JobDes       string  `json:"p_desc" gorm:"column:job_des"`
 }
 
 // 创建Joblist
@@ -87,4 +92,27 @@ func (jl *Joblist) GetInfoListSearch(keyword string, cityId int, low int, hight 
 	}
 	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&reJoblistList).Error
 	return err, reJoblistList, total
+}
+
+// 分页获取Joblist
+func (jl *Joblist) GetInfoListSearchSimilar(ids []int, name string, eduJyId, eduId, jobtypeId, cityId, low, page, pageSize int) (err error, list interface{}) {
+	limit := pageSize
+	offset := pageSize * (page - 1)
+
+	var reJoblistList []Joblist
+
+	db := qmsql.DEFAULTDB.Model(jl)
+
+	db = db.Where("job_city_id = ? AND job_edu_id = ? AND job_years_id = ? ", cityId, eduId, eduJyId)
+
+	db = db.Where("job_type_id = ? AND job_salary_low >= ?", jobtypeId, low)
+
+	if len(name) > 0 {
+		db = db.Where("job_name LIKE ?", "%"+name+"%")
+	}
+	if len(ids) > 0 {
+		db = db.Where("id NOT IN (?)", ids)
+	}
+	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&reJoblistList).Error
+	return err, reJoblistList
 }

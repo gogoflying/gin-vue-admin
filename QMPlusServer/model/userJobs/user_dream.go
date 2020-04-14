@@ -11,12 +11,12 @@ import (
 
 type UserDream struct {
 	gorm.Model
-	Dreamposi     string `json:"dreamposi" gorm:"column:dreamposi"`
-	WorkTypeindex int    `json:"workTypeindex" gorm:"column:workTypeindex"`
-	Cityindex     int    `json:"cityindex" gorm:"column:cityindex"`
-	Salaryindex   int    `json:"salaryindex" gorm:"column:salaryindex"`
-	DutyTimeindex int    `json:"dutyTimeindex" gorm:"column:dutyTimeindex"`
-	Openid        string `json:"openid" gorm:"column:openid"`
+	Dreamposi     string `json:"dreamposi" gorm:"column:dreamposi;comment:'期望职位名称'"`
+	WorkTypeindex int    `json:"workTypeindex" gorm:"column:workTypeindex;comment:'期望工作类型id，0 全职1 兼职2 实习3 志愿者'"`
+	Cityindex     int    `json:"cityindex" gorm:"column:cityindex;comment:'期望工作城市id'"`
+	Salaryindex   int    `json:"salaryindex" gorm:"column:salaryindex;comment:'期望薪资范围id，关联job_salary表'"`
+	DutyTimeindex int    `json:"dutyTimeindex" gorm:"column:dutyTimeindex;comment:'到岗时间id，关联job_duty_time表'"`
+	Openid        string `json:"openid" gorm:"column:openid;comment:'用户唯一标识'"`
 }
 
 // 创建UserDream

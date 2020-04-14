@@ -11,11 +11,11 @@ import (
 
 type UserEducation struct {
 	gorm.Model
-	Graduation     string `json:"graduation" gorm:"column:graduation"`
-	Schoolname     string `json:"schoolname" gorm:"column:schoolname"`
-	Edulevelindex  int    `json:"edulevelindex" gorm:"column:edulevelindex"`
-	Profession     string `json:"profession" gorm:"column:profession"`
-	GraduationTime string `json:"graduationTime" gorm:"column:graduationTime"`
+	Graduation     string `json:"graduation" gorm:"column:graduation;comment:''"`
+	Schoolname     string `json:"schoolname" gorm:"column:schoolname;comment:''"`
+	Edulevelindex  int    `json:"edulevelindex" gorm:"column:edulevelindex;comment:''"`
+	Profession     string `json:"profession" gorm:"column:profession;comment:''"`
+	GraduationTime string `json:"graduationTime" gorm:"column:graduationTime;comment:''"`
 	Openid         string `json:"openid" gorm:"column:openid"`
 }
 

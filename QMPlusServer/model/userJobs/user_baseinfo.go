@@ -11,18 +11,18 @@ import (
 
 type UserBaseInfo struct {
 	gorm.Model
-	UserName       string `json:"userName" gorm:"column:user_name"`
-	AvatarUrl      string `json:"avatarUrl" gorm:"column:avatarUrl"`
-	Genderindex    int    `json:"genderindex" gorm:"column:genderindex"`
-	EdulevelIndex  int    `json:"edulevelindex" gorm:"column:edulevelindex"`
-	WorksYearindex int    `json:"worksYearindex" gorm:"column:worksYearindex"`
-	Cityindex      int    `json:"cityindex" gorm:"column:cityindex"`
-	Mobile         string `json:"contact" gorm:"column:mobile"`
-	Email          string `json:"email" gorm:"column:email"`
-	Birthday       string `json:"birthday" gorm:"column:birthday"`
-	Position       string `json:"position" gorm:"column:position"`
-	Myself         string `json:"myself" gorm:"column:myself"`
-	Openid         string `json:"openid" gorm:"column:openid"`
+	UserName       string `json:"userName" gorm:"column:user_name;comment:'用户姓名'"`
+	AvatarUrl      string `json:"avatarUrl" gorm:"column:avatarUrl;comment:'用户头像url，暂未使用'"`
+	Genderindex    int    `json:"genderindex" gorm:"column:genderindex;comment:'性别，0男1女'"`
+	EdulevelIndex  int    `json:"edulevelindex" gorm:"column:edulevelindex;comment:'最高学历id'"`
+	WorksYearindex int    `json:"worksYearindex" gorm:"column:worksYearindex;comment:'工作年限id，关联job_work_expire'"`
+	Cityindex      int    `json:"cityindex" gorm:"column:cityindex;comment:'城市id，关联citynames'"`
+	Mobile         string `json:"contact" gorm:"column:mobile;comment:'手机号'"`
+	Email          string `json:"email" gorm:"column:email;comment:'邮箱'"`
+	Birthday       string `json:"birthday" gorm:"column:birthday;comment:'出生年月日'"`
+	Position       string `json:"position" gorm:"column:position;comment:'未使用'"`
+	Myself         string `json:"myself" gorm:"column:myself;comment:'未使用'"`
+	Openid         string `json:"openid" gorm:"column:openid;comment:'唯一id'"`
 }
 
 // 创建UserBaseInfo

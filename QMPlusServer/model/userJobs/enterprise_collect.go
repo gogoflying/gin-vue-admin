@@ -11,8 +11,8 @@ import (
 
 type EnterpriseCollect struct {
 	gorm.Model
-	Openid       string `json:"openid" gorm:"column:openid"`
-	EnterpriseId int    `json:"enterprise_id" gorm:"column:EnterpriseId"`
+	Openid       string `json:"openid" gorm:"column:openid;comment:'用户标识码'"`
+	EnterpriseId int    `json:"enterprise_id" gorm:"column:EnterpriseId;comment:'企业id，关联enterprise_infos表'"`
 }
 
 // 创建EnterpriseCollect

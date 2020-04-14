@@ -11,8 +11,8 @@ import (
 
 type JobCollect struct {
 	gorm.Model
-	Openid string `json:"openid" gorm:"column:openid"`
-	JobId  int    `json:"job_id" gorm:"column:job_id"`
+	Openid string `json:"openid" gorm:"column:openid;comment:''"`
+	JobId  int    `json:"job_id" gorm:"column:job_id;comment:'收藏的职位；职位id，关联joblists表'"`
 }
 
 // 创建JobCollect

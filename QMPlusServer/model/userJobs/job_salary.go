@@ -11,9 +11,9 @@ import (
 
 type JobSalary struct {
 	gorm.Model
-	Name string `json:"name" gorm:"column:name"`
-	Low  int    `json:"low" gorm:"column:low"`
-	High int    `json:"high" gorm:"column:high"`
+	Name string `json:"name" gorm:"column:name;comment:'工资范围名称，如10k-20k，则下面对应填10000,20000'"`
+	Low  int    `json:"low" gorm:"column:low;comment:''"`
+	High int    `json:"high" gorm:"column:high;comment:''"`
 }
 
 // 创建JobSalary

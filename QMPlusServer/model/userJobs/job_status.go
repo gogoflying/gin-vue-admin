@@ -11,9 +11,9 @@ import (
 
 type ResumeStatus struct {
 	gorm.Model
-	Openid       string    `json:"openid" gorm:"column:open_id"`
-	Jobid        int       `json:"resume_id" gorm:"column:job_id"`
-	ResumeStatus int       `json:"resume_status" gorm:"column:resume_status"`
+	Openid       string    `json:"openid" gorm:"column:open_id;comment:'用户识别码'"`
+	Jobid        int       `json:"resume_id" gorm:"column:job_id;comment:'职位id'"`
+	ResumeStatus int       `json:"resume_status" gorm:"column:resume_status;comment:'简历状态，0未读，1已读，2有意向，3约面试，4不合适'"`
 	Results      []Joblist `json:"result" gorm:"-"`
 	Jobname      string    `json:"p_name" gorm:"-"`
 	JobsalaLow   int       `json:"p_salary_low" gorm:"-"`

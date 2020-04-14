@@ -11,7 +11,7 @@ import (
 
 type Cityname struct {
 	gorm.Model
-	Name string `json:"name" gorm:"column:name"`
+	Name string `json:"name" gorm:"column:name";comment:''`
 	Type int    `json:"type" gorm:"column:type"`
 }
 

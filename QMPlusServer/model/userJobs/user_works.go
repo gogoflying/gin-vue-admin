@@ -11,11 +11,11 @@ import (
 
 type UserWork struct {
 	gorm.Model
-	Join        string `json:"join" gorm:"column:join"`
-	Leave       string `json:"leave" gorm:"column:leave"`
-	Companyname string `json:"companyname" gorm:"column:companyname"`
-	Department  string `json:"department" gorm:"column:department"`
-	WorkContent string `json:"workContent" gorm:"column:workContent"`
+	Join        string `json:"join" gorm:"column:join;comment:''"`
+	Leave       string `json:"leave" gorm:"column:leave;comment:''"`
+	Companyname string `json:"companyname" gorm:"column:companyname;comment:''"`
+	Department  string `json:"department" gorm:"column:department;comment:''"`
+	WorkContent string `json:"workContent" gorm:"column:workContent;comment:''"`
 	Openid      string `json:"openid" gorm:"column:openid"`
 }
 

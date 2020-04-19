@@ -14,6 +14,7 @@ import (
 //注册数据库表专用
 func RegisterTable(db *gorm.DB) {
 	db.AutoMigrate(
+		userSalary.SalaryUsers{},
 		userSalary.Salarys{},
 		userSalary.UserNews{},
 		userJobs.JobCollect{},

@@ -57,6 +57,7 @@ func InitRouter() *gin.Engine {
 	router.InitJobCollectRouter(ApiGroup)
 	router.InitUserNewsRouter(ApiGroup)
 	router.InitSalarysRouter(ApiGroup)
+	router.InitSalaryUsersRouter(ApiGroup)
 	log.L.Info("router register success")
 	return Router
 }

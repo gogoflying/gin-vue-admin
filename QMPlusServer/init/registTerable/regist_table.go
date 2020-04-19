@@ -6,6 +6,7 @@ import (
 	"gin-vue-admin/model/sysModel"
 	"gin-vue-admin/model/userCity"
 	"gin-vue-admin/model/userJobs"
+	"gin-vue-admin/model/userSalary"
 
 	"github.com/jinzhu/gorm"
 )
@@ -13,6 +14,8 @@ import (
 //注册数据库表专用
 func RegisterTable(db *gorm.DB) {
 	db.AutoMigrate(
+		userSalary.Salarys{},
+		userSalary.UserNews{},
 		userJobs.JobCollect{},
 		userJobs.EnterpriseCollect{},
 		userJobs.JobDutyTime{},

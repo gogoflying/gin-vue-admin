@@ -30,6 +30,12 @@
           </el-select>
         </template>
       </el-table-column>
+      <el-table-column fixed="right" label="操作" width="200">
+        <template slot-scope="scope">
+          <el-button @click="editUser(scope.row)" size="small" type="text">编辑</el-button>
+          <el-button @click="deleteUser(scope.row)" size="small" type="text">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       :current-page="page"
@@ -61,6 +67,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
+            :beforeUpload="beforeAvatarUpload"
           >
             <img :src="userInfo.headerImg" class="avatar" v-if="userInfo.headerImg" />
             <i class="el-icon-plus avatar-uploader-icon" v-else></i>
@@ -164,6 +171,25 @@ export default {
       if (res.success) {
         this.$message({ type: 'success', message: '角色设置成功' })
       }
+    },
+    beforeAvatarUpload(file) {
+      var testmsg=file.name.substring(file.name.lastIndexOf('.')+1)
+      const extension = testmsg === 'jpg'
+      const extension2 = testmsg === 'png'
+      const isLt50KB = file.size / 1024 < 50
+      if(!extension && !extension2) {
+        this.$message({
+          message: '上传文件只能是 jpg、png格式!',
+          type: 'warning'
+        });
+      }
+      if(!isLt50KB) {
+        this.$message({
+          message: '上传文件大小不能超过 50KB!',
+          type: 'warning'
+        });
+      }
+      return (extension || extension2) && isLt50KB
     }
   },
   async created() {

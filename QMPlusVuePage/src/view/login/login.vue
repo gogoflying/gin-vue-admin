@@ -30,8 +30,11 @@
         <el-form-item>
           <el-button @click="submitForm" style="width:100%">登 录</el-button>
         </el-form-item>
+        <el-form-item>
+          <el-button @click="register" style="width:100%">注 册</el-button>
+        </el-form-item>
       </el-form>
-      <h3 class="title-3 fl-right">测试用户:admin 密码:123456</h3>
+      <!-- <h3 class="title-3 fl-right">测试用户:admin 密码:123456</h3> -->
     </el-main>
   </el-container>
 </template>
@@ -98,6 +101,9 @@ export default {
           return false
         }
       })
+    },
+    register() {
+      this.$router.push({name:"register"})
     },
     changeLock() {
       this.lock === 'lock' ? (this.lock = 'unlock') : (this.lock = 'lock')

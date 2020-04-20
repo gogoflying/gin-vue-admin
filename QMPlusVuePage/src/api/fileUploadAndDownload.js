@@ -29,3 +29,18 @@ export const deleteFile = (data) => {
         data
     })
 }
+
+// @Tags FileUploadAndDownload
+// @Summary 删除文件
+// @Security ApiKeyAuth
+// @Produce  application/json
+// @Param data body dbModel.FileUploadAndDownload true "传入文件里面id即可"
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"返回成功"}"
+// @Router /fileUploadAndDownload/downloadFile [post]
+export const downloadFile = (params) => {
+    return service({
+        url: "/fileUploadAndDownload/downloadFile",
+        method: "get",
+        params
+    })
+}

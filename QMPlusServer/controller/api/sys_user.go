@@ -7,6 +7,7 @@ import (
 	"gin-vue-admin/middleware"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/sysModel"
+	"gin-vue-admin/model/userJobs"
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -18,7 +19,8 @@ import (
 
 var (
 	USER_HEADER_IMG_PATH string = "http://qmplusimg.henrongyi.top"
-	USER_HEADER_BUCKET   string = "qm-plus-img"
+	//USER_HEADER_BUCKET   string = "qm-plus-img"
+	USER_HEADER_BUCKET string = "vinustseng"
 )
 
 type RegisterAndLoginStuct struct {
@@ -29,11 +31,12 @@ type RegisterAndLoginStuct struct {
 }
 
 type RegestStuct struct {
-	Username    string `json:"userName"`
-	Password    string `json:"passWord"`
-	NickName    string `json:"nickName" gorm:"default:'QMPlusUser'"`
-	HeaderImg   string `json:"headerImg" gorm:"default:'http://www.henrongyi.top/avatar/lufu.jpg'"`
-	AuthorityId string `json:"authorityId" gorm:"default:888"`
+	Username       string `json:"userName"`
+	Password       string `json:"passWord"`
+	EnterPriseName string `json:"enterprise_name"`
+	NickName       string `json:"nickName" gorm:"default:'QMPlusUser'"`
+	HeaderImg      string `json:"headerImg" gorm:"default:'http://www.henrongyi.top/avatar/lufu.jpg'"`
+	AuthorityId    string `json:"authorityId" gorm:"default:888"`
 }
 
 // @Tags Base
@@ -52,6 +55,29 @@ func Register(c *gin.Context) {
 			"user": user,
 		})
 	} else {
+		if R.EnterPriseName != "" {
+			var info userJobs.EnterpriseInfo
+			info.EnterPriseName = R.EnterPriseName
+			err = info.CreateEnterpriseInfo()
+			if err != nil {
+				servers.ReportFormat(c, false, fmt.Sprintf("%v", err), gin.H{
+					"user": user,
+				})
+			} else {
+				auth := userJobs.UserAuth{
+					EnterPriseName: info.EnterPriseName,
+					EnterPriseId:   info.ID,
+					Username:       user.Username,
+					UserId:         user.ID,
+				}
+				err = auth.CreateUserAuth()
+				if err != nil {
+					servers.ReportFormat(c, false, fmt.Sprintf("%v", err), gin.H{
+						"user": user,
+					})
+				}
+			}
+		}
 		servers.ReportFormat(c, true, "创建成功", gin.H{
 			"user": user,
 		})

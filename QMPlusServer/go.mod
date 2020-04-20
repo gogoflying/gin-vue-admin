@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+	github.com/aliyun/aliyun-oss-go-sdk v2.0.8+incompatible
 	github.com/casbin/casbin v1.9.1
 	github.com/casbin/gorm-adapter v1.0.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect

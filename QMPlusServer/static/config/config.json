@@ -41,5 +41,11 @@
     "useMultipoint": false,
     "env": "develop",
     "addr": 8888
+  },
+  "aliyunoss": {
+    "endPoint": "oss-cn-beijing.aliyuncs.com",
+    "accessKeyId": "LTAI4G4f149euV7bRmnTMN4V",
+    "accessKeySecret": "sDSL49sRzF4oiIBn2S8ifjFeTwG93u",
+    "expiredInSec": 2592000
   }
 }

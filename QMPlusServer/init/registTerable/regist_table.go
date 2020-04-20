@@ -34,6 +34,7 @@ func RegisterTable(db *gorm.DB) {
 		userJobs.ResumeStatus{},
 		userCity.Cityname{},
 		userJobs.Joblist{},
+		userJobs.UserAuth{},
 		sysModel.SysUser{},
 		sysModel.SysAuthority{},
 		sysModel.SysMenu{},

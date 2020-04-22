@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 style="text-align:center">gin-vue-admin by 奇淼 And krank666</h2>
+    <h2 style="text-align:center">this web is support by gogoflying</h2>
     <h2 style="text-align:center;margin:15px">点击动画获取联系方式</h2>
 
     <el-drawer
@@ -8,12 +8,8 @@
       title="联系方式"
     >
       <div style="text-align:center;margin-top:30px;">
-        <img src="http://qmplusimg.henrongyi.top/yx.jpg" width="180" />
-        <H3>krank666微信</H3>
-      </div>
-      <div style="text-align:center;margin-top:30px;">
-        <img src="http://qmplusimg.henrongyi.top/jjz.jpg" width="180" />
-        <H3>Mr.奇淼微信</H3>
+        <img :src="require('@/assets/author1.jpg')" width="180" />
+        <H3>vinustseng微信</H3>
       </div>
     </el-drawer>
     <div @click="drawer = true">

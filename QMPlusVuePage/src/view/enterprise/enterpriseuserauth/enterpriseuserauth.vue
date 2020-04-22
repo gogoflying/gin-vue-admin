@@ -61,7 +61,6 @@ import {
   deleteUserAuth
 } from "@/api/userauth";
 import infoList from "@/components/mixins/infoList";
-import { mapGetters } from "vuex";
 export default {
   name: "Enterpriseuserauth",
   mixins: [infoList],
@@ -71,9 +70,6 @@ export default {
       listKey: "userAuthsList",
       path: path
     };
-  },
-  computed: {
-    ...mapGetters("user", ["token"])
   },
   methods: {
     //条件搜索前端看此方法

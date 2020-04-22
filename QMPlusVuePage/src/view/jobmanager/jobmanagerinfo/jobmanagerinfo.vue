@@ -3,7 +3,7 @@
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
         <el-form-item label="工作名称">
-          <el-input placeholder="路径" v-model="searchInfo.p_name"></el-input>
+          <el-input placeholder="工作名称" v-model="searchInfo.p_name"></el-input>
         </el-form-item>
         <el-form-item label="工作城市">
           <el-input placeholder="工作城市" v-model="searchInfo.p_city"></el-input>
@@ -25,7 +25,7 @@
       style="width: 100%"
       tooltip-effect="dark"
     >
-      <el-table-column type="selection" min-width="55"></el-table-column>
+      <!-- <el-table-column type="selection" min-width="55"></el-table-column> -->
       <el-table-column label="id" min-width="60" prop="ID" fixed></el-table-column>
       <el-table-column label="工作名称" min-width="100" prop="p_name"></el-table-column>
       <el-table-column label="薪资上限" min-width="100" prop="p_salary_high"></el-table-column>
@@ -62,22 +62,22 @@
           <el-input v-model="jobmanagerinfo.p_name" placeholder="请输入工作名称"></el-input>
         </el-form-item>
         <el-form-item label="薪资上限" label-width="100px" prop="p_salary_high">
-          <el-input v-model="jobmanagerinfo.p_salary_high" placeholder="请输入薪资上限"></el-input>
+          <el-input v-model.number="jobmanagerinfo.p_salary_high" placeholder="请输入薪资上限"></el-input>
         </el-form-item>
         <el-form-item label="薪资下限" label-width="100px" prop="p_salary_low">
-          <el-input v-model="jobmanagerinfo.p_salary_low" placeholder="请输入薪资下限"></el-input>
+          <el-input v-model.number="jobmanagerinfo.p_salary_low" placeholder="请输入薪资下限"></el-input>
         </el-form-item>
         <el-form-item label="工作地点纬度" label-width="100px" prop="p_latitude">
-          <el-input v-model="jobmanagerinfo.p_latitude" placeholder="请输入工作地点纬度"></el-input>
+          <el-input v-model.number="jobmanagerinfo.p_latitude" placeholder="请输入工作地点纬度"></el-input>
         </el-form-item>
         <el-form-item label="工作地点经度" label-width="100px" prop="p_longitude">
-          <el-input v-model="jobmanagerinfo.p_longitude" placeholder="请输入工作地点经度"></el-input>
+          <el-input v-model.number="jobmanagerinfo.p_longitude" placeholder="请输入工作地点经度"></el-input>
         </el-form-item>
         <el-form-item label="工作地点" label-width="100px" prop="p_address">
           <el-input v-model="jobmanagerinfo.p_address" placeholder="请输入工作地点"></el-input>
         </el-form-item>
         <el-form-item label="工作城市" label-width="100px" prop="p_city_id" @change="selectCityName">
-          <el-select placeholder="请选择工作城市" v-model="jobmanagerinfo.p_city_id">
+          <el-select placeholder="请选择工作城市" v-model.number="jobmanagerinfo.p_city_id">
             <el-option
               :key="city.name"
               :label="city.name"
@@ -87,7 +87,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="工作年限" label-width="100px" prop="p_edujy_id" @change="selectJobyear">
-          <el-select placeholder="请选择工作年限" v-model="jobmanagerinfo.p_edujy_id">
+          <el-select placeholder="请选择工作年限" v-model.number="jobmanagerinfo.p_edujy_id">
             <el-option
               :key="jobyear.name"
               :label="jobyear.name"
@@ -97,7 +97,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="最低学历" label-width="100px" prop="p_education_id" @change="selectJobedu">
-          <el-select placeholder="请选择最低学历" v-model="jobmanagerinfo.p_education_id">
+          <el-select placeholder="请选择最低学历" v-model.number="jobmanagerinfo.p_education_id">
             <el-option
               :key="jobedu.name"
               :label="jobedu.name"
@@ -107,7 +107,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="工作类型" label-width="100px" prop="p_type_id" @change="selectJobtype">
-          <el-select placeholder="请选择工作类型" v-model="jobmanagerinfo.p_type_id">
+          <el-select placeholder="请选择工作类型" v-model.number="jobmanagerinfo.p_type_id">
             <el-option
               :key="jobtype.name"
               :label="jobtype.name"
@@ -138,21 +138,20 @@
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
 const path = process.env.VUE_APP_BASE_API;
 import {
-  getJoblistList,
+  getJoblistListBackend,
   createJoblist,
   findJoblist,
   deleteJoblist
 } from "@/api/jobmanagerinfo";
 //import { getCitynameList } from "@/api/cityname";
 import infoList from "@/components/mixins/infoList";
-import { mapGetters } from "vuex";
 export default {
   name: "Jobmanagerinfo",
   mixins: [infoList],
   data() {
     return {
-      listApi: getJoblistList,
-      listKey: "result",
+      listApi: getJoblistListBackend,
+      listKey: "RspJoblistList",
       path: path,
       multipleSelection: [],
       addjobDialog: false,
@@ -278,9 +277,6 @@ export default {
       }
     };
   },
-  computed: {
-    ...mapGetters("user", ["token"])
-  },
   methods: {
     //条件搜索前端看此方法
     onSubmit() {
@@ -326,21 +322,21 @@ export default {
       this.addjobDialog = true;
     },
     //编辑职位
-    async editjob(id) {
+    async editjob(row) {
       this.title = "编辑职位";
-      const res = await findJoblist({ id });
-      this.form = res.data.rejl;
+      const res = await findJoblist(row);
+      this.jobmanagerinfo = res.data.rejl;
       this.addjobDialog = true;
     },
     // 删除职位
-    deleteMenu(id) {
+    deletejob(row) {
       this.$confirm("此操作将永久删除该职位, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(async () => {
-          const res = await deleteJoblist({ id });
+          const res = await deleteJoblist(row);
           if (res.success) {
             this.$message({
               type: "success",

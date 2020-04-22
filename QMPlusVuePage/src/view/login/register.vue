@@ -3,7 +3,7 @@
     <vue-particle-line></vue-particle-line>
     <el-main class="login-box">
       <h1 class="title-1">
-        <img class="logo" :src="require('@/assets/logo.png')">
+        <img class="logo" :src="require('@/assets/logo.jpg')">
       </h1>
       <el-form :model="registerForm" :rules="rules" ref="registerForm">
         <el-form-item label="用户名" label-width="80px" prop="username">

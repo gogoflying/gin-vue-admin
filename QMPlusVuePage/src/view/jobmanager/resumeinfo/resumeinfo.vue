@@ -1,104 +1,136 @@
 <template>
-  <!-- <el-dialog
-    :title="base_info.name+'的简历'"
-    :visible.sync="visible"
-    size="tiny"
-    :close-on-click-modal="false"
-  >-->
   <div>
-    <!-- <h2>基本信息</h2>
-    <el-form :model="use_base_info" label-width="100px">
-      <el-form-item label="姓名" prop="model_id">
-        <el-input v-model="use_base_info.user_name"></el-input>
-      </el-form-item>
-      <el-form-item label="性别" prop="model_id">
-        <el-input v-model="use_base_info.gender"></el-input>
-      </el-form-item>
-      <el-form-item label="最高学历" prop="model_id">
-        <el-input v-model="use_base_info.edulevel"></el-input>
-      </el-form-item>
-      <el-form-item label="工作年限" prop="model_id">
-        <el-input v-model="use_base_info.worksYear"></el-input>
-      </el-form-item>
-      <el-form-item label="所在城市" prop="model_id">
-        <el-input v-model="use_base_info.city"></el-input>
-      </el-form-item>
-      <el-form-item label="联系电话" prop="client_version">
-        <el-input v-model="use_base_info.mobile"></el-input>
-      </el-form-item>
-      <el-form-item label="联系邮箱" prop="client_version">
-        <el-input v-model="use_base_info.email"></el-input>
-      </el-form-item>
-    </el-form>-->
-    <section>
-      <h2>基本信息</h2>
-      <div class="message">
-        <div class="content">
-          <span>姓名：{{user_base_info.user_name}}</span>
-          <span>性别：{{user_base_info.gender}}</span>
-          <span>最高学历：{{user_base_info.edulevel}}</span>
-          <span>工作年限：{{user_base_info.worksYear}}</span>
-          <span>所在城市：{{user_base_info.city}}</span>
-          <span>联系电话：{{user_base_info.mobile}}</span>
-          <span>联系邮箱：{{user_base_info.email}}</span>
-        </div>
-      </div>
-    </section>
-    <section v-if="filter(user_works).length > 0 ">
-      <h3>工作经历</h3>
-      <ul v-for="(userwork,index) in filter(user_works)">
-        <li>起止日期 {{userwork.join}}-{{userwork.leave}}</li>
-        <li>公司名称 {{userwork.company}}</li>
-        <li>工作地点 {{userwork.city}}</li>
-        <li>工作职位 {{userwork.department}}</li>
-        <li>工作描述 {{userwork.workContent}}</li>
-      </ul>
-    </section>
-    <section v-if="filter(user_edus).length > 0 ">
-      <h3>教育经历</h3>
-      <ul v-for="useredu in filter(user_edus)">
-        <li>起止日期 {{useredu.joinTime}}-{{useredu.graduationTime}}</li>
-        <li>学校名称 {{useredu.schoolname}}</li>
-        <li>学历 {{useredu.edulevel}}</li>
-        <li>专业 {{useredu.profession}}</li>
-      </ul>
-    </section>
-    <section v-if="filter(user_edus).length > 0 ">
-      <h3>期望职位</h3>
-      <ul v-for="useredu in filter(user_edus)">
-        <li>起止日期 {{useredu.joinTime}}-{{useredu.graduationTime}}</li>
-        <li>学校名称 {{useredu.schoolname}}</li>
-        <li>学历 {{useredu.edulevel}}</li>
-        <li>专业 {{useredu.profession}}</li>
-      </ul>
-    </section>
+    <div class="search-term">
+      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item label="工作名称">
+          <el-input placeholder="工作名称" v-model="searchInfo.p_name"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="onSubmit" type="primary">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <el-table :data="tableData" border stripe>
+      <el-table-column label="工作名称" min-width="250" prop="job_info.p_name"></el-table-column>
+      <el-table-column label="用户名" min-width="150" prop="user_info.userName"></el-table-column>
+      <el-table-column label="简历状态" min-width="150">
+        <template slot-scope="scope">
+          <el-select
+            @change="changeResumeStatus(scope.row)"
+            placeholder="请选择"
+            v-model="scope.row.resume_status"
+          >
+            <el-option
+              :key="item.name"
+              :label="item.name"
+              :value="item.id"
+              v-for="item in resume_status_infos"
+            ></el-option>
+          </el-select>
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" label="操作" width="200">
+        <template slot-scope="scope">
+          <el-button @click="viewResume(scope.row)" size="small" type="text">查看</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      :current-page="page"
+      :page-size="pageSize"
+      :page-sizes="[10, 30, 50, 100]"
+      :style="{float:'right',padding:'20px'}"
+      :total="total"
+      @current-change="handleCurrentChange"
+      @size-change="handleSizeChange"
+      layout="total, sizes, prev, pager, next, jumper"
+    ></el-pagination>
 
-    <section>
-      <h3>期望职位</h3>
-      <div class="message">
-        <div class="content">
-          <span>期望职位：{{user_dreams.dreamposi}}</span>
-          <span>工作类型：{{user_dreams.workType}}</span>
-          <span>期望薪资：{{user_dreams.salary}}</span>
-          <span>期望城市：{{user_dreams.city}}</span>
-          <span>到岗时间：{{user_dreams.dutyTime}}</span>
-        </div>
-        <div class="print">
-          <Imges />
+    <el-dialog :visible.sync="viewResumeInfoDialog" custom-class="user-dialog" title="查看简历">
+      <div id="ShowBox">
+        <div class="motto">座右铭：细心从每一个小细节开始。</div>
+        <div id="show">
+          <section>
+            <h3>基本信息</h3>
+            <ul>
+              <li>姓名：{{user_base_info.user_name}}</li>
+              <li>性别：{{user_base_info.gender}}</li>
+              <li>最高学历：{{user_base_info.edulevel}}</li>
+              <li>工作年限：{{user_base_info.worksYear}}</li>
+              <li>所在城市：{{user_base_info.city}}</li>
+              <li>联系电话：{{user_base_info.mobile}}</li>
+              <li>联系邮箱：{{user_base_info.email}}</li>
+            </ul>
+          </section>
+          <!-- <section>
+                  <h3>工作经历</h3>
+                  <ul>
+                    <li v-for="userwork in user_works" :key="userwork">
+                      <span>起止日期 {{userwork.join}}-{{userwork.leave}}</span>
+                      <span>公司名称 {{userwork.company}}</span>
+                      <span>工作地点 {{userwork.city}}</span>
+                      <span>工作职位 {{userwork.department}}</span>
+                      <span>工作描述 {{userwork.workContent}}</span>
+                      <span>工作描述 {{userwork.workContent}}</span>
+                    </li>
+                  </ul>
+          </section>-->
+          <section v-if="user_works.length > 0 ">
+            <h3>工作经历</h3>
+            <ul v-for="userwork in user_works" :key="userwork">
+              <li>起止日期：{{userwork.join}}-{{userwork.leave}}</li>
+              <li>公司名称：{{userwork.companyname}}</li>
+              <li>工作地点：{{userwork.city}}</li>
+              <li>工作职位：{{userwork.department}}</li>
+              <li>工作描述：{{userwork.workContent}}</li>
+            </ul>
+          </section>
+          <section v-if="user_edus.length > 0 ">
+            <h3>教育经历</h3>
+            <ul v-for="useredu in user_edus" :key="useredu">
+              <li>起止日期：{{useredu.joinTime}}-{{useredu.graduationTime}}</li>
+              <li>学校名称：{{useredu.schoolname}}</li>
+              <li>学历：{{useredu.edulevel}}</li>
+              <li>专业：{{useredu.profession}}</li>
+            </ul>
+          </section>
+          <section>
+            <h3>期望职位</h3>
+            <ul>
+              <li>期望职位：{{user_dreams.dreamposi}}</li>
+              <li>工作类型：{{user_dreams.workType}}</li>
+              <li>期望薪资：{{user_dreams.salary}}</li>
+              <li>期望城市：{{user_dreams.city}}</li>
+              <li>到岗时间：{{user_dreams.dutyTime}}</li>
+            </ul>
+          </section>
         </div>
       </div>
-    </section>
+      <div class="dialog-footer" slot="footer">
+        <el-button @click="download" type="primary">导 出</el-button>
+        <el-button @click="viewResumeInfoDialog=false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
-  <!-- </el-dialog> -->
 </template>
 
+
 <script>
+// 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
+const path = process.env.VUE_APP_BASE_API;
+import { getResumeStatusList,updateResumeStatus } from "@/api/resumestatus";
+import infoList from "@/components/mixins/infoList";
+import html2canvas from "html2canvas";
+import jspdf from "jspdf";
 export default {
-  name: "viewresume",
+  name: "Api",
+  mixins: [infoList],
   data() {
     return {
-      visible: false,
-      base_info: {},
+      listApi: getResumeStatusList,
+      listKey: "resumeStatusList",
+      path: path,
+      viewResumeInfoDialog: false,
       name: "zhenghao",
       user_base_info: {
         user_name: "zhenghao",
@@ -164,26 +196,121 @@ export default {
         salary: "10k-15k",
         dutyTime: "一周到岗",
         city: "北京"
-      }
+      },
+      resume_status_infos: [
+        {
+          id: 0,
+          name: "未读"
+        },
+        {
+          id: 1,
+          name: "已读"
+        },
+        {
+          id: 2,
+          name: "有意向"
+        },
+        {
+          id: 3,
+          name: "约面试"
+        },
+        {
+          id: 4,
+          name: "不合适"
+        }
+      ]
     };
   },
   methods: {
-    open(base_info) {
-      this.visible = true;
-      this.base_info = base_info;
-
+    viewResume(row) {
+      this.viewResumeInfoDialog = true;
+      this.base_info = row;
       this.fetchresume();
     },
     fetchresume() {
       //获取基本信息
+      //const res = await getAuthorityList({ page: 1, pageSize: 999 });
+      //this.authOptions = res.data.list;
       //获取工作经历
       //获取教育经历
       //获取期望职位
     },
+    closeviewResumeDialog() {
+      this.user_base_info = {};
+      this.user_works = [];
+      this.user_edus = [];
+      this.user_dreams = {};
+      this.viewResumeInfoDialog = false;
+    },
+    async changeResumeStatus(row) {
+      const res = await updateResumeStatus(row);
+      if (res.success) {
+        this.$message({ type: "success", message: "状态设置成功" });
+      }
+    },
     filter(array) {
       //找出非空对象
       return array.filter(item => !this.isEmpty(item));
+    },
+    download() {
+      let resume = document.getElementById("ShowBox");
+      html2canvas(resume).then(canvas => {
+        let imgData = canvas.toDataURL("image/JPEG");
+        let imgWidth = 210;
+        let pageHeight = 295;
+        let imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let doc = new jspdf("p", "mm");
+        let position = 0;
+        doc.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        while (heightLeft > 0) {
+          position = heightLeft - imgHeight;
+          doc.addPage();
+          doc.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+        doc.save("Resume.pdf");
+      });
     }
   }
 };
 </script>
+<style scoped lang="scss">
+#ShowBox {
+  font-size: 16px;
+  padding-top: 30px;
+  color: rgba(0, 0, 0, 0.6);
+  > .motto {
+    background: #000;
+    color: #fff;
+    padding: 8px 32px;
+  }
+  > #show {
+    padding: 0 32px 32px 32px;
+    overflow: auto;
+    > section {
+      overflow: auto;
+      > h3 {
+        color: rgba(0, 0, 0, 0.7);
+        text-align: left;
+        background: rgba(0, 0, 0, 0.1);
+        border-left: 3px solid #000;
+        padding-left: 4px;
+        margin: 20px 0 10px 0;
+        padding: 5px;
+      }
+      > ul {
+        padding: 15px;
+        width: 100%;
+        overflow: hidden;
+        font-size: 16px;
+        > li {
+          padding: 10px;
+          line-height: 10px;
+        }
+      }
+    }
+  }
+}
+</style>

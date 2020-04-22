@@ -157,11 +157,39 @@ export default {
     },
     downloadFile(row) {
       //downloadImage(row.url, row.name)
+      //1、通过文件链接从阿里云下载
       var a = document.createElement("a"); // 生成一个a元素
       var event = new MouseEvent("click"); // 创建一个单击事件
       a.download = row.name || "photo"; // 设置图片名称
       a.href = row.url; // 将生成的URL设置为a.href属性
       a.dispatchEvent(event); // 触发a的单击事件
+      //2、通过后端接口从文件流下载
+      // const params = {
+      //   id: row.ID
+      // };
+      // downloadFile(params).then(res => {
+      //   if (res.status == "200") {
+      //     let data = res;
+      //     if (!data) {
+      //       this.$message.error("下载失败，解析数据为空！");
+      //       return;
+      //     }
+      //     // 创建一个新的url，此url指向新建的Blob对象
+      //     let url = window.URL.createObjectURL(new Blob([data]));
+      //     // 创建a标签，并隐藏改a标签
+      //     let link = document.createElement("a");
+      //     link.style.display = "none";
+      //     // a标签的href属性指定下载链接
+      //     link.href = url;
+      //     //setAttribute() 方法添加指定的属性，并为其赋指定的值。
+      //     link.setAttribute("download", row.name);
+      //     document.body.appendChild(link);
+      //     link.click();
+      //     this.$Message.info("导出成功");
+      //   } else {
+      //     this.$Message.error("导出失败，请尝试重新导出");
+      //   }
+      // });
     }
   }
 };

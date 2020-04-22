@@ -74,10 +74,10 @@ export const createJoblist = (data) => {
 // @Produce application/json
 // @Param data body modelInterface.PageInfo true "分页获取Joblist列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /jl/getJoblistList [post]
- export const getJoblistList = (data) => {
+// @Router /jl/getJoblistListBackend [post]
+ export const getJoblistListBackend = (data) => {
      return service({
-         url: "/jl/getJoblistList",
+         url: "/jl/getJoblistListBackend",
          method: 'post',
          data
      })

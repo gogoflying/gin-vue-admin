@@ -20,8 +20,13 @@ import (
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /jl/createJoblist [post]
 func CreateJoblist(c *gin.Context) {
+	ei, _ := c.Get("enpInfo")
+	enpInfo := ei.(*userJobs.EnterpriseInfo)
 	var jl userJobs.Joblist
 	_ = c.ShouldBindJSON(&jl)
+	jl.CompanyName = enpInfo.EnterPriseName
+	jl.CompanyId = int(enpInfo.ID)
+	jl.CompanyImg = enpInfo.EnterpriseImg
 	err := jl.CreateJoblist()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
@@ -87,6 +92,30 @@ func FindJoblist(c *gin.Context) {
 	} else {
 		servers.ReportFormat(c, true, "查询成功", gin.H{
 			"rejl": rejl,
+		})
+	}
+}
+
+// @Tags Joblist
+// @Summary 分页获取Joblist列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body modelInterface.PageInfo true "分页获取Joblist列表"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /jl/getJoblistListBackend [post]
+func GetJoblistListBackend(c *gin.Context) {
+	var pageInfo modelInterface.PageInfo
+	_ = c.ShouldBindJSON(&pageInfo)
+	err, list, total := new(userJobs.Joblist).GetInfoList(pageInfo)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "获取数据成功", gin.H{
+			"RspJoblistList": list,
+			"total":          total,
+			"page":           pageInfo.Page,
+			"pageSize":       pageInfo.PageSize,
 		})
 	}
 }

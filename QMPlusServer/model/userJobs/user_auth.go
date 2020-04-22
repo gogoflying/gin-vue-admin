@@ -42,6 +42,12 @@ func (ua *UserAuth) FindById() (err error, reuserauth UserAuth) {
 	return err, reuserauth
 }
 
+// 根据user_id查看单条UserAuth
+func (ua *UserAuth) FindByUserId() (err error) {
+	err = qmsql.DEFAULTDB.Where("user_id = ?", ua.UserId).First(ua).Error
+	return err
+}
+
 // 分页获取JobWorkExpire
 func (ua *UserAuth) GetInfoList(info modelInterface.PageInfo) (err error, list interface{}, total int) {
 	// 封装分页方法 调用即可 传入 当前的结构体和分页信息

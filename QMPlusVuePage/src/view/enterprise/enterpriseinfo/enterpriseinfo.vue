@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="button-box clearflex">
-      <el-button @click="addCompany" type="primary">新增企业</el-button>
+      <el-button @click="addEnterprise" type="primary">新增企业</el-button>
     </div>
     <el-table :data="tableData" border stripe>
       <el-table-column type="expand">
@@ -9,12 +9,12 @@
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="企业logo:">
               <span>
-                <img :src="scope.row.enterprise_logo" />
+                <img :src="scope.row.enterprise_logo" height="500" width="500" />
               </span>
             </el-form-item>
             <el-form-item label="企业资质:">
               <span>
-                <img :src="scope.row.enterprise_img" />
+                <img :src="scope.row.enterprise_img" height="500" width="500" />
               </span>
             </el-form-item>
           </el-form>
@@ -138,7 +138,10 @@
 const path = process.env.VUE_APP_BASE_API;
 import {
   getEnterpriseInfoList,
-  createEnterpriseInfo
+  createEnterpriseInfo,
+  updateEnterpriseInfo,
+  findEnterpriseInfo,
+  deleteEnterpriseInfo
 } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";
 import { mapGetters } from "vuex";
@@ -150,8 +153,9 @@ export default {
       listApi: getEnterpriseInfoList,
       listKey: "result",
       path: path,
-      authOptions: [],
       addCompanyDialog: false,
+      isEdit: false,
+      title: "",
       enterpriseInfo: {
         enterprise_name: "",
         enterprise_address: "",
@@ -163,6 +167,42 @@ export default {
         city_id: null,
         enterprise_logo: "",
         enterprise_img: ""
+      },
+      rules: {
+        enterprise_name: [
+          {
+            required: true,
+            message: "请输入与营业执照一致的企业名称",
+            trigger: "blur"
+          }
+        ],
+        enterprise_address: [
+          { required: true, message: "请输入注册地址", trigger: "blur" }
+        ],
+        enterprise_scale: [
+          { required: true, message: "请输入企业规模", trigger: "blur" }
+        ],
+        enterprise_type: [
+          { required: true, message: "请输入企业类型", trigger: "blur" }
+        ],
+        enterprise_hot: [
+          { required: true, message: "请输入企业热度", trigger: "blur" }
+        ],
+        industry_type: [
+          { required: true, message: "请输入企业性质", trigger: "blur" }
+        ],
+        enterprise_desc: [
+          { required: true, message: "请输入企业描述", trigger: "blur" }
+        ],
+        city_id: [
+          { required: true, message: "请输入所在城市", trigger: "blur" }
+        ],
+        enterprise_logo: [
+          { required: true, message: "请上传企业logo", trigger: "blur" }
+        ],
+        enterprise_img: [
+          { required: true, message: "请上传企业资质", trigger: "blur" }
+        ]
       },
       cityinfo: [
         {
@@ -191,25 +231,7 @@ export default {
           id: 3,
           name: "个体"
         }
-      ],
-      rules: {
-        enterprise_name: [
-          {
-            required: true,
-            message: "请输入与营业执照一致的企业名称",
-            trigger: "blur"
-          }
-        ],
-        enterprise_address: [
-          { required: true, message: "请输入联系人全名", trigger: "blur" }
-        ],
-        enterprise_type: [
-          { required: true, message: "请输入电话", trigger: "blur" }
-        ],
-        enterprise_desc: [
-          { required: true, message: "请输入企业邮箱", trigger: "blur" }
-        ]
-      }
+      ]
     };
   },
   computed: {
@@ -219,9 +241,16 @@ export default {
     async enterAddCompanyDialog() {
       this.$refs.enterpriseForm.validate(async valid => {
         if (valid) {
-          const res = await createEnterpriseInfo(this.enterpriseInfo);
+          let res;
+          if (this.isEdit) {
+            res = await updateEnterpriseInfo(this.enterpriseInfo);
+          } else {
+            res = await createEnterpriseInfo(this.enterpriseInfo);
+          }
           if (res.success) {
             this.$message({ type: "success", message: "创建成功" });
+          }else {
+            this.$message({ type: 'error',message: '添加失败!' });
           }
           await this.getTableData();
           this.closeAddCompanyDialog();
@@ -243,8 +272,43 @@ export default {
       };
       this.addCompanyDialog = false;
     },
-    addCompany() {
+    //新增企业
+    addEnterprise() {
+      this.title = "新增企业";
+      this.isEdit = false;
       this.addCompanyDialog = true;
+    },
+    //编辑企业
+    async editEnterprise(row) {
+      this.title = "编辑企业";
+      const res = await findEnterpriseInfo(row);
+      this.enterpriseInfo = res.data.reinfo;
+      this.isEdit = true;
+      this.addCompanyDialog = true;
+    },
+    //删除企业
+    deleteEnterprise(row) {
+      this.$confirm("此操作将永久删除该企业信息, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          const res = await deleteEnterpriseInfo(row);
+          if (res.success) {
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.getTableData();
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     handleAvatarLogoSuccess(res) {
       this.enterpriseInfo.enterprise_logo = res.data.file.url;
@@ -269,7 +333,7 @@ export default {
           type: "warning"
         });
       }
-      return (extension || extension2) && isLt50KB
+      return (extension || extension2) && isLt50KB;
     }
   }
 };

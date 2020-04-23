@@ -68,10 +68,10 @@
           <el-input v-model.number="jobmanagerinfo.p_salary_low" placeholder="请输入薪资下限"></el-input>
         </el-form-item>
         <el-form-item label="工作地点纬度" label-width="100px" prop="p_latitude">
-          <el-input v-model.number="jobmanagerinfo.p_latitude" placeholder="请输入工作地点纬度"></el-input>
+          <el-input v-model="jobmanagerinfo.p_latitude" placeholder="请输入工作地点纬度"></el-input>
         </el-form-item>
         <el-form-item label="工作地点经度" label-width="100px" prop="p_longitude">
-          <el-input v-model.number="jobmanagerinfo.p_longitude" placeholder="请输入工作地点经度"></el-input>
+          <el-input v-model="jobmanagerinfo.p_longitude" placeholder="请输入工作地点经度"></el-input>
         </el-form-item>
         <el-form-item label="工作地点" label-width="100px" prop="p_address">
           <el-input v-model="jobmanagerinfo.p_address" placeholder="请输入工作地点"></el-input>
@@ -140,6 +140,7 @@ const path = process.env.VUE_APP_BASE_API;
 import {
   getJoblistListBackend,
   createJoblist,
+  updateJoblist,
   findJoblist,
   deleteJoblist
 } from "@/api/jobmanagerinfo";
@@ -155,6 +156,7 @@ export default {
       path: path,
       multipleSelection: [],
       addjobDialog: false,
+      isEdit: false,
       title: "",
       jobmanagerinfo: {
         p_name: "",
@@ -258,22 +260,51 @@ export default {
         }
       ],
       rules: {
-        enterprise_name: [
+        p_name: [
           {
             required: true,
-            message: "请输入与营业执照一致的企业名称",
+            message: "请输入工作名称",
             trigger: "blur"
           }
         ],
-        enterprise_address: [
-          { required: true, message: "请输入联系人全名", trigger: "blur" }
+        p_salary_high: [
+          { required: true, message: "请输入薪资上限", trigger: "blur" }
         ],
-        enterprise_type: [
-          { required: true, message: "请输入电话", trigger: "blur" }
+        p_salary_low: [
+          { required: true, message: "请输入薪资下限", trigger: "blur" }
         ],
-        enterprise_desc: [
-          { required: true, message: "请输入企业邮箱", trigger: "blur" }
-        ]
+        p_latitude: [
+          { required: true, message: "请输入工作地点纬度", trigger: "blur" },
+          {
+            pattern: /^\d+(\.\d+)?$/,
+            message: "请输入浮点数",
+            trigger: "blur"
+          }
+        ],
+        p_longitude: [
+          { required: true, message: "请输入工作地点经度", trigger: "blur" },
+          {
+            pattern: /^\d+(\.\d+)?$/,
+            message: "请输入浮点数",
+            trigger: "blur"
+          }
+        ],
+        p_address: [
+          { required: true, message: "请输入工作地点", trigger: "blur" }
+        ],
+        p_city: [
+          { required: true, message: "请输入工作城市", trigger: "blur" }
+        ],
+        p_edujy: [
+          { required: true, message: "请输入工作年限", trigger: "blur" }
+        ],
+        p_education: [
+          { required: true, message: "请输入最低学历", trigger: "blur" }
+        ],
+        p_type: [
+          { required: true, message: "请输入工作类型", trigger: "blur" }
+        ],
+        p_des: [{ required: true, message: "请输入工作描述", trigger: "blur" }]
       }
     };
   },
@@ -287,9 +318,22 @@ export default {
     async enterAddjobDialog() {
       this.$refs.jobForm.validate(async valid => {
         if (valid) {
-          const res = await createJoblist(this.jobmanagerinfo);
+          let res;
+          this.jobmanagerinfo.p_latitude = parseFloat(
+            this.jobmanagerinfo.p_latitude
+          );
+          this.jobmanagerinfo.p_longitude = parseFloat(
+            this.jobmanagerinfo.p_longitude
+          );
+          if (this.isEdit) {
+            res = await updateJoblist(this.jobmanagerinfo);
+          } else {
+            res = await createJoblist(this.jobmanagerinfo);
+          }
           if (res.success) {
             this.$message({ type: "success", message: "创建成功" });
+          }else {
+            this.$message({ type: 'error',message: '添加失败!' });
           }
           await this.getTableData();
           this.closeAddjobDialog();
@@ -319,6 +363,7 @@ export default {
     //新增职位
     addjob() {
       this.title = "新增职位";
+      this.isEdit = false;
       this.addjobDialog = true;
     },
     //编辑职位
@@ -326,6 +371,7 @@ export default {
       this.title = "编辑职位";
       const res = await findJoblist(row);
       this.jobmanagerinfo = res.data.rejl;
+      this.isEdit = true;
       this.addjobDialog = true;
     },
     // 删除职位

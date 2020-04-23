@@ -131,9 +131,6 @@ import { mapGetters } from "vuex";
 const path = process.env.VUE_APP_BASE_API;
 export default {
   name: "companyauth",
-  watch: {
-    "form.model_id": "getcityinfo"
-  },
   data() {
     return {
       authform: {

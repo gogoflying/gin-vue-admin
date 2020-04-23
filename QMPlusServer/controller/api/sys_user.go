@@ -111,15 +111,24 @@ func tokenNext(c *gin.Context, user sysModel.SysUser) {
 	j := &middleware.JWT{
 		[]byte(config.GinVueAdminconfig.JWT.SigningKey), // 唯一签名
 	}
+	enPriseId := uint(0)
+	ua := &userJobs.UserAuth{
+		UserId: user.ID,
+	}
+	err := ua.FindByUserId()
+	if err == nil {
+		enPriseId = ua.EnterPriseId
+	}
 	clams := middleware.CustomClaims{
-		UUID:        user.UUID,
-		ID:          user.ID,
-		NickName:    user.NickName,
-		AuthorityId: user.AuthorityId,
+		UUID:         user.UUID,
+		ID:           user.ID,
+		EnterPriseId: enPriseId,
+		NickName:     user.NickName,
+		AuthorityId:  user.AuthorityId,
 		StandardClaims: jwt.StandardClaims{
-			NotBefore: int64(time.Now().Unix() - 1000),       // 签名生效时间
-			ExpiresAt: int64(time.Now().Unix() + 60*60*24*7), // 过期时间 一周
-			Issuer:    "qmPlus",                              //签名的发行者
+			NotBefore: int64(time.Now().Unix() - 1000),  // 签名生效时间
+			ExpiresAt: int64(time.Now().Unix() + 60*60), // 过期时间 一个小时
+			Issuer:    "qmPlus",                         //签名的发行者
 		},
 	}
 	token, err := j.CreateToken(clams)
@@ -135,7 +144,7 @@ func tokenNext(c *gin.Context, user sysModel.SysUser) {
 				if err2 != nil {
 					servers.ReportFormat(c, false, "设置登录状态失败", gin.H{})
 				} else {
-					servers.ReportFormat(c, true, "登录成功", gin.H{"user": user, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
+					servers.ReportFormat(c, true, "登录成功", gin.H{"user": user, "enPriseId": enPriseId, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
 				}
 			} else if err != nil {
 				servers.ReportFormat(c, false, fmt.Sprintf("%v", err), gin.H{})
@@ -150,12 +159,12 @@ func tokenNext(c *gin.Context, user sysModel.SysUser) {
 					if err2 != nil {
 						servers.ReportFormat(c, false, "设置登录状态失败", gin.H{})
 					} else {
-						servers.ReportFormat(c, true, "登录成功", gin.H{"user": user, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
+						servers.ReportFormat(c, true, "登录成功", gin.H{"user": user, "enPriseId": enPriseId, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
 					}
 				}
 			}
 		} else {
-			servers.ReportFormat(c, true, "登录成功", gin.H{"user": user, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
+			servers.ReportFormat(c, true, "登录成功", gin.H{"user": user, "enPriseId": enPriseId, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
 		}
 	}
 }

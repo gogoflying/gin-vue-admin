@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :model="authform" label-width="80px" ref="authform">
+    <el-form :rules="rules" :model="authform" label-width="80px" ref="authEnform">
       <el-row>
         <el-col :span="3">
           <label for>企业名称</label>
@@ -118,9 +118,9 @@
         </el-col>
       </el-row>
       <el-row type="flex" justify="center">
-        <el-col :span="13">
+        <el-col :span="16">
           <el-button @click="onSubmit" type="primary">立即认证</el-button>
-          <el-button>取消</el-button>
+          <el-button type="primary">取消</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -129,10 +129,16 @@
 <script>
 import { mapGetters } from "vuex";
 const path = process.env.VUE_APP_BASE_API;
+import {
+  createEnterpriseInfo,
+  updateEnterpriseInfo,
+  findEnterpriseInfo
+} from "@/api/enterpriseinfo";
 export default {
   name: "companyauth",
   data() {
     return {
+      isEdit: false,
       authform: {
         enterprise_name: "",
         enterprise_address: "",
@@ -144,6 +150,42 @@ export default {
         city_id: null,
         enterprise_logo: "",
         enterprise_img: ""
+      },
+      rules: {
+        enterprise_name: [
+          {
+            required: true,
+            message: "请输入与营业执照一致的企业名称",
+            trigger: "blur"
+          }
+        ],
+        enterprise_address: [
+          { required: true, message: "请输入注册地址", trigger: "blur" }
+        ],
+        enterprise_scale: [
+          { required: true, message: "请输入企业规模", trigger: "blur" }
+        ],
+        enterprise_type: [
+          { required: true, message: "请输入企业类型", trigger: "blur" }
+        ],
+        enterprise_hot: [
+          { required: true, message: "请输入企业热度", trigger: "blur" }
+        ],
+        industry_type: [
+          { required: true, message: "请输入企业性质", trigger: "blur" }
+        ],
+        enterprise_desc: [
+          { required: true, message: "请输入企业描述", trigger: "blur" }
+        ],
+        city_id: [
+          { required: true, message: "请输入所在城市", trigger: "blur" }
+        ],
+        enterprise_logo: [
+          { required: true, message: "请上传企业logo", trigger: "blur" }
+        ],
+        enterprise_img: [
+          { required: true, message: "请上传企业资质", trigger: "blur" }
+        ]
       },
       cityinfo: [
         {
@@ -178,16 +220,29 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("user", ["userInfo", "token"])
+    ...mapGetters("user", ["enPriseId", "token"])
   },
   methods: {
     filterMethod(query, item) {
       return item.pinyin.indexOf(query) > -1;
     },
     onSubmit() {
-      this.$message({
-        message: "创建成功",
-        type: "success"
+      this.$refs.authEnform.validate(async valid => {
+        if (valid) {
+          let res;
+          if (this.isEdit) {
+            res = await updateEnterpriseInfo(this.authform);
+          } else {
+            res = await createEnterpriseInfo(this.authform);
+          }
+          if (res.success) {
+            this.$message({ type: "success", message: "创建成功" });
+          } else {
+            this.$message({ type: "error", message: "添加失败!" });
+          }
+          await this.getTableData();
+          this.closeAddCompanyDialog();
+        }
       });
     },
     handleAvatarLogoSuccess(res) {
@@ -213,8 +268,22 @@ export default {
           type: "warning"
         });
       }
-      return (extension || extension2) && isLt50KB
+      return (extension || extension2) && isLt50KB;
     }
+  },
+  created() {
+    let row = {
+      ID: this.enPriseId
+    };
+    findEnterpriseInfo(row).then(res => {
+      if (res.success) {
+        this.isEdit = true;
+        this.authform = res.data.reinfo;
+      } else {
+        this.isEdit = false;
+        this.authform = {};
+      }
+    });
   }
 };
 </script>

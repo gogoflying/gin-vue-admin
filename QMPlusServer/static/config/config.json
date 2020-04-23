@@ -44,8 +44,8 @@
   },
   "aliyunoss": {
     "endPoint": "oss-cn-beijing.aliyuncs.com",
-    "accessKeyId": "LTAI4G4f149euV7bRmnTMN4V",
-    "accessKeySecret": "sDSL49sRzF4oiIBn2S8ifjFeTwG93u",
+    "accessKeyId": "LTAI4G5yVbQpC3gwqmHeNDYc",
+    "accessKeySecret": "8F1Ud0N25dPDwvklHjFfzmEFgXGKTg",
     "expiredInSec": 2592000
   }
 }

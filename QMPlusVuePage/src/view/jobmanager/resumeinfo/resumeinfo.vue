@@ -118,7 +118,7 @@
 <script>
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
 const path = process.env.VUE_APP_BASE_API;
-import { getResumeStatusList,updateResumeStatus } from "@/api/resumestatus";
+import { getResumeStatusList, updateResumeStatus } from "@/api/resumestatus";
 import infoList from "@/components/mixins/infoList";
 import html2canvas from "html2canvas";
 import jspdf from "jspdf";
@@ -141,6 +141,62 @@ export default {
         mobile: "13521367746",
         email: "540214845"
       },
+      jobtypes: [
+        {
+          id: 0,
+          name: "全职"
+        },
+        {
+          id: 1,
+          name: "兼职"
+        },
+        {
+          id: 2,
+          name: "实习"
+        },
+        {
+          id: 3,
+          name: "志愿者"
+        }
+      ],
+      jobedus: [
+        {
+          id: -1,
+          name: "其他"
+        },
+        {
+          id: 0,
+          name: "不限"
+        },
+        {
+          id: 1,
+          name: "初中"
+        },
+        {
+          id: 2,
+          name: "高中"
+        },
+        {
+          id: 3,
+          name: "中专"
+        },
+        {
+          id: 4,
+          name: "大专"
+        },
+        {
+          id: 5,
+          name: "本科"
+        },
+        {
+          id: 6,
+          name: "硕士"
+        },
+        {
+          id: 7,
+          name: "博士"
+        }
+      ],
       user_works: [
         {
           join: "2017-09",

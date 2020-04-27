@@ -6,10 +6,11 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/dbModel"
 	"gin-vue-admin/model/modelInterface"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 // @Tags ExaFileUploadAndDownload

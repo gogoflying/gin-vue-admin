@@ -11,7 +11,8 @@ export const user = {
             authority: "",
         },
         token: "",
-        expiresAt: ""
+        expiresAt: "",
+        enPriseId:"",
     },
     mutations: {
         setUserInfo(state, userInfo) {
@@ -26,10 +27,15 @@ export const user = {
             // 这里的 `state` 对象是模块的局部状态
             state.expiresAt = expiresAt
         },
+        setEnPriseId(state, enPriseId) {
+            // 这里的 `state` 对象是模块的局部状态
+            state.enPriseId = enPriseId
+        },
         LoginOut(state) {
             state.userInfo = {}
             state.token = ""
             state.expiresAt = ""
+            state.enPriseId = ""
             router.push({ name: 'login', replace: true })
             sessionStorage.clear()
             window.location.reload()
@@ -46,6 +52,7 @@ export const user = {
             commit('setUserInfo', res.data.user)
             commit('setToken', res.data.token)
             commit('setExpiresAt', res.data.expiresAt)
+            commit('setEnPriseId', res.data.enPriseId)
             if (res.success) {
                 const redirect = router.history.current.query.redirect
                 if (redirect) {
@@ -71,6 +78,9 @@ export const user = {
         },
         expiresAt(state) {
             return state.expiresAt
+        },
+        enPriseId(state){
+            return state.enPriseId
         }
     }
 }

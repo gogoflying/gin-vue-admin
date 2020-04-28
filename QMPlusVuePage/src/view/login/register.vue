@@ -3,13 +3,13 @@
     <vue-particle-line></vue-particle-line>
     <el-main class="login-box">
       <h1 class="title-1">
-        <img class="logo" :src="require('@/assets/logo.png')">
+        <img class="logo" :src="require('@/assets/logo.jpg')">
       </h1>
       <el-form :model="registerForm" :rules="rules" ref="registerForm">
-        <el-form-item prop="username">
+        <el-form-item label="用户名" label-width="80px" prop="username">
           <el-input placeholder="请输入用户名" v-model="registerForm.username"></el-input>
         </el-form-item>
-        <el-form-item prop="password">
+        <el-form-item label="密码" label-width="80px" prop="password">
           <el-input
             :type="lock==='lock'?'password':'text'"
             placeholder="请输入密码"
@@ -18,17 +18,31 @@
             <i :class="'el-input__icon el-icon-' + lock" @click="changeLock" slot="suffix"></i>
           </el-input>
         </el-form-item>
-        <el-form-item prop="rePassword">
+        <el-form-item label="确认密码" label-width="80px" prop="rePassword">
           <el-input
             :type="lock==='lock'?'password':'text'"
-            placeholder="请再次输入密码"
+            placeholder="请再一次输入密码"
             v-model="registerForm.rePassword"
           >
             <i :class="'el-input__icon el-icon-' + lock" @click="changeLock" slot="suffix"></i>
           </el-input>
         </el-form-item>
+        <br>
+        <br>
+        <el-form-item label="企业名称" label-width="80px" prop="enterprise_name">
+          <el-input placeholder="请输入与营业执照一致的企业名称" v-model="registerForm.enterprise_name"></el-input>
+        </el-form-item>
+        <!-- <el-form-item  label="联系人" label-width="80px" prop="telname">
+          <el-input placeholder="请输入联系人全名" v-model="registerForm.telname"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="80px" prop="telphone">
+          <el-input placeholder="请输入电话" v-model="registerForm.telphone"></el-input>
+        </el-form-item>
+        <el-form-item label="企业邮箱" label-width="80px" prop="companyemail">
+          <el-input placeholder="请输入企业邮箱" v-model="registerForm.companyemail"></el-input>
+        </el-form-item> -->
         <el-form-item>
-          <el-button @click="submitForm" style="width:100%">注 册</el-button>
+          <el-button @click="submitForm" style="width:100%">立即注册</el-button>
         </el-form-item>
       </el-form>
     </el-main>
@@ -68,7 +82,11 @@ export default {
       registerForm: {
         username: '',
         password: '',
-        rePassword: ''
+        rePassword: '',
+        enterprise_name: '',
+        // telname: '',
+        // telphone: '',
+        // companyemail: ''
       },
       rules: {
         username: [{ validator: checkUsername, trigger: 'blur' }],

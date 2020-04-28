@@ -5,7 +5,7 @@
                 <img src="../../assets/notFound.png">
                 <p>页面被神秘力量吸走了，请联系我们修复</p>
                 <p>↓</p>
-                <img src="../../assets/qm.png" class="leftPic">
+                <img src="../../assets/author1.jpg" class="leftPic">
             </div>
         </div>
     </div>

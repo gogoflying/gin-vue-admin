@@ -5,7 +5,6 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
-
 	"github.com/jinzhu/gorm"
 )
 
@@ -27,7 +26,15 @@ type EnterpriseInfo struct {
 
 // 创建EnterpriseInfo
 func (info *EnterpriseInfo) CreateEnterpriseInfo() (err error) {
-	err = qmsql.DEFAULTDB.Create(info).Error
+	var ei EnterpriseInfo
+	//判断用户名是否注册
+	notResigt := qmsql.DEFAULTDB.Where("enterprise_name = ?", info.EnterPriseName).First(&ei).RecordNotFound()
+	//notResigt为false表明读取到了 不能注册
+	if !notResigt {
+		return nil
+	} else {
+		err = qmsql.DEFAULTDB.Create(info).Error
+	}
 	return err
 }
 

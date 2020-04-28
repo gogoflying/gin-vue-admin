@@ -13,11 +13,11 @@
             <i class="el-icon-s-fold" v-else></i>
           </div>
           <el-breadcrumb class="breadcrumb" separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item
-            :key="item.path"
-            v-for="item in matched.slice(1,matched.length)"
-          >{{item.meta.title}}</el-breadcrumb-item>
-        </el-breadcrumb>
+            <el-breadcrumb-item
+              :key="item.path"
+              v-for="item in matched.slice(1,matched.length)"
+            >{{item.meta.title}}</el-breadcrumb-item>
+          </el-breadcrumb>
           <div class="fl-right right-box">
             <el-dropdown>
               <span class="el-dropdown-link">
@@ -34,15 +34,11 @@
                 </el-dropdown-item>
                 <el-dropdown-item @click.native="showPassword=true" icon="el-icon-s-custom">修改密码</el-dropdown-item>
                 <el-dropdown-item @click.native="toPerson" icon="el-icon-s-custom">个人信息</el-dropdown-item>
+                <el-dropdown-item @click.native="toCompanyAuth" icon="el-icon-s-check">企业认证</el-dropdown-item>
                 <el-dropdown-item @click.native="LoginOut" icon="el-icon-table-lamp">登 出</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <el-dialog
-              title="修改密码"
-              :visible.sync="showPassword"
-              @close="clearPassword"
-              width="360px"
-            >
+            <el-dialog title="修改密码" :visible.sync="showPassword" @close="clearPassword" width="360px">
               <el-form ref="modifyPwdForm" :model="pwdModify" :rules="rules" label-width="80px">
                 <el-form-item prop="password" :minlength="6" label="原密码">
                   <el-input v-model="pwdModify.password" show-password></el-input>
@@ -60,7 +56,6 @@
               </div>
             </el-dialog>
           </div>
-      
         </el-header>
         <!-- 当前面包屑用路由自动生成可根据需求修改 -->
         <!-- 
@@ -75,13 +70,13 @@
 </template>
 
 <script>
-import Aside from '@/view/layout/aside'
-import HistoryComponent from '@/view/layout/aside/historyComponent/history'
+import Aside from '@/view/layout/aside';
+import HistoryComponent from '@/view/layout/aside/historyComponent/history';
 
-import { mapGetters, mapActions } from 'vuex'
-import { changePassword } from '@/api/user'
+import { mapGetters, mapActions } from "vuex";
+import { changePassword } from "@/api/user";
 export default {
-  name: 'Layout',
+  name: "Layout",
   data() {
     return {
       isCollapse: false,
@@ -92,59 +87,62 @@ export default {
       pwdModify: {},
       rules: {
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, message: '最少6个字符', trigger: 'blur' }
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, message: "最少6个字符", trigger: "blur" }
         ],
         newPassword: [
-          { required: true, message: '请输入新密码', trigger: 'blur' },
-          { min: 6, message: '最少6个字符', trigger: 'blur' }
+          { required: true, message: "请输入新密码", trigger: "blur" },
+          { min: 6, message: "最少6个字符", trigger: "blur" }
         ],
         confirmPassword: [
-          { required: true, message: '请输入确认密码', trigger: 'blur' },
-          { min: 6, message: '最少6个字符', trigger: 'blur' },
+          { required: true, message: "请输入确认密码", trigger: "blur" },
+          { min: 6, message: "最少6个字符", trigger: "blur" },
           {
             validator: (rule, value, callback) => {
               if (value !== this.pwdModify.newPassword) {
-                callback(new Error('两次密码不一致'))
+                callback(new Error("两次密码不一致"))
               } else {
                 callback()
               }
             },
-            trigger: 'blur'
+            trigger: "blur"
           }
         ]
-      },
-      
-    }
+      }
+    };
   },
   components: {
-    Aside,HistoryComponent
+    Aside,
+    HistoryComponent
   },
   created() {
-    let screenWidth = document.body.clientWidth
+    let screenWidth = document.body.clientWidth;
     if (screenWidth < 1000) {
-      this.isMobile = true
-      this.isSider = false
-      this.isCollapse = !this.isCollapse
+      this.isMobile = true;
+      this.isSider = false;
+      this.isCollapse = !this.isCollapse;
     } else {
-      this.isMobile = false
+      this.isMobile = false;
     }
   },
   methods: {
-    ...mapActions('user', ['LoginOut']),
+    ...mapActions("user", ["LoginOut"]),
     totalCollapse() {
-      this.isCollapse = !this.isCollapse
-      this.isSider = !this.isCollapse
-      this.isShadowBg = !this.isCollapse
-      this.$bus.emit('totalCollapse')
+      this.isCollapse = !this.isCollapse;
+      this.isSider = !this.isCollapse;
+      this.isShadowBg = !this.isCollapse;
+      this.$bus.emit("totalCollapse");
     },
     toPerson() {
-      this.$router.push({ name: 'person' })
+      this.$router.push({ name: "person" });
+    },
+    toCompanyAuth() {
+      this.$router.push({ name: "companyauth" });
     },
     changeShadow() {
-      this.isShadowBg = !this.isShadowBg
-      this.isSider = !!this.isCollapse
-      this.totalCollapse()
+      this.isShadowBg = !this.isShadowBg;
+      this.isSider = !!this.isCollapse;
+      this.totalCollapse();
     },
     savePassword() {
       this.$refs.modifyPwdForm.validate(valid => {
@@ -154,57 +152,57 @@ export default {
             password: this.pwdModify.password,
             newPassword: this.pwdModify.newPassword
           }).then(() => {
-            this.$message.success('修改密码成功！')
-            this.showPassword = false
-          })
+            this.$message.success("修改密码成功！");
+            this.showPassword = false;
+          });
         } else {
-          return false
+          return false;
         }
-      })
+      });
     },
     clearPassword() {
       this.pwdModify = {
-        password: '',
-        newPassword: '',
-        confirmPassword: ''
-      }
-      this.$refs.modifyPwdForm.clearValidate()
+        password: "",
+        newPassword: "",
+        confirmPassword: ""
+      };
+      this.$refs.modifyPwdForm.clearValidate();
     }
   },
   computed: {
-    ...mapGetters('user', ['userInfo']),
-    ...mapGetters('history', ['historys','activeValue']),
+    ...mapGetters("user", ["userInfo"]),
+    ...mapGetters("history", ["historys", "activeValue"]),
     title() {
-      return this.$route.meta.title || '当前页面'
+      return this.$route.meta.title || "当前页面";
     },
     matched() {
-      return this.$route.matched
+      return this.$route.matched;
     }
   },
   mounted() {
     window.onresize = () => {
       return (() => {
-        let screenWidth = document.body.clientWidth
+        let screenWidth = document.body.clientWidth;
         if (!this.screenWidth && this.isSider) {
           if (screenWidth < 1000) {
-            this.isMobile = true
-            this.isSider = false
-            this.isCollapse = true
-            this.$bus.emit('collapse', this.isCollapse)
+            this.isMobile = true;
+            this.isSider = false;
+            this.isCollapse = true;
+            this.$bus.emit("collapse", this.isCollapse);
           }
         } else {
           if (screenWidth < 1000) {
-            this.isMobile = true
-            this.isSider = false
-            this.isCollapse = true
+            this.isMobile = true;
+            this.isSider = false;
+            this.isCollapse = true;
           } else {
-            this.isMobile = false
+            this.isMobile = false;
           }
         }
-      })()
-    }
+      })();
+    };
   }
-}
+};
 </script>
 
 <style lang="scss">
@@ -250,7 +248,7 @@ $mainHight: 100vh;
       // padding: 6px;
       // border-bottom: 1px solid #eee;
     }
-    .router-history{
+    .router-history {
       background: #fff;
       margin-top: 1px;
       padding: 0 6px;

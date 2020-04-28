@@ -66,10 +66,11 @@ var (
 )
 
 type CustomClaims struct {
-	UUID        uuid.UUID
-	ID          uint
-	NickName    string
-	AuthorityId string
+	UUID         uuid.UUID
+	ID           uint
+	EnterPriseId uint
+	NickName     string
+	AuthorityId  string
 	jwt.StandardClaims
 }
 

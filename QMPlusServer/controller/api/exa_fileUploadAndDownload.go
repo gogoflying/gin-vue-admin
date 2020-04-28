@@ -1,11 +1,14 @@
 package api
 
 import (
+	"bytes"
 	"fmt"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/dbModel"
 	"gin-vue-admin/model/modelInterface"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -24,7 +27,7 @@ func UploadFile(c *gin.Context) {
 		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
 	} else {
 		//文件上传后拿到文件路径
-		err, filePath, key := servers.Upload(header, USER_HEADER_BUCKET, USER_HEADER_IMG_PATH)
+		err, filePath, key := servers.UploadFileOss(header, USER_HEADER_BUCKET, USER_HEADER_IMG_PATH)
 		if err != nil {
 			servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
 		} else {
@@ -61,7 +64,7 @@ func DeleteFile(c *gin.Context) {
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("删除失败，%v", err), gin.H{})
 	} else {
-		err = servers.DeleteFile(USER_HEADER_BUCKET, f.Key)
+		err = servers.DeleteFileOss(USER_HEADER_BUCKET, f.Key)
 		if err != nil {
 			servers.ReportFormat(c, false, fmt.Sprintf("删除失败，%v", err), gin.H{})
 		} else {
@@ -71,6 +74,35 @@ func DeleteFile(c *gin.Context) {
 			} else {
 				servers.ReportFormat(c, true, fmt.Sprintf("删除成功，%v", err), gin.H{})
 			}
+		}
+	}
+}
+
+// @Tags ExaFileUploadAndDownload
+// @Summary 删除文件
+// @Security ApiKeyAuth
+// @Produce  application/json
+// @Param data body dbModel.ExaFileUploadAndDownload true "传入文件里面id即可"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
+// @Router /fileUploadAndDownload/downloadFile [post]
+func DownloadFile(c *gin.Context) {
+	var file dbModel.ExaFileUploadAndDownload
+	id, _ := strconv.Atoi(c.Query("id"))
+	file.ID = uint(id)
+	err, f := file.FindFile()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("下载失败，%v", err), gin.H{})
+	} else {
+		data, err := servers.DownloadFileOss(USER_HEADER_BUCKET, f.Key)
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("下载失败，%v", err), gin.H{})
+		} else {
+			contentLength := int64(len(data))
+			contentType := "application/octet-stream"
+			extraHeaders := map[string]string{
+				"Content-Disposition": fmt.Sprintf(`attachment; filename="%s"`, f.Name),
+			}
+			c.DataFromReader(http.StatusOK, contentLength, contentType, bytes.NewReader(data), extraHeaders)
 		}
 	}
 }

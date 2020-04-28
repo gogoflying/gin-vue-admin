@@ -16,6 +16,7 @@ func RegisterTable(db *gorm.DB) {
 	db.AutoMigrate(
 		userSalary.Salarys{},
 		userSalary.UserNews{},
+		userSalary.SalaryContract{},
 		userJobs.JobCollect{},
 		userJobs.EnterpriseCollect{},
 		userJobs.JobDutyTime{},

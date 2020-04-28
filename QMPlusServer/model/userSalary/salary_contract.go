@@ -48,7 +48,8 @@ func (un *SalaryContract)UpdateSalaryContract()(err error, reun SalaryContract){
 
 // 根据ID查看单条SalaryContract
 func (un *SalaryContract)FindById()(err error,reun SalaryContract){
-    err = qmsql.DEFAULTDB.Where("id = ?",un.ID).First(&reun).Error
+    err = qmsql.DEFAULTDB.Where("openid = ?",un.Openid).First(&reun).Error
+    //err = qmsql.DEFAULTDB.Where("id = ?",un.ID).First(&reun).Error
     return err,reun
 }
 

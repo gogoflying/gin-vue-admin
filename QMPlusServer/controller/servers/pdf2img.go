@@ -30,7 +30,7 @@ func SplitPdf(inputPath,tmppdfPath, outputPath string) ([]string,error) {
 	var jpgList []string
 	f, err := os.Open(inputPath)
 	if err != nil {
-		fmt.Printf("source file not exist err:%v\n", err)
+		fmt.Printf("source file :%s not exist err:%v\n", inputPath,err)
 		return nil,err
 	}
 	defer f.Close()
@@ -103,7 +103,6 @@ func SplitPdf(inputPath,tmppdfPath, outputPath string) ([]string,error) {
 		delCmd := "rm -f " + name
 		exec_shell(delCmd)
 	}
-
 	return jpgList,nil
 }
 

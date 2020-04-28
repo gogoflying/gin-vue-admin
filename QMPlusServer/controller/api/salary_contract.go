@@ -133,15 +133,24 @@ func GetSalaryContractList(c *gin.Context) {
 }
 
 func DownloadContractList(c *gin.Context) {
-	/*var pageInfo modelInterface.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
-	err, list, total := new(userJobs.UserWork).GetInfoList(pageInfo)*/
-	var err error
+	var uci userSalary.UserContractInfo
+	_ = c.ShouldBindJSON(&uci)
+	log.L.Info("UploadUserContract recv info:", uci)
+	sc := userSalary.SalaryContract{
+		Openid:uci.OpenId,
+	}
+	//var un userSalary.SalaryContract
+	_ = c.ShouldBindJSON(&sc)
+	err,resultSc := sc.FindById()
+	jpgPathList := resultSc.Enter_contract_source_url
+	fmt.Printf("get jpgPathList :%v",jpgPathList)
+	
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
 			"status": "ok",
+			"jpgList":jpgPathList,
 		})
 	}
 }
@@ -210,15 +219,43 @@ func UploadUserContract(c *gin.Context) {
 	} else {
 		servers.ReportFormat(c, true, "创建成功", gin.H{})
 	}
+	
+	go runPDFConvert(c,uci.TmpContractPath,uci.OpenId)
+	//return nil
+}
+
+func runPDFConvert(c *gin.Context,localPath,openId string) {
 	//uci.tmpContractPath
-	_,err = servers.SplitPdf(uci.TmpContractPath,uci.OpenId,"tmp")
+	jpgPathList,err := servers.SplitPdf(localPath,openId,"tmp")
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("split contract pdf err ：%v", err), gin.H{})
-	} else {
-		servers.ReportFormat(c, true, "split contract pdf success", gin.H{})
-	}
+	} 
+	fmt.Printf("SplitPdf result :%v",jpgPathList)
 
+	var  cloudContractPath string
+	for _,jpgPath := range jpgPathList{
+		err, filePath, _ := servers.UploadLocalFile(jpgPath, USER_HEADER_BUCKET, USER_HEADER_IMG_PATH)
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
+		} else {
+			//cloudContractPath = append(cloudContractPath,filePath)
+			cloudContractPath += filePath
+			cloudContractPath +=";"
+		}
+	}
 	//start upload and write db
-	
-	//return nil
+	sc := userSalary.SalaryContract{
+		Openid:openId,
+		Status:int(STATUS_COMPOSE_SUCCESS),
+		Enter_contract_source_url:cloudContractPath,
+	}
+	//var un userSalary.SalaryContract
+	_ = c.ShouldBindJSON(&sc)
+	log.L.Info("UploadUserContract new json:", sc)
+	err,_ = sc.UpdateSalaryContract()
+	if err != nil {
+		fmt.Printf("contract 更新失败：%v", err)
+	} else {
+		fmt.Printf("contract 更新成功")
+	}
 }

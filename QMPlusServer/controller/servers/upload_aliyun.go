@@ -79,3 +79,25 @@ func DeleteFileOss(bucketName string, key string) (err error) {
 	}
 	return bucket.DeleteObject(key)
 }
+
+func UploadLocalFile(fileName string, bucketName string, urlPath string) (err error, path string, key string) {
+	client, err := oss.New(endPoint, accessKeyId, accessKeySecret)
+	if err != nil {
+		return
+	}
+	// 获取存储空间。
+	bucket, err := client.Bucket(bucketName)
+	if err != nil {
+		return
+	}
+
+	fileKey := fmt.Sprintf("%d%s", time.Now().Unix(), fileName)
+	//var respHeader http.Header
+	err = bucket.PutObjectFromFile(fileKey, fileName)
+	if err != nil {
+		return
+	}
+
+	singUrl := "http://" + bucketName + "." + endPoint + "/" + fileKey + "/"
+	return err, singUrl, fileKey
+}

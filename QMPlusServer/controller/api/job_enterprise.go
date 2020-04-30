@@ -156,3 +156,14 @@ func GetEnterpriseInfoListSearch(c *gin.Context) {
 		})
 	}
 }
+
+func GetEnterpriseAllInfo(c *gin.Context) {
+	err, list := new(userJobs.EnterpriseInfo).GetAllInfoList()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "获取数据成功", gin.H{
+			"result": list,
+		})
+	}
+}

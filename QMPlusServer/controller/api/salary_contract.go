@@ -2,22 +2,28 @@ package api
 
 import (
 	"fmt"
+	"io"
+	"os"
+	"time"
+
 	//"time"
 	"gin-vue-admin/controller/servers"
+	"gin-vue-admin/init/initlog"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userSalary"
-	"gin-vue-admin/init/initlog"
 
 	"github.com/gin-gonic/gin"
 )
 
 type StatusInfo int32
+
 const (
 	STATUS_UPLOAD_SOURCE_FILE StatusInfo = iota + 1
 	STATUS_COMPOSE_SUCCESS
 	STATUS_WRITE_NAME
 	STATUS_DOWNLOAD
 )
+
 // @Tags SalaryContract
 // @Summary 创建SalaryContract
 // @Security ApiKeyAuth
@@ -36,7 +42,6 @@ func CreateSalaryContract(c *gin.Context) {
 		servers.ReportFormat(c, true, "创建成功", gin.H{})
 	}
 }
-
 
 // @Tags SalaryContract
 // @Summary 删除SalaryContract
@@ -57,7 +62,6 @@ func DeleteSalaryContract(c *gin.Context) {
 	}
 }
 
-
 // @Tags SalaryContract
 // @Summary 更新SalaryContract
 // @Security ApiKeyAuth
@@ -69,7 +73,7 @@ func DeleteSalaryContract(c *gin.Context) {
 func UpdateSalaryContract(c *gin.Context) {
 	var un userSalary.SalaryContract
 	_ = c.ShouldBindJSON(&un)
-	err,reun := un.UpdateSalaryContract()
+	err, reun := un.UpdateSalaryContract()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 	} else {
@@ -78,7 +82,6 @@ func UpdateSalaryContract(c *gin.Context) {
 		})
 	}
 }
-
 
 // @Tags SalaryContract
 // @Summary 用id查询SalaryContract
@@ -91,7 +94,7 @@ func UpdateSalaryContract(c *gin.Context) {
 func FindSalaryContract(c *gin.Context) {
 	var un userSalary.SalaryContract
 	_ = c.ShouldBindJSON(&un)
-	err,reun := un.FindById()
+	err, reun := un.FindById()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 	} else {
@@ -100,7 +103,6 @@ func FindSalaryContract(c *gin.Context) {
 		})
 	}
 }
-
 
 // @Tags SalaryContract
 // @Summary 分页获取SalaryContract列表
@@ -123,12 +125,12 @@ func GetSalaryContractList(c *gin.Context) {
 			"page":           pageInfo.Page,
 			"pageSize":       pageInfo.PageSize,
 		})
-	   /* response.Result(response.SUCCESS, gin.H{
-            "userSalaryList": list,
-            "total":    total,
-            "page":     pageInfo.Page,
-            "pageSize": pageInfo.PageSize,
-        }, "获取数据成功", c)*/
+		/* response.Result(response.SUCCESS, gin.H{
+		    "userSalaryList": list,
+		    "total":    total,
+		    "page":     pageInfo.Page,
+		    "pageSize": pageInfo.PageSize,
+		}, "获取数据成功", c)*/
 	}
 }
 
@@ -137,20 +139,20 @@ func DownloadContractList(c *gin.Context) {
 	_ = c.ShouldBindJSON(&uci)
 	log.L.Info("UploadUserContract recv info:", uci)
 	sc := userSalary.SalaryContract{
-		Openid:uci.OpenId,
+		Openid: uci.OpenId,
 	}
 	//var un userSalary.SalaryContract
 	_ = c.ShouldBindJSON(&sc)
-	err,resultSc := sc.FindById()
+	err, resultSc := sc.FindById()
 	jpgPathList := resultSc.Enter_contract_source_url
-	fmt.Printf("get jpgPathList :%v",jpgPathList)
-	
+	fmt.Printf("get jpgPathList :%v", jpgPathList)
+
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
-			"status": "ok",
-			"jpgList":jpgPathList,
+			"status":  "ok",
+			"jpgList": jpgPathList,
 		})
 	}
 }
@@ -207,8 +209,8 @@ func UploadUserContract(c *gin.Context) {
 	log.L.Info("UploadUserContract recv info:", uci)
 	//write db
 	sc := userSalary.SalaryContract{
-		Openid:uci.OpenId,
-		Status:int(STATUS_UPLOAD_SOURCE_FILE),
+		Openid: uci.OpenId,
+		Status: int(STATUS_UPLOAD_SOURCE_FILE),
 	}
 	//var un userSalary.SalaryContract
 	_ = c.ShouldBindJSON(&sc)
@@ -219,43 +221,66 @@ func UploadUserContract(c *gin.Context) {
 	} else {
 		servers.ReportFormat(c, true, "创建成功", gin.H{})
 	}
-	
-	go runPDFConvert(c,uci.TmpContractPath,uci.OpenId)
+
+	go runPDFConvert(c, uci.TmpContractPath, uci.OpenId)
 	//return nil
 }
 
-func runPDFConvert(c *gin.Context,localPath,openId string) {
+func runPDFConvert(c *gin.Context, localPath, openId string) {
 	//uci.tmpContractPath
-	jpgPathList,err := servers.SplitPdf(localPath,openId,"tmp")
+	jpgPathList, err := servers.SplitPdf(localPath, openId, "tmp")
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("split contract pdf err ：%v", err), gin.H{})
-	} 
-	fmt.Printf("SplitPdf result :%v",jpgPathList)
+	}
+	fmt.Printf("SplitPdf result :%v", jpgPathList)
 
-	var  cloudContractPath string
-	for _,jpgPath := range jpgPathList{
+	var cloudContractPath string
+	for _, jpgPath := range jpgPathList {
 		err, filePath, _ := servers.UploadLocalFile(jpgPath, USER_HEADER_BUCKET, USER_HEADER_IMG_PATH)
 		if err != nil {
 			servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
 		} else {
 			//cloudContractPath = append(cloudContractPath,filePath)
 			cloudContractPath += filePath
-			cloudContractPath +=";"
+			cloudContractPath += ";"
 		}
 	}
 	//start upload and write db
 	sc := userSalary.SalaryContract{
-		Openid:openId,
-		Status:int(STATUS_COMPOSE_SUCCESS),
-		Enter_contract_source_url:cloudContractPath,
+		Openid:                    openId,
+		Status:                    int(STATUS_COMPOSE_SUCCESS),
+		Enter_contract_source_url: cloudContractPath,
 	}
 	//var un userSalary.SalaryContract
 	_ = c.ShouldBindJSON(&sc)
 	log.L.Info("UploadUserContract new json:", sc)
-	err,_ = sc.UpdateSalaryContract()
+	err, _ = sc.UpdateSalaryContract()
 	if err != nil {
 		fmt.Printf("contract 更新失败：%v", err)
 	} else {
 		fmt.Printf("contract 更新成功")
+	}
+}
+
+func ImportUserContract(c *gin.Context) {
+	openid := c.Query("openid")
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
+	} else {
+		fileName := time.Now().Local().Format("20060102150405") + header.Filename
+		dst, err := os.Create(fileName)
+		if err != nil {
+			// ignore
+		}
+		_, err = io.Copy(dst, file)
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
+		} else {
+			servers.ReportFormat(c, true, "上传成功", gin.H{
+				"filepath": fileName,
+				"openid":   openid,
+			})
+		}
 	}
 }

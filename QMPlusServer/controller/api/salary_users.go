@@ -1,12 +1,21 @@
 package api
 
 import (
+	"bytes"
 	"fmt"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/modelInterface"
+	"gin-vue-admin/model/userJobs"
 	"gin-vue-admin/model/userSalary"
-
 	"github.com/gin-gonic/gin"
+	"github.com/tealeg/xlsx"
+	"io"
+	"io/ioutil"
+	"mime/multipart"
+	"os"
+	"strconv"
+	"strings"
+	"time"
 )
 
 // @Tags SalaryUsers
@@ -124,4 +133,95 @@ func GetSalaryUsersList(c *gin.Context) {
 			"pageSize":       pageInfo.PageSize,
 		})
 	}
+}
+
+func ImportSalaryUsers(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Query("id"))
+	err, ep := new(userJobs.EnterpriseInfo).GeteEpById(id)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
+	} else {
+		_, fxlsx, err := c.Request.FormFile("file")
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
+		} else {
+			//文件上传后拿到文件路径
+			err := UploadFileLocal(fxlsx, id, ep.EnterPriseName)
+			if err != nil {
+				servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
+			} else {
+				servers.ReportFormat(c, true, "上传成功", gin.H{})
+			}
+		}
+	}
+}
+
+// 上传文件到本地
+func UploadFileLocal(file *multipart.FileHeader, id int, ep string) (err error) {
+	f, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	xlsxBuf, err := ioutil.ReadAll(f)
+	if err != nil {
+		return err
+	}
+	filename := "salaryuser"
+	timestring := time.Now().Format("20060102150405")
+	err = saveXlsxFile(filename, timestring, xlsxBuf)
+	if err != nil {
+		return err
+	}
+	fileTemp, err := xlsx.OpenFile(filename + timestring + ".xlsx")
+	if err != nil {
+		return err
+	}
+	err = batchInsertSalaryUser(fileTemp, id, ep)
+	if err != nil {
+		return err
+	}
+	return
+}
+
+func saveXlsxFile(filename, time string, src []byte) error {
+	out, err := os.Create(filename + time + ".xlsx")
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+	_, err = io.Copy(out, bytes.NewBuffer(src))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
+	for _, sheet := range file.Sheets {
+		fmt.Printf("Sheet Name: %s\n", sheet.Name)
+		for rowIndex, row := range sheet.Rows {
+			if rowIndex == 0 {
+				continue
+			}
+			name := strings.Trim(row.Cells[1].Value, " ")
+			mobile := strings.Trim(row.Cells[2].Value, " ")
+			card := strings.Trim(row.Cells[3].Value, " ")
+			email := strings.Trim(row.Cells[4].Value, " ")
+			un := userSalary.SalaryUsers{
+				Name:         name,
+				Mobile:       mobile,
+				Card:         card,
+				Email:        email,
+				EnterpriseId: id,
+				Enterprise:   ep,
+			}
+			err := un.CreateSalaryUsers()
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+		}
+	}
+	return nil
 }

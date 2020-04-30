@@ -42,6 +42,7 @@ require (
 	github.com/spf13/viper v1.6.2
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.5
+	github.com/tealeg/xlsx v1.0.5
 	github.com/tebeka/strftime v0.1.3 // indirect
 	github.com/tiechui1994/gopdf v0.0.0-20191024073213-fc88d5b2a944 // indirect
 	github.com/unidoc/unidoc v2.2.0+incompatible

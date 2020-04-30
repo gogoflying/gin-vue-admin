@@ -10,7 +10,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div id="container" style="width:600px;height:500px;"></div>
+    <div id="container" style="width:800px;height:600px;"></div>
   </div>
 </template>
 
@@ -58,7 +58,7 @@ export default {
         position: myLatlng,
         map: map
       });
-      marker.setIcon(markerIcon);
+      //marker.setIcon(markerIcon);
       //alert("经度:"+this.longitude+","+"纬度:"+this.latitude);
     },
     onSearch() {
@@ -76,17 +76,13 @@ export default {
       };
       //获取dom元素添加地图信息
       map = new qq.maps.Map(document.getElementById("container"), myOptions);
-      markerIcon = new qq.maps.MarkerImage(
-        "https://3gimg.qq.com/lightmap/api_v2/2/4/99/theme/default/imgs/marker.png",
-        new qq.maps.Size(42, 68),
-        new qq.maps.Point(0, 0),
-        new qq.maps.Point(0, 39)
-      );
       //给地图添加点击事件
       //并获取鼠标点击的经纬度
       qq.maps.event.addListener(map, "click", function(event) {
         that.latitude = event.latLng.getLat();
         that.longitude = event.latLng.getLng();
+        var gps = that.latitude + "," + that.longitude;
+        that.$emit("mapChange", gps);
         that.setMap();
       });
       //调用地址解析类
@@ -94,6 +90,8 @@ export default {
         complete: function(result) {
           that.latitude = result.detail.location.lat;
           that.longitude = result.detail.location.lng;
+          var gps = result.detail.location.lat + "," + result.detail.location.lng;
+          that.$emit("mapChange", gps);
           that.setMap();
         }
       });

@@ -104,6 +104,20 @@
               <li>到岗时间：{{user_dreams.dutyTime}}</li>
             </ul>
           </section>
+          <section>
+            <h3>上传图片</h3>
+            <ul>
+              <li>
+                合同：
+                <img
+                  :src="urlImg + '?' + new Date().getTime()"
+                  height="500"
+                  width="500"
+                  crossorigin="anonymous"
+                />
+              </li>
+            </ul>
+          </section>
         </div>
       </div>
       <div class="dialog-footer" slot="footer">
@@ -132,6 +146,8 @@ export default {
       path: path,
       viewResumeInfoDialog: false,
       name: "zhenghao",
+      urlImg:
+        "http://vinustseng.oss-cn-beijing.aliyuncs.com/1587350295head.jpg",
       user_base_info: {
         user_name: "zhenghao",
         gender: "男",
@@ -310,7 +326,7 @@ export default {
     },
     download() {
       let resume = document.getElementById("ShowBox");
-      html2canvas(resume).then(canvas => {
+      html2canvas(resume, { useCORS: true }).then(canvas => {
         let imgData = canvas.toDataURL("image/JPEG");
         let imgWidth = 210;
         let pageHeight = 295;
@@ -328,6 +344,47 @@ export default {
         }
         doc.save("Resume.pdf");
       });
+      // html2canvas(resume, {
+      //   useCORS: true,
+      //   onrendered: function(canvas) {
+      //     //这是文件名
+      //     var fileName =
+      //       "${submitExperimentFile.studentSubmitter.majorName}${submitExperimentFile.studentSubmitter.className}-${submitExperimentFile.studentSubmitter.username}${submitExperimentFile.studentSubmitter.name}" +
+      //       "《${submitExperimentFile.experiment.experimentName}》";
+      //     var contentWidth = canvas.width;
+      //     var contentHeight = canvas.height;
+      //     //一页pdf显示html页面生成的canvas高度;
+      //     var pageHeight = (contentWidth / 592.28) * 841.89;
+      //     //未生成pdf的html页面高度
+      //     var leftHeight = contentHeight;
+      //     //页面偏移
+      //     var position = 0;
+      //     //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
+      //     var imgWidth = 595.28;
+      //     var imgHeight = (592.28 / contentWidth) * contentHeight;
+
+      //     var pageData = canvas.toDataURL("image/jpeg", 1.0);
+
+      //     var pdf = new jspdf("", "pt", "a4");
+
+      //     //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+      //     //当内容未超过pdf一页显示的范围，无需分页
+      //     if (leftHeight < pageHeight) {
+      //       pdf.addImage(pageData, "JPEG", 0, 0, imgWidth, imgHeight);
+      //     } else {
+      //       while (leftHeight > 0) {
+      //         pdf.addImage(pageData, "JPEG", 0, position, imgWidth, imgHeight);
+      //         leftHeight -= pageHeight;
+      //         position -= 841.89;
+      //         //避免添加空白页
+      //         if (leftHeight > 0) {
+      //           pdf.addPage();
+      //         }
+      //       }
+      //     }
+      //     pdf.save(fileName + ".pdf");
+      //   }
+      // });
     }
   }
 };

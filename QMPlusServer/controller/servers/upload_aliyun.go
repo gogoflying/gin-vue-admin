@@ -98,6 +98,6 @@ func UploadLocalFile(fileName string, bucketName string, urlPath string) (err er
 		return
 	}
 
-	singUrl := "http://" + bucketName + "." + endPoint + "/" + fileKey + "/"
+	singUrl := "http://" + bucketName + "." + endPoint + "/" + fileKey
 	return err, singUrl, fileKey
 }

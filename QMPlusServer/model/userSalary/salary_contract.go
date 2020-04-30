@@ -42,7 +42,8 @@ func (un *SalaryContract) DeleteSalaryContract() (err error) {
 
 // 更新SalaryContract
 func (un *SalaryContract) UpdateSalaryContract() (err error, reun SalaryContract) {
-	err = qmsql.DEFAULTDB.Save(un).Error
+	//err = qmsql.DEFAULTDB.Save(un).Error
+	err = qmsql.DEFAULTDB.Model(un).Where("openid = ? ", un.Openid).Updates(un).Error
 	return err, *un
 }
 

@@ -228,6 +228,7 @@ func UploadUserContract(c *gin.Context) {
 
 func runPDFConvert(c *gin.Context, localPath, openId string) {
 	//uci.tmpContractPath
+	fmt.Printf("runPDFConvert :%s--%s\n", localPath,openId)
 	jpgPathList, err := servers.SplitPdf(localPath, openId, "tmp")
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("split contract pdf err ：%v", err), gin.H{})
@@ -235,14 +236,16 @@ func runPDFConvert(c *gin.Context, localPath, openId string) {
 	fmt.Printf("SplitPdf result :%v", jpgPathList)
 
 	var cloudContractPath string
-	for _, jpgPath := range jpgPathList {
+	for idx, jpgPath := range jpgPathList {
 		err, filePath, _ := servers.UploadLocalFile(jpgPath, USER_HEADER_BUCKET, USER_HEADER_IMG_PATH)
 		if err != nil {
 			servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
 		} else {
 			//cloudContractPath = append(cloudContractPath,filePath)
 			cloudContractPath += filePath
-			cloudContractPath += ";"
+			if idx != len(jpgPathList) -1  {
+				cloudContractPath += ";"
+			}
 		}
 	}
 	//start upload and write db

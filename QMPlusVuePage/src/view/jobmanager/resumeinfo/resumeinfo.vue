@@ -104,20 +104,6 @@
               <li>到岗时间：{{user_dreams.dutyTime}}</li>
             </ul>
           </section>
-          <section>
-            <h3>上传图片</h3>
-            <ul>
-              <li>
-                合同：
-                <img
-                  :src="urlImg + '?' + new Date().getTime()"
-                  height="500"
-                  width="500"
-                  crossorigin="anonymous"
-                />
-              </li>
-            </ul>
-          </section>
         </div>
       </div>
       <div class="dialog-footer" slot="footer">

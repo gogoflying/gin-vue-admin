@@ -33,11 +33,13 @@
             :on-success="onSuccess"
             :show-file-list="false"
           >
-            <el-button
-              :disabled="importDataDisabled"
-              type="success"
-              :icon="importDataBtnIcon"
-            >{{importDataBtnText}}</el-button>
+            <el-tooltip effect="dark" content="请先选择企业" placement="top-start">
+              <el-button
+                :disabled="importDataDisabled"
+                type="success"
+                :icon="importDataBtnIcon"
+              >{{importDataBtnText}}</el-button>
+            </el-tooltip>
           </el-upload>
         </el-col>
         <el-col :span="3">
@@ -89,6 +91,7 @@
 
           <el-upload
             :action="`${path}/un/importUserContract?openid=${scope.row.openid}`"
+            style="display: inline-block;"
             :headers="{'x-token':token}"
             :on-error="onErrorUc"
             :on-success="onSuccessUc"

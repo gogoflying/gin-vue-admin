@@ -3,4 +3,4 @@ go.sum
 log/
 *.exe
 *.json
-./servers/pdf2img.go
+QMPlusServer/controller/servers/pdf2img.go

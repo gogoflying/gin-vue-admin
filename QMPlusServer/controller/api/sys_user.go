@@ -234,6 +234,30 @@ func UploadHeaderImg(c *gin.Context) {
 	}
 }
 
+func DeleteUser(c *gin.Context) {
+	var ur sysModel.SysUser
+	_ = c.ShouldBindJSON(&ur)
+	err := ur.DeleteUser()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("删除失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "创建成功", gin.H{})
+	}
+}
+
+func FindUserById(c *gin.Context) {
+	var rs sysModel.SysUser
+	_ = c.ShouldBindJSON(&rs)
+	err, rers := rs.FindById()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"user": rers,
+		})
+	}
+}
+
 // @Tags SysUser
 // @Summary 分页获取用户列表
 // @Security ApiKeyAuth

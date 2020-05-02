@@ -42,6 +42,18 @@ func (u *SysUser) Register() (err error, userInter *SysUser) {
 	return err, u
 }
 
+// 根据ID查看单条User
+func (u *SysUser) FindById() (err error, user SysUser) {
+	err = qmsql.DEFAULTDB.Preload("Authority").Where("id = ?", u.ID).First(&user).Error
+	return err, user
+}
+
+// 删除User
+func (u *SysUser) DeleteUser() (err error) {
+	err = qmsql.DEFAULTDB.Delete(u).Error
+	return err
+}
+
 //修改用户密码
 func (u *SysUser) ChangePassword(newPassword string) (err error, userInter *SysUser) {
 	var user SysUser

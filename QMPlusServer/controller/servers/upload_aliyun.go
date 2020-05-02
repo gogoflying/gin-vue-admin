@@ -3,10 +3,11 @@ package servers
 import (
 	"fmt"
 	"gin-vue-admin/config"
-	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"io/ioutil"
 	"mime/multipart"
 	"time"
+
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
 var endPoint string = config.GinVueAdminconfig.AliyunOss.EndPoint
@@ -22,17 +23,20 @@ func UploadFileOss(file *multipart.FileHeader, bucketName string, urlPath string
 	}
 	// 获取存储空间。
 	bucket, err := client.Bucket(bucketName)
+	fmt.Println("bucket over")
 	if err != nil {
 		return
 	}
 
 	fileKey := fmt.Sprintf("%d%s", time.Now().Unix(), file.Filename)
 	f, err := file.Open()
+	fmt.Println("open over")
 	if err != nil {
 		return
 	}
 	//var respHeader http.Header
 	err = bucket.PutObject(fileKey, f)
+	fmt.Println("putobject over")
 	if err != nil {
 		return
 	}

@@ -14,6 +14,9 @@ type SalaryUsers struct {
 	Openid       string   `json:"openid" gorm:"column:openid"`
 	Name         string   `json:"name" gorm:"column:name"`
 	Mobile       string   `json:"mobile" gorm:"column:mobile"`
+	JobName      string   `json:"job_name" gorm:"column:job_name;comment:'岗位名称'"`
+	Salary       int      `json:"salary" gorm:"column:salary;comment:'工资'"`
+	ContractDate int      `json:"contract_date" gorm:"column:contract_date;comment:'合同期限,单位是月'"`
 	Card         string   `json:"card" gorm:"column:card;comment:'身份证号码'"`
 	CardPhotos   string   `json:"card_photos" gorm:"column:card_photos;comment:'身份证正反面照片地址，分号分割'"`
 	Cards        []string `json:"cards" gorm:"-"`
@@ -30,8 +33,6 @@ type SalaryUsers struct {
 	Diploma      string   `json:"diploma" gorm:"column:diploma;comment:'毕业证照片'"`
 	Diplomas     []string `json:"diplomas" gorm:"-"`
 	Email        string   `json:"email" gorm:"column:email"`
-	Post         string   `json:"post" gorm:"column:post";comment:'入职岗位'`
-	Date         string   `json:"date" gorm:"column:date";comment:'合约期限'`
 	Enterprise   string   `json:"enterprise" gorm:"column:enterprise";comment:'入职企业'`
 	EnterpriseId int      `json:"enterprise_id" gorm:"column:enterprise_id;comment:'入职企业id'"`
 	EnterTime    string   `json:"enter_time" gorm:"column:enter_time;comment:'入职日期'"`

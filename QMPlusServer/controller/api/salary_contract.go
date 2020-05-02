@@ -318,15 +318,15 @@ func runMergeImg(c *gin.Context, imgPath,openId string) {
 		return
 	} 
 
-	signatureShrinkNmaePng := servers.ImgShrink(localFile)
-	if len(signatureShrinkNmaePng) == 0{
-		servers.ReportFormat(c, false, fmt.Sprintf("ImgShrink  file  err"), gin.H{})
+	signatureShrinkNmaePng,err := servers.ImgShrink(localFile)
+	if err != nil{
+		servers.ReportFormat(c, false, fmt.Sprintf("ImgShrink  file  err:%v",err), gin.H{})
 		return
 	}
 
-	mergedFile := servers.MergeImage(sourcePdf, localFile, "tmp")
-	if len(mergedFile) ==0 {
-		servers.ReportFormat(c, false, fmt.Sprintf("MergeImage contract pdf err"), gin.H{})
+	mergedFile,err := servers.MergeImage(sourcePdf, signatureShrinkNmaePng, "tmp")
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("MergeImage contract pdf err :%v",err), gin.H{})
 		return
 	}
 	fmt.Printf("SplitPdf result :%v", mergedFile)

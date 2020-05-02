@@ -154,29 +154,29 @@ func ConvertPdfToJpg(pdfName string, imageName string) error {
 	return mw.WriteImage(imageName)
 }
 
-func MergeImage(soruceImage, targeImage,outputPath string) string {
+func MergeImage(soruceImage, targeImage,outputPath string) (string,error) {
 	img_file, err := os.Open(soruceImage)
 	if err != nil {
 		log.L.Info("MergeImage open err: ",err)
-		return ""
+		return "",err
 	}
 	defer img_file.Close()
 	img, err := jpeg.Decode(img_file)
 	if err != nil {
 		log.L.Info("把图片解码为结构体时出错 err: ",err)
-		return ""
+		return "",err
 	}
 
 	wmb_file, err := os.Open(targeImage)
 	if err != nil {
 		log.L.Info("打开水印图片出错 err: ",err)
-		return ""
+		return "",err
 	}
 	defer wmb_file.Close()
 	wmb_img, err := png.Decode(wmb_file)
 	if err != nil {
 		log.L.Info("把水印图片解码为结构体时出错 err: ",err)
-		return ""
+		return "",err
 	}
 
 	offset := image.Pt(img.Bounds().Dx()-wmb_img.Bounds().Dx()-500, img.Bounds().Dy()-wmb_img.Bounds().Dy()-500)
@@ -191,13 +191,13 @@ func MergeImage(soruceImage, targeImage,outputPath string) string {
 	imgw, err := os.Create(mergedFile)
 	if err != nil {
 		log.L.Info("Create merged file err: ",err)
-		return ""
+		return "",err
 	}
 	jpeg.Encode(imgw, m, &jpeg.Options{100})
 	defer imgw.Close()
 
 	fmt.Println("jpg merged success")
-	return mergedFile
+	return mergedFile,nil
 }
 
 func exec_shell(scmd string) {
@@ -214,32 +214,32 @@ func exec_shell(scmd string) {
 	//logrus.Info(resp)
 }
 
-func ImgShrink(sourceImg string) string {
+func ImgShrink(sourceImg string) (string,error) {
 	var shrinkImg string
     if len(sourceImg) == 0 {
 		log.L.Info("ImgShrink param empty")
-		return ""
+		return "",nil
 	}
     file, err := os.Open(sourceImg)
     if err != nil {
 		log.L.Info("ImgShrink open err:%v",err)
-		return ""
+		return "",err
 	}
     file.Close()
 
     img, err := png.Decode(file)
     if err != nil {
         log.L.Info("ImgShrink Decode err:%v",err)
-		return ""
+		return "",err
 	}
 	
     m := resize.Resize(200, 0, img, resize.Lanczos3)
     out, err := os.Create(shrinkImg)
     if err != nil {
         log.L.Info("ImgShrink Create err:%v",err)
-		return ""
+		return "",err
     }
     defer out.Close()
 	png.Encode(out, m)
-	return shrinkImg
+	return shrinkImg,nil
 }

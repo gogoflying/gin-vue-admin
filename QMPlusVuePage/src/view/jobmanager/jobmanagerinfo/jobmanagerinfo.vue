@@ -117,12 +117,20 @@
           </el-select>
         </el-form-item>
         <el-form-item label="工作描述" label-width="100px" prop="p_desc">
-          <el-input
+          <!-- <el-input
             type="textarea"
             :autosize="{ minRows: 4}"
             v-model="jobmanagerinfo.p_desc"
             placeholder="请输入工作描述"
-          ></el-input>
+          ></el-input> -->
+          <quill-editor
+            :options="editorOption"
+            @blur="onEditorBlur($event)"
+            @change="onEditorChange($event)"
+            @focus="onEditorFocus($event)"
+            ref="myQuillEditor"
+            v-model="jobmanagerinfo.p_desc"
+          ></quill-editor>
         </el-form-item>
       </el-form>
       <div class="dialog-footer" slot="footer">
@@ -157,6 +165,7 @@ export default {
       multipleSelection: [],
       addjobDialog: false,
       isEdit: false,
+      editorOption: {},
       title: "",
       jobmanagerinfo: {
         p_name: "",
@@ -173,7 +182,7 @@ export default {
         p_education_id: "",
         p_type: "",
         p_type_id: "",
-        p_des: ""
+        p_desc: ""
       },
       cityinfo: [
         {
@@ -292,21 +301,26 @@ export default {
         p_address: [
           { required: true, message: "请输入工作地点", trigger: "blur" }
         ],
-        p_city: [
+        p_city_id: [
           { required: true, message: "请输入工作城市", trigger: "blur" }
         ],
-        p_edujy: [
+        p_edujy_id: [
           { required: true, message: "请输入工作年限", trigger: "blur" }
         ],
-        p_education: [
+        p_education_id: [
           { required: true, message: "请输入最低学历", trigger: "blur" }
         ],
-        p_type: [
+        p_type_id: [
           { required: true, message: "请输入工作类型", trigger: "blur" }
         ],
-        p_des: [{ required: true, message: "请输入工作描述", trigger: "blur" }]
+        p_desc: [{ required: true, message: "请输入工作描述", trigger: "blur" }]
       }
     };
+  },
+  computed: {
+    editor() {
+      return this.$refs.myQuillEditor.quill;
+    }
   },
   methods: {
     //条件搜索前端看此方法
@@ -332,8 +346,8 @@ export default {
           }
           if (res.success) {
             this.$message({ type: "success", message: "创建成功" });
-          }else {
-            this.$message({ type: 'error',message: '添加失败!' });
+          } else {
+            this.$message({ type: "error", message: "添加失败!" });
           }
           await this.getTableData();
           this.closeAddjobDialog();
@@ -428,7 +442,13 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-    }
+    },
+    // onEditorReady(editor) { // 准备编辑器
+
+    // },
+    onEditorBlur() {}, // 失去焦点事件
+    onEditorFocus() {}, // 获得焦点事件
+    onEditorChange() {} // 内容改变事件
   },
   async created() {
     // const res = await getCitynameList({ page: 1, pageSize: 999 });

@@ -82,3 +82,11 @@ export const createEnterpriseInfo = (data) => {
          data
      })
  }
+
+ export const getEnterpriseAllInfo = (data) => {
+    return service({
+        url: "/enterprise/getEnterpriseAllInfo",
+        method: 'post',
+        data
+    })
+}

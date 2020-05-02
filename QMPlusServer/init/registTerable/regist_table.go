@@ -17,6 +17,7 @@ func RegisterTable(db *gorm.DB) {
 		userSalary.SalaryUsers{},
 		userSalary.Salarys{},
 		userSalary.UserNews{},
+		userSalary.SalaryContract{},
 		userJobs.JobCollect{},
 		userJobs.EnterpriseCollect{},
 		userJobs.JobDutyTime{},

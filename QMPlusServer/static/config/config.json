@@ -22,8 +22,8 @@
   },
   "mysqladmin": {
     "username": "root",
-    "password": "",
-    "path": "127.0.0.1:3306",
+    "password": "366c7675c3",
+    "path": "47.240.167.171:3306",
     "dbname": "qmplus",
     "config": "charset=utf8\u0026parseTime=True\u0026loc=Local",
     "maxIdleConns": 10

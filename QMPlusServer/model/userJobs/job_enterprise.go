@@ -57,6 +57,11 @@ func (info *EnterpriseInfo) FindById() (err error, reinfo EnterpriseInfo) {
 	return err, reinfo
 }
 
+func (info *EnterpriseInfo) GeteEpById(id int) (err error, reinfo EnterpriseInfo) {
+	err = qmsql.DEFAULTDB.Where("id = ?", id).First(&reinfo).Error
+	return
+}
+
 // 根据ID查看单条EnterpriseInfo
 func (info *EnterpriseInfo) FindPositionsByCompId(page, pageSize int) (err error, reinfo EnterpriseInfo) {
 	err = qmsql.DEFAULTDB.Where("id = ?", info.ID).First(&reinfo).Error
@@ -105,4 +110,10 @@ func (info *EnterpriseInfo) GetInfoListSearch(keyword string, cityId, page, page
 	}
 	err = db.Limit(limit).Offset(offset).Order("updated_at desc").Find(&infoList).Error
 	return err, infoList, total
+}
+
+func (info *EnterpriseInfo) GetAllInfoList() (err error, list interface{}) {
+	var reEnterpriseInfoList []EnterpriseInfo
+	err = qmsql.DEFAULTDB.Select("id,enterprise_name").Find(&reEnterpriseInfoList).Error
+	return err, reEnterpriseInfoList
 }

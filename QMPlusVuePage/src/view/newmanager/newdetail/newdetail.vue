@@ -38,6 +38,26 @@
         </el-row>
         <el-row>
           <el-col :span="3">
+            <label for>新闻图片</label>
+          </el-col>
+          <el-col :span="10">
+            <el-upload
+              :headers="{'x-token':token}"
+              :on-success="handleAvatarImgSuccess"
+              :show-file-list="false"
+              :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
+              class="avatar-uploader"
+              name="file"
+              :beforeUpload="beforeAvatarUpload"
+            >
+              <img :src="user_news.img" class="avatar" v-if="user_news.img" height="300" width="300"/>
+              <i class="el-icon-plus avatar-uploader-icon" v-else></i>
+            </el-upload>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="3">
             <label for>新闻内容</label>
           </el-col>
           <el-col :span="21">
@@ -63,13 +83,15 @@
 </template>
 
 <script>
-import { createUserNews, updateUserNews } from "@/api/newmanager";
+const path = process.env.VUE_APP_BASE_API;
+import { createUserNews, updateUserNews, findUserNews } from "@/api/newmanager";
 export default {
   name: "NewDetail",
   data() {
     return {
       isEdit: false,
       editorOption: {},
+      path: path,
       user_news: {
         title: "",
         sub_title: "",
@@ -104,6 +126,28 @@ export default {
     }
   },
   methods: {
+    handleAvatarSuccess(res) {
+      this.user_news.img = res.data.file.url;
+    },
+    beforeAvatarUpload(file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension = testmsg === "jpg";
+      const extension2 = testmsg === "png";
+      const isLt50KB = file.size / 1024 < 50;
+      if (!extension && !extension2) {
+        this.$message({
+          message: "上传文件只能是 jpg、png格式!",
+          type: "warning"
+        });
+      }
+      if (!isLt50KB) {
+        this.$message({
+          message: "上传文件大小不能超过 50KB!",
+          type: "warning"
+        });
+      }
+      return (extension || extension2) && isLt50KB;
+    },
     // onEditorReady(editor) { // 准备编辑器
 
     // },
@@ -121,8 +165,8 @@ export default {
           }
           if (res.success) {
             this.$message({ type: "success", message: "创建成功" });
-          }else {
-            this.$message({ type: 'error',message: '添加失败!' });
+          } else {
+            this.$message({ type: "error", message: "添加失败!" });
           }
         }
       });
@@ -130,12 +174,20 @@ export default {
     savePublish() {}
   },
   created() {
-    if (this.$route.params && this.$route.params.row) {
-      this.isEdit = true;
-      this.user_news = this.$route.params.row;
-    } else {
-      this.isEdit = true;
-      this.user_news = {};
+    if (this.$route.query && this.$route.query.id) {
+      const id = this.$route.query && this.$route.query.id;
+      const row = {
+        ID: Number(id)
+      };
+      findUserNews(row).then(res => {
+        if (res.success) {
+          this.isEdit = true;
+          this.user_news = res.data.reun;
+        } else {
+          this.isEdit = false;
+          this.user_news = {};
+        }
+      });
     }
   }
 };

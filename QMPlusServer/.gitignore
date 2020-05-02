@@ -2,4 +2,4 @@ go.sum
 .idea/
 log/
 *.exe
-./static/config/
+./static/config/*

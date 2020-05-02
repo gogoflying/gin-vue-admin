@@ -7,8 +7,6 @@ import (
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userJobs"
 	"gin-vue-admin/model/userSalary"
-	"github.com/gin-gonic/gin"
-	"github.com/tealeg/xlsx"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -16,6 +14,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/tealeg/xlsx"
 )
 
 // @Tags SalaryUsers
@@ -105,6 +106,13 @@ func FindSalaryUsersByOpenid(c *gin.Context) {
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
 	} else {
+		un.Cards = strings.Split(un.Card, ";")
+		un.Banks = strings.Split(un.BankCard, ";")
+		un.Photos = strings.Split(un.Photo, ";")
+		un.Checkups = strings.Split(un.Checkup, ";")
+		un.Diplomas = strings.Split(un.Diploma, ";")
+		un.Leaves = strings.Split(un.LeaveProve, ";")
+		un.HuKous = strings.Split(un.HuKou, ";")
 		servers.ReportFormat(c, true, "查询成功", gin.H{
 			"reun": reun,
 		})

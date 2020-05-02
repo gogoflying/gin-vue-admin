@@ -106,13 +106,13 @@ func FindSalaryUsersByOpenid(c *gin.Context) {
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
 	} else {
-		un.Cards = strings.Split(un.Card, ";")
-		un.Banks = strings.Split(un.BankCard, ";")
-		un.Photos = strings.Split(un.Photo, ";")
-		un.Checkups = strings.Split(un.Checkup, ";")
-		un.Diplomas = strings.Split(un.Diploma, ";")
-		un.Leaves = strings.Split(un.LeaveProve, ";")
-		un.HuKous = strings.Split(un.HuKou, ";")
+		reun.Cards = strings.Split(reun.CardPhotos, ";")
+		reun.Banks = strings.Split(reun.BankCard, ";")
+		reun.Photos = strings.Split(reun.Photo, ";")
+		reun.Checkups = strings.Split(reun.Checkup, ";")
+		reun.Diplomas = strings.Split(reun.Diploma, ";")
+		reun.Leaves = strings.Split(reun.LeaveProve, ";")
+		reun.HuKous = strings.Split(reun.HuKou, ";")
 		servers.ReportFormat(c, true, "查询成功", gin.H{
 			"reun": reun,
 		})

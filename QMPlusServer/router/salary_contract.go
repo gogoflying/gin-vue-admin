@@ -21,5 +21,6 @@ func InitSalaryContractRouter(Router *gin.RouterGroup) {
 		//SalaryContractRouter.POST("leavingsignature", api.Leavingsignature)
 		SalaryContractRouter.POST("uploadUserContract", api.UploadUserContract) // to admin
 		SalaryContractRouter.POST("importUserContract", api.ImportUserContract)
+		SalaryContractRouter.POST("getContractJpgList", api.GetContractJpgList)
 	}
 }

@@ -5,8 +5,8 @@ import (
 	"io"
 	"os"
 	"time"
+	"strings"
 
-	//"time"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/initlog"
 	"gin-vue-admin/model/modelInterface"
@@ -246,6 +246,8 @@ func runPDFConvert(c *gin.Context, localPath, openId string) {
 			if idx != len(jpgPathList) -1  {
 				cloudContractPath += ";"
 			}
+
+			servers.DelLocalFile(jpgPath)
 		}
 	}
 	//start upload and write db
@@ -285,5 +287,33 @@ func ImportUserContract(c *gin.Context) {
 				"openid":   openid,
 			})
 		}
+	}
+}
+
+func GetContractJpgList(c *gin.Context){
+	//,sysUser,localTmpPath string
+	var uci userSalary.UserContractInfo
+	_ = c.ShouldBindJSON(&uci)
+	log.L.Info("UploadUserContract recv info:", uci)
+
+	sc := userSalary.SalaryContract{
+		Openid: uci.OpenId,
+	}
+	//var un userSalary.SalaryContract
+	_ = c.ShouldBindJSON(&sc)
+	err, reun := sc.FindById()
+	//log.L.Info("UploadUserContract new json:", reun.Enter_contract_source_url)
+	if len(reun.Enter_contract_source_url) <0{
+		servers.ReportFormat(c, false, fmt.Sprintf("获取失败：%v", err), gin.H{})
+		return
+	}
+	resultJpg := strings.Split(reun.Enter_contract_source_url, ";")
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "获取数据成功", gin.H{
+			"status":  "ok",
+			"contartList": resultJpg,
+		})
 	}
 }

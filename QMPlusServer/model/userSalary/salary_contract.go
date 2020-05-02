@@ -19,7 +19,7 @@ type SalaryContract struct {
 	gorm.Model
 	Openid                    string `json:"openid" gorm:"column:openid"`
 	Enter_contract_source_url string `json:"enter_contract_source_url" gorm:"column:enter_contract_source_url"`
-	Leave_contract_source_url string `json:"leave_contract_source_url" gorm:"column:leave_contract_source_url"`
+	User_signature_url 		  string `json:"user_signature_url" gorm:"column:user_signature_url"`
 	Enter_contract_target_url string `json:"enter_contract_target_url" gorm:"column:enter_contract_target_url"`
 	Leave_contract_target_url string `json:"leave_contract_target_url" gorm:"column:leave_contract_target_url"`
 	Status                    int    `json:"status" gorm:"column:status"`

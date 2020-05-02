@@ -98,13 +98,17 @@ func SplitPdf(inputPath,tmppdfPath, outputPath string) ([]string,error) {
 			fmt.Printf("convertPdfToJpg err:%v\n", err)
 			return nil,err
 		}
-		//del pdf file
-		fmt.Printf("del pdf path:%v\n", name)
-		delCmd := "rm -f " + name
-		exec_shell(delCmd)
+		DelLocalFile(name)
 	}
 	return jpgList,nil
 }
+
+ func DelLocalFile(filePath string){
+	 // del file
+	fmt.Printf("del pdf path:%v\n", filePath)
+	delCmd := "rm -f " + filePath
+	exec_shell(delCmd)
+ }
 
 func ConvertPdfToJpg(pdfName string, imageName string) error {
 	// Setup

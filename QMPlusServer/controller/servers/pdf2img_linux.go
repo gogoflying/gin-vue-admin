@@ -1,4 +1,3 @@
-
 //package main
 package servers
 
@@ -10,11 +9,12 @@ package servers
 // sudo apt install libmagic-dev libmagickwand-dev
 import (
 	"fmt"
-	"os/exec"
 	"image"
 	"image/draw"
 	"image/jpeg"
 	"image/png"
+	"os/exec"
+
 	//"math"
 	"os"
 
@@ -24,7 +24,7 @@ import (
 	"github.com/nfnt/resize"
 )
 
-func SplitPdf(inputPath,tmppdfPath, outputPath string) ([]string,error) {
+func SplitPdf(inputPath, tmppdfPath, outputPath string) ([]string, error) {
 	//create result path
 	createPathCmd := "mkdir -p " + outputPath
 	exec_shell(createPathCmd)
@@ -32,39 +32,39 @@ func SplitPdf(inputPath,tmppdfPath, outputPath string) ([]string,error) {
 	var jpgList []string
 	f, err := os.Open(inputPath)
 	if err != nil {
-		fmt.Printf("source file :%s not exist err:%v\n", inputPath,err)
-		return nil,err
+		fmt.Printf("source file :%s not exist err:%v\n", inputPath, err)
+		return nil, err
 	}
 	defer f.Close()
 
 	pdfReader, err := pdf.NewPdfReader(f)
 	if err != nil {
 		fmt.Printf("pdf split reader err:%v\n", err)
-		return nil,err
+		return nil, err
 	}
 
 	isEncrypted, err := pdfReader.IsEncrypted()
 	if err != nil {
 		fmt.Printf("pdf check is encrypted,please check err:%v\n", err)
-		return nil,err
+		return nil, err
 	}
 
 	if isEncrypted {
 		_, err = pdfReader.Decrypt([]byte(""))
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 	}
 
 	numPages, err := pdfReader.GetNumPages()
 	if err != nil {
 		fmt.Printf("pdf get pages err:%v\n", err)
-		return nil,err
+		return nil, err
 	}
 
 	filnameList := []string{}
 	for i := 0; i < numPages; i++ {
-		name := fmt.Sprintf("%s_%d.pdf",tmppdfPath, i)
+		name := fmt.Sprintf("%s_%d.pdf", tmppdfPath, i)
 		filnameList = append(filnameList, name)
 	}
 
@@ -72,45 +72,45 @@ func SplitPdf(inputPath,tmppdfPath, outputPath string) ([]string,error) {
 		pdfWriter := pdf.NewPdfWriter()
 		page, err := pdfReader.GetPage(item + 1)
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 		err = pdfWriter.AddPage(page)
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 
 		fWrite, err := os.Create(name)
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 		defer fWrite.Close()
 
 		err = pdfWriter.Write(fWrite)
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 
 		//pdf Convert jpg
 		picName := outputPath + "//"
 		picName += name[0 : len(name)-3]
 		picName += "jpg"
-		jpgList = append(jpgList,picName)
+		jpgList = append(jpgList, picName)
 		err = ConvertPdfToJpg(name, picName)
 		if err != nil {
 			fmt.Printf("convertPdfToJpg err:%v\n", err)
-			return nil,err
+			return nil, err
 		}
 		DelLocalFile(name)
 	}
-	return jpgList,nil
+	return jpgList, nil
 }
 
- func DelLocalFile(filePath string){
-	 // del file
+func DelLocalFile(filePath string) {
+	// del file
 	fmt.Printf("del pdf path:%v\n", filePath)
 	delCmd := "rm -f " + filePath
 	exec_shell(delCmd)
- }
+}
 
 func ConvertPdfToJpg(pdfName string, imageName string) error {
 	// Setup
@@ -200,7 +200,7 @@ func MergeImage(soruceImage, targeImage,outputPath string) string {
 	return mergedFile
 }
 
-func exec_shell(scmd string){
+func exec_shell(scmd string) {
 	if scmd == "" {
 		log.L.Info("exec_shell cmd empty")
 		return

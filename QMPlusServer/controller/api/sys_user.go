@@ -8,19 +8,20 @@ import (
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/sysModel"
 	"gin-vue-admin/model/userJobs"
+	"mime/multipart"
+	"time"
+
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	uuid "github.com/satori/go.uuid"
-	"mime/multipart"
-	"time"
 )
 
 var (
 	USER_HEADER_IMG_PATH string = "http://qmplusimg.henrongyi.top"
 	//USER_HEADER_BUCKET   string = "qm-plus-img"
-	USER_HEADER_BUCKET string = "vinustseng"
+	USER_HEADER_BUCKET string = "bda-edu-hr"
 )
 
 type RegisterAndLoginStuct struct {

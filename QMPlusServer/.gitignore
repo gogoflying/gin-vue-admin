@@ -3,3 +3,4 @@ go.sum
 log/
 *.exe
 *.json
+./static/config/

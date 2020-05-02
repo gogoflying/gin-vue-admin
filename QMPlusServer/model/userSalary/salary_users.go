@@ -33,7 +33,7 @@ type SalaryUsers struct {
 	Post         string   `json:"post" gorm:"column:post";comment:'入职岗位'`
 	Date         string   `json:"date" gorm:"column:date";comment:'合约期限'`
 	Enterprise   string   `json:"enterprise" gorm:"column:enterprise";comment:'入职企业'`
-	EnterpriseId string   `json:"enterprise_id" gorm:"column:enterprise_id;comment:'入职企业id'"`
+	EnterpriseId int      `json:"enterprise_id" gorm:"column:enterprise_id;comment:'入职企业id'"`
 	EnterTime    string   `json:"enter_time" gorm:"column:enter_time;comment:'入职日期'"`
 	LeaveTime    string   `json:"leave_time" gorm:"column:LeaveTime;comment:'离职日期'"`
 	EnterStep    int      `json:"enter_step" gorm:"column:EnterStep;comment:'入职进度,0待用户确认信息，1已确认信息，2待用户网签合同，3合同签完'"`

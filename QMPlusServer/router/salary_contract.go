@@ -16,9 +16,9 @@ func InitSalaryContractRouter(Router *gin.RouterGroup) {
 		SalaryContractRouter.POST("getSalaryContractList", api.GetSalaryContractList) //获取Salary_contract列表
 
 		SalaryContractRouter.POST("downloadContractList", api.DownloadContractList) // 新建UserNews
-		//SalaryContractRouter.POST("entersignature", api.Entersignature) //删除UserNews
-		//SalaryContractRouter.POST("downloadLeaveContract", api.DownloadLeaveContract) //更新UserNews
-		//SalaryContractRouter.POST("leavingsignature", api.Leavingsignature)
+		SalaryContractRouter.POST("writeSignatureJpg", api.WriteSignatureJpg) //签名文件写入数据库，开始合成jpg
+		SalaryContractRouter.POST("downloadLeaveContract", api.DownloadLeaveContract) //更新UserNews
+		SalaryContractRouter.POST("uploadLeavingContract", api.UploadLeavingContract)
 		SalaryContractRouter.POST("uploadUserContract", api.UploadUserContract) // to admin
 		SalaryContractRouter.POST("importUserContract", api.ImportUserContract)
 		SalaryContractRouter.POST("getContractJpgList", api.GetContractJpgList)

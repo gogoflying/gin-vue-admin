@@ -15,6 +15,11 @@ type UserContractInfo struct {
 	TmpContractPath string `json:"filepath"`
 }
 
+type UserSignatureInfo struct {
+	OpenId          string `json:"openid"`
+	SignatureFileUrl string `json:"signaturefileurl"`
+}
+
 type SalaryContract struct {
 	gorm.Model
 	Openid                    string `json:"openid" gorm:"column:openid"`

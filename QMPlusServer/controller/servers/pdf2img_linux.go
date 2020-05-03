@@ -1,12 +1,5 @@
-//package main
 package servers
 
-//pdf2img m2.pdf aabbcc tmp2
-//unidoc/pdf/model/writer.go +371  s := "Unlicensed UniDoc - Get a license on https://unidoc.io"
-//https://github.com/unidoc/unidoc
-
-//2. go get gopkg.in/gographics/imagick.v2/imagick
-// sudo apt install libmagic-dev libmagickwand-dev
 import (
 	"fmt"
 	"image"
@@ -14,8 +7,6 @@ import (
 	"image/jpeg"
 	"image/png"
 	"os/exec"
-
-	//"math"
 	"os"
 
 	pdf "github.com/unidoc/unidoc/pdf/model"
@@ -26,6 +17,9 @@ import (
 
 func SplitPdf(inputPath, tmppdfPath, outputPath string) ([]string, error) {
 	//create result path
+	if inputPath == "" || tmppdfPath =="" || outputPath ==""{
+		return nil,fmt.Errorf("param empty")
+	}
 	createPathCmd := "mkdir -p " + outputPath
 	exec_shell(createPathCmd)
 

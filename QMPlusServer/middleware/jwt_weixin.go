@@ -66,6 +66,7 @@ type JWT_wx struct {
 
 type CustomClaims_wx struct {
 	Open_Id      string
+	Session_key  string
 	jwt.StandardClaims
 }
 

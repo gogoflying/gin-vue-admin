@@ -9,6 +9,13 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+type DecodeMobile struct {
+	EncrypData    string `json:"encrypdata"`
+	IvData    	  string `json:"ivdata"`
+	SessionKey    string    `json:"sessionkey"`
+	Openid   	  string `json:"openid"`
+}
+
 type UserLoginInfo struct {
 	Code   	 string `json:"code"`
 	Openid   string `json:"openid"`
@@ -38,6 +45,10 @@ func (users *Users) DeleteUsers() (err error) {
 // 更新Users
 func (users *Users) UpdateUsers() (err error, reusers Users) {
 	err = qmsql.DEFAULTDB.Model(users).Where("openid = ? and status = 1", users.Openid).Update("is_resume", users.IsResume).Error
+	return err, *users
+}
+func (users *Users) UpdateUsersMobile() (err error, reusers Users) {
+	err = qmsql.DEFAULTDB.Model(users).Where("openid = ?", users.Openid).Update("mobile", users.Mobile).Error
 	return err, *users
 }
 

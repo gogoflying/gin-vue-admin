@@ -32,7 +32,7 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="editUser(scope.row)" size="small" type="text">编辑</el-button>
+          <!-- <el-button @click="editUser(scope.row)" size="small" type="text">编辑</el-button> -->
           <el-button @click="deleteUser(scope.row)" size="small" type="text">删除</el-button>
         </template>
       </el-table-column>
@@ -48,10 +48,10 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
 
-    <el-dialog :visible.sync="addUserDialog" custom-class="user-dialog" title="新增用户">
-      <el-form :rules="rules" ref="userForm" :model="userInfo" >
-        <el-form-item label="用户名" label-width="80px" prop="username">
-          <el-input v-model="userInfo.username"></el-input>
+    <el-dialog :visible.sync="addUserDialog" custom-class="user-dialog" :title="title">
+      <el-form :rules="rules" ref="userForm" :model="userInfo">
+        <el-form-item label="用户名" label-width="80px" prop="userName">
+          <el-input v-model="userInfo.userName"></el-input>
         </el-form-item>
         <el-form-item label="密码" label-width="80px" prop="password">
           <el-input v-model="userInfo.password"></el-input>
@@ -95,108 +95,158 @@
 
 <script>
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
-const path = process.env.VUE_APP_BASE_API
-import { getUserList, setUserAuthority, register } from '@/api/user'
-import { getAuthorityList } from '@/api/authority'
-import infoList from '@/components/mixins/infoList'
-import { mapGetters } from 'vuex'
+const path = process.env.VUE_APP_BASE_API;
+import {
+  getUserList,
+  setUserAuthority,
+  register,
+  findSysUserById,
+  deleteSysUser,
+  updateSysUser
+} from "@/api/user";
+import { getAuthorityList } from "@/api/authority";
+import infoList from "@/components/mixins/infoList";
+import { mapGetters } from "vuex";
 export default {
-  name: 'Api',
+  name: "Api",
   mixins: [infoList],
   data() {
     return {
       listApi: getUserList,
-      listKey: 'userList',
-      path:path,
+      listKey: "userList",
+      path: path,
       authOptions: [],
       addUserDialog: false,
+      isEdit: false,
+      title: "",
       userInfo: {
-        username: '',
-        password: '',
-        nickName: '',
-        headerImg: '',
-        authorityId: ''
+        userName: "",
+        password: "",
+        nickName: "",
+        headerImg: "",
+        authorityId: ""
       },
       rules: {
-        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        userName: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
         password: [
-          { required: true, message: '请输入用户密码', trigger: 'blur' }
+          { required: true, message: "请输入用户密码", trigger: "blur" }
         ],
         nickName: [
-          { required: true, message: '请输入用户昵称', trigger: 'blur' }
+          { required: true, message: "请输入用户昵称", trigger: "blur" }
         ],
         authorityId: [
-          { required: true, message: '请选择用户角色', trigger: 'blur' }
+          { required: true, message: "请选择用户角色", trigger: "blur" }
         ]
-      },
-    }
+      }
+    };
   },
   computed: {
-    ...mapGetters('user', ['token'])
+    ...mapGetters("user", ["token"])
   },
   methods: {
     async enterAddUserDialog() {
       this.$refs.userForm.validate(async valid => {
         if (valid) {
-          const res = await register(this.userInfo)
-          if (res.success) {
-            this.$message({ type: 'success', message: '创建成功' })
+          let res;
+          if (this.isEdit) {
+            res = await updateSysUser(this.jobmanagerinfo);
+          } else {
+            res = await register(this.jobmanagerinfo);
           }
-          await this.getTableData()
-          this.closeAddUserDialog()
+          if (res.success) {
+            this.$message({ type: "success", message: "创建成功" });
+          }
+          await this.getTableData();
+          this.closeAddUserDialog();
         }
-      })
+      });
     },
     closeAddUserDialog() {
       this.userInfo = {
-        username: '',
-        password: '',
-        nickName: '',
-        headerImg: '',
-        authorityId: ''
-      }
-      this.addUserDialog = false
+        userName: "",
+        password: "",
+        nickName: "",
+        headerImg: "",
+        authorityId: ""
+      };
+      this.addUserDialog = false;
     },
     handleAvatarSuccess(res) {
-      this.userInfo.headerImg = res.data.file.url
+      this.userInfo.headerImg = res.data.file.url;
     },
     addUser() {
-      this.addUserDialog = true
+      this.title = "新增用户";
+      this.isEdit = false;
+      this.addUserDialog = true;
+    },
+    //编辑用户
+    async editUser(row) {
+      this.title = "编辑用户";
+      const res = await findSysUserById(row);
+      this.userInfo = res.data.user;
+      this.isEdit = true;
+      this.addUserDialog = true;
+    },
+    // 删除用户
+    deleteUser(row) {
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          const res = await deleteSysUser(row);
+          if (res.success) {
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.getTableData();
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     async changeAuthority(row) {
       const res = await setUserAuthority({
         uuid: row.uuid,
         authorityId: row.authority.authorityId
-      })
+      });
       if (res.success) {
-        this.$message({ type: 'success', message: '角色设置成功' })
+        this.$message({ type: "success", message: "角色设置成功" });
       }
     },
     beforeAvatarUpload(file) {
-      var testmsg=file.name.substring(file.name.lastIndexOf('.')+1)
-      const extension = testmsg === 'jpg'
-      const extension2 = testmsg === 'png'
-      const isLt50KB = file.size / 1024 < 50
-      if(!extension && !extension2) {
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension = testmsg === "jpg";
+      const extension2 = testmsg === "png";
+      const isLt50KB = file.size / 1024 < 50;
+      if (!extension && !extension2) {
         this.$message({
-          message: '上传文件只能是 jpg、png格式!',
-          type: 'warning'
+          message: "上传文件只能是 jpg、png格式!",
+          type: "warning"
         });
       }
-      if(!isLt50KB) {
+      if (!isLt50KB) {
         this.$message({
-          message: '上传文件大小不能超过 50KB!',
-          type: 'warning'
+          message: "上传文件大小不能超过 50KB!",
+          type: "warning"
         });
       }
-      return (extension || extension2) && isLt50KB
+      return (extension || extension2) && isLt50KB;
     }
   },
   async created() {
-    const res = await getAuthorityList({ page: 1, pageSize: 999 })
-    this.authOptions = res.data.list
+    const res = await getAuthorityList({ page: 1, pageSize: 999 });
+    this.authOptions = res.data.list;
   }
-}
+};
 </script>
 <style scoped lang="scss">
 .button-box {

@@ -106,13 +106,27 @@ func FindSalaryUsersByOpenid(c *gin.Context) {
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
 	} else {
-		reun.Cards = strings.Split(reun.CardPhotos, ";")
-		reun.Banks = strings.Split(reun.BankCard, ";")
-		reun.Photos = strings.Split(reun.Photo, ";")
-		reun.Checkups = strings.Split(reun.Checkup, ";")
-		reun.Diplomas = strings.Split(reun.Diploma, ";")
-		reun.Leaves = strings.Split(reun.LeaveProve, ";")
-		reun.HuKous = strings.Split(reun.HuKou, ";")
+		if len(reun.CardPhotos) > 0 {
+			reun.Cards = strings.Split(reun.CardPhotos, ";")
+		}
+		if len(reun.BankCard) > 0 {
+			reun.Banks = strings.Split(reun.BankCard, ";")
+		}
+		if len(reun.Photo) > 0 {
+			reun.Photos = strings.Split(reun.Photo, ";")
+		}
+		if len(reun.Checkup) > 0 {
+			reun.Checkups = strings.Split(reun.Checkup, ";")
+		}
+		if len(reun.Diploma) > 0 {
+			reun.Diplomas = strings.Split(reun.Diploma, ";")
+		}
+		if len(reun.LeaveProve) > 0 {
+			reun.Leaves = strings.Split(reun.LeaveProve, ";")
+		}
+		if len(reun.HuKou) > 0 {
+			reun.HuKous = strings.Split(reun.HuKou, ";")
+		}
 		servers.ReportFormat(c, true, "查询成功", gin.H{
 			"reun": reun,
 		})

@@ -78,3 +78,27 @@ export const setUserAuthority = (data) => {
         data: data
     })
 }
+
+export const updateSysUser = (data) => {
+    return service({
+        url: "/user/updateSysUser",
+        method: 'post',
+        data: data
+    })
+}
+
+export const findSysUserById = (data) => {
+    return service({
+        url: "/user/findSysUserById",
+        method: 'post',
+        data: data
+    })
+}
+
+export const deleteSysUser = (data) => {
+    return service({
+        url: "/user/deleteSysUser",
+        method: 'post',
+        data: data
+    })
+}

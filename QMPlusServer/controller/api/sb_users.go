@@ -94,16 +94,19 @@ func FindSbUsersByOpenid(c *gin.Context) {
 	_ = c.ShouldBindJSON(&un)
 	err, reun := un.FindByOpenid()
 	if err != nil {
-		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
-	} else {
-		if reun.ID == 0 {
-			var us userSalary.SalaryUsers
-			us.Openid = un.Openid
-			_, us = us.FindByOpenid()
-			reun.Name = us.Name
-			reun.Card = us.Card
-			reun.Mobile = us.Mobile
+		var us userSalary.SalaryUsers
+		us.Openid = un.Openid
+		if err, us = us.FindByOpenid(); err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+			return
 		}
+		reun.Name = us.Name
+		reun.Card = us.Card
+		reun.Mobile = us.Mobile
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"reun": reun,
+		})
+	} else {
 		servers.ReportFormat(c, true, "查询成功", gin.H{
 			"reun": reun,
 		})

@@ -78,6 +78,28 @@ func UpdateSalaryUsers(c *gin.Context) {
 	}
 }
 
+func UpdateSalaryUsersLeaveStep(c *gin.Context) {
+	var un userSalary.SalaryUsers
+	_ = c.ShouldBindJSON(&un)
+	err := un.UpdateLeaveStep()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "更新成功", gin.H{})
+	}
+}
+
+func UpdateSalaryUsersEnterStep(c *gin.Context) {
+	var un userSalary.SalaryUsers
+	_ = c.ShouldBindJSON(&un)
+	err := un.UpdateEnterStep()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "更新成功", gin.H{})
+	}
+}
+
 // @Tags SalaryUsers
 // @Summary 用id查询SalaryUsers
 // @Security ApiKeyAuth

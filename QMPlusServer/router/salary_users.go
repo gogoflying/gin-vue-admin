@@ -16,6 +16,8 @@ func InitSalaryUsersRouter(Router *gin.RouterGroup) {
 		SalaryUsersRouter.POST("getSalaryUsersList", api.GetSalaryUsersList) //获取SalaryUsers列表
 		SalaryUsersRouter.POST("findSalaryUsersByOpenid", api.FindSalaryUsersByOpenid)
 		SalaryUsersRouter.POST("importsalaryuser", api.ImportSalaryUsers)
+		SalaryUsersRouter.POST("updateSalaryUsersLeaveStep", api.UpdateSalaryUsersLeaveStep)
+		SalaryUsersRouter.POST("updateSalaryUsersEnterStep", api.UpdateSalaryUsersEnterStep)
 		SalaryUsersRouter.Static("template", "./static/template")
 	}
 }

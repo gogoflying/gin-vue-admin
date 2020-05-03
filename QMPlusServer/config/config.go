@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
@@ -40,7 +41,7 @@ type MysqlAdmin struct { // mysql admin 数据库配置
 	Config       string `json:"config"`
 	MaxIdleConns int    `json:"maxIdleConns"`
 	MaxOpenConns int    `json:"maxOpenConns"`
-	LogMode      bool   `json:"maxOpenConns"`
+	LogMode      bool   `json:"logmode"`
 }
 
 type RedisAdmin struct { // Redis admin 数据库配置

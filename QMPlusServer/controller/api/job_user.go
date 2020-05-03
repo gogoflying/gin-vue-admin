@@ -18,14 +18,7 @@ import (
 
 var appid string = config.GinVueAdminconfig.WeiXin.Appid
 var appSecret string = config.GinVueAdminconfig.WeiXin.AppSecret
-// @Tags Users
-// @Summary 创建Users
-// @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
-// @Param data body userJobs.Users true "创建Users"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /users/createUsers [post]
+
 func CreateUsers(c *gin.Context) {
 	var users userJobs.Users
 	_ = c.ShouldBindJSON(&users)
@@ -37,14 +30,6 @@ func CreateUsers(c *gin.Context) {
 	}
 }
 
-// @Tags Users
-// @Summary 删除Users
-// @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
-// @Param data body userJobs.Users true "删除Users"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /users/deleteUsers [post]
 func DeleteUsers(c *gin.Context) {
 	var users userJobs.Users
 	_ = c.ShouldBindJSON(&users)

@@ -9,9 +9,16 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+type UserLoginInfo struct {
+	Code   	 string `json:"code"`
+	Openid   string `json:"openid"`
+	Mobile   string    `json:"mobile"`
+}
+
 type Users struct {
 	gorm.Model
 	Openid   string `json:"openid" gorm:"column:openid;comment:'用户标识码'"`
+	Mobile   string `json:"mobile" gorm:"column:mobile;comment:'手机号'"`
 	IsResume int    `json:"is_resume" gorm:"column:is_resume;comment:'是否有简历，1表示有，0没有'"`
 	Status   int    `json:"status" gorm:"column:status;comment:'用户状态，1表示正常，其他非正常，如禁用之类的'"`
 }
@@ -36,7 +43,7 @@ func (users *Users) UpdateUsers() (err error, reusers Users) {
 
 // 根据ID查看单条Users
 func (users *Users) FindById() (err error, reusers Users) {
-	err = qmsql.DEFAULTDB.Where("id = ?", users.ID).First(&reusers).Error
+	err = qmsql.DEFAULTDB.Where("openid = ?", users.Openid).First(&reusers).Error
 	return err, reusers
 
 }

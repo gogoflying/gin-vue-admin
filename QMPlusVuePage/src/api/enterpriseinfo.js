@@ -90,3 +90,11 @@ export const createEnterpriseInfo = (data) => {
         data
     })
 }
+
+export const getEnterpriseOptions = (data) => {
+    return service({
+        url: "/enterprise/getEnterpriseOptions",
+        method: 'post',
+        data
+    })
+}

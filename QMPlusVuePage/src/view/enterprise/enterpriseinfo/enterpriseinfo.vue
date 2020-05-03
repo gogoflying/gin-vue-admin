@@ -58,14 +58,21 @@
         <el-form-item label="企业规模" label-width="80px" prop="enterprise_scale">
           <el-input v-model.number="enterpriseInfo.enterprise_scale"></el-input>
         </el-form-item>
-        <el-form-item label="企业类型" label-width="80px" prop="enterprise_type">
-          <el-input v-model.number="enterpriseInfo.enterprise_type"></el-input>
+        <el-form-item label="企业性质" label-width="80px" prop="enterprise_type">
+          <el-select placeholder="请选择企业性质" v-model="enterpriseInfo.enterprise_type">
+            <el-option
+              :key="enptype.name"
+              :label="enptype.name"
+              :value="enptype.id"
+              v-for="enptype in enterprisetype"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="企业热度" label-width="80px" prop="enterprise_hot">
           <el-input v-model.number="enterpriseInfo.enterprise_hot"></el-input>
         </el-form-item>
-        <el-form-item label="企业性质" label-width="80px" prop="industry_type">
-          <el-select placeholder="请选择企业性质" v-model="enterpriseInfo.industry_type">
+        <el-form-item label="行业类别" label-width="80px" prop="industry_type">
+          <el-select placeholder="请选择行业类别" v-model="enterpriseInfo.industry_type">
             <el-option
               :key="industry.name"
               :label="industry.name"
@@ -141,7 +148,8 @@ import {
   createEnterpriseInfo,
   updateEnterpriseInfo,
   findEnterpriseInfo,
-  deleteEnterpriseInfo
+  deleteEnterpriseInfo,
+  getEnterpriseOptions
 } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";
 import { mapGetters } from "vuex";
@@ -183,13 +191,13 @@ export default {
           { required: true, message: "请输入企业规模", trigger: "blur" }
         ],
         enterprise_type: [
-          { required: true, message: "请输入企业类型", trigger: "blur" }
+          { required: true, message: "请输入企业性质", trigger: "blur" }
         ],
         enterprise_hot: [
           { required: true, message: "请输入企业热度", trigger: "blur" }
         ],
         industry_type: [
-          { required: true, message: "请输入企业性质", trigger: "blur" }
+          { required: true, message: "请输入行业类别", trigger: "blur" }
         ],
         enterprise_desc: [
           { required: true, message: "请输入企业描述", trigger: "blur" }
@@ -218,6 +226,8 @@ export default {
           name: "广州"
         }
       ],
+      enterprisetype: [],
+
       industrytype: [
         {
           id: 1,
@@ -249,8 +259,8 @@ export default {
           }
           if (res.success) {
             this.$message({ type: "success", message: "创建成功" });
-          }else {
-            this.$message({ type: 'error',message: '添加失败!' });
+          } else {
+            this.$message({ type: "error", message: "添加失败!" });
           }
           await this.getTableData();
           this.closeAddCompanyDialog();
@@ -335,6 +345,12 @@ export default {
       }
       return (extension || extension2) && isLt50KB;
     }
+  },
+  async created() {
+    const res = await getEnterpriseOptions();
+    this.enterprisetype = res.data.enterprisetype;
+    this.industrytype = res.data.industrytype;
+    this.cityinfo = res.data.cityinfo;
   }
 };
 </script>

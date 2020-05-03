@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
@@ -16,6 +17,7 @@ type Config struct {
 	Captcha      Captcha      `json:"captcha"`
 	Log          Log          `json:"log"`
 	AliyunOss    AliyunOss    `json:"aliyunoss"`
+	WeiXin       WeiXin       `json:"weiXin"`
 }
 
 type System struct { // 系统配置
@@ -40,7 +42,7 @@ type MysqlAdmin struct { // mysql admin 数据库配置
 	Config       string `json:"config"`
 	MaxIdleConns int    `json:"maxIdleConns"`
 	MaxOpenConns int    `json:"maxOpenConns"`
-	LogMode      bool   `json:"maxOpenConns"`
+	LogMode      bool   `json:"logmode"`
 }
 
 type RedisAdmin struct { // Redis admin 数据库配置
@@ -64,6 +66,11 @@ type AliyunOss struct { // 七牛 密钥配置
 	AccessKeyId     string `json:"accessKeyId"`
 	AccessKeySecret string `json:"accessKeySecret"`
 	ExpiredInSec    int64  `json:"expiredInSec"`
+}
+
+type WeiXin struct { // 七牛 密钥配置
+	Appid        string `json:"appid"`
+	AppSecret     string `json:"appsecret"`
 }
 
 /**

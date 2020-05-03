@@ -37,6 +37,8 @@ type SalaryUsers struct {
 	EnterpriseId int      `json:"enterprise_id" gorm:"column:enterprise_id;comment:'入职企业id'"`
 	EnterTime    string   `json:"enter_time" gorm:"column:enter_time;comment:'入职日期'"`
 	LeaveTime    string   `json:"leave_time" gorm:"column:LeaveTime;comment:'离职日期'"`
+	JanYuan      string   `json:"jan_yuan" gorm:"column:JanYuan;comment:'社保减员日期'"`
+	Errors       string   `json:"errors" gorm:"column:errors;comment:'信息错误反馈内容'"`
 	EnterStep    int      `json:"enter_step" gorm:"column:EnterStep;comment:'入职进度,0待用户确认信息，1已确认信息，2待用户网签合同，3合同签完'"`
 	LeaveStep    int      `json:"leave_step" gorm:"column:LeaveStep;comment:'离职进度'"`
 }
@@ -57,6 +59,14 @@ func (un *SalaryUsers) DeleteSalaryUsers() (err error) {
 func (un *SalaryUsers) UpdateSalaryUsers() (err error, reun SalaryUsers) {
 	err = qmsql.DEFAULTDB.Save(un).Error
 	return err, *un
+}
+
+func (un *SalaryUsers) UpdateLeaveStep() error {
+	return qmsql.DEFAULTDB.Model(new(SalaryUsers)).Where("id = ?", un.ID).Update("LeaveStep", un.LeaveStep).Error
+}
+
+func (un *SalaryUsers) UpdateEnterStep() error {
+	return qmsql.DEFAULTDB.Model(new(SalaryUsers)).Where("openid = ?", un.Openid).Update("EnterStep", un.EnterStep).Error
 }
 
 // 根据ID查看单条SalaryUsers

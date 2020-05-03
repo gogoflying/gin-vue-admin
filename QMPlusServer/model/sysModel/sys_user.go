@@ -18,7 +18,7 @@ type SysUser struct {
 	NickName    string       `json:"nickName" gorm:"default:'QMPlusUser'"`
 	HeaderImg   string       `json:"headerImg" gorm:"default:'http://www.henrongyi.top/avatar/lufu.jpg'"`
 	Authority   SysAuthority `json:"authority" gorm:"ForeignKey:AuthorityId;AssociationForeignKey:AuthorityId"`
-	AuthorityId string       `json:"authorityId" gorm:"default:888"`
+	AuthorityId string       `json:"authorityId" gorm:"default:9528"`
 }
 
 //type Propertie struct {
@@ -32,7 +32,7 @@ func (u *SysUser) Register() (err error, userInter *SysUser) {
 	notResigt := qmsql.DEFAULTDB.Where("username = ?", u.Username).First(&user).RecordNotFound()
 	//notResigt为false表明读取到了 不能注册
 	if !notResigt {
-		return errors.New("用户名已注册"), nil
+		return errors.New("用户名已注册"), userInter
 	} else {
 		// 否则 附加uuid 密码md5简单加密 注册
 		u.Password = tools.MD5V([]byte(u.Password))

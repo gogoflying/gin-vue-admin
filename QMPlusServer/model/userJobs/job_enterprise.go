@@ -2,9 +2,11 @@
 package userJobs
 
 import (
+	"errors"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+	"gin-vue-admin/model/userCity"
 	"github.com/jinzhu/gorm"
 )
 
@@ -31,11 +33,25 @@ func (info *EnterpriseInfo) CreateEnterpriseInfo() (err error) {
 	notResigt := qmsql.DEFAULTDB.Where("enterprise_name = ?", info.EnterPriseName).First(&ei).RecordNotFound()
 	//notResigt为false表明读取到了 不能注册
 	if !notResigt {
-		return nil
+		return errors.New("企业已注册")
 	} else {
 		err = qmsql.DEFAULTDB.Create(info).Error
 	}
 	return err
+}
+
+// 创建EnterpriseInfo
+func (info *EnterpriseInfo) SelectAndCreateEnterpriseInfo() (err error, ep *EnterpriseInfo) {
+	var ei EnterpriseInfo
+	//判断用户名是否注册
+	notResigt := qmsql.DEFAULTDB.Where("enterprise_name = ?", info.EnterPriseName).First(&ei).RecordNotFound()
+	//notResigt为false表明读取到了 不能注册
+	if !notResigt {
+		return nil, &ei
+	} else {
+		err = qmsql.DEFAULTDB.Create(info).Error
+	}
+	return err, info
 }
 
 // 删除EnterpriseInfo
@@ -116,4 +132,24 @@ func (info *EnterpriseInfo) GetAllInfoList() (err error, list interface{}) {
 	var reEnterpriseInfoList []EnterpriseInfo
 	err = qmsql.DEFAULTDB.Select("id,enterprise_name").Find(&reEnterpriseInfoList).Error
 	return err, reEnterpriseInfoList
+}
+
+func (info *EnterpriseInfo) GetAllInfoOption() (err error, list1 interface{}, list2 interface{}, list3 interface{}) {
+	var enPtype []EnterpriseType
+	var enPindust []EnterpriseIndust
+	var citys []userCity.Cityname
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&enPtype).Error
+	if err != nil {
+		return err, enPtype, enPindust, citys
+	}
+
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&enPindust).Error
+	if err != nil {
+		return err, enPtype, enPindust, citys
+	}
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&citys).Error
+	if err != nil {
+		return err, enPtype, enPindust, citys
+	}
+	return err, enPtype, enPindust, citys
 }

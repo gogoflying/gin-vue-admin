@@ -2,75 +2,44 @@
   <div>
     <div class="edit_container">
       <el-form :rules="rules" ref="newForm" :model="user_news">
-        <el-row>
-          <el-col :span="3">
-            <label for>新闻标题</label>
-          </el-col>
-          <el-col :span="10">
-            <el-input v-model="user_news.title"></el-input>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="3">
-            <label for>新闻副标题</label>
-          </el-col>
-          <el-col :span="10">
-            <el-input v-model="user_news.sub_title"></el-input>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="3">
-            <label for>排序</label>
-          </el-col>
-          <el-col :span="10">
-            <el-input v-model.number="user_news.orders"></el-input>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="3">
-            <label for>新闻类型</label>
-          </el-col>
-          <el-col :span="10">
-            <el-select placeholder="请选择新闻类型" v-model.number="user_news.news_type">
-              <el-option :key="nt.name" :label="nt.name" :value="nt.id" v-for="nt in newtypes"></el-option>
-            </el-select>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="3">
-            <label for>新闻图片</label>
-          </el-col>
-          <el-col :span="10">
-            <el-upload
-              :headers="{'x-token':token}"
-              :on-success="handleAvatarImgSuccess"
-              :show-file-list="false"
-              :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
-              class="avatar-uploader"
-              name="file"
-              :beforeUpload="beforeAvatarUpload"
-            >
-              <img :src="user_news.img" class="avatar" v-if="user_news.img" height="300" width="300"/>
-              <i class="el-icon-plus avatar-uploader-icon" v-else></i>
-            </el-upload>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="3">
-            <label for>新闻内容</label>
-          </el-col>
-          <el-col :span="21">
-            <quill-editor
-              :options="editorOption"
-              @blur="onEditorBlur($event)"
-              @change="onEditorChange($event)"
-              @focus="onEditorFocus($event)"
-              ref="myQuillEditor"
-              v-model="user_news.content"
-            ></quill-editor>
-          </el-col>
-        </el-row>
+        <el-form-item label="新闻标题" label-width="100px" prop="title">
+          <el-input v-model="user_news.title" style="width:50%;" placeholder="请输入新闻标题"></el-input>
+        </el-form-item>
+        <el-form-item label="新闻副标题" label-width="100px" prop="sub_title">
+          <el-input v-model="user_news.sub_title" style="width:50%;" placeholder="请输入新闻副标题"></el-input>
+        </el-form-item>
+        <el-form-item label="排序" label-width="100px" prop="order">
+          <el-input v-model="user_news.order" style="width:50%;" placeholder="请输入顺序"></el-input>
+        </el-form-item>
+        <el-form-item label="新闻类型" label-width="100px" prop="news_type">
+          <el-select placeholder="请选择新闻类型" v-model.number="user_news.news_type">
+            <el-option :key="nt.name" :label="nt.name" :value="nt.id" v-for="nt in newtypes"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="新闻图片" label-width="100px" prop="img">
+          <el-upload
+            :headers="{'x-token':token}"
+            :on-success="handleAvatarSuccess"
+            :show-file-list="false"
+            :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
+            class="avatar-uploader"
+            name="file"
+            :beforeUpload="beforeAvatarUpload"
+          >
+            <img :src="user_news.img" class="avatar" v-if="user_news.img" height="300" width="300" />
+            <i class="el-icon-plus avatar-uploader-icon" v-else></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="新闻内容" label-width="100px" prop="content">
+          <quill-editor
+            :options="editorOption"
+            @blur="onEditorBlur($event)"
+            @change="onEditorChange($event)"
+            @focus="onEditorFocus($event)"
+            ref="myQuillEditor"
+            v-model="user_news.content"
+          ></quill-editor>
+        </el-form-item>
         <el-row type="flex" justify="center">
           <el-col :span="13">
             <el-button plain @click="saveDrft">存入草稿</el-button>
@@ -114,9 +83,7 @@ export default {
       rules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
         news_type: [{ required: true, message: "请输入类型", trigger: "blur" }],
-        content: [
-          { required: true, message: "请输入薪资上限", trigger: "blur" }
-        ]
+        content: [{ required: true, message: "请输入内容", trigger: "blur" }]
       }
     };
   },

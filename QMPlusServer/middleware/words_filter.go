@@ -21,39 +21,36 @@ type ReturnErrorInfo struct {
 var appid string = config.GinVueAdminconfig.WeiXin.Appid
 var appSecret string = config.GinVueAdminconfig.WeiXin.AppSecret
 //敏感词过滤
-func getAccessTocken() (string,error) {
+func GetAccessTocken() (string,error) {
 	url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",appid,appSecret)
-	_,err := servers.Get(url)
+	body,err := servers.GetEx(url)
 	if err != nil{
 		return "",fmt.Errorf("param empty")
 	}
-	//return body["access_token"],nil
-	return "",nil
+	var mapResult map[string]interface{}
+	err = json.Unmarshal([]byte(body), &mapResult)
+	if err != nil {
+		fmt.Println("JsonToMapDemo err: ", err)
+	}
+
+	return mapResult["access_token"].(string),nil
 }
 
 func CheckWordsIllegal(words string) (bool,error) {
 	if len(words) == 0 || len(words) > 500*1024{
 		return false,fmt.Errorf("param empty")
 	}
-	access_token,err := getAccessTocken()
+	access_token,err := GetAccessTocken()
 	if err != nil{
 		return false,err
 	}
 
 	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=%s",access_token)
-
 	con := ContentInfo{
 		Content:words,
 	}
 
-	jsonBytes, err := json.Marshal(con)
-	if err != nil {
-		return false,err
-	}
-	fmt.Println(string(jsonBytes))
-	var rsp interface{}
-		
-	body,err := servers.Post(jsonBytes,url,rsp)
+	body,err := servers.PostEx(url,con)
 	if err != nil{
 		return false,err
 	}

@@ -102,12 +102,13 @@ func DownloadContractList(c *gin.Context) {
 	jpgPathList := resultSc.Enter_contract_source_url
 	fmt.Printf("get jpgPathList :%v", jpgPathList)
 
+	jpgPathArr := strings.Split(jpgPathList, ";")
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
 			"status":  "ok",
-			"jpgList": jpgPathList,
+			"jpgList": jpgPathArr,
 		})
 	}
 }

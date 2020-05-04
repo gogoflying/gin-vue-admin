@@ -228,6 +228,8 @@ func ImgShrink(sourceImg ,openid,outputPath string) (string,error) {
 		return "",err
 	}
 	
+	img = rotate270(img)
+
 	m := resize.Resize(200, 0, img, resize.Lanczos3)
 	shrinkImg = fmt.Sprintf("%s/shrink_%s.png",outputPath,openid)
     out, err := os.Create(shrinkImg)
@@ -238,4 +240,14 @@ func ImgShrink(sourceImg ,openid,outputPath string) (string,error) {
     defer out.Close()
 	png.Encode(out, m)
 	return shrinkImg,nil
+}
+
+func rotate270(m image.Image) image.Image {
+    rotate270 := image.NewRGBA(image.Rect(0, 0, m.Bounds().Dy(), m.Bounds().Dx()))
+    for x := m.Bounds().Min.Y; x < m.Bounds().Max.Y; x++ {
+        for y := m.Bounds().Max.X - 1; y >= m.Bounds().Min.X; y-- {
+            rotate270.Set(x, m.Bounds().Max.X-y, m.At(y, x))
+        }
+    }
+    return rotate270
 }

@@ -27,7 +27,7 @@
       <el-table-column label="企业类型" min-width="100" prop="enterprise_type"></el-table-column>
       <el-table-column label="企业热度" min-width="100" prop="enterprise_hot"></el-table-column>
       <el-table-column label="企业性质" min-width="100" prop="industry_type"></el-table-column>
-      <el-table-column label="企业描述" min-width="150" prop="enterprise_desc" :show-overflow-tooltip="true"></el-table-column>
+      <!-- <el-table-column label="企业描述" min-width="150" prop="enterprise_desc" :show-overflow-tooltip="true"></el-table-column> -->
       <el-table-column label="所在城市" min-width="100" prop="city_id"></el-table-column>
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
@@ -110,7 +110,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
-            :beforeUpload="beforeAvatarUpload"
+            :before-upload="beforeAvatarUpload"
           >
             <img
               :src="enterpriseInfo.enterprise_logo"
@@ -128,7 +128,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
-            :beforeUpload="beforeAvatarUpload"
+            :before-upload="beforeAvatarUpload"
           >
             <img
               :src="enterpriseInfo.enterprise_img"
@@ -350,12 +350,14 @@ export default {
           message: "上传文件只能是 jpg、png格式!",
           type: "warning"
         });
+        return false;
       }
       if (!isLt50KB) {
         this.$message({
           message: "上传文件大小不能超过 50KB!",
           type: "warning"
         });
+        return false;
       }
       return (extension || extension2) && isLt50KB;
     }

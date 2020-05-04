@@ -191,6 +191,7 @@
             :headers="{'x-token':token}"
             :on-error="onErrorUc"
             :on-success="onSuccessUc"
+            :before-upload="beforeUploadPdf"
             :show-file-list="false"
           >
             <el-button size="small" type="text" :disabled="scope.row.enter_step < 2 ">上传合同</el-button>
@@ -541,6 +542,26 @@ export default {
       this.importDataBtnIcon = "el-icon-loading";
       this.importDataDisabled = true;
       this.fullscreenLoading = true;
+    },
+    beforeUploadPdf(file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension = testmsg === "pdf";
+      const isLt1MB = file.size / 1024 < 50;
+      if (!extension) {
+        this.$message({
+          message: "上传文件只能是 jpg、png格式!",
+          type: "warning"
+        });
+        return false;
+      }
+      if (!isLt1MB) {
+        this.$message({
+          message: "上传文件大小不能超过 50KB!",
+          type: "warning"
+        });
+        return false;
+      }
+      return extension && isLt1MB;
     },
     onErrorUc() {
       this.$message({

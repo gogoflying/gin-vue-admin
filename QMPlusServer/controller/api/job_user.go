@@ -1,22 +1,22 @@
 package api
 
 import (
-	"fmt"
-	"encoding/json"
-	"net/http"
-	"time"
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
 
 	"gin-vue-admin/config"
-	"gin-vue-admin/middleware"
 	"gin-vue-admin/controller/servers"
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userJobs"
 
-	"github.com/gin-gonic/gin"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 var appid string = config.GinVueAdminconfig.WeiXin.Appid
@@ -103,7 +103,6 @@ func FindUsersByOpenid(c *gin.Context) {
 	}
 }
 
-
 func GetUsersList(c *gin.Context) {
 	var pageInfo modelInterface.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
@@ -123,87 +122,86 @@ func GetUsersList(c *gin.Context) {
 func JobUserLogin(c *gin.Context) {
 	var loginInfo userJobs.UserLoginInfo
 	_ = c.ShouldBindJSON(&loginInfo)
-	if len(loginInfo.Code) == 0{
+	if len(loginInfo.Code) == 0 {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败"), gin.H{})
 		return
 	}
-	openid,session_key,err:= sendWxAuthAPI(loginInfo.Code)
+	openid, session_key, err := sendWxAuthAPI(loginInfo.Code)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 		return
-	} 
-	
-	u:= userJobs.Users{
-		Openid:openid,
-		Status:1,
+	}
+
+	u := userJobs.Users{
+		Openid: openid,
+		Status: 1,
 	}
 	_ = c.ShouldBindJSON(&u)
-	err= u.CreateUsers()
-	if err != nil{
+	err = u.CreateUsers()
+	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 		return
 	}
-	tokenNext_wx(c,openid,session_key)
-	fmt.Printf("get openId:%v\n", openid) 
+	tokenNext_wx(c, openid, session_key)
+	fmt.Printf("get openId:%v\n", openid)
 }
 
-func sendWxAuthAPI(code string) (string,string, error) {
-	url := fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",appid,appSecret,code)
+func sendWxAuthAPI(code string) (string, string, error) {
+	url := fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", appid, appSecret, code)
 	//fmt.Printf("get url:%v\n", url)
-    resp, err := http.DefaultClient.Get(url)
-    if err != nil {
-        return "","", err
-    }
-    var wxMap map[string]string
-    err = json.NewDecoder(resp.Body).Decode(&wxMap)
-    if err != nil {
-        return "","", err
-    }
+	resp, err := http.DefaultClient.Get(url)
+	if err != nil {
+		return "", "", err
+	}
+	var wxMap map[string]string
+	err = json.NewDecoder(resp.Body).Decode(&wxMap)
+	if err != nil {
+		return "", "", err
+	}
 	defer resp.Body.Close()
-	fmt.Printf("session key:%v\n", wxMap["session_key"]) 
+	fmt.Printf("session key:%v\n", wxMap["session_key"])
 
-    return wxMap["openid"],wxMap["session_key"], nil
+	return wxMap["openid"], wxMap["session_key"], nil
 }
 
 //登录以后签发jwt
-func tokenNext_wx(c *gin.Context, openid,session_key string) {
+func tokenNext_wx(c *gin.Context, openid, session_key string) {
 	j := &middleware.JWT_wx{
 		[]byte(config.GinVueAdminconfig.JWT.SigningKey), // 唯一签名
 	}
 	//err := user.FindByUserId()
-    
+
 	clams := middleware.CustomClaims_wx{
-		Open_Id:         openid,
-		Session_key:session_key,
+		Open_Id:     openid,
+		Session_key: session_key,
 		StandardClaims: jwt.StandardClaims{
-			NotBefore: int64(time.Now().Unix() - 1000),  // 签名生效时间
-			ExpiresAt: int64(time.Now().Unix() + 60*60), // 过期时间 一个小时
-			Issuer:    "qmPlus",                         //签名的发行者
+			NotBefore: int64(time.Now().Unix() - 1000),     // 签名生效时间
+			ExpiresAt: int64(time.Now().Unix() + 60*60*24), // 过期时间 24个小时
+			Issuer:    "qmPlus",                            //签名的发行者
 		},
 	}
 	token, err := j.CreateToken_wx(clams)
 	if err != nil {
 		servers.ReportFormat(c, false, "获取token失败", gin.H{})
 	} else {
-		servers.ReportFormat(c, true, "登录成功", gin.H{"openid": openid,"session_key": session_key,"token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
+		servers.ReportFormat(c, true, "登录成功", gin.H{"openid": openid, "session_key": session_key, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
 	}
 }
 
-
-func updateUserMobile(openId,mobileNum string) error {
+func updateUserMobile(openId, mobileNum string) error {
 
 	if len(openId) == 0 || len(mobileNum) != 11 {
 		//servers.ReportFormat(c, false, fmt.Sprintf("创建失败"), gin.H{})
 		return fmt.Errorf("param empty ")
 	}
-	
-	u:= userJobs.Users{
-		Openid:openId,
-		Mobile:mobileNum,
+
+	u := userJobs.Users{
+		Openid: openId,
+		Mobile: mobileNum,
 	}
-	
-	err,_ := u.UpdateUsersMobile()
-	if err != nil{
+
+	err, _ := u.UpdateUsersMobile()
+	if err != nil {
 		//servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
 		return err
 	}
@@ -213,9 +211,9 @@ func updateUserMobile(openId,mobileNum string) error {
 func DecodeMobile(c *gin.Context) {
 	var enMobile userJobs.DecodeMobile
 	_ = c.ShouldBindJSON(&enMobile)
-	   
-	if len(enMobile.SessionKey) == 0 || len(enMobile.Openid) == 0{
-		servers.ReportFormat(c, false, fmt.Sprintf("SessionKey empty err",), gin.H{})
+
+	if len(enMobile.SessionKey) == 0 || len(enMobile.Openid) == 0 {
+		servers.ReportFormat(c, false, fmt.Sprintf("SessionKey empty err"), gin.H{})
 		return
 	}
 	fmt.Printf("responst :%v\n", enMobile)
@@ -224,18 +222,18 @@ func DecodeMobile(c *gin.Context) {
 	var s = map[string]interface{}{}
 	json.Unmarshal([]byte(src), &s)
 	fmt.Printf("photo num is: %+v\n", s["phoneNumber"])
-	if err != nil{
+	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("Dncrypt ：%v", err), gin.H{})
 		return
 	}
-	err = updateUserMobile(enMobile.Openid,s["phoneNumber"].(string))
-	if err != nil{
+	err = updateUserMobile(enMobile.Openid, s["phoneNumber"].(string))
+	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("updateUserMobile err :%v", err), gin.H{})
 		return
 	}
 	servers.ReportFormat(c, true, "更新成功", gin.H{
-			"data": "ok",
-		})
+		"data": "ok",
+	})
 }
 
 func Dncrypt(rawData, key, iv string) (string, error) {
@@ -254,7 +252,7 @@ func Dncrypt(rawData, key, iv string) (string, error) {
 	}
 	return string(dnData), nil
 }
- 
+
 // 解密
 func AesCBCDncrypt(encryptData, key, iv []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
@@ -274,7 +272,7 @@ func AesCBCDncrypt(encryptData, key, iv []byte) ([]byte, error) {
 	encryptData = PKCS7UnPadding(encryptData)
 	return encryptData, nil
 }
- 
+
 //去除填充
 func PKCS7UnPadding(origData []byte) []byte {
 	length := len(origData)

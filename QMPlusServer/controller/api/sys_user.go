@@ -130,9 +130,9 @@ func tokenNext(c *gin.Context, user sysModel.SysUser) {
 		NickName:     user.NickName,
 		AuthorityId:  user.AuthorityId,
 		StandardClaims: jwt.StandardClaims{
-			NotBefore: int64(time.Now().Unix() - 1000),  // 签名生效时间
-			ExpiresAt: int64(time.Now().Unix() + 60*60), // 过期时间 一个小时
-			Issuer:    "qmPlus",                         //签名的发行者
+			NotBefore: int64(time.Now().Unix() - 1000),     // 签名生效时间
+			ExpiresAt: int64(time.Now().Unix() + 60*60*24), // 过期时间 24个小时
+			Issuer:    "qmPlus",                            //签名的发行者
 		},
 	}
 	token, err := j.CreateToken(clams)

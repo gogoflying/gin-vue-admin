@@ -90,3 +90,11 @@ export const createSalaryUsers = (data) => {
         data
     })
 }
+
+export const downloadContractList = (data) => {
+    return service({
+        url: "/un/downloadContractList",
+        method: 'post',
+        data
+    })
+}

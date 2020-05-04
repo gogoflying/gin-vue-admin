@@ -5,7 +5,7 @@
     </div>
     <el-table :data="tableData" border stripe>
       <el-table-column type="expand">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="企业logo:">
               <span>
@@ -27,7 +27,7 @@
       <el-table-column label="企业类型" min-width="100" prop="enterprise_type"></el-table-column>
       <el-table-column label="企业热度" min-width="100" prop="enterprise_hot"></el-table-column>
       <el-table-column label="企业性质" min-width="100" prop="industry_type"></el-table-column>
-      <el-table-column label="企业描述" min-width="150" prop="enterprise_desc"></el-table-column>
+      <el-table-column label="企业描述" min-width="150" prop="enterprise_desc" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="所在城市" min-width="100" prop="city_id"></el-table-column>
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">

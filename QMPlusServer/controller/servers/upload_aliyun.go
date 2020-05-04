@@ -5,9 +5,9 @@ import (
 	"gin-vue-admin/config"
 	"io/ioutil"
 	"mime/multipart"
-	"time"
-	"strings"
 	"path/filepath"
+	"strings"
+	"time"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
@@ -43,7 +43,7 @@ func UploadFileOss(file *multipart.FileHeader, bucketName string, urlPath string
 		return
 	}
 
-	singUrl := "http://" + bucketName + "." + endPoint + "/" + fileKey
+	singUrl := "https://" + bucketName + "." + endPoint + "/" + fileKey
 	return err, singUrl, fileKey
 }
 
@@ -58,7 +58,7 @@ func DownloadFileOss(bucketName string, key string) (data []byte, err error) {
 		return
 	}
 
-	singUrl := "http://" + bucketName + "." + endPoint + "/" + key
+	singUrl := "https://" + bucketName + "." + endPoint + "/" + key
 	body, err := bucket.GetObjectWithURL(singUrl)
 	if err != nil {
 		return
@@ -103,32 +103,32 @@ func UploadLocalFile(fileName string, bucketName string, urlPath string) (err er
 		return
 	}
 
-	singUrl := "http://" + bucketName + "." + endPoint + "/" + fileKey
+	singUrl := "https://" + bucketName + "." + endPoint + "/" + fileKey
 	return err, singUrl, fileKey
 }
 
-func DownLoadLocalFile(bucketName string, urlPath string,localPath string) (err error, path string) {
+func DownLoadLocalFile(bucketName string, urlPath string, localPath string) (err error, path string) {
 	client, err := oss.New(endPoint, accessKeyId, accessKeySecret)
 	if err != nil {
-		return err,""
+		return err, ""
 	}
 	// 获取存储空间。
 	bucket, err := client.Bucket(bucketName)
 	if err != nil {
-		return err,""
+		return err, ""
 	}
 
-	fileName :=filepath.Base(urlPath)
-	localPath = localPath +"/"+ fileName
+	fileName := filepath.Base(urlPath)
+	localPath = localPath + "/" + fileName
 	//var respHeader http.Header
 	err = bucket.GetObjectToFile(getDownloadFileName(urlPath), localPath)
 	if err != nil {
-		return err,""
+		return err, ""
 	}
 	return err, localPath
 }
 
-func getDownloadFileName(source string) string{
+func getDownloadFileName(source string) string {
 	//source := "http://bda-edu-hr.oss-cn-beijing.aliyuncs.com/1588560066tmp//zzz_6.jpg"
 	npos := strings.LastIndex(source, "aliyuncs.com/")
 	return source[npos+len("aliyuncs.com/") : len(source)]

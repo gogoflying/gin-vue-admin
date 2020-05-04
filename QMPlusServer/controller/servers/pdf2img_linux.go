@@ -148,7 +148,7 @@ func ConvertPdfToJpg(pdfName string, imageName string) error {
 	return mw.WriteImage(imageName)
 }
 
-func MergeImage(soruceImage, targeImage,outputPath string) (string,error) {
+func MergeImage(soruceImage, targeImage,openid,outputPath string) (string,error) {
 	img_file, err := os.Open(soruceImage)
 	if err != nil {
 		log.L.Info("MergeImage open err: ",err)
@@ -181,7 +181,8 @@ func MergeImage(soruceImage, targeImage,outputPath string) (string,error) {
 	draw.Draw(m, wmb_img.Bounds().Add(offset), wmb_img, image.ZP, draw.Over)
 
 	//生成新图片new.jpg,并设置图片质量
-	mergedFile := fmt.Sprint("%s_%s",soruceImage,targeImage)
+	mergedFile := fmt.Sprintf("%s/merged_%s.jpg",outputPath,openid)
+	fmt.Println("jpg merged file:%s\n",mergedFile)
 	imgw, err := os.Create(mergedFile)
 	if err != nil {
 		log.L.Info("Create merged file err: ",err)
@@ -208,7 +209,7 @@ func exec_shell(scmd string) {
 	//logrus.Info(resp)
 }
 
-func ImgShrink(sourceImg string) (string,error) {
+func ImgShrink(sourceImg ,openid,outputPath string) (string,error) {
 	var shrinkImg string
     if len(sourceImg) == 0 {
 		log.L.Info("ImgShrink param empty")
@@ -219,7 +220,7 @@ func ImgShrink(sourceImg string) (string,error) {
 		log.L.Info("ImgShrink open err:%v",err)
 		return "",err
 	}
-    file.Close()
+    defer file.Close()
 
     img, err := png.Decode(file)
     if err != nil {
@@ -227,7 +228,8 @@ func ImgShrink(sourceImg string) (string,error) {
 		return "",err
 	}
 	
-    m := resize.Resize(200, 0, img, resize.Lanczos3)
+	m := resize.Resize(200, 0, img, resize.Lanczos3)
+	shrinkImg = fmt.Sprintf("%s/shrink_%s.png",outputPath,openid)
     out, err := os.Create(shrinkImg)
     if err != nil {
         log.L.Info("ImgShrink Create err:%v",err)

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"time"
+	"strings"
 	"path/filepath"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
@@ -109,21 +110,26 @@ func UploadLocalFile(fileName string, bucketName string, urlPath string) (err er
 func DownLoadLocalFile(bucketName string, urlPath string,localPath string) (err error, path string) {
 	client, err := oss.New(endPoint, accessKeyId, accessKeySecret)
 	if err != nil {
-		return
+		return err,""
 	}
 	// 获取存储空间。
 	bucket, err := client.Bucket(bucketName)
 	if err != nil {
-		return
+		return err,""
 	}
 
 	fileName :=filepath.Base(urlPath)
-	localPath = localPath + fileName
+	localPath = localPath +"/"+ fileName
 	//var respHeader http.Header
-	err = bucket.GetObjectToFile(urlPath, localPath)
+	err = bucket.GetObjectToFile(getDownloadFileName(urlPath), localPath)
 	if err != nil {
-		return
+		return err,""
 	}
-	
 	return err, localPath
+}
+
+func getDownloadFileName(source string) string{
+	//source := "http://bda-edu-hr.oss-cn-beijing.aliyuncs.com/1588560066tmp//zzz_6.jpg"
+	npos := strings.LastIndex(source, "aliyuncs.com/")
+	return source[npos+len("aliyuncs.com/") : len(source)]
 }

@@ -305,9 +305,9 @@ func GetContractJpgList(c *gin.Context) {
 func runMergeImg(c *gin.Context, imgPath,openId string) {
 	//uci.tmpContractPath
 	fmt.Printf("runMergeImg :%s\n", imgPath)
-	_,localFile := servers.DownLoadLocalFile(USER_HEADER_BUCKET,imgPath,"tmp")
-	if len(localFile) == 0 {
-		fmt.Printf("DownLoadLocalFile  file :%s err\n", imgPath)
+	err,localFile := servers.DownLoadLocalFile(USER_HEADER_BUCKET,imgPath,"tmp")
+	if err != nil {
+		fmt.Printf("DownLoadLocalFile  file :%s err:%v\n", imgPath,err)
 		servers.ReportFormat(c, false, fmt.Sprintf("DownLoadLocalFile  file  err"), gin.H{})
 		return
 	} 
@@ -318,13 +318,14 @@ func runMergeImg(c *gin.Context, imgPath,openId string) {
 		return
 	} 
 
-	signatureShrinkNmaePng,err := servers.ImgShrink(localFile)
+	signatureShrinkNmaePng,err := servers.ImgShrink(localFile,openId,"tmp")
 	if err != nil{
 		servers.ReportFormat(c, false, fmt.Sprintf("ImgShrink  file  err:%v",err), gin.H{})
 		return
 	}
 
-	mergedFile,err := servers.MergeImage(sourcePdf, signatureShrinkNmaePng, "tmp")
+	//fmt.Printf("DownLoadLocalFile  file003 :%s err\n", signatureShrinkNmaePng)
+	mergedFile,err := servers.MergeImage(sourcePdf, signatureShrinkNmaePng,openId, "tmp")
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("MergeImage contract pdf err :%v",err), gin.H{})
 		return
@@ -336,7 +337,10 @@ func runMergeImg(c *gin.Context, imgPath,openId string) {
 		servers.ReportFormat(c, false, fmt.Sprintf("UploadLocalFile %v", err), gin.H{})
 	} else {
 		servers.DelLocalFile(mergedFile)
+		servers.DelLocalFile(sourcePdf)
+		servers.DelLocalFile(signatureShrinkNmaePng)
 	}
+	fmt.Printf("DownLoadLocalFile  file004 :%s err\n", cloudContractPath)
 	//start upload and write db
 	sc := userSalary.SalaryContract{
 		Openid:                    openId,
@@ -367,12 +371,12 @@ func getContractLastFile(c *gin.Context, openId string) string{
 		return ""
 	}
 	resultJpg := strings.Split(reun.Enter_contract_source_url, ";")
-	_,localFile := servers.DownLoadLocalFile(USER_HEADER_BUCKET,resultJpg[len(reun.Enter_contract_source_url) -1],"tmp")
-	if len(localFile) == 0 {
-		fmt.Printf("DownLoadLocalFile  file :%s err\n", localFile)
-		servers.ReportFormat(c, false, fmt.Sprintf("DownLoadLocalFile  file  err:", err), gin.H{})
+	err,localFile := servers.DownLoadLocalFile(USER_HEADER_BUCKET,resultJpg[len(resultJpg) -1],"tmp")
+	if err != nil {
+		fmt.Printf("DownLoadLocalFile  file :%s err:%v\n", localFile,err)
 		return ""
 	} 
+	fmt.Printf("getContractLastFile   down success :%s err\n", localFile)
 
 	return localFile
 }

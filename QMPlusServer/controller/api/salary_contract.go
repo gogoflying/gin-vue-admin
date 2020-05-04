@@ -336,9 +336,10 @@ func runMergeImg(c *gin.Context, imgPath,openId string) {
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("UploadLocalFile %v", err), gin.H{})
 	} else {
-		servers.DelLocalFile(mergedFile)
-		servers.DelLocalFile(sourcePdf)
+		servers.DelLocalFile(imgPath)
 		servers.DelLocalFile(signatureShrinkNmaePng)
+		servers.DelLocalFile(sourcePdf)
+		servers.DelLocalFile(mergedFile)
 	}
 	fmt.Printf("DownLoadLocalFile  file004 :%s err\n", cloudContractPath)
 	//start upload and write db

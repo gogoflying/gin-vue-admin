@@ -131,7 +131,7 @@ func WriteSignatureJpg(c *gin.Context) {
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("contract 更新失败 :%v", err), gin.H{})
 	} else {
-		servers.ReportFormat(c, false, fmt.Sprintf("contract 更新成功 :%v", err), gin.H{})
+		servers.ReportFormat(c, true, fmt.Sprintf("contract 更新成功 :%v", err), gin.H{})
 	}
 
 	go runMergeImg(c,usi.SignatureFileUrl,usi.OpenId)

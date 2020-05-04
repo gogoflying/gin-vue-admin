@@ -14,6 +14,6 @@ func ConvertPdfToJpg(pdfName string, imageName string) error{
 func MergeImage(soruceImage, targeImage,outputPath string) (string,error){
 	return "",nil
 }
-func ImgShrink(sourceImg string) (string,error){
+func ImgShrink(sourceImg ,openid,outputPath string) (string,error){
 	return "",nil
 }

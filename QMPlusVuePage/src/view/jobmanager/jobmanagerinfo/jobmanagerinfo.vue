@@ -2,8 +2,8 @@
   <div>
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="工作名称">
-          <el-input placeholder="工作名称" v-model="searchInfo.p_name"></el-input>
+        <el-form-item label="职位名称">
+          <el-input placeholder="职位名称" v-model="searchInfo.p_name"></el-input>
         </el-form-item>
         <el-form-item label="工作城市">
           <el-input placeholder="工作城市" v-model="searchInfo.p_city"></el-input>
@@ -29,11 +29,23 @@
     >
       <!-- <el-table-column type="selection" min-width="55"></el-table-column> -->
       <el-table-column label="id" min-width="60" prop="ID" fixed></el-table-column>
-      <el-table-column label="工作名称" min-width="100" prop="p_name"></el-table-column>
+      <el-table-column label="职位名称" min-width="100" prop="p_name"></el-table-column>
+      <el-table-column label="公司名称" min-width="150">
+        <template slot-scope="scope">
+          <el-select @change="changeEp(scope.row)" placeholder="请选择" v-model="scope.row.enterprise_id">
+            <el-option
+              :key="ep.enterprise_name"
+              :label="ep.enterprise_name"
+              :value="ep.ID"
+              v-for="ep in enterpriseInfo"
+            ></el-option>
+          </el-select>
+        </template>
+      </el-table-column>
       <el-table-column label="薪资上限" min-width="100" prop="p_salary_high"></el-table-column>
       <el-table-column label="薪资下限" min-width="100" prop="p_salary_low"></el-table-column>
       <!-- <el-table-column label="工作地点纬度" min-width="150" prop="p_latitude"></el-table-column>
-      <el-table-column label="工作地点经度" min-width="150" prop="p_longitude"></el-table-column> -->
+      <el-table-column label="工作地点经度" min-width="150" prop="p_longitude"></el-table-column>-->
       <el-table-column label="工作地点" min-width="100" prop="p_address"></el-table-column>
       <el-table-column label="工作城市" min-width="150" prop="p_city"></el-table-column>
       <el-table-column label="工作年限" min-width="100" prop="p_edujy"></el-table-column>
@@ -45,7 +57,12 @@
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
           </router-link>
-          <el-button @click="deletejob(scope.row)" size="small" type="primary" icon="el-icon-delete">删除</el-button>
+          <el-button
+            @click="deletejob(scope.row)"
+            size="small"
+            type="primary"
+            icon="el-icon-delete"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -66,8 +83,9 @@
 <script>
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
 const path = process.env.VUE_APP_BASE_API;
-import { getJoblistListBackend, deleteJoblist } from "@/api/jobmanagerinfo";
+import { getJoblistListBackend, deleteJoblist, updateJoblist } from "@/api/jobmanagerinfo";
 //import { getCitynameList } from "@/api/cityname";
+import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";
 export default {
   name: "Jobmanagerinfo",
@@ -77,7 +95,8 @@ export default {
       listApi: getJoblistListBackend,
       listKey: "RspJoblistList",
       path: path,
-      multipleSelection: []
+      multipleSelection: [],
+      enterpriseInfo: []
     };
   },
   methods: {
@@ -113,11 +132,30 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    async changeEp(row) {
+      var selectedItem = {};
+      selectedItem = this.enterpriseInfo.find(item => {
+        return item.ID === row.enterprise_id;
+      });
+      row.enterprise_name = selectedItem.enterprise_name;
+      row.enterprise_logo = selectedItem.enterprise_logo;
+      const res = await updateJoblist(row);
+      if (res.success) {
+        this.$message({ type: "success", message: "指派简历成功" });
+      }
     }
   },
   async created() {
     // const res = await getCitynameList({ page: 1, pageSize: 999 });
     // this.cityinfo = res.data.userCityList;
+    getEnterpriseAllInfo().then(res => {
+      if (res.success) {
+        this.enterpriseInfo = res.data.result;
+      } else {
+        this.enterpriseInfo = [];
+      }
+    });
   }
 };
 </script>

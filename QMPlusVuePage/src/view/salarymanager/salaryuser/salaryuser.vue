@@ -33,7 +33,7 @@
             :on-success="onSuccess"
             :show-file-list="false"
           >
-            <el-tooltip effect="dark" content="请先选择企业" placement="top-start">
+            <el-tooltip class="item" effect="light" content="请先选择企业" placement="right">
               <el-button
                 :disabled="importDataDisabled"
                 type="success"

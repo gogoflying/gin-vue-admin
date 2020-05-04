@@ -47,7 +47,12 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
 
-    <el-dialog :visible.sync="addCompanyDialog" custom-class="user-dialog" title="新增企业">
+    <el-dialog
+      :visible.sync="addCompanyDialog"
+      custom-class="user-dialog"
+      @close="closeAddCompanyDialog"
+      title="新增企业"
+    >
       <el-form :rules="rules" ref="enterpriseForm" :model="enterpriseInfo">
         <el-form-item label="企业名称" label-width="80px" prop="enterprise_name">
           <el-input v-model="enterpriseInfo.enterprise_name"></el-input>
@@ -82,14 +87,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
-          <el-input v-model="enterpriseInfo.enterprise_desc"></el-input>
+          <quill-editor
+            ref="myQuillEditor"
+            v-model="enterpriseInfo.enterprise_desc"
+          ></quill-editor>
         </el-form-item>
         <el-form-item label="所在城市" label-width="80px" prop="city_id">
           <el-select placeholder="请选择注册城市" v-model="enterpriseInfo.city_id">
             <el-option
               :key="city.name"
               :label="city.name"
-              :value="city.id"
+              :value="city.ID"
               v-for="city in cityinfo"
             ></el-option>
           </el-select>
@@ -245,9 +253,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("user", ["token"])
+    ...mapGetters("user", ["token"]),
+    editor() {
+      return this.$refs.myQuillEditor.quill;
+    }
   },
   methods: {
+    onEditorBlur() {}, // 失去焦点事件
+    onEditorFocus() {}, // 获得焦点事件
+    onEditorChange() {}, // 内容改变事件
     async enterAddCompanyDialog() {
       this.$refs.enterpriseForm.validate(async valid => {
         if (valid) {
@@ -394,5 +408,8 @@ export default {
   margin-right: 0;
   margin-bottom: 0;
   width: 100%;
+}
+.ql-editor {
+  height: 400px;
 }
 </style>

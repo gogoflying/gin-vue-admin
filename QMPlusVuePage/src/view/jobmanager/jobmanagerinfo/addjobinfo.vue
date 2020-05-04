@@ -82,7 +82,7 @@
         </el-form-item>
         <el-row type="flex" justify="center">
           <el-col :span="13">
-            <el-button @click="closeAddjobDialog">取 消</el-button>
+            <el-button>取 消</el-button>
             <el-button @click="enterAddjobDialog" type="primary">确 定</el-button>
           </el-col>
         </el-row>
@@ -95,9 +95,6 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="onSearch" type="primary">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="onSearch" type="primary">更新位置</el-button>
         </el-form-item>
       </el-form>
       <div id="container" style="height:400px;"></div>
@@ -337,19 +334,18 @@ export default {
             this.$message({ type: "error", message: "添加失败!" });
           }
           await this.getTableData();
-          this.closeAddjobDialog();
         }
       });
     },
     savePublish() {},
     onSearch() {
-      geocoder.getLocation(this.searchaddress);
+      this.geocoder.getLocation(this.searchaddress);
     },
     init() {
       //步骤：定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
       //设置地图中心点
       var self = this;
-      var myLatlng = new qq.maps.LatLng(
+      var myLatlng = new window.qq.maps.LatLng(
         self.jobmanagerinfo.p_latitude,
         self.jobmanagerinfo.p_longitude
       );
@@ -359,25 +355,25 @@ export default {
         // mapTypeId: qq.maps.MapTypeId.ROADMAP //设置地图样式详情参见MapType
       };
       //获取dom元素添加地图信息
-      this.map = new qq.maps.Map(
+      self.map = new window.qq.maps.Map(
         document.getElementById("container"),
         myOptions
       );
       //创建marker
       if (self.marker == null || self.marker == "") {
-        self.marker = new qq.maps.Marker({
+        self.marker = new window.qq.maps.Marker({
           position: myLatlng,
           map: self.map
         });
       } else {
-        self.marker = new qq.maps.Marker({
+        self.marker = new window.qq.maps.Marker({
           position: myLatlng,
           map: self.map
         });
       }
       //给地图添加点击事件
       //并获取鼠标点击的经纬度
-      this.mapLister = qq.maps.event.addListener(this.map, "click", function(
+      self.mapLister = window.qq.maps.event.addListener(self.map, "click", function(
         event
       ) {
         self.jobmanagerinfo.p_latitude = event.latLng.getLat();
@@ -386,7 +382,7 @@ export default {
         self.map.setCenter(event.latLng);
       });
       //调用地址解析类
-      this.geocoder = new qq.maps.Geocoder({
+      self.geocoder = new window.qq.maps.Geocoder({
         complete: function(result) {
           self.jobmanagerinfo.p_latitude = result.detail.location.lat;
           self.jobmanagerinfo.p_longitude = result.detail.location.lng;

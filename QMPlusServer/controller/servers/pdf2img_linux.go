@@ -173,7 +173,7 @@ func MergeImage(soruceImage, targeImage,openid,outputPath string) (string,error)
 		return "",err
 	}
 
-	offset := image.Pt(img.Bounds().Dx()-wmb_img.Bounds().Dx()-500, img.Bounds().Dy()-wmb_img.Bounds().Dy()-800)
+	offset := image.Pt(img.Bounds().Dx()-wmb_img.Bounds().Dx()-500, img.Bounds().Dy()-wmb_img.Bounds().Dy()-700)
 	b := img.Bounds()
 	m := image.NewRGBA(b)
 

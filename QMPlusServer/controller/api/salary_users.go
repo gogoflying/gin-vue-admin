@@ -149,6 +149,9 @@ func FindSalaryUsersByOpenid(c *gin.Context) {
 		if len(reun.HuKou) > 0 {
 			reun.HuKous = strings.Split(reun.HuKou, ";")
 		}
+		if len(reun.Others) > 0 {
+			reun.Others = strings.Split(reun.OtherPhotos, ";")
+		}
 		servers.ReportFormat(c, true, "查询成功", gin.H{
 			"reun": reun,
 		})

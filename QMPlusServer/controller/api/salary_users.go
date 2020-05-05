@@ -250,11 +250,17 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 			}
 			name := strings.Trim(row.Cells[1].Value, " ")
 			mobile := strings.Trim(row.Cells[2].Value, " ")
-			card := strings.Trim(row.Cells[3].Value, " ")
-			email := strings.Trim(row.Cells[4].Value, " ")
+			jobname := strings.Trim(row.Cells[3].Value, " ")
+			salary, _ := strconv.Atoi(strings.Trim(row.Cells[4].Value, " "))
+			contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " "))
+			card := strings.Trim(row.Cells[6].Value, " ")
+			email := strings.Trim(row.Cells[7].Value, " ")
 			un := userSalary.SalaryUsers{
 				Name:         name,
 				Mobile:       mobile,
+				JobName:      jobname,
+				Salary:       salary,
+				ContractDate: contract_date,
 				Card:         card,
 				Email:        email,
 				EnterpriseId: id,

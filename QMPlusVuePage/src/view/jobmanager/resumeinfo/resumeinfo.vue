@@ -132,8 +132,6 @@ export default {
       path: path,
       viewResumeInfoDialog: false,
       name: "zhenghao",
-      urlImg:
-        "http://vinustseng.oss-cn-beijing.aliyuncs.com/1587350295head.jpg",
       user_base_info: {
         user_name: "zhenghao",
         gender: "男",

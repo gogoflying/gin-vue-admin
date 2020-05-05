@@ -11,7 +11,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="uuid" min-width="250" prop="uuid"></el-table-column>
+      <!-- <el-table-column label="uuid" min-width="250" prop="uuid"></el-table-column> -->
       <el-table-column label="用户名" min-width="150" prop="userName"></el-table-column>
       <el-table-column label="昵称" min-width="150" prop="nickName"></el-table-column>
       <el-table-column label="用户角色" min-width="150">
@@ -67,7 +67,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
-            :beforeUpload="beforeAvatarUpload"
+            :before-upload="beforeAvatarUpload"
           >
             <img :src="userInfo.headerImg" class="avatar" v-if="userInfo.headerImg" />
             <i class="el-icon-plus avatar-uploader-icon" v-else></i>
@@ -232,12 +232,14 @@ export default {
           message: "上传文件只能是 jpg、png格式!",
           type: "warning"
         });
+        return false;
       }
       if (!isLt50KB) {
         this.$message({
           message: "上传文件大小不能超过 50KB!",
           type: "warning"
         });
+        return false;
       }
       return (extension || extension2) && isLt50KB;
     }

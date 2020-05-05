@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"time"
 	"strings"
+	"time"
 
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/initlog"
@@ -23,6 +23,8 @@ const (
 	STATUS_WRITE_NAME
 	STATUS_MERGED
 )
+
+const tmpDir = "./tmp/"
 
 func CreateSalaryContract(c *gin.Context) {
 	var un userSalary.SalaryContract
@@ -130,14 +132,14 @@ func WriteSignatureJpg(c *gin.Context) {
 	var usi userSalary.UserSignatureInfo
 	_ = c.ShouldBindJSON(&usi)
 	log.L.Info("WriteSignatureJpg recv info:", usi)
-	if len(usi.OpenId) == 0{
+	if len(usi.OpenId) == 0 {
 		servers.ReportFormat(c, false, fmt.Sprintf("WriteSignatureJpg faild "), gin.H{})
 		return
 	}
 	sc := userSalary.SalaryContract{
-		Openid: usi.OpenId,
-		User_signature_url:usi.SignatureFileUrl,
-		Status:int(STATUS_WRITE_NAME),
+		Openid:             usi.OpenId,
+		User_signature_url: usi.SignatureFileUrl,
+		Status:             int(STATUS_WRITE_NAME),
 	}
 	_ = c.ShouldBindJSON(&sc)
 	log.L.Info("WriteSignatureJpg new json:", sc)
@@ -148,7 +150,7 @@ func WriteSignatureJpg(c *gin.Context) {
 		servers.ReportFormat(c, true, fmt.Sprintf("contract 更新成功 :%v", err), gin.H{})
 	}
 
-	go runMergeImg(c,usi.SignatureFileUrl,usi.OpenId)
+	go runMergeImg(c, usi.SignatureFileUrl, usi.OpenId)
 
 }
 
@@ -156,7 +158,7 @@ func DownloadLeaveContract(c *gin.Context) {
 	var usi userSalary.UserSignatureInfo
 	_ = c.ShouldBindJSON(&usi)
 	log.L.Info("DownloadLeaveContract recv info:", usi)
-	if len(usi.OpenId) == 0{
+	if len(usi.OpenId) == 0 {
 		servers.ReportFormat(c, false, fmt.Sprintf("WriteSignatureJpg faild "), gin.H{})
 		return
 	}
@@ -166,15 +168,15 @@ func DownloadLeaveContract(c *gin.Context) {
 	_ = c.ShouldBindJSON(&sc)
 	log.L.Info("WriteSignatureJpg new json:", sc)
 	err, resultPath := sc.FindById()
-	if len(resultPath.Leave_contract_target_url) <0{
+	if len(resultPath.Leave_contract_target_url) < 0 {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取失败：%v", err), gin.H{})
 		return
 	}
 	if err != nil {
-		servers.ReportFormat(c, false, fmt.Sprintf("query DownloadLeaveContract openid:%s  :%v",usi.OpenId, err), gin.H{})
+		servers.ReportFormat(c, false, fmt.Sprintf("query DownloadLeaveContract openid:%s  :%v", usi.OpenId, err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
-			"status":  "ok",
+			"status":   "ok",
 			"leaveJpg": resultPath.Leave_contract_target_url,
 		})
 	}
@@ -186,13 +188,13 @@ func UploadLeavingContract(c *gin.Context) {
 	log.L.Info("UploadUserContract recv info:", uci)
 	//write db
 	sc := userSalary.SalaryContract{
-		Openid: uci.OpenId,
+		Openid:                    uci.OpenId,
 		Leave_contract_target_url: uci.TmpContractPath,
 	}
 	//var un userSalary.SalaryContract
 	_ = c.ShouldBindJSON(&sc)
 	log.L.Info("UploadUserContract new json:", sc)
-	err ,_:= sc.UpdateSalaryContract()
+	err, _ := sc.UpdateSalaryContract()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 	} else {
@@ -226,7 +228,7 @@ func UploadUserContract(c *gin.Context) {
 
 func runPDFConvert(c *gin.Context, localPath, openId string) {
 	//uci.tmpContractPath
-	fmt.Printf("runPDFConvert :%s--%s\n", localPath,openId)
+	fmt.Printf("runPDFConvert :%s--%s\n", localPath, openId)
 	jpgPathList, err := servers.SplitPdf(localPath, openId, "tmp")
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("split contract pdf err ：%v", err), gin.H{})
@@ -241,7 +243,7 @@ func runPDFConvert(c *gin.Context, localPath, openId string) {
 		} else {
 			//cloudContractPath = append(cloudContractPath,filePath)
 			cloudContractPath += filePath
-			if idx != len(jpgPathList) -1  {
+			if idx != len(jpgPathList)-1 {
 				cloudContractPath += ";"
 			}
 
@@ -271,7 +273,7 @@ func ImportUserContract(c *gin.Context) {
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
 	} else {
-		fileName := time.Now().Local().Format("20060102150405") + header.Filename
+		fileName := tmpDir + time.Now().Local().Format("20060102150405") + header.Filename
 		dst, err := os.Create(fileName)
 		if err != nil {
 			// ignore
@@ -301,7 +303,7 @@ func GetContractJpgList(c *gin.Context) {
 	_ = c.ShouldBindJSON(&sc)
 	err, reun := sc.FindById()
 	//log.L.Info("UploadUserContract new json:", reun.Enter_contract_source_url)
-	if len(reun.Enter_contract_source_url) <0{
+	if len(reun.Enter_contract_source_url) < 0 {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取失败：%v", err), gin.H{})
 		return
 	}
@@ -310,38 +312,38 @@ func GetContractJpgList(c *gin.Context) {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
-			"status":  "ok",
+			"status":      "ok",
 			"contartList": resultJpg,
 		})
 	}
 }
 
-func runMergeImg(c *gin.Context, imgPath,openId string) {
+func runMergeImg(c *gin.Context, imgPath, openId string) {
 	//uci.tmpContractPath
 	fmt.Printf("runMergeImg :%s\n", imgPath)
-	err,localFile := servers.DownLoadLocalFile(USER_HEADER_BUCKET,imgPath,"tmp")
+	err, localFile := servers.DownLoadLocalFile(USER_HEADER_BUCKET, imgPath, "tmp")
 	if err != nil {
-		fmt.Printf("DownLoadLocalFile  file :%s err:%v\n", imgPath,err)
+		fmt.Printf("DownLoadLocalFile  file :%s err:%v\n", imgPath, err)
 		servers.ReportFormat(c, false, fmt.Sprintf("DownLoadLocalFile  file  err"), gin.H{})
 		return
-	} 
-	sourcePdf := getContractLastFile(c,openId)
+	}
+	sourcePdf := getContractLastFile(c, openId)
 	if len(sourcePdf) == 0 {
 		fmt.Printf("DownLoadLocalFile  file :%s err\n", sourcePdf)
 		servers.ReportFormat(c, false, fmt.Sprintf("DownLoadLocalFile  file  err"), gin.H{})
 		return
-	} 
+	}
 
-	signatureShrinkNmaePng,err := servers.ImgShrink(localFile,openId,"tmp")
-	if err != nil{
-		servers.ReportFormat(c, false, fmt.Sprintf("ImgShrink  file  err:%v",err), gin.H{})
+	signatureShrinkNmaePng, err := servers.ImgShrink(localFile, openId, "tmp")
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("ImgShrink  file  err:%v", err), gin.H{})
 		return
 	}
 
 	//fmt.Printf("DownLoadLocalFile  file003 :%s err\n", signatureShrinkNmaePng)
-	mergedFile,err := servers.MergeImage(sourcePdf, signatureShrinkNmaePng,openId, "tmp")
+	mergedFile, err := servers.MergeImage(sourcePdf, signatureShrinkNmaePng, openId, "tmp")
 	if err != nil {
-		servers.ReportFormat(c, false, fmt.Sprintf("MergeImage contract pdf err :%v",err), gin.H{})
+		servers.ReportFormat(c, false, fmt.Sprintf("MergeImage contract pdf err :%v", err), gin.H{})
 		return
 	}
 	fmt.Printf("SplitPdf result :%v", mergedFile)
@@ -373,7 +375,7 @@ func runMergeImg(c *gin.Context, imgPath,openId string) {
 	}
 }
 
-func getContractLastFile(c *gin.Context, openId string) string{
+func getContractLastFile(c *gin.Context, openId string) string {
 	sc := userSalary.SalaryContract{
 		Openid: openId,
 	}
@@ -381,16 +383,16 @@ func getContractLastFile(c *gin.Context, openId string) string{
 	_ = c.ShouldBindJSON(&sc)
 	err, reun := sc.FindById()
 	//log.L.Info("UploadUserContract new json:", reun.Enter_contract_source_url)
-	if len(reun.Enter_contract_source_url) <0{
+	if len(reun.Enter_contract_source_url) < 0 {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取失败：%v", err), gin.H{})
 		return ""
 	}
 	resultJpg := strings.Split(reun.Enter_contract_source_url, ";")
-	err,localFile := servers.DownLoadLocalFile(USER_HEADER_BUCKET,resultJpg[len(resultJpg) -1],"tmp")
+	err, localFile := servers.DownLoadLocalFile(USER_HEADER_BUCKET, resultJpg[len(resultJpg)-1], "tmp")
 	if err != nil {
-		fmt.Printf("DownLoadLocalFile  file :%s err:%v\n", localFile,err)
+		fmt.Printf("DownLoadLocalFile  file :%s err:%v\n", localFile, err)
 		return ""
-	} 
+	}
 	fmt.Printf("getContractLastFile   down success :%s err\n", localFile)
 
 	return localFile

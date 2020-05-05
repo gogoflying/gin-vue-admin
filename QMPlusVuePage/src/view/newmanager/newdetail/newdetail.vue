@@ -24,7 +24,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
-            :beforeUpload="beforeAvatarUpload"
+            :before-upload="beforeAvatarUpload"
           >
             <img :src="user_news.img" class="avatar" v-if="user_news.img" height="300" width="300" />
             <i class="el-icon-plus avatar-uploader-icon" v-else></i>
@@ -68,7 +68,8 @@ export default {
         order: "",
         news_type: "",
         img: "",
-        count: ""
+        count: "",
+        status: ""
       },
       newtypes: [
         {
@@ -106,12 +107,14 @@ export default {
           message: "上传文件只能是 jpg、png格式!",
           type: "warning"
         });
+        return false;
       }
       if (!isLt50KB) {
         this.$message({
           message: "上传文件大小不能超过 50KB!",
           type: "warning"
         });
+        return false;
       }
       return (extension || extension2) && isLt50KB;
     },
@@ -125,6 +128,7 @@ export default {
       this.$refs.newForm.validate(async valid => {
         if (valid) {
           let res;
+          this.user_news.status = 1
           if (this.isEdit) {
             res = await updateUserNews(this.user_news);
           } else {
@@ -138,7 +142,24 @@ export default {
         }
       });
     }, // 保存方法
-    savePublish() {}
+    savePublish() {
+      this.$refs.newForm.validate(async valid => {
+        if (valid) {
+          let res;
+          this.user_news.status = 2
+          if (this.isEdit) {
+            res = await updateUserNews(this.user_news);
+          } else {
+            res = await createUserNews(this.user_news);
+          }
+          if (res.success) {
+            this.$message({ type: "success", message: "创建成功" });
+          } else {
+            this.$message({ type: "error", message: "添加失败!" });
+          }
+        }
+      });
+    }
   },
   created() {
     if (this.$route.query && this.$route.query.id) {

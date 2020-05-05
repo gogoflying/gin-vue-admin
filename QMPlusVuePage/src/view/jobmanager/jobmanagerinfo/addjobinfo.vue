@@ -82,7 +82,7 @@
         </el-form-item>
         <el-row type="flex" justify="center">
           <el-col :span="13">
-            <el-button>取 消</el-button>
+            <el-button @click="closeAddjobDialog">取 消</el-button>
             <el-button @click="enterAddjobDialog" type="primary">确 定</el-button>
           </el-col>
         </el-row>
@@ -122,8 +122,8 @@ export default {
         p_name: "",
         p_salary_high: "",
         p_salary_low: "",
-        p_latitude: "116.397128",
-        p_longitude: "39.916527",
+        p_latitude: "39.916527",
+        p_longitude: "116.397128",
         p_address: "",
         p_city: "",
         p_city_id: "",
@@ -336,8 +336,11 @@ export default {
           await this.getTableData();
         }
       });
+      this.$router.push({ name: "jobmanagerinfo" });
     },
-    savePublish() {},
+    closeAddjobDialog() {
+      this.$router.push({ name: "jobmanagerinfo" });
+    },
     onSearch() {
       this.geocoder.getLocation(this.searchaddress);
     },
@@ -355,7 +358,7 @@ export default {
         // mapTypeId: qq.maps.MapTypeId.ROADMAP //设置地图样式详情参见MapType
       };
       //获取dom元素添加地图信息
-      self.map = new window.qq.maps.Map(
+      this.map = new window.qq.maps.Map(
         document.getElementById("container"),
         myOptions
       );
@@ -373,21 +376,23 @@ export default {
       }
       //给地图添加点击事件
       //并获取鼠标点击的经纬度
-      self.mapLister = window.qq.maps.event.addListener(self.map, "click", function(
-        event
-      ) {
-        self.jobmanagerinfo.p_latitude = event.latLng.getLat();
-        self.jobmanagerinfo.p_longitude = event.latLng.getLng();
-        self.marker.setPosition(event.latLng);
-        self.map.setCenter(event.latLng);
-      });
+      this.mapLister = window.qq.maps.event.addListener(
+        self.map,
+        "click",
+        function(event) {
+          self.jobmanagerinfo.p_latitude = event.latLng.getLat();
+          self.jobmanagerinfo.p_longitude = event.latLng.getLng();
+          self.marker.setPosition(event.latLng);
+          self.map.setCenter(event.latLng);
+        }
+      );
       //调用地址解析类
-      self.geocoder = new window.qq.maps.Geocoder({
+      this.geocoder = new window.qq.maps.Geocoder({
         complete: function(result) {
           self.jobmanagerinfo.p_latitude = result.detail.location.lat;
           self.jobmanagerinfo.p_longitude = result.detail.location.lng;
-          self.marker.setPosition(result.detail.latLng);
-          self.map.setCenter(result.detail.latLng);
+          self.marker.setPosition(result.detail.location);
+          self.map.setCenter(result.detail.location);
         }
       });
     },

@@ -10,9 +10,9 @@ import (
 )
 
 type UserLoginInfo struct {
-	Code   	 string `json:"code"`
-	Openid   string `json:"openid"`
-	Mobile   string    `json:"mobile"`
+	Code   string `json:"code"`
+	Openid string `json:"openid"`
+	Mobile string `json:"mobile"`
 }
 
 type Users struct {

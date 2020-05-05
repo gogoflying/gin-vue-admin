@@ -39,8 +39,8 @@ type SalaryUsers struct {
 	LeaveTime    string   `json:"leave_time" gorm:"column:LeaveTime;comment:'离职日期'"`
 	JanYuan      string   `json:"jan_yuan" gorm:"column:JanYuan;comment:'社保减员日期'"`
 	Errors       string   `json:"errors" gorm:"column:errors;comment:'信息错误反馈内容'"`
-	EnterStep    int      `json:"enter_step" gorm:"column:EnterStep;comment:'入职进度,0待用户确认信息，1已确认信息，2待用户网签合同，3合同签完'"`
-	LeaveStep    int      `json:"leave_step" gorm:"column:LeaveStep;comment:'离职进度'"`
+	EnterStep    int      `json:"enter_step" gorm:"column:EnterStep;comment:'入职进度,0初始状态,待用户确认信息 1 用户基本信息已确认,待补充图片材料 2补充图片材料完毕 3待用户网签合同 4合同签约完毕'"`
+	LeaveStep    int      `json:"leave_step" gorm:"column:LeaveStep;comment:'离职进度,0初始状态 1用户提交离职 2管理员审批，补充离职日期 3已离职，补充离职证明和减员年月具体到月就好'"`
 }
 
 // 创建SalaryUsers

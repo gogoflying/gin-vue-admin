@@ -5,7 +5,7 @@
     </div>
     <el-table :data="tableData" border stripe>
       <el-table-column type="expand">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="企业logo:">
               <span>
@@ -27,7 +27,7 @@
       <el-table-column label="企业类型" min-width="100" prop="enterprise_type"></el-table-column>
       <el-table-column label="企业热度" min-width="100" prop="enterprise_hot"></el-table-column>
       <el-table-column label="企业性质" min-width="100" prop="industry_type"></el-table-column>
-      <el-table-column label="企业描述" min-width="150" prop="enterprise_desc"></el-table-column>
+      <!-- <el-table-column label="企业描述" min-width="150" prop="enterprise_desc" :show-overflow-tooltip="true"></el-table-column> -->
       <el-table-column label="所在城市" min-width="100" prop="city_id"></el-table-column>
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
@@ -47,7 +47,12 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
 
-    <el-dialog :visible.sync="addCompanyDialog" custom-class="user-dialog" title="新增企业">
+    <el-dialog
+      :visible.sync="addCompanyDialog"
+      custom-class="user-dialog"
+      @close="closeAddCompanyDialog"
+      title="新增企业"
+    >
       <el-form :rules="rules" ref="enterpriseForm" :model="enterpriseInfo">
         <el-form-item label="企业名称" label-width="80px" prop="enterprise_name">
           <el-input v-model="enterpriseInfo.enterprise_name"></el-input>
@@ -58,14 +63,21 @@
         <el-form-item label="企业规模" label-width="80px" prop="enterprise_scale">
           <el-input v-model.number="enterpriseInfo.enterprise_scale"></el-input>
         </el-form-item>
-        <el-form-item label="企业类型" label-width="80px" prop="enterprise_type">
-          <el-input v-model.number="enterpriseInfo.enterprise_type"></el-input>
+        <el-form-item label="企业性质" label-width="80px" prop="enterprise_type">
+          <el-select placeholder="请选择企业性质" v-model="enterpriseInfo.enterprise_type">
+            <el-option
+              :key="enptype.name"
+              :label="enptype.name"
+              :value="enptype.id"
+              v-for="enptype in enterprisetype"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="企业热度" label-width="80px" prop="enterprise_hot">
           <el-input v-model.number="enterpriseInfo.enterprise_hot"></el-input>
         </el-form-item>
-        <el-form-item label="企业性质" label-width="80px" prop="industry_type">
-          <el-select placeholder="请选择企业性质" v-model="enterpriseInfo.industry_type">
+        <el-form-item label="行业类别" label-width="80px" prop="industry_type">
+          <el-select placeholder="请选择行业类别" v-model="enterpriseInfo.industry_type">
             <el-option
               :key="industry.name"
               :label="industry.name"
@@ -75,14 +87,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
-          <el-input v-model="enterpriseInfo.enterprise_desc"></el-input>
+          <quill-editor
+            ref="myQuillEditor"
+            v-model="enterpriseInfo.enterprise_desc"
+          ></quill-editor>
         </el-form-item>
         <el-form-item label="所在城市" label-width="80px" prop="city_id">
           <el-select placeholder="请选择注册城市" v-model="enterpriseInfo.city_id">
             <el-option
               :key="city.name"
               :label="city.name"
-              :value="city.id"
+              :value="city.ID"
               v-for="city in cityinfo"
             ></el-option>
           </el-select>
@@ -95,7 +110,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
-            :beforeUpload="beforeAvatarUpload"
+            :before-upload="beforeAvatarUpload"
           >
             <img
               :src="enterpriseInfo.enterprise_logo"
@@ -113,7 +128,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
-            :beforeUpload="beforeAvatarUpload"
+            :before-upload="beforeAvatarUpload"
           >
             <img
               :src="enterpriseInfo.enterprise_img"
@@ -141,7 +156,8 @@ import {
   createEnterpriseInfo,
   updateEnterpriseInfo,
   findEnterpriseInfo,
-  deleteEnterpriseInfo
+  deleteEnterpriseInfo,
+  getEnterpriseOptions
 } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";
 import { mapGetters } from "vuex";
@@ -183,13 +199,13 @@ export default {
           { required: true, message: "请输入企业规模", trigger: "blur" }
         ],
         enterprise_type: [
-          { required: true, message: "请输入企业类型", trigger: "blur" }
+          { required: true, message: "请输入企业性质", trigger: "blur" }
         ],
         enterprise_hot: [
           { required: true, message: "请输入企业热度", trigger: "blur" }
         ],
         industry_type: [
-          { required: true, message: "请输入企业性质", trigger: "blur" }
+          { required: true, message: "请输入行业类别", trigger: "blur" }
         ],
         enterprise_desc: [
           { required: true, message: "请输入企业描述", trigger: "blur" }
@@ -218,6 +234,8 @@ export default {
           name: "广州"
         }
       ],
+      enterprisetype: [],
+
       industrytype: [
         {
           id: 1,
@@ -235,9 +253,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("user", ["token"])
+    ...mapGetters("user", ["token"]),
+    editor() {
+      return this.$refs.myQuillEditor.quill;
+    }
   },
   methods: {
+    onEditorBlur() {}, // 失去焦点事件
+    onEditorFocus() {}, // 获得焦点事件
+    onEditorChange() {}, // 内容改变事件
     async enterAddCompanyDialog() {
       this.$refs.enterpriseForm.validate(async valid => {
         if (valid) {
@@ -249,8 +273,8 @@ export default {
           }
           if (res.success) {
             this.$message({ type: "success", message: "创建成功" });
-          }else {
-            this.$message({ type: 'error',message: '添加失败!' });
+          } else {
+            this.$message({ type: "error", message: "添加失败!" });
           }
           await this.getTableData();
           this.closeAddCompanyDialog();
@@ -326,15 +350,23 @@ export default {
           message: "上传文件只能是 jpg、png格式!",
           type: "warning"
         });
+        return false;
       }
       if (!isLt50KB) {
         this.$message({
           message: "上传文件大小不能超过 50KB!",
           type: "warning"
         });
+        return false;
       }
       return (extension || extension2) && isLt50KB;
     }
+  },
+  async created() {
+    const res = await getEnterpriseOptions();
+    this.enterprisetype = res.data.enterprisetype;
+    this.industrytype = res.data.industrytype;
+    this.cityinfo = res.data.cityinfo;
   }
 };
 </script>
@@ -378,5 +410,8 @@ export default {
   margin-right: 0;
   margin-bottom: 0;
   width: 100%;
+}
+.ql-editor {
+  height: 400px;
 }
 </style>

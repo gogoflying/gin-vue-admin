@@ -33,14 +33,13 @@
             :on-success="onSuccess"
             :show-file-list="false"
           >
-            <el-tooltip effect="dark" content="请先选择企业" placement="top-start">
-              <el-button
-                :disabled="importDataDisabled"
-                type="success"
-                :icon="importDataBtnIcon"
-              >{{importDataBtnText}}</el-button>
+            <el-tooltip class="item" effect="light" content="请先选择企业" placement="right">
+              <el-button type="success" :icon="importDataBtnIcon">{{importDataBtnText}}</el-button>
             </el-tooltip>
           </el-upload>
+        </el-col>
+        <el-col :span="3">
+          <el-button type="primary" @click="downSalarytemplate" icon="el-icon-download">下载模板</el-button>
         </el-col>
         <el-col :span="3">
           <el-button type="primary" @click="addSalaryUser" icon="el-icon-plus">新增员工</el-button>
@@ -73,33 +72,136 @@
       <el-button type="primary" @click="addSalaryUser" icon="el-icon-plus">新增员工</el-button>-->
     </div>
     <el-table :data="tableData" border stripe>
+      <el-table-column type="expand">
+        <template slot-scope="scope">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="身份证正反面:">
+              <span v-if="scope.row.cards != null ">
+                <ul v-for="cd in scope.row.cards" :key="cd">
+                  <li style="float:left;">
+                    <img :src="cd" height="500" width="500" />
+                  </li>
+                </ul>
+              </span>
+              <span v-else>身份证未上传</span>
+            </el-form-item>
+            <el-form-item label="银行卡正反面:">
+              <span v-if="scope.row.banks != null ">
+                <ul v-for="bk in scope.row.cards" :key="bk">
+                  <li>
+                    <img :src="bk" height="500" width="500" />
+                  </li>
+                </ul>
+              </span>
+              <span v-else>银行卡未上传</span>
+            </el-form-item>
+            <el-form-item label="户口本照片:">
+              <span v-if="scope.row.hukous != null ">
+                <ul v-for="cd in scope.row.hukous" :key="cd">
+                  <li>
+                    <img :src="cd" height="500" width="500" />
+                  </li>
+                </ul>
+              </span>
+              <span v-else>户口本未上传</span>
+            </el-form-item>
+            <el-form-item label="本人照片:">
+              <span v-if="scope.row.photos != null ">
+                <ul v-for="cd in scope.row.photos" :key="cd">
+                  <li>
+                    <img :src="cd" height="500" width="500" />
+                  </li>
+                </ul>
+              </span>
+              <span v-else>本人照片未上传</span>
+            </el-form-item>
+            <el-form-item label="体检报告合格照片:">
+              <span v-if="scope.row.checkups != null ">
+                <ul v-for="cd in scope.row.checkups" :key="cd">
+                  <li>
+                    <img :src="cd" height="500" width="500" />
+                  </li>
+                </ul>
+              </span>
+              <span v-else>体检报告未上传</span>
+            </el-form-item>
+            <el-form-item label="离职证明照片:">
+              <span v-if="scope.row.leaves != null ">
+                <ul v-for="cd in scope.row.leaves" :key="cd">
+                  <li>
+                    <img :src="cd" height="500" width="500" />
+                  </li>
+                </ul>
+              </span>
+              <span v-else>离职证明未上传</span>
+            </el-form-item>
+            <el-form-item label="毕业证照片:">
+              <span v-if="scope.row.diplomas != null ">
+                <ul v-for="cd in scope.row.diplomas" :key="cd">
+                  <li>
+                    <img :src="cd" height="500" width="500" />
+                  </li>
+                </ul>
+              </span>
+              <span v-else>未上传</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
       <el-table-column label="id" min-width="60" prop="ID"></el-table-column>
-      <el-table-column label="openid" min-width="150" prop="openid"></el-table-column>
-      <el-table-column label="姓名" min-width="150" prop="name"></el-table-column>
-      <el-table-column label="手机" min-width="100" prop="mobile"></el-table-column>
-      <el-table-column label="身份证号" min-width="100" prop="card"></el-table-column>
+      <el-table-column label="姓名" min-width="80" prop="name"></el-table-column>
+      <el-table-column label="手机" min-width="110" prop="mobile"></el-table-column>
+      <el-table-column label="岗位名称" min-width="100" prop="job_name"></el-table-column>
+      <el-table-column label="工资" min-width="100" prop="salary"></el-table-column>
+      <el-table-column label="合同期限" min-width="50" prop="contract_date"></el-table-column>
+      <el-table-column label="身份证号" min-width="100" prop="card" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="邮箱" min-width="100" prop="email"></el-table-column>
       <el-table-column label="入职企业" min-width="100" prop="enterprise"></el-table-column>
       <el-table-column label="入职日期" min-width="100" prop="enter_time"></el-table-column>
-      <el-table-column label="离职日期" min-width="150" prop="leave_time"></el-table-column>
-      <el-table-column label="入职进度" min-width="100" prop="enter_step"></el-table-column>
-      <el-table-column label="离职进度" min-width="100" prop="leave_step"></el-table-column>
+      <el-table-column label="离职日期" min-width="100" prop="leave_time"></el-table-column>
+      <el-table-column label="入职进度" min-width="150" prop="enter_step">
+        <template slot-scope="scope">
+          <el-select
+            @change="changestep(scope.row)"
+            placeholder="请选择"
+            v-model="scope.row.enter_step"
+          >
+            <el-option :key="es.name" :label="es.name" :value="es.id" v-for="es in enterSteps"></el-option>
+          </el-select>
+        </template>
+      </el-table-column>
+      <el-table-column label="离职进度" min-width="150" prop="leave_step">
+        <template slot-scope="scope">
+          <el-select
+            @change="changestep(scope.row)"
+            placeholder="请选择"
+            v-model="scope.row.leave_step"
+          >
+            <el-option :key="ls.name" :label="ls.name" :value="ls.id" v-for="ls in leaveSteps"></el-option>
+          </el-select>
+        </template>
+      </el-table-column>
       <el-table-column fixed="right" label="操作" width="300">
         <template slot-scope="scope">
           <el-button @click="editSalaryUser(scope.row)" size="small" type="text">编辑</el-button>
           <el-button @click="deleteSalaryUser(scope.row)" size="small" type="text">删除</el-button>
-
           <el-upload
             :action="`${path}/un/importUserContract?openid=${scope.row.openid}`"
             style="display: inline-block;"
             :headers="{'x-token':token}"
             :on-error="onErrorUc"
             :on-success="onSuccessUc"
+            :before-upload="beforeUploadPdf"
             :show-file-list="false"
           >
-            <el-button size="small" type="text">上传合同</el-button>
+            <el-button size="small" type="text" :disabled="scope.row.enter_step < 2 ">上传合同</el-button>
           </el-upload>
-          <el-button @click="viewContract(scope.row)" size="small" type="text">查看合同</el-button>
+          <el-button
+            @click="viewContract(scope.row)"
+            size="small"
+            type="text"
+            :disabled="scope.row.enter_step < 3 "
+          >查看合同</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -133,8 +235,8 @@
             <el-option
               :key="industry.enterprise_name"
               :label="industry.enterprise_name"
-              :value="industry.id"
-              v-for="industry in industrytype"
+              :value="industry.ID"
+              v-for="industry in enterpriseInfo"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -209,7 +311,8 @@ import {
   updateSalaryUsers,
   findSalaryUsers,
   deleteSalaryUsers,
-  uploadUserContract
+  uploadUserContract,
+  downloadContractList
 } from "@/api/salaryuser";
 import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";
@@ -233,7 +336,7 @@ export default {
       title: "",
       importDataBtnText: "导入数据",
       importDataBtnIcon: "el-icon-upload2",
-      importDataDisabled: false,
+      importDataDisabled: true,
       enterpriseInfo: [],
       salaryuserinfo: {
         openid: "",
@@ -283,29 +386,37 @@ export default {
         },
         {
           id: 1,
-          name: "已确认信息"
+          name: "待补充图片材料"
         },
         {
           id: 2,
-          name: "待用户网签合同"
+          name: "待审核材料"
         },
         {
           id: 3,
-          name: "合同签完"
+          name: "待用户网签合同"
+        },
+        {
+          id: 4,
+          name: "合同签约完毕"
         }
       ],
       leaveSteps: [
         {
           id: 0,
-          name: "待用户审核"
+          name: "初始状态"
         },
         {
           id: 1,
-          name: "用户确认信息"
+          name: "用户提交离职"
         },
         {
           id: 2,
-          name: "离职"
+          name: "管理员审批,补充离职日期"
+        },
+        {
+          id: 3,
+          name: "已离职,补充离职证明"
         }
       ]
     };
@@ -313,7 +424,27 @@ export default {
   computed: {
     ...mapGetters("user", ["token"])
   },
+  watch: {
+    enterprise_id(val) {
+      if (val != null) {
+        this.importDataDisabled = false;
+      }
+    }
+  },
   methods: {
+    downSalarytemplate() {
+      const link = document.createElement("a");
+      const url = `${path}/un/template/salaryuser.xlsx`;
+      link.setAttribute("href", url);
+      link.setAttribute("download", "员工模板");
+      link.click();
+    },
+    async changestep(row) {
+      const res = await updateSalaryUsers(row);
+      if (res.success) {
+        this.$message({ type: "success", message: "状态设置成功" });
+      }
+    },
     async enterAddSalaryUserDialog() {
       this.$refs.salaryuserForm.validate(async valid => {
         if (valid) {
@@ -412,6 +543,26 @@ export default {
       this.importDataDisabled = true;
       this.fullscreenLoading = true;
     },
+    beforeUploadPdf(file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension = testmsg === "pdf";
+      const isLt1MB = file.size / 1024 < 50;
+      if (!extension) {
+        this.$message({
+          message: "上传文件只能是 jpg、png格式!",
+          type: "warning"
+        });
+        return false;
+      }
+      if (!isLt1MB) {
+        this.$message({
+          message: "上传文件大小不能超过 50KB!",
+          type: "warning"
+        });
+        return false;
+      }
+      return extension && isLt1MB;
+    },
     onErrorUc() {
       this.$message({
         type: "error",
@@ -444,25 +595,12 @@ export default {
         });
       }
     },
-    viewContract() {
-      this.viewContractDialog = true;
-      //this.fetchContract(row.openid);
-      this.user_cons = [
-        "http://vinustseng.oss-cn-beijing.aliyuncs.com/1588393209tmp//333_0.jpg",
-        "http://vinustseng.oss-cn-beijing.aliyuncs.com/1588393212tmp//333_1.jpg",
-        "http://vinustseng.oss-cn-beijing.aliyuncs.com/1588393220tmp//333_2.jpg",
-        "http://vinustseng.oss-cn-beijing.aliyuncs.com/1588393227tmp//333_3.jpg",
-        "http://vinustseng.oss-cn-beijing.aliyuncs.com/1588393236tmp//333_4.jpg",
-        "http://vinustseng.oss-cn-beijing.aliyuncs.com/1588393245tmp//333_5.jpg",
-        "http://vinustseng.oss-cn-beijing.aliyuncs.com/1588393253tmp//333_6.jpg"
-        // "http://vinustseng.oss-cn-beijing.aliyuncs.com/1588137797head.jpg",
-        // "http://vinustseng.oss-cn-beijing.aliyuncs.com/1587609585logo.jpg"
-      ];
-    },
-    fetchContract() {
-      //获取合同图片
-      //const res = await getAuthorityList({ page: 1, pageSize: 999 });
-      //this.authOptions = res.data.list;
+    async viewContract(row) {
+      const res = await downloadContractList({ openid: row.openid });
+      if (res.success) {
+        this.user_cons = res.data.jpgList;
+        this.viewContractDialog = true;
+      }
     },
     closeviewContractDialog() {
       this.user_cons = [];
@@ -526,5 +664,18 @@ export default {
   .el-button {
     float: right;
   }
+}
+
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 150px;
+  color: #4e5868;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 100%;
 }
 </style>

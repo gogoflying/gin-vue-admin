@@ -37,7 +37,7 @@ type RegestStuct struct {
 	EnterPriseName string `json:"enterprise_name"`
 	NickName       string `json:"nickName" gorm:"default:'QMPlusUser'"`
 	HeaderImg      string `json:"headerImg" gorm:"default:'http://www.henrongyi.top/avatar/lufu.jpg'"`
-	AuthorityId    string `json:"authorityId" gorm:"default:888"`
+	AuthorityId    string `json:"authorityId" gorm:"default:9528"`
 }
 
 // @Tags Base
@@ -49,6 +49,9 @@ type RegestStuct struct {
 func Register(c *gin.Context) {
 	var R RegestStuct
 	_ = c.ShouldBindJSON(&R)
+	if R.AuthorityId == "" {
+		R.AuthorityId = "9528"
+	}
 	user := &sysModel.SysUser{Username: R.Username, NickName: R.NickName, Password: R.Password, HeaderImg: R.HeaderImg, AuthorityId: R.AuthorityId}
 	err, user := user.Register()
 	if err != nil {
@@ -59,15 +62,15 @@ func Register(c *gin.Context) {
 		if R.EnterPriseName != "" {
 			var info userJobs.EnterpriseInfo
 			info.EnterPriseName = R.EnterPriseName
-			err = info.CreateEnterpriseInfo()
+			err, ep := info.SelectAndCreateEnterpriseInfo()
 			if err != nil {
 				servers.ReportFormat(c, false, fmt.Sprintf("%v", err), gin.H{
 					"user": user,
 				})
 			} else {
 				auth := userJobs.UserAuth{
-					EnterPriseName: info.EnterPriseName,
-					EnterPriseId:   info.ID,
+					EnterPriseName: ep.EnterPriseName,
+					EnterPriseId:   ep.ID,
 					Username:       user.Username,
 					UserId:         user.ID,
 				}
@@ -127,9 +130,9 @@ func tokenNext(c *gin.Context, user sysModel.SysUser) {
 		NickName:     user.NickName,
 		AuthorityId:  user.AuthorityId,
 		StandardClaims: jwt.StandardClaims{
-			NotBefore: int64(time.Now().Unix() - 1000),  // 签名生效时间
-			ExpiresAt: int64(time.Now().Unix() + 60*60), // 过期时间 一个小时
-			Issuer:    "qmPlus",                         //签名的发行者
+			NotBefore: int64(time.Now().Unix() - 1000),     // 签名生效时间
+			ExpiresAt: int64(time.Now().Unix() + 60*60*24), // 过期时间 24个小时
+			Issuer:    "qmPlus",                            //签名的发行者
 		},
 	}
 	token, err := j.CreateToken(clams)

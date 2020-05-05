@@ -148,7 +148,7 @@ func ConvertPdfToJpg(pdfName string, imageName string) error {
 	return mw.WriteImage(imageName)
 }
 
-func MergeImage(soruceImage, targeImage,outputPath string) (string,error) {
+func MergeImage(soruceImage, targeImage,openid,outputPath string) (string,error) {
 	img_file, err := os.Open(soruceImage)
 	if err != nil {
 		log.L.Info("MergeImage open err: ",err)
@@ -173,7 +173,7 @@ func MergeImage(soruceImage, targeImage,outputPath string) (string,error) {
 		return "",err
 	}
 
-	offset := image.Pt(img.Bounds().Dx()-wmb_img.Bounds().Dx()-500, img.Bounds().Dy()-wmb_img.Bounds().Dy()-500)
+	offset := image.Pt(img.Bounds().Dx()-wmb_img.Bounds().Dx()-500, img.Bounds().Dy()-wmb_img.Bounds().Dy()-700)
 	b := img.Bounds()
 	m := image.NewRGBA(b)
 
@@ -181,7 +181,8 @@ func MergeImage(soruceImage, targeImage,outputPath string) (string,error) {
 	draw.Draw(m, wmb_img.Bounds().Add(offset), wmb_img, image.ZP, draw.Over)
 
 	//生成新图片new.jpg,并设置图片质量
-	mergedFile := fmt.Sprint("%s_%s",soruceImage,targeImage)
+	mergedFile := fmt.Sprintf("%s/merged_%s.jpg",outputPath,openid)
+	fmt.Println("jpg merged file:%s\n",mergedFile)
 	imgw, err := os.Create(mergedFile)
 	if err != nil {
 		log.L.Info("Create merged file err: ",err)
@@ -208,7 +209,7 @@ func exec_shell(scmd string) {
 	//logrus.Info(resp)
 }
 
-func ImgShrink(sourceImg string) (string,error) {
+func ImgShrink(sourceImg ,openid,outputPath string) (string,error) {
 	var shrinkImg string
     if len(sourceImg) == 0 {
 		log.L.Info("ImgShrink param empty")
@@ -219,7 +220,7 @@ func ImgShrink(sourceImg string) (string,error) {
 		log.L.Info("ImgShrink open err:%v",err)
 		return "",err
 	}
-    file.Close()
+    defer file.Close()
 
     img, err := png.Decode(file)
     if err != nil {
@@ -227,7 +228,10 @@ func ImgShrink(sourceImg string) (string,error) {
 		return "",err
 	}
 	
-    m := resize.Resize(200, 0, img, resize.Lanczos3)
+	img = rotate270(img)
+
+	m := resize.Resize(200, 0, img, resize.Lanczos3)
+	shrinkImg = fmt.Sprintf("%s/shrink_%s.png",outputPath,openid)
     out, err := os.Create(shrinkImg)
     if err != nil {
         log.L.Info("ImgShrink Create err:%v",err)
@@ -236,4 +240,14 @@ func ImgShrink(sourceImg string) (string,error) {
     defer out.Close()
 	png.Encode(out, m)
 	return shrinkImg,nil
+}
+
+func rotate270(m image.Image) image.Image {
+    rotate270 := image.NewRGBA(image.Rect(0, 0, m.Bounds().Dy(), m.Bounds().Dx()))
+    for x := m.Bounds().Min.Y; x < m.Bounds().Max.Y; x++ {
+        for y := m.Bounds().Max.X - 1; y >= m.Bounds().Min.X; y-- {
+            rotate270.Set(x, m.Bounds().Max.X-y, m.At(y, x))
+        }
+    }
+    return rotate270
 }

@@ -7,13 +7,13 @@ func SplitPdf(inputPath, tmppdfPath, outputPath string) ([]string, error) {
 func DelLocalFile(filePath string) {
 }
 
-func ConvertPdfToJpg(pdfName string, imageName string) error{
+func ConvertPdfToJpg(pdfName string, imageName string) error {
 	return nil
 }
 
-func MergeImage(soruceImage, targeImage,outputPath string) (string,error){
-	return "",nil
+func MergeImage(soruceImage, targeImage, openid, outputPath string) (string, error) {
+	return "", nil
 }
-func ImgShrink(sourceImg string) (string,error){
-	return "",nil
+func ImgShrink(sourceImg, openid, outputPath string) (string, error) {
+	return "", nil
 }

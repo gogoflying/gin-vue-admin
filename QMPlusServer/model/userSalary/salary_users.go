@@ -5,8 +5,8 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
-
 	"github.com/jinzhu/gorm"
+	"strings"
 )
 
 type SalaryUsers struct {
@@ -94,8 +94,33 @@ func (un *SalaryUsers) GetInfoList(info modelInterface.PageInfo) (err error, lis
 	if err != nil {
 		return
 	} else {
-		var reSalaryUsersList []SalaryUsers
+		reSalaryUsersList := make([]*SalaryUsers, 0)
 		err = db.Find(&reSalaryUsersList).Error
+		if err == nil {
+			for _, reun := range reSalaryUsersList {
+				if len(reun.CardPhotos) > 0 {
+					reun.Cards = strings.Split(reun.CardPhotos, ";")
+				}
+				if len(reun.BankCard) > 0 {
+					reun.Banks = strings.Split(reun.BankCard, ";")
+				}
+				if len(reun.Photo) > 0 {
+					reun.Photos = strings.Split(reun.Photo, ";")
+				}
+				if len(reun.Checkup) > 0 {
+					reun.Checkups = strings.Split(reun.Checkup, ";")
+				}
+				if len(reun.Diploma) > 0 {
+					reun.Diplomas = strings.Split(reun.Diploma, ";")
+				}
+				if len(reun.LeaveProve) > 0 {
+					reun.Leaves = strings.Split(reun.LeaveProve, ";")
+				}
+				if len(reun.HuKou) > 0 {
+					reun.HuKous = strings.Split(reun.HuKou, ";")
+				}
+			}
+		}
 		return err, reSalaryUsersList, total
 	}
 }

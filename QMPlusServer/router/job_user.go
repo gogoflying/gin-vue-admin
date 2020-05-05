@@ -17,6 +17,7 @@ func InitUsersRouter(Router *gin.RouterGroup) {
 		UsersRouter.POST("getUsersList", api.GetUsersList)           //获取Users列表
 
 		UsersRouter.POST("jobUserLogin", api.JobUserLogin)           //用户登陆
-		UsersRouter.POST("sendUserMobile", api.SendUserMobile)           //用户登陆
+		//UsersRouter.POST("sendUserMobile", api.SendUserMobile)           //用户登陆
+		UsersRouter.POST("decodeMobile", api.DecodeMobile)
 	}
 }

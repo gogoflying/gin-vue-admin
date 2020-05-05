@@ -11,7 +11,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="uuid" min-width="250" prop="uuid"></el-table-column>
+      <!-- <el-table-column label="uuid" min-width="250" prop="uuid"></el-table-column> -->
       <el-table-column label="用户名" min-width="150" prop="userName"></el-table-column>
       <el-table-column label="昵称" min-width="150" prop="nickName"></el-table-column>
       <el-table-column label="用户角色" min-width="150">
@@ -50,8 +50,8 @@
 
     <el-dialog :visible.sync="addUserDialog" custom-class="user-dialog" :title="title">
       <el-form :rules="rules" ref="userForm" :model="userInfo">
-        <el-form-item label="用户名" label-width="80px" prop="userName">
-          <el-input v-model="userInfo.userName"></el-input>
+        <el-form-item label="用户名" label-width="80px" prop="username">
+          <el-input v-model="userInfo.username"></el-input>
         </el-form-item>
         <el-form-item label="密码" label-width="80px" prop="password">
           <el-input v-model="userInfo.password"></el-input>
@@ -67,7 +67,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
-            :beforeUpload="beforeAvatarUpload"
+            :before-upload="beforeAvatarUpload"
           >
             <img :src="userInfo.headerImg" class="avatar" v-if="userInfo.headerImg" />
             <i class="el-icon-plus avatar-uploader-icon" v-else></i>
@@ -120,14 +120,14 @@ export default {
       isEdit: false,
       title: "",
       userInfo: {
-        userName: "",
+        username: "",
         password: "",
         nickName: "",
         headerImg: "",
         authorityId: ""
       },
       rules: {
-        userName: [
+        username: [
           { required: true, message: "请输入用户名", trigger: "blur" }
         ],
         password: [
@@ -151,9 +151,9 @@ export default {
         if (valid) {
           let res;
           if (this.isEdit) {
-            res = await updateSysUser(this.jobmanagerinfo);
+            res = await updateSysUser(this.userInfo);
           } else {
-            res = await register(this.jobmanagerinfo);
+            res = await register(this.userInfo);
           }
           if (res.success) {
             this.$message({ type: "success", message: "创建成功" });
@@ -165,7 +165,7 @@ export default {
     },
     closeAddUserDialog() {
       this.userInfo = {
-        userName: "",
+        username: "",
         password: "",
         nickName: "",
         headerImg: "",
@@ -232,12 +232,14 @@ export default {
           message: "上传文件只能是 jpg、png格式!",
           type: "warning"
         });
+        return false;
       }
       if (!isLt50KB) {
         this.$message({
           message: "上传文件大小不能超过 50KB!",
           type: "warning"
         });
+        return false;
       }
       return (extension || extension2) && isLt50KB;
     }

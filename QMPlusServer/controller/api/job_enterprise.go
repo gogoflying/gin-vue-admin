@@ -167,3 +167,16 @@ func GetEnterpriseAllInfo(c *gin.Context) {
 		})
 	}
 }
+
+func GetEnterpriseOptions(c *gin.Context) {
+	err, reType, reIndust, citys := new(userJobs.EnterpriseInfo).GetAllInfoOption()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"enterprisetype": reType,
+			"industrytype":   reIndust,
+			"cityinfo":       citys,
+		})
+	}
+}

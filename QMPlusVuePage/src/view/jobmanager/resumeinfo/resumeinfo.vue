@@ -77,7 +77,7 @@
           </section>-->
           <section v-if="user_works.length > 0 ">
             <h3>工作经历</h3>
-            <ul v-for="userwork in user_works" :key="userwork">
+            <ul v-for="userwork in user_works" :key="userwork.companyname">
               <li>起止日期：{{userwork.join}}-{{userwork.leave}}</li>
               <li>公司名称：{{userwork.companyname}}</li>
               <li>工作地点：{{userwork.city}}</li>
@@ -87,7 +87,7 @@
           </section>
           <section v-if="user_edus.length > 0 ">
             <h3>教育经历</h3>
-            <ul v-for="useredu in user_edus" :key="useredu">
+            <ul v-for="useredu in user_edus" :key="useredu.schoolname">
               <li>起止日期：{{useredu.joinTime}}-{{useredu.graduationTime}}</li>
               <li>学校名称：{{useredu.schoolname}}</li>
               <li>学历：{{useredu.edulevel}}</li>
@@ -132,8 +132,6 @@ export default {
       path: path,
       viewResumeInfoDialog: false,
       name: "zhenghao",
-      urlImg:
-        "http://vinustseng.oss-cn-beijing.aliyuncs.com/1587350295head.jpg",
       user_base_info: {
         user_name: "zhenghao",
         gender: "男",
@@ -280,6 +278,11 @@ export default {
     };
   },
   methods: {
+    onSubmit() {
+      this.page = 1;
+      this.pageSize = 10;
+      this.getTableData();
+    },
     viewResume(row) {
       this.viewResumeInfoDialog = true;
       this.base_info = row;

@@ -20,13 +20,16 @@ import (
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /jl/createJoblist [post]
 func CreateJoblist(c *gin.Context) {
-	ei, _ := c.Get("enpInfo")
-	enpInfo := ei.(*userJobs.EnterpriseInfo)
 	var jl userJobs.Joblist
 	_ = c.ShouldBindJSON(&jl)
-	jl.CompanyName = enpInfo.EnterPriseName
-	jl.CompanyId = int(enpInfo.ID)
-	jl.CompanyImg = enpInfo.EnterpriseImg
+	ei, exist := c.Get("enpInfo")
+	if exist {
+		enpInfo := ei.(*userJobs.EnterpriseInfo)
+		jl.CompanyName = enpInfo.EnterPriseName
+		jl.CompanyId = int(enpInfo.ID)
+		jl.CompanyImg = enpInfo.EnterpriseImg
+	}
+
 	err := jl.CreateJoblist()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
@@ -107,7 +110,16 @@ func FindJoblist(c *gin.Context) {
 func GetJoblistListBackend(c *gin.Context) {
 	var pageInfo modelInterface.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
-	err, list, total := new(userJobs.Joblist).GetInfoList(pageInfo)
+	var enPriseID int
+	ei, exist := c.Get("enpInfo")
+	if exist {
+		enpInfo := ei.(*userJobs.EnterpriseInfo)
+		enPriseID = int(enpInfo.ID)
+	}
+	jl := &userJobs.Joblist{
+		CompanyId: enPriseID,
+	}
+	err, list, total := jl.GetInfoList(pageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {

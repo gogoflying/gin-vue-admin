@@ -17,7 +17,8 @@ type UserNews struct {
 	Order    int    `json:"order" gorm:"column:orders;comment:'排序，越大越靠前'"`
 	Type     int    `json:"news_type" gorm:"column:type;comment:'新闻类型，1社保，2个税'"`
 	Img      string `json:"img" gorm:"column:img;comment:'新闻图片'"`
-	Count    int    `json:"count" gorm:"column:count;comment:'阅读数'"`
+	Status   int    `json:"status" gorm:"column:status;comment:'状态，1草稿，2发布';default:1"`
+	Count    int    `json:"count" gorm:"column:count;comment:'阅读数'`
 }
 
 // 创建UserNews

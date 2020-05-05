@@ -5,7 +5,6 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
-
 	"github.com/jinzhu/gorm"
 )
 
@@ -63,7 +62,17 @@ func (jl *Joblist) GetInfoList(info modelInterface.PageInfo) (err error, list in
 		return
 	} else {
 		var reJoblistList []Joblist
-		err = db.Find(&reJoblistList).Error
+		model := qmsql.DEFAULTDB.Model(info)
+		if jl.CompanyId != 0 {
+			model = model.Where("company_id = ?", jl.CompanyId)
+			db = db.Where("company_id = ?", jl.CompanyId)
+		}
+		err = model.Find(&reJoblistList).Count(&total).Error
+		if err != nil {
+			return err, reJoblistList, total
+		} else {
+			err = db.Find(&reJoblistList).Error
+		}
 		return err, reJoblistList, total
 	}
 }

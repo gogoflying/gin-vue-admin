@@ -78,6 +78,13 @@ func UpdateJoblist(c *gin.Context) {
 	}
 }
 
+func UpdateJoblistView(c *gin.Context) {
+	var jl userJobs.Joblist
+	_ = c.ShouldBindJSON(&jl)
+	jl.UpdateViews()
+	servers.ReportFormat(c, true, "更新成功", gin.H{})
+}
+
 // @Tags Joblist
 // @Summary 用id查询Joblist
 // @Security ApiKeyAuth

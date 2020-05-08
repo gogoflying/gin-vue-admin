@@ -15,6 +15,7 @@ type Salarys struct {
 	Year    int    `json:"year" gorm:"column:year"`
 	Month   int    `json:"month" gorm:"column:month"`
 	Openid  string `json:"openid" gorm:"column:openid"`
+	Name    string `json:"name" gorm:"column:name"`
 	Base    string `json:"base" gorm:"column:base"`
 	Gangwei string `json:"gangwei" gorm:"column:gangwei"`
 	Xzhj    string `json:"xzhj" gorm:"column:xzhj"`

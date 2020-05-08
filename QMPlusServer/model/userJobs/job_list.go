@@ -5,6 +5,8 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+	"time"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -28,6 +30,12 @@ type Joblist struct {
 	CompanyId    int     `json:"enterprise_id" gorm:"column:company_id;comment:'公司id，关联enterprise_infos表'"`
 	CompanyImg   string  `json:"enterprise_logo" gorm:"column:company_img;comment:'公司logo url'"`
 	JobDes       string  `json:"p_desc" gorm:"column:job_des;comment:'工作描述'"`
+	Views        int     `json:"p_views" gorm:"column:p_views;comment:'浏览数量'"`
+	Status       int     `json:"p_status" gorm:"column:p_status;comment:'职位状态，0普通，1急招，2热门，3下线'"`
+	Count        int     `json:"p_count" gorm:"column:p_count;comment:'招聘人数'"`
+	OutDate      int64   `json:"p_outdate" gorm:"column:p_outdate;comment:'有效日期，如2020-08-08为失效日期的unix时间戳'"`
+	Filter       int     `json:"p_filter" gorm:"column:p_filter;comment:'过滤状态，0不启用过滤，1启用过滤'"`
+	SendEmail    string  `json:"p_send_email" gorm:"column:p_send_email;comment:'发送邮件,多个用分号划分'"`
 }
 
 // 创建Joblist
@@ -52,6 +60,16 @@ func (jl *Joblist) UpdateJoblist() (err error, rejl Joblist) {
 func (jl *Joblist) FindById() (err error, rejl Joblist) {
 	err = qmsql.DEFAULTDB.Where("id = ?", jl.ID).First(&rejl).Error
 	return err, rejl
+}
+
+//更新浏览数量加一
+func (jl *Joblist) UpdateViews() {
+	err, rejl := jl.FindById()
+	if err != nil {
+		return
+	}
+	qmsql.DEFAULTDB.Model(jl).Where("id = ?", jl.ID).Update("p_views", rejl.Views+1)
+	return
 }
 
 // 分页获取Joblist
@@ -86,6 +104,7 @@ func (jl *Joblist) GetInfoListSearch(keyword string, cityId int, low int, hight 
 		return
 	}
 	var reJoblistList []Joblist
+	outData := time.Now().Unix()
 	db := qmsql.DEFAULTDB.Model(jl)
 	if cityId > 0 {
 		db = db.Where("job_city_id = ?", cityId)
@@ -99,6 +118,7 @@ func (jl *Joblist) GetInfoListSearch(keyword string, cityId int, low int, hight 
 	if hight > 0 {
 		db = db.Where("job_salary_high <= ?", hight)
 	}
+	db = db.Where("p_status != 3 and p_outdate >= ?", outData)
 	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&reJoblistList).Error
 	return err, reJoblistList, total
 }
@@ -107,7 +127,7 @@ func (jl *Joblist) GetInfoListSearch(keyword string, cityId int, low int, hight 
 func (jl *Joblist) GetInfoListSearchSimilar(ids []int, name string, eduJyId, eduId, jobtypeId, cityId, low, page, pageSize int) (err error, list interface{}) {
 	limit := pageSize
 	offset := pageSize * (page - 1)
-
+	outData := time.Now().Unix()
 	var reJoblistList []Joblist
 
 	db := qmsql.DEFAULTDB.Model(jl)
@@ -122,6 +142,7 @@ func (jl *Joblist) GetInfoListSearchSimilar(ids []int, name string, eduJyId, edu
 	if len(ids) > 0 {
 		db = db.Where("id NOT IN (?)", ids)
 	}
+	db = db.Where("p_status != 3 and p_outdate >= ?", outData)
 	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&reJoblistList).Error
 	return err, reJoblistList
 }

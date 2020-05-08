@@ -30,7 +30,7 @@
       <!-- <el-table-column type="selection" min-width="55"></el-table-column> -->
       <el-table-column label="id" min-width="60" prop="ID" fixed></el-table-column>
       <el-table-column label="职位名称" min-width="100" prop="p_name"></el-table-column>
-      <el-table-column label="公司名称" min-width="150">
+      <el-table-column label="公司名称" min-width="150" v-if="false">
         <template slot-scope="scope">
           <el-select @change="changeEp(scope.row)" placeholder="请选择" v-model="scope.row.enterprise_id">
             <el-option
@@ -85,7 +85,7 @@
 const path = process.env.VUE_APP_BASE_API;
 import { getJoblistListBackend, deleteJoblist, updateJoblist } from "@/api/jobmanagerinfo";
 //import { getCitynameList } from "@/api/cityname";
-import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
+//import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";
 export default {
   name: "Jobmanagerinfo",
@@ -149,13 +149,13 @@ export default {
   async created() {
     // const res = await getCitynameList({ page: 1, pageSize: 999 });
     // this.cityinfo = res.data.userCityList;
-    getEnterpriseAllInfo().then(res => {
-      if (res.success) {
-        this.enterpriseInfo = res.data.result;
-      } else {
-        this.enterpriseInfo = [];
-      }
-    });
+    // getEnterpriseAllInfo().then(res => {
+    //   if (res.success) {
+    //     this.enterpriseInfo = res.data.result;
+    //   } else {
+    //     this.enterpriseInfo = [];
+    //   }
+    // });
   }
 };
 </script>

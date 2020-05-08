@@ -2,14 +2,15 @@
   <div>
     <div class="edit_container">
       <quill-editor
-              :options="editorOption"
-              @blur="onEditorBlur($event)"
-              @change="onEditorChange($event)"
-              @focus="onEditorFocus($event)"
-              ref="myQuillEditor"
-              v-model="content"
+        class="ql-editor"
+        :options="editorOption"
+        @blur="onEditorBlur($event)"
+        @change="onEditorChange($event)"
+        @focus="onEditorFocus($event)"
+        ref="myQuillEditor"
+        v-model="content"
       ></quill-editor>
-      <el-button  plain @click="saveHtml">保存</el-button>
+      <el-button plain @click="saveHtml">保存</el-button>
     </div>
     <div class="edit">
       <mavon-editor v-model="model.content"></mavon-editor>
@@ -20,19 +21,19 @@
 
 <script>
 export default {
-  name: 'App',
+  name: "App",
   data() {
     return {
       content: `<p>hello world</p>`,
       editorOption: {},
-      model:{
-        content:''
+      model: {
+        content: ""
       }
-    }
+    };
   },
   computed: {
     editor() {
-      return this.$refs.myQuillEditor.quill
+      return this.$refs.myQuillEditor.quill;
     }
   },
   methods: {
@@ -43,7 +44,19 @@ export default {
     onEditorFocus() {}, // 获得焦点事件
     onEditorChange() {}, // 内容改变事件
     saveHtml() {}, // 保存方法
-    submit(){}
+    submit() {}
   }
-}
+};
 </script>
+<style>
+.ql-editor {
+  height: 400px;
+}
+.ql-editor strong {
+  font-style: normal ;
+  font-weight: bold;
+}
+.ql-editor em {
+  font-style: italic;
+}
+</style>

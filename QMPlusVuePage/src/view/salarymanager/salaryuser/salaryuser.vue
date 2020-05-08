@@ -162,7 +162,7 @@
       <el-table-column label="入职进度" min-width="150" prop="enter_step">
         <template slot-scope="scope">
           <el-select
-            @change="changestep(scope.row)"
+            @change="handleRowEdit(scope.$index, scope.row)"
             placeholder="请选择"
             v-model="scope.row.enter_step"
           >
@@ -173,12 +173,23 @@
       <el-table-column label="离职进度" min-width="150" prop="leave_step">
         <template slot-scope="scope">
           <el-select
-            @change="changestep(scope.row)"
+            @change="handleRowEdit(scope.$index, scope.row)"
             placeholder="请选择"
             v-model="scope.row.leave_step"
           >
             <el-option :key="ls.name" :label="ls.name" :value="ls.id" v-for="ls in leaveSteps"></el-option>
           </el-select>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注" min-width="100" prop="errors">
+        <template slot-scope="scope">
+          <el-input
+            size="small"
+            v-model="scope.row.errors"
+            placeholder="请输入备注"
+            @change="handleRowEdit(scope.$index, scope.row)"
+          ></el-input>
+          <span>{{scope.row.date}}</span>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="300">
@@ -270,6 +281,9 @@
             <el-option :key="ls.name" :label="ls.name" :value="ls.id" v-for="ls in leaveSteps"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="备注" label-width="80px" prop="errors">
+          <el-input v-model="salaryuserinfo.errors"></el-input>
+        </el-form-item>
       </el-form>
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeAddSalaryUserDialog">取 消</el-button>
@@ -349,7 +363,8 @@ export default {
         enter_time: "",
         leave_time: "",
         enter_step: "",
-        leave_step: ""
+        leave_step: "",
+        errors: ""
       },
       rules: {
         name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
@@ -439,10 +454,10 @@ export default {
       link.setAttribute("download", "员工模板");
       link.click();
     },
-    async changestep(row) {
+    async handleRowEdit(index, row) {
       const res = await updateSalaryUsers(row);
       if (res.success) {
-        this.$message({ type: "success", message: "状态设置成功" });
+        this.$message({ type: "success", message: "修改成功" });
       }
     },
     async enterAddSalaryUserDialog() {
@@ -476,7 +491,8 @@ export default {
         enter_time: "",
         leave_time: "",
         enter_step: "",
-        leave_step: ""
+        leave_step: "",
+        errors: ""
       };
       this.addSalaryUserDialog = false;
     },

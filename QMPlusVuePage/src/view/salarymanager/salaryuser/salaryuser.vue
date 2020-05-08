@@ -145,6 +145,16 @@
               </span>
               <span v-else>未上传</span>
             </el-form-item>
+            <el-form-item label="其他:">
+              <span v-if="scope.row.others != null ">
+                <ul v-for="cd in scope.row.others" :key="cd">
+                  <li>
+                    <img :src="cd" height="500" width="500" />
+                  </li>
+                </ul>
+              </span>
+              <span v-else>未上传</span>
+            </el-form-item>
           </el-form>
         </template>
       </el-table-column>

@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+	"gin-vue-admin/model/userCity"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -145,4 +146,24 @@ func (jl *Joblist) GetInfoListSearchSimilar(ids []int, name string, eduJyId, edu
 	db = db.Where("p_status != 3 and p_outdate >= ?", outData)
 	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&reJoblistList).Error
 	return err, reJoblistList
+}
+
+func (jl *Joblist) GetAllInfoOption() (err error, list1 interface{}, list2 interface{}, list3 interface{}) {
+	var enp []EnterpriseInfo
+	var jbe []JobWorkExpire
+	var citys []userCity.Cityname
+	err = qmsql.DEFAULTDB.Select("id,enterprise_name").Find(&enp).Error
+	if err != nil {
+		return err, enp, jbe, citys
+	}
+
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&jbe).Error
+	if err != nil {
+		return err, enp, jbe, citys
+	}
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&citys).Error
+	if err != nil {
+		return err, enp, jbe, citys
+	}
+	return err, enp, jbe, citys
 }

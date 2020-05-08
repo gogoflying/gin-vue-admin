@@ -32,6 +32,7 @@
         </el-form-item>
         <el-form-item label="新闻内容" label-width="100px" prop="content">
           <quill-editor
+            class="ql-editor"
             :options="editorOption"
             @blur="onEditorBlur($event)"
             @change="onEditorChange($event)"
@@ -181,7 +182,11 @@ export default {
 };
 </script>
 <style>
-.ql-editor {
-  height: 400px;
+.ql-editor strong {
+  font-style: normal ;
+  font-weight: bold;
+}
+.ql-editor em {
+  font-style: italic;
 }
 </style>

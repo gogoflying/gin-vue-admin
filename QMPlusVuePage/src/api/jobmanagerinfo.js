@@ -82,3 +82,11 @@ export const createJoblist = (data) => {
          data
      })
  }
+
+ export const getjoblistOptions = (data) => {
+    return service({
+        url: "/jl/getjoblistOptions",
+        method: 'post',
+        data
+    })
+}

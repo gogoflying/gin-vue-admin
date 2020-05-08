@@ -184,3 +184,16 @@ type ReqJoblist struct {
 	CityId  int    `json:"city_id"`
 	KeyWord string `json:"keyword"`
 }
+
+func GetJoblistOptions(c *gin.Context) {
+	err, rep, jbwe, citys := new(userJobs.Joblist).GetAllInfoOption()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"rep":      rep,
+			"jbwe":     jbwe,
+			"cityinfo": citys,
+		})
+	}
+}

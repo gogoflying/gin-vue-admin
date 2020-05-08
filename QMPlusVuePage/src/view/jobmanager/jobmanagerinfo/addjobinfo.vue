@@ -5,6 +5,20 @@
         <el-form-item label="工作名称" label-width="120px" prop="p_name">
           <el-input v-model="jobmanagerinfo.p_name" placeholder="请输入工作名称" style="width:50%;"></el-input>
         </el-form-item>
+        <el-form-item v-show="enPriseId == 0" label="所属公司" label-width="120px" prop="p_salary_high">
+          <el-select
+            @change="selectEp"
+            placeholder="请选择所属公司"
+            v-model="jobmanagerinfo.enterprise_id"
+          >
+            <el-option
+              :key="ep.enterprise_name"
+              :label="ep.enterprise_name"
+              :value="ep.ID"
+              v-for="ep in enterpriseInfo"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="薪资上限" label-width="120px" prop="p_salary_high">
           <el-input
             v-model.number="jobmanagerinfo.p_salary_high"
@@ -29,28 +43,40 @@
         <el-form-item label="工作地点经度" label-width="120px" prop="p_longitude" hidden>
           <el-input v-model="jobmanagerinfo.p_longitude" placeholder="请输入工作地点经度" style="width:50%;"></el-input>
         </el-form-item>
-        <el-form-item label="工作城市" label-width="120px" prop="p_city_id" @change="selectCityName">
-          <el-select placeholder="请选择工作城市" v-model.number="jobmanagerinfo.p_city_id">
+        <el-form-item label="工作城市" label-width="120px" prop="p_city_id">
+          <el-select
+            @change="selectCityName"
+            placeholder="请选择工作城市"
+            v-model.number="jobmanagerinfo.p_city_id"
+          >
             <el-option
               :key="city.name"
               :label="city.name"
-              :value="city.id"
+              :value="city.ID"
               v-for="city in cityinfo"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="工作年限" label-width="120px" prop="p_edujy_id" @change="selectJobyear">
-          <el-select placeholder="请选择工作年限" v-model.number="jobmanagerinfo.p_edujy_id">
+        <el-form-item label="工作年限" label-width="120px" prop="p_edujy_id">
+          <el-select
+            @change="selectJobyear"
+            placeholder="请选择工作年限"
+            v-model="jobmanagerinfo.p_edujy_id"
+          >
             <el-option
               :key="jobyear.name"
               :label="jobyear.name"
-              :value="jobyear.id"
+              :value="jobyear.ID"
               v-for="jobyear in jobyears"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="最低学历" label-width="120px" prop="p_education_id" @change="selectJobedu">
-          <el-select placeholder="请选择最低学历" v-model.number="jobmanagerinfo.p_education_id">
+        <el-form-item label="最低学历" label-width="120px" prop="p_education_id">
+          <el-select
+            @change="selectJobedu"
+            placeholder="请选择最低学历"
+            v-model="jobmanagerinfo.p_education_id"
+          >
             <el-option
               :key="jobedu.name"
               :label="jobedu.name"
@@ -59,8 +85,12 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="工作类型" label-width="120px" prop="p_type_id" @change="selectJobtype">
-          <el-select placeholder="请选择工作类型" v-model.number="jobmanagerinfo.p_type_id">
+        <el-form-item label="工作类型" label-width="120px" prop="p_type_id">
+          <el-select
+            @change="selectJobtype"
+            placeholder="请选择工作类型"
+            v-model.number="jobmanagerinfo.p_type_id"
+          >
             <el-option
               :key="jobtype.name"
               :label="jobtype.name"
@@ -71,6 +101,7 @@
         </el-form-item>
         <el-form-item label="工作描述" label-width="120px" prop="p_desc">
           <quill-editor
+            class="ql-editor"
             style="width:80%;"
             :options="editorOption"
             @blur="onEditorBlur($event)"
@@ -107,8 +138,10 @@ const path = process.env.VUE_APP_BASE_API;
 import {
   createJoblist,
   updateJoblist,
-  findJoblist
+  findJoblist,
+  getjoblistOptions
 } from "@/api/jobmanagerinfo";
+import { mapGetters } from "vuex";
 export default {
   name: "NewJobInfo",
   data() {
@@ -118,6 +151,7 @@ export default {
       isEdit: false,
       editorOption: {},
       searchaddress: "",
+      enterpriseInfo: [],
       jobmanagerinfo: {
         p_name: "",
         p_salary_high: "",
@@ -133,7 +167,10 @@ export default {
         p_education_id: "",
         p_type: "",
         p_type_id: "",
-        p_desc: ""
+        p_desc: "",
+        enterprise_id: "",
+        enterprise_name: "",
+        enterprise_logo: ""
       },
       cityinfo: [
         {
@@ -274,22 +311,31 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("user", ["enPriseId", "token"]),
     editor() {
       return this.$refs.myQuillEditor.quill;
     }
   },
   methods: {
+    selectEp(val) {
+      var selectedItem = {};
+      selectedItem = this.enterpriseInfo.find(item => {
+        return item.ID === val;
+      });
+      this.jobmanagerinfo.enterprise_name = selectedItem.enterprise_name;
+      this.jobmanagerinfo.enterprise_logo = selectedItem.enterprise_logo;
+    },
     selectCityName(val) {
       var selectedItem = {};
       selectedItem = this.cityinfo.find(item => {
-        return item.id === val;
+        return item.ID === val;
       });
       this.jobmanagerinfo.p_city = selectedItem.name;
     },
     selectJobyear(val) {
       var selectedItem = {};
       selectedItem = this.jobyears.find(item => {
-        return item.id === val;
+        return item.ID === val;
       });
       this.jobmanagerinfo.p_edujy = selectedItem.name;
     },
@@ -333,7 +379,6 @@ export default {
           } else {
             this.$message({ type: "error", message: "添加失败!" });
           }
-          await this.getTableData();
         }
       });
       this.$router.push({ name: "jobmanagerinfo" });
@@ -420,11 +465,28 @@ export default {
         }
       });
     }
+    if (this.enPriseId == 0) {
+      getjoblistOptions().then(res => {
+        if (res.success) {
+          this.enterpriseInfo = res.data.rep;
+          this.jobyears = res.data.jbwe;
+          this.cityinfo = res.data.cityinfo;
+        } else {
+          this.enterpriseInfo = [];
+          this.jobyears = [];
+          this.cityinfo = [];
+        }
+      });
+    }
   }
 };
 </script>
 <style>
-.ql-editor {
-  height: 400px;
+.ql-editor strong {
+  font-style: normal;
+  font-weight: bold;
+}
+.ql-editor em {
+  font-style: italic;
 }
 </style>

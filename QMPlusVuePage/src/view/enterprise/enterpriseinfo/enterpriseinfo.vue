@@ -68,7 +68,7 @@
             <el-option
               :key="enptype.name"
               :label="enptype.name"
-              :value="enptype.id"
+              :value="enptype.ID"
               v-for="enptype in enterprisetype"
             ></el-option>
           </el-select>
@@ -81,13 +81,14 @@
             <el-option
               :key="industry.name"
               :label="industry.name"
-              :value="industry.id"
+              :value="industry.ID"
               v-for="industry in industrytype"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
           <quill-editor
+            class="ql-editor"
             ref="myQuillEditor"
             v-model="enterpriseInfo.enterprise_desc"
           ></quill-editor>
@@ -411,7 +412,11 @@ export default {
   margin-bottom: 0;
   width: 100%;
 }
-.ql-editor {
-  height: 400px;
+.ql-editor strong {
+  font-style: normal ;
+  font-weight: bold;
+}
+.ql-editor em {
+  font-style: italic;
 }
 </style>

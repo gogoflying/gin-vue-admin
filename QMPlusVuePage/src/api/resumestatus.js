@@ -82,3 +82,11 @@ export const createResumeStatus = (data) => {
          data
      })
  }
+
+ export const findUsersByOpenid = (data) => {
+    return service({
+        url: "/users/findUsersByOpenid",
+        method: 'post',
+        data
+    })
+}

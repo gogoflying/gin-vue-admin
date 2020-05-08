@@ -34,7 +34,7 @@
                 </el-dropdown-item>
                 <el-dropdown-item @click.native="showPassword=true" icon="el-icon-s-custom">修改密码</el-dropdown-item>
                 <el-dropdown-item @click.native="toPerson" icon="el-icon-s-custom">个人信息</el-dropdown-item>
-                <el-dropdown-item @click.native="toCompanyAuth" icon="el-icon-s-check" :disabled="enable">企业认证</el-dropdown-item>
+                <el-dropdown-item @click.native="toCompanyAuth" icon="el-icon-s-check" v-show="enPriseId != 0">企业认证</el-dropdown-item>
                 <el-dropdown-item @click.native="LoginOut" icon="el-icon-table-lamp">登 出</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -81,7 +81,6 @@ export default {
     return {
       isCollapse: false,
       isSider: true,
-      enable: false,
       isMobile: false,
       isShadowBg: false,
       showPassword: false,
@@ -117,11 +116,6 @@ export default {
     HistoryComponent
   },
   created() {
-    if (this.enPriseId != 0) {
-      this.enable=false
-    }else{
-      this.enable=true;
-    }
     let screenWidth = document.body.clientWidth;
     if (screenWidth < 1000) {
       this.isMobile = true;

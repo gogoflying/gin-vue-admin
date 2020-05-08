@@ -123,6 +123,9 @@ func (un *SalaryUsers) GetInfoList(info modelInterface.PageInfo) (err error, lis
 				if len(reun.HuKou) > 0 {
 					reun.HuKous = strings.Split(reun.HuKou, ";")
 				}
+				if len(reun.OtherPhotos) > 0 {
+					reun.Others = strings.Split(reun.OtherPhotos, ";")
+				}
 			}
 		}
 		return err, reSalaryUsersList, total

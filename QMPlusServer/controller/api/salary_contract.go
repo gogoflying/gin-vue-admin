@@ -12,6 +12,7 @@ import (
 	"gin-vue-admin/model/userSalary"
 
 	"github.com/gin-gonic/gin"
+	"gin-vue-admin/init/initlog"
 )
 
 type StatusInfo int32

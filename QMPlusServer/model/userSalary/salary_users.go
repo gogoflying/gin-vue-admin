@@ -15,6 +15,8 @@ type SalaryUsers struct {
 	Openid       string   `json:"openid" gorm:"column:openid"`
 	Name         string   `json:"name" gorm:"column:name"`
 	Mobile       string   `json:"mobile" gorm:"column:mobile"`
+	PassWord     string   `json:"pass_word" gorm:"column:password"`
+	NewPassWord  string   `json:"new_pass_word" gorm:"-"`
 	JobName      string   `json:"job_name" gorm:"column:job_name;comment:'岗位名称'"`
 	Salary       int      `json:"salary" gorm:"column:salary;comment:'工资'"`
 	ContractDate int      `json:"contract_date" gorm:"column:contract_date;comment:'合同期限,单位是月'"`
@@ -77,6 +79,16 @@ func (un *SalaryUsers) UpdateEnterStep() error {
 func (un *SalaryUsers) FindById() (err error, reun SalaryUsers) {
 	err = qmsql.DEFAULTDB.Where("id = ?", un.ID).First(&reun).Error
 	return err, reun
+}
+
+func (un *SalaryUsers) LoginMobile() (err error, reun SalaryUsers) {
+	err = qmsql.DEFAULTDB.Model(un).Where("mobile = ? and password = ?", un.Mobile, un.PassWord).Find(&reun).Error
+	return
+}
+
+func (un *SalaryUsers) UpdatePassword() (err error) {
+	err = qmsql.DEFAULTDB.Model(un).Where("openid = ? and password = ?", un.Openid, un.PassWord).Update("password", un.NewPassWord).Error
+	return
 }
 
 // 根据ID查看单条SalaryUsers

@@ -121,6 +121,31 @@ func FindSalaryUsers(c *gin.Context) {
 	}
 }
 
+func SalaryUserUpdatePassword(c *gin.Context) {
+	var un userSalary.SalaryUsers
+	_ = c.ShouldBindJSON(&un)
+	err := un.UpdatePassword()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "更新成功", gin.H{})
+	}
+}
+
+func SalaryUserLoginMobile(c *gin.Context) {
+	var un userSalary.SalaryUsers
+	_ = c.ShouldBindJSON(&un)
+	err, reun := un.LoginMobile()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"openid":   reun.Openid,
+			"username": reun.Name,
+		})
+	}
+}
+
 func FindSalaryUsersByOpenid(c *gin.Context) {
 	var un userSalary.SalaryUsers
 	_ = c.ShouldBindJSON(&un)

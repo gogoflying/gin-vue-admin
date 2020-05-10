@@ -7,8 +7,14 @@ import (
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userCity"
+
 	"github.com/jinzhu/gorm"
 )
+
+type Scale struct {
+	Low  int `json:"low"`
+	High int `json:"high"`
+}
 
 type EnterpriseInfo struct {
 	gorm.Model
@@ -24,6 +30,32 @@ type EnterpriseInfo struct {
 	EnterpriseCityId  int       `json:"city_id" gorm:"column:city_id;comment:'城市id，关联citynames'"`
 	JobCount          int       `json:"job_count" gorm:"column:job_count;comment:'该企业发布的职位数量'"`
 	Results           []Joblist `json:"result" gorm:"-"`
+}
+
+func (info *EnterpriseInfo) GetEnterpeiseSearchDetail(industrys, enterpriseTypes []int, enterpriseScales []Scale) (infos []EnterpriseInfo, err error) {
+
+	if len(industrys) == 0 && len(enterpriseTypes) == 0 && len(enterpriseScales) == 0 {
+		return
+	}
+
+	db := qmsql.DEFAULTDB.Model(info)
+
+	if len(industrys) > 0 {
+		db = db.Where("industry_type IN (?)", industrys)
+	}
+	if len(enterpriseTypes) > 0 {
+		db = db.Where("enterprise_type IN (?)", enterpriseTypes)
+	}
+	if len(enterpriseScales) > 0 {
+		db = db.Where("enterprise_scale >= ? and enterprise_scale <= ?", enterpriseScales[0].Low, enterpriseScales[0].High)
+	}
+	if len(enterpriseScales) > 1 {
+		for i := 1; i < len(enterpriseScales); i++ {
+			db = db.Or("enterprise_scale >= ? and enterprise_scale <= ?", enterpriseScales[i].Low, enterpriseScales[i].High)
+		}
+	}
+	err = db.Find(&infos).Error
+	return
 }
 
 // 创建EnterpriseInfo

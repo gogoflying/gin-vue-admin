@@ -18,6 +18,7 @@ func InitJoblistRouter(Router *gin.RouterGroup) {
 		JoblistRouter.POST("getJoblistListBackend", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.GetJoblistListBackend) // 根据ID获取Joblist
 		JoblistRouter.POST("getJoblistList", api.GetJoblistList)
 		JoblistRouter.POST("updateJoblistView", api.UpdateJoblistView)
+		JoblistRouter.POST("getJoblistSearch", api.GetJoblistListSearch)
 	}
 
 }

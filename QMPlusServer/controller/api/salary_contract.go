@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"gin-vue-admin/controller/servers"
-	"gin-vue-admin/init/initlog"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userSalary"
 
@@ -104,19 +103,19 @@ func DownloadContractList(c *gin.Context) {
 	jpgPathList := resultSc.Enter_contract_source_url
 	jpgPathArr := strings.Split(jpgPathList, ";")
 	var targetList []string
-	if len(resultSc.Enter_contract_target_url) > 0{
-		for idx,jpg := range jpgPathArr{
-			targetList = append(targetList,jpg)
-			if idx == len(jpgPathArr) -2{
+	if len(resultSc.Enter_contract_target_url) > 0 {
+		for idx, jpg := range jpgPathArr {
+			targetList = append(targetList, jpg)
+			if idx == len(jpgPathArr)-2 {
 				break
 			}
 		}
-		targetList = append(targetList,resultSc.Enter_contract_target_url)
+		targetList = append(targetList, resultSc.Enter_contract_target_url)
 	} else {
 		targetList = jpgPathArr
 	}
 	fmt.Printf("response get targetList :%v", targetList)
-	
+
 	if err != nil || len(targetList) == 0 {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
@@ -126,7 +125,6 @@ func DownloadContractList(c *gin.Context) {
 		})
 	}
 }
-
 
 func WriteSignatureJpg(c *gin.Context) {
 	var usi userSalary.UserSignatureInfo

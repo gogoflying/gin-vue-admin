@@ -17,5 +17,6 @@ func InitSalarysRouter(Router *gin.RouterGroup) {
 		SalarysRouter.POST("getSalarysList", api.GetSalarysList) //获取Salarys列表
 		SalarysRouter.POST("getSalarysListSearch", api.GetSalarysListSearch)
 		//SalarysRouter.Static("template", "./static/template")
+		SalarysRouter.POST("importsalarys", api.ImportSalarys)
 	}
 }

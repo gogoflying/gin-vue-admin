@@ -5,7 +5,7 @@
         <el-upload
           :disabled="importDataDisabled"
           style="display: inline-flex;margin-right: 8px;"
-          :action="`${path}/un/importsalaryuser?id=${enterprise_id}`"
+          :action="`${path}/un/importsalarys`"
           :before-upload="beforeUpload"
           :headers="{'x-token':token}"
           :on-error="onError"
@@ -20,12 +20,14 @@
         </el-upload>
       </el-col>
       <el-col :span="3">
+        <el-button type="primary" @click="downSalarytemplate" icon="el-icon-download">下载模板</el-button>
+      </el-col>
+      <el-col :span="3">
         <el-button @click="addSalaryDetail" type="primary">新增薪资</el-button>
       </el-col>
     </div>
     <el-table :data="tableData" border stripe>
       <el-table-column label="id" min-width="60" prop="ID"></el-table-column>
-      <el-table-column label="openid" min-width="100" prop="openid"></el-table-column>
       <el-table-column label="姓名" min-width="100" prop="name"></el-table-column>
       <el-table-column label="年" min-width="60" prop="year"></el-table-column>
       <el-table-column label="月" min-width="40" prop="month"></el-table-column>
@@ -59,7 +61,7 @@
       <el-table-column label="代扣个人所得税" min-width="80" prop="dkgs"></el-table-column>
       <el-table-column label="实发工资" min-width="80" prop="sfgz"></el-table-column>
 
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column fixed="right" label="操作" width="140">
         <template slot-scope="scope">
           <el-button @click="editSalaryDetail(scope.row)" size="small" type="text">编辑</el-button>
           <el-button @click="deleteSalaryDetail(scope.row)" size="small" type="text">删除</el-button>
@@ -257,6 +259,13 @@ export default {
     };
   },
   methods: {
+    downSalarytemplate() {
+      const link = document.createElement("a");
+      const url = `${path}/un/template/salarys.xlsx`;
+      link.setAttribute("href", url);
+      link.setAttribute("download", "薪资模板");
+      link.click();
+    },
     async enterAddSalaryDetailDialog() {
       this.$refs.salarydetailForm.validate(async valid => {
         if (valid) {

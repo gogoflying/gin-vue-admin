@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"gin-vue-admin/config"
-	"github.com/dchest/captcha"
 	"net/http"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/dchest/captcha"
 )
 
 // 这里需要自行实现captcha 的gin模式

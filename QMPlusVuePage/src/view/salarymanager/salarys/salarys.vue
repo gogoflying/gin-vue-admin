@@ -1,20 +1,64 @@
 <template>
   <div>
     <div class="button-box clearflex">
-      <el-button @click="addSalaryDetail" type="primary">新增薪资</el-button>
+      <el-col :span="3">
+        <el-upload
+          :disabled="importDataDisabled"
+          style="display: inline-flex;margin-right: 8px;"
+          :action="`${path}/un/importsalaryuser?id=${enterprise_id}`"
+          :before-upload="beforeUpload"
+          :headers="{'x-token':token}"
+          :on-error="onError"
+          :on-success="onSuccess"
+          :show-file-list="false"
+        >
+          <el-button
+            :disabled="importDataDisabled"
+            type="success"
+            :icon="importDataBtnIcon"
+          >{{importDataBtnText}}</el-button>
+        </el-upload>
+      </el-col>
+      <el-col :span="3">
+        <el-button @click="addSalaryDetail" type="primary">新增薪资</el-button>
+      </el-col>
     </div>
     <el-table :data="tableData" border stripe>
       <el-table-column label="id" min-width="60" prop="ID"></el-table-column>
-      <el-table-column label="openid" min-width="150" prop="openid"></el-table-column>
-      <el-table-column label="姓名" min-width="150" prop="name"></el-table-column>
-      <el-table-column label="手机" min-width="100" prop="mobile"></el-table-column>
-      <el-table-column label="身份证号" min-width="100" prop="card"></el-table-column>
-      <el-table-column label="邮箱" min-width="100" prop="email"></el-table-column>
-      <el-table-column label="入职企业" min-width="100" prop="enterprise"></el-table-column>
-      <el-table-column label="入职日期" min-width="100" prop="enter_time"></el-table-column>
-      <el-table-column label="离职日期" min-width="150" prop="leave_time"></el-table-column>
-      <el-table-column label="入职进度" min-width="100" prop="enter_step"></el-table-column>
-      <el-table-column label="离职进度" min-width="100" prop="leave_step"></el-table-column>
+      <el-table-column label="openid" min-width="100" prop="openid"></el-table-column>
+      <el-table-column label="姓名" min-width="100" prop="name"></el-table-column>
+      <el-table-column label="年" min-width="60" prop="year"></el-table-column>
+      <el-table-column label="月" min-width="40" prop="month"></el-table-column>
+      <el-table-column label="岗位" min-width="100" prop="gangwei"></el-table-column>
+      <el-table-column label="新增合计" min-width="80" prop="xzhj"></el-table-column>
+      <el-table-column label="业绩提成" min-width="80" prop="yjtc"></el-table-column>
+      <el-table-column label="奖金基数" min-width="80" prop="jjjs"></el-table-column>
+      <el-table-column label="浮动系数" min-width="80" prop="fdxs"></el-table-column>
+      <el-table-column label="月度奖金" min-width="80" prop="ydjj"></el-table-column>
+
+      <el-table-column label="本月工作日天数" min-width="120" prop="gzts"></el-table-column>
+      <el-table-column label="加班费" min-width="80" prop="jbf"></el-table-column>
+      <el-table-column label="通讯补贴" min-width="80" prop="txbt"></el-table-column>
+      <el-table-column label="餐食补贴" min-width="80" prop="csbt"></el-table-column>
+      <el-table-column label="交通补贴" min-width="80" prop="jtbt"></el-table-column>
+      <el-table-column label="其他补贴" min-width="80" prop="qtbt"></el-table-column>
+      <el-table-column label="补贴合计" min-width="80" prop="bthj"></el-table-column>
+      <el-table-column label="其他假期" min-width="80" prop="qtjq"></el-table-column>
+      <el-table-column label="年假天数" min-width="80" prop="njts"></el-table-column>
+      <el-table-column label="迟到扣款" min-width="80" prop="cdkk"></el-table-column>
+      <el-table-column label="病假天数" min-width="80" prop="bjts"></el-table-column>
+
+      <el-table-column label="病假扣款" min-width="80" prop="bjkk"></el-table-column>
+      <el-table-column label="事假天数" min-width="80" prop="sjts"></el-table-column>
+      <el-table-column label="事假扣款" min-width="80" prop="sjkk"></el-table-column>
+      <el-table-column label="扣款合计" min-width="80" prop="kkhj"></el-table-column>
+      <el-table-column label="应发调整" min-width="80" prop="yftz"></el-table-column>
+      <el-table-column label="本月应发工资" min-width="80" prop="byyf"></el-table-column>
+      <el-table-column label="代扣五险" min-width="80" prop="dkwx"></el-table-column>
+      <el-table-column label="代扣住房公积金" min-width="80" prop="gjj"></el-table-column>
+      <el-table-column label="代扣个人所得税" min-width="80" prop="dkgs"></el-table-column>
+      <el-table-column label="实发工资" min-width="80" prop="sfgz"></el-table-column>
+
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="editSalaryDetail(scope.row)" size="small" type="text">编辑</el-button>
@@ -38,40 +82,94 @@
         <el-form-item label="姓名" label-width="80px" prop="name">
           <el-input v-model="salarydetailinfo.name"></el-input>
         </el-form-item>
-        <el-form-item label="手机" label-width="80px" prop="mobile">
-          <el-input v-model="salarydetailinfo.mobile"></el-input>
+        <el-form-item label="年" label-width="80px" prop="year">
+          <el-input v-model="salarydetailinfo.year"></el-input>
         </el-form-item>
-        <el-form-item label="身份证号" label-width="80px" prop="card">
-          <el-input v-model.number="salarydetailinfo.card"></el-input>
+        <el-form-item label="月" label-width="80px" prop="month">
+          <el-input v-model="salarydetailinfo.month"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" label-width="80px" prop="email">
-          <el-input v-model="salarydetailinfo.email"></el-input>
+        <el-form-item label="岗位" label-width="80px" prop="gangwei">
+          <el-input v-model="salarydetailinfo.gangwei"></el-input>
         </el-form-item>
-        <el-form-item label="入职企业" label-width="80px" prop="email">
-          <el-select placeholder="请选择企业" v-model="salarydetailinfo.enterprise_id">
-            <el-option
-              :key="industry.enterprise_name"
-              :label="industry.enterprise_name"
-              :value="industry.id"
-              v-for="industry in industrytype"
-            ></el-option>
-          </el-select>
+        <el-form-item label="新增合计" label-width="80px" prop="xzhj">
+          <el-input v-model="salarydetailinfo.xzhj"></el-input>
         </el-form-item>
-        <el-form-item label="入职日期" label-width="80px" prop="enter_time">
-          <el-input v-model="salarydetailinfo.enter_time"></el-input>
+        <el-form-item label="业绩提成" label-width="80px" prop="yjtc">
+          <el-input v-model="salarydetailinfo.yjtc"></el-input>
         </el-form-item>
-        <el-form-item label="入职日期" label-width="80px" prop="leave_time">
-          <el-input v-model="salarydetailinfo.leave_time"></el-input>
+        <el-form-item label="奖金基数" label-width="80px" prop="jjjs">
+          <el-input v-model="salarydetailinfo.jjjs"></el-input>
         </el-form-item>
-        <el-form-item label="入职进度" label-width="80px" prop="enter_step">
-          <el-select placeholder="请选择入职进度" v-model="salarydetailinfo.enter_step">
-            <el-option :key="es.name" :label="es.name" :value="es.id" v-for="es in enterSteps"></el-option>
-          </el-select>
+        <el-form-item label="浮动系数" label-width="80px" prop="fdxs">
+          <el-input v-model="salarydetailinfo.fdxs"></el-input>
         </el-form-item>
-        <el-form-item label="离职进度" label-width="80px" prop="leave_step">
-          <el-select placeholder="请选择离职进度" v-model="salarydetailinfo.leave_step">
-            <el-option :key="ls.name" :label="ls.name" :value="ls.id" v-for="ls in leaveSteps"></el-option>
-          </el-select>
+        <el-form-item label="月度奖金" label-width="80px" prop="ydjj">
+          <el-input v-model="salarydetailinfo.ydjj"></el-input>
+        </el-form-item>
+
+        <el-form-item label="本月工作日天数" label-width="80px" prop="gzts">
+          <el-input v-model="salarydetailinfo.gzts"></el-input>
+        </el-form-item>
+        <el-form-item label="加班费" label-width="80px" prop="jbf">
+          <el-input v-model="salarydetailinfo.ydjj"></el-input>
+        </el-form-item>
+        <el-form-item label="通讯补贴" label-width="80px" prop="txbt">
+          <el-input v-model="salarydetailinfo.txbt"></el-input>
+        </el-form-item>
+        <el-form-item label="餐食补贴" label-width="80px" prop="csbt">
+          <el-input v-model="salarydetailinfo.csbt"></el-input>
+        </el-form-item>
+        <el-form-item label="交通补贴" label-width="80px" prop="jtbt">
+          <el-input v-model="salarydetailinfo.jtbt"></el-input>
+        </el-form-item>
+        <el-form-item label="其他补贴" label-width="80px" prop="qtbt">
+          <el-input v-model="salarydetailinfo.qtbt"></el-input>
+        </el-form-item>
+        <el-form-item label="补贴合计" label-width="80px" prop="bthj">
+          <el-input v-model="salarydetailinfo.bthj"></el-input>
+        </el-form-item>
+        <el-form-item label="其他假期" label-width="80px" prop="qtjq">
+          <el-input v-model="salarydetailinfo.qtjq"></el-input>
+        </el-form-item>
+        <el-form-item label="年假天数" label-width="80px" prop="ndts">
+          <el-input v-model="salarydetailinfo.ndts"></el-input>
+        </el-form-item>
+        <el-form-item label="迟到扣款" label-width="80px" prop="cdkk">
+          <el-input v-model="salarydetailinfo.cdkk"></el-input>
+        </el-form-item>
+        <el-form-item label="病假天数" label-width="80px" prop="bjts">
+          <el-input v-model="salarydetailinfo.bjts"></el-input>
+        </el-form-item>
+
+        <el-form-item label="病假扣款" label-width="80px" prop="bjkk">
+          <el-input v-model="salarydetailinfo.bjkk"></el-input>
+        </el-form-item>
+        <el-form-item label="事假天数" label-width="80px" prop="sjts">
+          <el-input v-model="salarydetailinfo.sjts"></el-input>
+        </el-form-item>
+        <el-form-item label="事假扣款" label-width="80px" prop="sjkk">
+          <el-input v-model="salarydetailinfo.sjkk"></el-input>
+        </el-form-item>
+        <el-form-item label="扣款合计" label-width="80px" prop="kkhj">
+          <el-input v-model="salarydetailinfo.kkhj"></el-input>
+        </el-form-item>
+        <el-form-item label="应发调整" label-width="80px" prop="yftz">
+          <el-input v-model="salarydetailinfo.yftz"></el-input>
+        </el-form-item>
+        <el-form-item label="本月应发工资" label-width="80px" prop="byyf">
+          <el-input v-model="salarydetailinfo.byyf"></el-input>
+        </el-form-item>
+        <el-form-item label="代扣五险" label-width="80px" prop="dkwx">
+          <el-input v-model="salarydetailinfo.dkwx"></el-input>
+        </el-form-item>
+        <el-form-item label="代扣住房公积金" label-width="80px" prop="gjj">
+          <el-input v-model="salarydetailinfo.gjj"></el-input>
+        </el-form-item>
+        <el-form-item label="代扣个人所得税" label-width="80px" prop="dkgs">
+          <el-input v-model="salarydetailinfo.dkgs"></el-input>
+        </el-form-item>
+        <el-form-item label="实发工资" label-width="80px" prop="sfgz">
+          <el-input v-model="salarydetailinfo.sfgz"></el-input>
         </el-form-item>
       </el-form>
       <div class="dialog-footer" slot="footer">
@@ -105,6 +203,9 @@ export default {
       addSalaryDetailDialog: false,
       isEdit: false,
       title: "",
+      importDataBtnText: "导入数据",
+      importDataBtnIcon: "el-icon-upload2",
+      importDataDisabled: false,
       salarydetailinfo: {
         openid: "",
         year: "",
@@ -138,53 +239,7 @@ export default {
         dkgs: "",
         sfgz: ""
       },
-      rules: {
-        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-        mobile: [
-          { required: true, message: "请输入电话号码", trigger: "blur" }
-        ],
-        card: [
-          { required: true, message: "请输入身份证号码", trigger: "blur" },
-          {
-            pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
-            message: "身份证号码格式不正确",
-            trigger: "blur"
-          }
-        ],
-        email: [
-          { required: true, message: "请输入邮箱地址", trigger: "blur" },
-          {
-            type: "email",
-            message: "邮箱格式不正确",
-            trigger: "blur"
-          }
-        ],
-        enterprise_id: [
-          { required: true, message: "请输入企业", trigger: "blur" }
-        ],
-        enter_time: [
-          { required: true, message: "请输入入职日期", trigger: "blur" }
-        ]
-      },
-      enterSteps: [
-        {
-          id: 0,
-          name: "待用户确认信息"
-        },
-        {
-          id: 1,
-          name: "已确认信息"
-        },
 
-        {
-          id: 2,
-          name: "待用户网签合同"
-        },
-        {
-          id: 3,
-          name: "合同签完"
-        }
-      ],
       leaveSteps: [
         {
           id: 0,
@@ -294,6 +349,31 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    onError() {
+      this.importDataBtnText = "导入数据";
+      this.importDataBtnIcon = "el-icon-upload2";
+      this.importDataDisabled = false;
+      this.fullscreenLoading = false;
+    },
+    onSuccess(res) {
+      if (res.success) {
+        this.$message({
+          type: "success",
+          message: "上传成功"
+        });
+        this.getTableData();
+      }
+      this.importDataBtnText = "导入数据";
+      this.importDataBtnIcon = "el-icon-upload2";
+      this.importDataDisabled = false;
+      this.fullscreenLoading = false;
+    },
+    beforeUpload() {
+      this.importDataBtnText = "正在导入";
+      this.importDataBtnIcon = "el-icon-loading";
+      this.importDataDisabled = true;
+      this.fullscreenLoading = true;
     }
   }
 };

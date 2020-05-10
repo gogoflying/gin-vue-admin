@@ -197,3 +197,40 @@ func GetJoblistOptions(c *gin.Context) {
 		})
 	}
 }
+
+type ReqJoblistSearch struct {
+	modelInterface.PageInfo
+	CityId             int              `json:"city_id"`
+	KeyWord            string           `json:"keyword"`
+	IndustryIds        []int            `json:"industry_ids"`
+	EnterpriseTypeIds  []int            `json:"interprise_type_ids"`
+	EnterpriseScaleIds []userJobs.Scale `json:"interprise_scales"`
+	SalaryIds          []int            `json:"salary_ids"`
+	ExpireIds          []int            `json:"expire_ids"`
+	EducationIds       []int            `json:"education_ids"`
+	JobTypeIds         []int            `json:"job_type_ids"`
+	Order              int              `json:"order"`
+}
+
+func GetJoblistListSearch(c *gin.Context) {
+	var (
+		req   ReqJoblistSearch
+		err   error
+		list  interface{}
+		total int
+	)
+	_ = c.ShouldBindJSON(&req)
+
+	err, list, total = new(userJobs.Joblist).GetInfoListSearchDetail(req.KeyWord, req.CityId, req.Order, req.IndustryIds, req.EnterpriseTypeIds, req.SalaryIds, req.ExpireIds, req.EducationIds, req.JobTypeIds, req.EnterpriseScaleIds, modelInterface.PageInfo{Page: req.Page, PageSize: req.PageSize})
+
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "获取数据成功", gin.H{
+			"jobs":     list,
+			"total":    total,
+			"page":     req.PageInfo.Page,
+			"pageSize": req.PageInfo.PageSize,
+		})
+	}
+}

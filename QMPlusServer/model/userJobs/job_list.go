@@ -14,8 +14,8 @@ import (
 type Joblist struct {
 	gorm.Model
 	Jobname      string  `json:"p_name" gorm:"column:job_name;comment:'工作名称'"`
-	JobsalaHigh  int     `json:"p_salary_high" gorm:"column:job_salary_high;comment:'薪资上限'"`
-	JobsalaLow   int     `json:"p_salary_low" gorm:"column:job_salary_low;comment:'薪资下限'"`
+	JobsalaId    int     `json:"p_salary_id" gorm:"column:job_salary_id;comment:'薪资限度id，关联job_salaries表'"`
+	Jobsala      string  `json:"p_salary" gorm:"column:job_salary;comment:'薪资限度，关联job_salaries表名称'"`
 	JobLatitude  float32 `json:"p_latitude" gorm:"column:job_latitude;comment:'工作地点纬度'"`
 	JobLongitude float32 `json:"p_longitude" gorm:"column:job_longitude;comment:'工作地点经度'"`
 	JobAddress   string  `json:"p_address" gorm:"column:job_address;comment:'工作地点'"`
@@ -96,6 +96,61 @@ func (jl *Joblist) GetInfoList(info modelInterface.PageInfo) (err error, list in
 	}
 }
 
+func (jl *Joblist) GetInfoListSearchDetail(keyword string, cityId, order int, industrys, enterpriseTypes, salarys, expires, edus, jobTyps []int, enterpriseScales []Scale, info modelInterface.PageInfo) (err error, list interface{}, total int) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+
+	enterprises, err := new(EnterpriseInfo).GetEnterpeiseSearchDetail(industrys, enterpriseTypes, enterpriseScales)
+	if err != nil {
+		return
+	}
+
+	var enterpriseIds []uint
+	if len(enterprises) > 0 {
+		for _, enterprise := range enterprises {
+			enterpriseIds = append(enterpriseIds, enterprise.ID)
+		}
+	}
+
+	var reJoblistList []Joblist
+
+	outData := time.Now().Unix()
+
+	db := qmsql.DEFAULTDB.Model(jl).Where("p_status != 3 and p_outdate >= ?", outData)
+
+	if cityId > 0 {
+		db = db.Where("job_city_id = ?", cityId)
+	}
+	if len(keyword) > 0 {
+		db = db.Where("job_name LIKE ? or company_name LIKE ?", "%"+keyword+"%", "%"+keyword+"%")
+	}
+	if len(salarys) > 0 {
+		db = db.Where("job_salary_id IN (?)", salarys)
+	}
+	if len(expires) > 0 {
+		db = db.Where("job_years_id IN (?)", expires)
+	}
+	if len(edus) > 0 {
+		db = db.Where("job_edu_id IN (?)", edus)
+	}
+	if len(jobTyps) > 0 {
+		db = db.Where("job_type_id IN (?)", jobTyps)
+	}
+	if len(enterpriseIds) > 0 {
+		db = db.Where("company_id IN (?)", enterpriseIds)
+	}
+	if order == 0 {
+		db = db.Order("id desc")
+	} else {
+		db = db.Order("p_views desc")
+	}
+
+	db = db.Count(&total)
+
+	err = db.Limit(limit).Offset(offset).Find(&reJoblistList).Error
+	return err, reJoblistList, total
+}
+
 // 分页获取Joblist
 func (jl *Joblist) GetInfoListSearch(keyword string, cityId int, low int, hight int, info modelInterface.PageInfo) (err error, list interface{}, total int) {
 	limit := info.PageSize
@@ -117,7 +172,7 @@ func (jl *Joblist) GetInfoListSearch(keyword string, cityId int, low int, hight 
 		db = db.Where("job_salary_low >= ?", low)
 	}
 	if hight > 0 {
-		db = db.Where("job_salary_high <= ?", hight)
+		db = db.Where("job_salary_high >= ?", hight)
 	}
 	db = db.Where("p_status != 3 and p_outdate >= ?", outData)
 	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&reJoblistList).Error

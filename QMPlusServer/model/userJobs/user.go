@@ -10,10 +10,10 @@ import (
 )
 
 type DecodeMobile struct {
-	EncrypData    string `json:"encrypdata"`
-	IvData    	  string `json:"ivdata"`
-	SessionKey    string    `json:"sessionkey"`
-	Openid   	  string `json:"openid"`
+	EncrypData string `json:"encrypdata"`
+	IvData     string `json:"ivdata"`
+	SessionKey string `json:"sessionkey"`
+	Openid     string `json:"openid"`
 }
 
 type UserLoginInfo struct {
@@ -57,6 +57,12 @@ func (users *Users) FindById() (err error, reusers Users) {
 	err = qmsql.DEFAULTDB.Where("openid = ?", users.Openid).First(&reusers).Error
 	return err, reusers
 
+}
+
+// 根据ID查看单条Users
+func (users *Users) GetByOpenId() (err error, reusers Users) {
+	err = qmsql.DEFAULTDB.Model(users).Where("openid = ? and status = 1", users.Openid).First(&reusers).Error
+	return
 }
 
 // 根据ID查看单条Users

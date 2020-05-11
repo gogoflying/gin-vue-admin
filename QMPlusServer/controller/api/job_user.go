@@ -136,13 +136,20 @@ func JobUserLogin(c *gin.Context) {
 		Openid: openid,
 		Status: 1,
 	}
-	_ = c.ShouldBindJSON(&u)
-	err = u.CreateUsers()
+	err, reuser := u.GetByOpenId()
 	if err != nil {
-		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
-		return
+		_ = c.ShouldBindJSON(&u)
+		err = u.CreateUsers()
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
+			return
+		}
 	}
-	tokenNext_wx(c, openid, session_key)
+	var isMobile bool = false
+	if len(reuser.Mobile) > 0 {
+		isMobile = true
+	}
+	tokenNext_wx(c, openid, session_key, isMobile)
 	fmt.Printf("get openId:%v\n", openid)
 }
 
@@ -165,7 +172,7 @@ func sendWxAuthAPI(code string) (string, string, error) {
 }
 
 //登录以后签发jwt
-func tokenNext_wx(c *gin.Context, openid, session_key string) {
+func tokenNext_wx(c *gin.Context, openid, session_key string, isMobile bool) {
 	j := &middleware.JWT_wx{
 		[]byte(config.GinVueAdminconfig.JWT.SigningKey), // 唯一签名
 	}
@@ -184,7 +191,7 @@ func tokenNext_wx(c *gin.Context, openid, session_key string) {
 	if err != nil {
 		servers.ReportFormat(c, false, "获取token失败", gin.H{})
 	} else {
-		servers.ReportFormat(c, true, "登录成功", gin.H{"openid": openid, "session_key": session_key, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
+		servers.ReportFormat(c, true, "登录成功", gin.H{"openid": openid, "isPhone": isMobile, "session_key": session_key, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
 	}
 }
 

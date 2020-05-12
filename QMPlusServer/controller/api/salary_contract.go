@@ -11,8 +11,9 @@ import (
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userSalary"
 
+	log "gin-vue-admin/init/initlog"
+
 	"github.com/gin-gonic/gin"
-	"gin-vue-admin/init/initlog"
 )
 
 type StatusInfo int32
@@ -227,6 +228,11 @@ func UploadUserContract(c *gin.Context) {
 
 func runPDFConvert(c *gin.Context, localPath, openId string) {
 	//uci.tmpContractPath
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("runPDFConvert Recovered in f:", r)
+		}
+	}()
 	fmt.Printf("runPDFConvert :%s--%s\n", localPath, openId)
 	jpgPathList, err := servers.SplitPdf(localPath, openId, "tmp")
 	if err != nil {
@@ -318,6 +324,11 @@ func GetContractJpgList(c *gin.Context) {
 }
 
 func runMergeImg(c *gin.Context, imgPath, openId string) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("runMergeImg Recovered in f:", r)
+		}
+	}()
 	//uci.tmpContractPath
 	fmt.Printf("runMergeImg :%s\n", imgPath)
 	err, localFile := servers.DownLoadLocalFile(USER_HEADER_BUCKET, imgPath, "tmp")

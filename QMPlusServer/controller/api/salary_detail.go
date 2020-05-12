@@ -165,7 +165,6 @@ func GetSalarysListSearch(c *gin.Context) {
 func ImportSalarys(c *gin.Context) {
 
 	_, fxlsx, err := c.Request.FormFile("file")
-
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
 	} else {

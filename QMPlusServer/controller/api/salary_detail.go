@@ -202,6 +202,7 @@ func UploadFileLocalEx(file *multipart.FileHeader) (err error) {
 	}
 	err = batchInsertSalarys(fileTemp)
 	if err != nil {
+		servers.DelLocalFile(tmpFilename)
 		return err
 	}
 	servers.DelLocalFile(tmpFilename)
@@ -280,7 +281,7 @@ func batchInsertSalarys(file *xlsx.File) error {
 				Dkgs:    dkgs,
 				Sfgz:    sfgz,
 			}
-			err := un.CreateSalarys()
+			err := un.CreateSalarysTx()
 			if err != nil {
 				fmt.Println(err)
 				continue

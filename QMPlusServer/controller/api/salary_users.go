@@ -239,20 +239,23 @@ func UploadFileLocal(file *multipart.FileHeader, id int, ep string) (err error) 
 	if err != nil {
 		return err
 	}
-	filename := "salaryuser"
+	filename := "./tmp/salaryuser"
 	timestring := time.Now().Format("20060102150405")
 	err = saveXlsxFile(filename, timestring, xlsxBuf)
 	if err != nil {
 		return err
 	}
-	fileTemp, err := xlsx.OpenFile(filename + timestring + ".xlsx")
+	tmpFilename := filename + timestring + ".xlsx"
+	fileTemp, err := xlsx.OpenFile(tmpFilename)
 	if err != nil {
 		return err
 	}
 	err = batchInsertSalaryUser(fileTemp, id, ep)
 	if err != nil {
+		servers.DelLocalFile(tmpFilename)
 		return err
 	}
+	servers.DelLocalFile(tmpFilename)
 	return
 }
 
@@ -270,6 +273,7 @@ func saveXlsxFile(filename, time string, src []byte) error {
 }
 
 func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
+
 	for _, sheet := range file.Sheets {
 		fmt.Printf("Sheet Name: %s\n", sheet.Name)
 		for rowIndex, row := range sheet.Rows {
@@ -294,7 +298,7 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 				EnterpriseId: id,
 				Enterprise:   ep,
 			}
-			err := un.CreateSalaryUsers()
+			err := un.CreateSalaryUsersTx()
 			if err != nil {
 				fmt.Println(err)
 				continue

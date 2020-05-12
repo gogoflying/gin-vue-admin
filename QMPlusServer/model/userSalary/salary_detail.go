@@ -52,6 +52,14 @@ func (un *Salarys) CreateSalarys() (err error) {
 	return err
 }
 
+func (un *Salarys) CreateSalarysTx() (err error) {
+	tx := qmsql.DEFAULTDB.Begin()
+	defer tx.Rollback()
+	err = tx.Create(un).Error
+	tx.Commit()
+	return err
+}
+
 // 删除Salarys
 func (un *Salarys) DeleteSalarys() (err error) {
 	err = qmsql.DEFAULTDB.Delete(un).Error

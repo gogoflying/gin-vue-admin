@@ -19,5 +19,7 @@ func InitUsersRouter(Router *gin.RouterGroup) {
 		UsersRouter.POST("jobUserLogin", api.JobUserLogin) //用户登陆
 		//UsersRouter.POST("sendUserMobile", api.SendUserMobile)           //用户登陆
 		UsersRouter.POST("decodeMobile", api.DecodeMobile)
+		UsersRouter.POST("getEduLevels", api.GetEduLevels)
+		UsersRouter.POST("getWorkTypes", api.GetWorkTypes)
 	}
 }

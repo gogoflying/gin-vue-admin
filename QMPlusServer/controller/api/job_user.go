@@ -33,6 +33,30 @@ func CreateUsers(c *gin.Context) {
 	}
 }
 
+func GetWorkTypes(c *gin.Context) {
+	var users userJobs.Users
+	err, list := users.GetJobWorkTypes()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"list": list,
+		})
+	}
+}
+
+func GetEduLevels(c *gin.Context) {
+	var users userJobs.Users
+	err, list := users.GetEduLevels()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"list": list,
+		})
+	}
+}
+
 func DeleteUsers(c *gin.Context) {
 	var users userJobs.Users
 	_ = c.ShouldBindJSON(&users)

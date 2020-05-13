@@ -82,6 +82,18 @@ func (users *Users) FindByOpenId() (err error, reusers Users, edus, wks, base, d
 
 }
 
+func (users *Users) GetEduLevels() (err error, list interface{}) {
+	var els []EduLevel
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&els).Error
+	return err, els
+}
+
+func (users *Users) GetJobWorkTypes() (err error, list interface{}) {
+	var wts []JobWorkType
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&wts).Error
+	return err, wts
+}
+
 func (users *Users) GetAllInfoOption() (err error, list1, list2, list3, list4, list5, list6 interface{}) {
 	var wt []JobWorkType
 	var el []EduLevel

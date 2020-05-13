@@ -18,6 +18,7 @@ type Config struct {
 	Log          Log          `json:"log"`
 	AliyunOss    AliyunOss    `json:"aliyunoss"`
 	WeiXin       WeiXin       `json:"weiXin"`
+	Sendsms      Sendsms      `json:"Sendsms"`
 }
 
 type System struct { // 系统配置
@@ -69,8 +70,14 @@ type AliyunOss struct { // 七牛 密钥配置
 }
 
 type WeiXin struct { // 七牛 密钥配置
-	Appid        string `json:"appid"`
-	AppSecret     string `json:"appsecret"`
+	Appid     string `json:"appid"`
+	AppSecret string `json:"appsecret"`
+}
+
+type Sendsms struct {
+	User    string `json:"user"`
+	Passwd  string `json:"passwd"`
+	SmsKind string `json:"smsKind"`
 }
 
 /**

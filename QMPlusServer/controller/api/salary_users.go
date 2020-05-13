@@ -123,8 +123,14 @@ func FindSalaryUsers(c *gin.Context) {
 
 func SalaryUserUpdatePassword(c *gin.Context) {
 	var un userSalary.SalaryUsers
+	var err error
 	_ = c.ShouldBindJSON(&un)
-	err := un.UpdatePassword()
+	if len(un.NewPassWord) >= 6 {
+		err = un.UpdatePassword()
+	} else {
+		err = fmt.Errorf("新密码长度小于6位")
+	}
+
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
 	} else {

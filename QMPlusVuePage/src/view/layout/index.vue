@@ -19,6 +19,7 @@
             >{{item.meta.title}}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="fl-right right-box">
+            <el-button @click.native="toCompanyAuth" type="warning" size="small" v-show="enPriseId != 0" style="margin-right:40px">企业认证</el-button>
             <el-dropdown>
               <span class="el-dropdown-link">
                 <img :src="userInfo.headerImg" height="30" width="30" />

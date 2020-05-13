@@ -90,3 +90,91 @@ export const createResumeStatus = (data) => {
         data
     })
 }
+
+export const getUserOptions = (data) => {
+    return service({
+        url: "/users/getUserOptions",
+        method: 'post',
+        data
+    })
+}
+
+export const createUserBaseInfo = (data) => {
+    return service({
+        url: "/bf/createUserBaseInfo",
+        method: 'post',
+        data
+    })
+}
+
+export const updateUserBaseInfo = (data) => {
+    return service({
+        url: "/bf/updateUserBaseInfo",
+        method: 'post',
+        data
+    })
+}
+
+export const createUserDream = (data) => {
+    return service({
+        url: "/dm/createUserDream",
+        method: 'post',
+        data
+    })
+}
+
+export const updateUserDream = (data) => {
+    return service({
+        url: "/dm/updateUserDream",
+        method: 'post',
+        data
+    })
+}
+
+export const createUserWork = (data) => {
+    return service({
+        url: "/wk/createUserWork",
+        method: 'post',
+        data
+    })
+}
+
+export const deleteUserWork = (data) => {
+    return service({
+        url: "/wk/deleteUserWork",
+        method: 'post',
+        data
+    })
+}
+
+export const updateUserWork = (data) => {
+    return service({
+        url: "/wk/updateUserWork",
+        method: 'post',
+        data
+    })
+}
+
+export const createUsereducation = (data) => {
+    return service({
+        url: "/ed/createUsereducation",
+        method: 'post',
+        data
+    })
+}
+
+export const deleteUsereducation = (data) => {
+    return service({
+        url: "/ed/deleteUsereducation",
+        method: 'post',
+        data
+    })
+}
+
+export const updateUsereducation = (data) => {
+    return service({
+        url: "/ed/updateUsereducation",
+        method: 'post',
+        data
+    })
+}

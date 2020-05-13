@@ -76,53 +76,43 @@
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="身份证正反面:">
-              <span v-if="scope.row.cards != null ">
-                <ul v-for="cd in scope.row.cards" :key="cd">
-                  <li style="float:left;">
-                    <img :src="cd" height="500" width="500" />
-                  </li>
-                </ul>
-              </span>
+              <el-row v-if="scope.row.cards != null ">
+                <el-col :span="12" v-for="cd in scope.row.cards" :key="cd">
+                  <img :src="cd" height="100%" width="100%" />
+                </el-col>
+              </el-row>
               <span v-else>身份证未上传</span>
             </el-form-item>
             <el-form-item label="银行卡正反面:">
-              <span v-if="scope.row.banks != null ">
-                <ul v-for="bk in scope.row.cards" :key="bk">
-                  <li>
-                    <img :src="bk" height="500" width="500" />
-                  </li>
-                </ul>
-              </span>
+              <el-row v-if="scope.row.banks != null ">
+                <el-col :span="12" v-for="cd in scope.row.banks" :key="cd">
+                  <img :src="cd" height="100%" width="100%" />
+                </el-col>
+              </el-row>
               <span v-else>银行卡未上传</span>
             </el-form-item>
             <el-form-item label="户口本照片:">
-              <span v-if="scope.row.hukous != null ">
-                <ul v-for="cd in scope.row.hukous" :key="cd">
-                  <li>
-                    <img :src="cd" height="500" width="500" />
-                  </li>
-                </ul>
-              </span>
+              <el-row v-if="scope.row.hukous != null ">
+                <el-col :span="12" v-for="cd in scope.row.hukous" :key="cd">
+                  <img :src="cd" height="100%" width="100%" />
+                </el-col>
+              </el-row>
               <span v-else>户口本未上传</span>
             </el-form-item>
             <el-form-item label="本人照片:">
-              <span v-if="scope.row.photos != null ">
-                <ul v-for="cd in scope.row.photos" :key="cd">
-                  <li>
-                    <img :src="cd" height="500" width="500" />
-                  </li>
-                </ul>
-              </span>
+              <el-row v-if="scope.row.photos != null ">
+                <el-col :span="12" v-for="cd in scope.row.photos" :key="cd">
+                  <img :src="cd" height="100%" width="100%" />
+                </el-col>
+              </el-row>
               <span v-else>本人照片未上传</span>
             </el-form-item>
             <el-form-item label="体检报告合格照片:">
-              <span v-if="scope.row.checkups != null ">
-                <ul v-for="cd in scope.row.checkups" :key="cd">
-                  <li>
-                    <img :src="cd" height="500" width="500" />
-                  </li>
-                </ul>
-              </span>
+              <el-row v-if="scope.row.checkups != null ">
+                <el-col :span="12" v-for="cd in scope.row.checkups" :key="cd">
+                  <img :src="cd" height="100%" width="100%" />
+                </el-col>
+              </el-row>
               <span v-else>体检报告未上传</span>
             </el-form-item>
             <el-form-item label="离职证明照片:">
@@ -136,23 +126,19 @@
               <span v-else>离职证明未上传</span>
             </el-form-item>
             <el-form-item label="毕业证照片:">
-              <span v-if="scope.row.diplomas != null ">
-                <ul v-for="cd in scope.row.diplomas" :key="cd">
-                  <li>
-                    <img :src="cd" height="500" width="500" />
-                  </li>
-                </ul>
-              </span>
+              <el-row v-if="scope.row.diplomas != null ">
+                <el-col :span="12" v-for="cd in scope.row.diplomas" :key="cd">
+                  <img :src="cd" height="100%" width="100%" />
+                </el-col>
+              </el-row>
               <span v-else>未上传</span>
             </el-form-item>
             <el-form-item label="其他:">
-              <span v-if="scope.row.others != null ">
-                <ul v-for="cd in scope.row.others" :key="cd">
-                  <li>
-                    <img :src="cd" height="500" width="500" />
-                  </li>
-                </ul>
-              </span>
+              <el-row v-if="scope.row.others != null ">
+                <el-col :span="12" v-for="cd in scope.row.others" :key="cd">
+                  <img :src="cd" height="100%" width="100%" />
+                </el-col>
+              </el-row>
               <span v-else>未上传</span>
             </el-form-item>
           </el-form>

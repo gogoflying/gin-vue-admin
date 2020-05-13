@@ -32,7 +32,11 @@
       <el-table-column label="职位名称" min-width="100" prop="p_name"></el-table-column>
       <el-table-column label="公司名称" min-width="150" v-if="false">
         <template slot-scope="scope">
-          <el-select @change="changeEp(scope.row)" placeholder="请选择" v-model="scope.row.enterprise_id">
+          <el-select
+            @change="changeEp(scope.row)"
+            placeholder="请选择"
+            v-model="scope.row.enterprise_id"
+          >
             <el-option
               :key="ep.enterprise_name"
               :label="ep.enterprise_name"
@@ -52,7 +56,7 @@
       <el-table-column label="最低学历" min-width="150" prop="p_education"></el-table-column>
       <el-table-column label="工作类型" min-width="100" prop="p_type"></el-table-column>
       <!-- <el-table-column label="工作描述" min-width="150" prop="p_des" :show-overflow-tooltip="true"></el-table-column> -->
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column fixed="right" label="操作" width="220">
         <template slot-scope="scope">
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
@@ -63,6 +67,7 @@
             type="primary"
             icon="el-icon-delete"
           >删除</el-button>
+          <el-button size="small" type="primary">置顶</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -83,7 +88,11 @@
 <script>
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
 const path = process.env.VUE_APP_BASE_API;
-import { getJoblistListBackend, deleteJoblist, updateJoblist } from "@/api/jobmanagerinfo";
+import {
+  getJoblistListBackend,
+  deleteJoblist,
+  updateJoblist
+} from "@/api/jobmanagerinfo";
 //import { getCitynameList } from "@/api/cityname";
 //import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";

@@ -49,8 +49,8 @@ export default {
 };
 </script>
 <style>
-.ql-editor {
-  height: 400px;
+.ql-container {
+  height: 200px;
 }
 .ql-editor strong {
   font-style: normal ;

@@ -66,7 +66,7 @@
   }
   > #show {
     padding: 0 32px 32px 32px;
-    height: 450px;//与下面一起设置滚动条
+    // height: 450px;//与下面一起设置滚动条
     overflow: auto;
     > section {
       overflow: auto;

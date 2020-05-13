@@ -2,8 +2,8 @@
   <div>
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="工作名称">
-          <el-input placeholder="工作名称" v-model="searchInfo.p_name"></el-input>
+        <el-form-item label="职位名称">
+          <el-input placeholder="职位名称" v-model="searchInfo.p_name"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="onSubmit" type="primary">查询</el-button>
@@ -12,7 +12,7 @@
     </div>
     <el-table :data="tableData" border stripe>
       <el-table-column type="selection" min-width="55"></el-table-column>
-      <el-table-column label="工作名称" min-width="250" prop="job_info.p_name"></el-table-column>
+      <el-table-column label="职位名称" min-width="250" prop="job_info.p_name"></el-table-column>
       <el-table-column label="用户名" min-width="150" prop="user_info.userName"></el-table-column>
       <el-table-column label="简历状态" min-width="150">
         <template slot-scope="scope">

@@ -148,11 +148,13 @@
       <el-table-column label="姓名" min-width="80" prop="name"></el-table-column>
       <el-table-column label="手机" min-width="110" prop="mobile"></el-table-column>
       <el-table-column label="岗位名称" min-width="100" prop="job_name"></el-table-column>
-      <el-table-column label="工资" min-width="100" prop="salary"></el-table-column>
-      <el-table-column label="合同期限" min-width="50" prop="contract_date"></el-table-column>
-      <el-table-column label="身份证号" min-width="100" prop="card" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column label="合同期限(月)" min-width="120" prop="contract_date" align="center"></el-table-column>
       <el-table-column label="邮箱" min-width="100" prop="email"></el-table-column>
       <el-table-column label="入职企业" min-width="100" prop="enterprise"></el-table-column>
+      <el-table-column label="入职进度" min-width="100" prop="enter_step" :formatter="EnstepFormat"></el-table-column>
+      <el-table-column label="离职进度" min-width="100" prop="leave_step" :formatter="LestepFormat"></el-table-column>
+      <!-- <el-table-column label="工资" min-width="100" prop="salary"></el-table-column>
+      <el-table-column label="身份证号" min-width="100" prop="card" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="入职日期" min-width="100" prop="enter_time"></el-table-column>
       <el-table-column label="离职日期" min-width="100" prop="leave_time"></el-table-column>
       <el-table-column label="入职进度" min-width="150" prop="enter_step">
@@ -187,7 +189,7 @@
           ></el-input>
           <span>{{scope.row.date}}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column fixed="right" label="操作" width="300">
         <template slot-scope="scope">
           <el-button @click="editSalaryUser(scope.row)" size="small" type="text">编辑</el-button>
@@ -277,7 +279,7 @@
             <el-option :key="ls.name" :label="ls.name" :value="ls.id" v-for="ls in leaveSteps"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="备注" label-width="80px" prop="errors">
+        <el-form-item v-show="isShow" label="备注" label-width="80px" prop="errors">
           <el-input v-model="salaryuserinfo.errors"></el-input>
         </el-form-item>
       </el-form>
@@ -343,6 +345,7 @@ export default {
       viewContractDialog: false,
       user_cons: [],
       isEdit: false,
+      isShow: false,
       title: "",
       importDataBtnText: "导入数据",
       importDataBtnIcon: "el-icon-upload2",
@@ -393,19 +396,19 @@ export default {
       enterSteps: [
         {
           id: 0,
-          name: "待用户确认信息"
+          name: "已录入"
         },
         {
           id: 1,
-          name: "待补充图片材料"
+          name: "已更新"
         },
         {
           id: 2,
-          name: "待审核材料"
+          name: "已审核"
         },
         {
           id: 3,
-          name: "待用户网签合同"
+          name: "已上传合同"
         },
         {
           id: 4,
@@ -415,15 +418,15 @@ export default {
       leaveSteps: [
         {
           id: 0,
-          name: "初始状态"
+          name: "在职"
         },
         {
           id: 1,
-          name: "用户提交离职"
+          name: "提交离职"
         },
         {
           id: 2,
-          name: "管理员审批,补充离职日期"
+          name: "已审批"
         },
         {
           id: 3,
@@ -440,9 +443,30 @@ export default {
       if (val != null) {
         this.importDataDisabled = false;
       }
-    }
+    },
+    'salaryuserinfo.enter_step':'changeData',
+    'salaryuserinfo.leave_step':'changeData'   
   },
   methods: {
+    changeData(curval,oldval){
+        if (curval < oldval){
+            this.isShow=true;
+        }
+    },
+    EnstepFormat(row) {
+      var selectedItem = {};
+      selectedItem = this.enterSteps.find(item => {
+        return item.id === row.enter_step;
+      });
+      return selectedItem.name;
+    },
+    LestepFormat(row) {
+      var selectedItem = {};
+      selectedItem = this.leaveSteps.find(item => {
+        return item.id === row.leave_step;
+      });
+      return selectedItem.name;
+    },
     downSalarytemplate() {
       const link = document.createElement("a");
       const url = `${path}/un/template/salaryuser.xlsx`;

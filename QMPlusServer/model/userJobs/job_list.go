@@ -203,22 +203,26 @@ func (jl *Joblist) GetInfoListSearchSimilar(ids []int, name string, eduJyId, edu
 	return err, reJoblistList
 }
 
-func (jl *Joblist) GetAllInfoOption() (err error, list1 interface{}, list2 interface{}, list3 interface{}) {
+func (jl *Joblist) GetAllInfoOption() (err error, list1, list2, list3, list4 interface{}) {
 	var enp []EnterpriseInfo
 	var jbe []JobWorkExpire
+	var js []JobSalary
 	var citys []userCity.Cityname
 	err = qmsql.DEFAULTDB.Select("id,enterprise_name").Find(&enp).Error
 	if err != nil {
-		return err, enp, jbe, citys
+		return err, enp, jbe, js, citys
 	}
-
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&jbe).Error
 	if err != nil {
-		return err, enp, jbe, citys
+		return err, enp, jbe, js, citys
+	}
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&js).Error
+	if err != nil {
+		return err, enp, jbe, js, citys
 	}
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&citys).Error
 	if err != nil {
-		return err, enp, jbe, citys
+		return err, enp, jbe, js, citys
 	}
-	return err, enp, jbe, citys
+	return err, enp, jbe, js, citys
 }

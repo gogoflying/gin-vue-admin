@@ -186,13 +186,14 @@ type ReqJoblist struct {
 }
 
 func GetJoblistOptions(c *gin.Context) {
-	err, rep, jbwe, citys := new(userJobs.Joblist).GetAllInfoOption()
+	err, rep, jbwe, js, citys := new(userJobs.Joblist).GetAllInfoOption()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "查询成功", gin.H{
 			"rep":      rep,
 			"jbwe":     jbwe,
+			"js":       js,
 			"cityinfo": citys,
 		})
 	}

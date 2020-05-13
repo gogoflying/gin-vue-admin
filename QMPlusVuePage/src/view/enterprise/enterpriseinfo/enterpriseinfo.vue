@@ -12,9 +12,14 @@
                 <img :src="scope.row.enterprise_logo" height="500" width="500" />
               </span>
             </el-form-item>
-            <el-form-item label="企业资质:">
+            <el-form-item label="企业主图:">
               <span>
                 <img :src="scope.row.enterprise_img" height="500" width="500" />
+              </span>
+            </el-form-item>
+            <el-form-item label="企业资质:">
+              <span>
+                <img :src="scope.row.enterprise_qfc" height="500" width="500" />
               </span>
             </el-form-item>
           </el-form>
@@ -22,13 +27,12 @@
       </el-table-column>
       <el-table-column label="id" min-width="60" prop="ID"></el-table-column>
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name"></el-table-column>
-      <el-table-column label="注册地址" min-width="150" prop="enterprise_address"></el-table-column>
       <el-table-column label="企业规模" min-width="100" prop="enterprise_scale"></el-table-column>
-      <el-table-column label="企业类型" min-width="100" prop="enterprise_type"></el-table-column>
+      <el-table-column label="企业类型" min-width="100" prop="enterprise_type_info"></el-table-column>
       <el-table-column label="企业热度" min-width="100" prop="enterprise_hot"></el-table-column>
-      <el-table-column label="企业性质" min-width="100" prop="industry_type"></el-table-column>
+      <el-table-column label="企业性质" min-width="100" prop="enterprise_indust_info"></el-table-column>
       <!-- <el-table-column label="企业描述" min-width="150" prop="enterprise_desc" :show-overflow-tooltip="true"></el-table-column> -->
-      <el-table-column label="所在城市" min-width="100" prop="city_id"></el-table-column>
+      <el-table-column label="所在城市" min-width="100" prop="enterprise_address"></el-table-column>
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="editEnterprise(scope.row)" size="small" type="text">编辑</el-button>
@@ -57,14 +61,15 @@
         <el-form-item label="企业名称" label-width="80px" prop="enterprise_name">
           <el-input v-model="enterpriseInfo.enterprise_name"></el-input>
         </el-form-item>
-        <el-form-item label="注册地址" label-width="80px" prop="enterprise_address">
-          <el-input v-model="enterpriseInfo.enterprise_address"></el-input>
-        </el-form-item>
         <el-form-item label="企业规模" label-width="80px" prop="enterprise_scale">
           <el-input v-model.number="enterpriseInfo.enterprise_scale"></el-input>
         </el-form-item>
         <el-form-item label="企业性质" label-width="80px" prop="enterprise_type">
-          <el-select placeholder="请选择企业性质" v-model="enterpriseInfo.enterprise_type">
+          <el-select
+            @change="selectEnpType"
+            placeholder="请选择企业性质"
+            v-model="enterpriseInfo.enterprise_type"
+          >
             <el-option
               :key="enptype.name"
               :label="enptype.name"
@@ -77,7 +82,11 @@
           <el-input v-model.number="enterpriseInfo.enterprise_hot"></el-input>
         </el-form-item>
         <el-form-item label="行业类别" label-width="80px" prop="industry_type">
-          <el-select placeholder="请选择行业类别" v-model="enterpriseInfo.industry_type">
+          <el-select
+            @change="selectEnpIndust"
+            placeholder="请选择行业类别"
+            v-model="enterpriseInfo.industry_type"
+          >
             <el-option
               :key="industry.name"
               :label="industry.name"
@@ -94,7 +103,11 @@
           ></quill-editor>
         </el-form-item>
         <el-form-item label="所在城市" label-width="80px" prop="city_id">
-          <el-select placeholder="请选择注册城市" v-model="enterpriseInfo.city_id">
+          <el-select
+            @change="selectCityName"
+            placeholder="请选择注册城市"
+            v-model="enterpriseInfo.city_id"
+          >
             <el-option
               :key="city.name"
               :label="city.name"
@@ -121,7 +134,7 @@
             <i class="el-icon-plus avatar-uploader-icon" v-else></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="企业资质" label-width="80px" prop="enterprise_img">
+        <el-form-item label="企业主图" label-width="80px" prop="enterprise_img">
           <el-upload
             :headers="{'x-token':token}"
             :on-success="handleAvatarImgSuccess"
@@ -135,6 +148,24 @@
               :src="enterpriseInfo.enterprise_img"
               class="avatar"
               v-if="enterpriseInfo.enterprise_img"
+            />
+            <i class="el-icon-plus avatar-uploader-icon" v-else></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="企业资质" label-width="80px" prop="enterprise_qfc">
+          <el-upload
+            :headers="{'x-token':token}"
+            :on-success="handleAvatarQfcSuccess"
+            :show-file-list="false"
+            :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
+            class="avatar-uploader"
+            name="file"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img
+              :src="enterpriseInfo.enterprise_qfc"
+              class="avatar"
+              v-if="enterpriseInfo.enterprise_qfc"
             />
             <i class="el-icon-plus avatar-uploader-icon" v-else></i>
           </el-upload>
@@ -178,12 +209,15 @@ export default {
         enterprise_address: "",
         enterprise_scale: null,
         enterprise_type: null,
+        enterprise_type_info: "",
         enterprise_hot: null,
         industry_type: null,
+        enterprise_indust_info: "",
         enterprise_desc: "",
         city_id: null,
         enterprise_logo: "",
-        enterprise_img: ""
+        enterprise_img: "",
+        enterprise_qfc: ""
       },
       rules: {
         enterprise_name: [
@@ -218,6 +252,9 @@ export default {
           { required: true, message: "请上传企业logo", trigger: "blur" }
         ],
         enterprise_img: [
+          { required: true, message: "请上传企业主图", trigger: "blur" }
+        ],
+        enterprise_qfc: [
           { required: true, message: "请上传企业资质", trigger: "blur" }
         ]
       },
@@ -260,6 +297,27 @@ export default {
     }
   },
   methods: {
+    selectCityName(val) {
+      var selectedItem = {};
+      selectedItem = this.cityinfo.find(item => {
+        return item.ID === val;
+      });
+      this.enterpriseInfo.enterprise_address = selectedItem.name;
+    },
+    selectEnpType(val) {
+      var selectedItem = {};
+      selectedItem = this.enterprisetype.find(item => {
+        return item.ID === val;
+      });
+      this.enterpriseInfo.enterprise_type_info = selectedItem.name;
+    },
+    selectEnpIndust(val) {
+      var selectedItem = {};
+      selectedItem = this.industrytype.find(item => {
+        return item.ID === val;
+      });
+      this.enterpriseInfo.enterprise_indust_info = selectedItem.name;
+    },
     onEditorBlur() {}, // 失去焦点事件
     onEditorFocus() {}, // 获得焦点事件
     onEditorChange() {}, // 内容改变事件
@@ -293,7 +351,8 @@ export default {
         enterprise_desc: "",
         city_id: "",
         enterprise_logo: "",
-        enterprise_img: ""
+        enterprise_img: "",
+        enterprise_qfc: ""
       };
       this.addCompanyDialog = false;
     },
@@ -340,6 +399,9 @@ export default {
     },
     handleAvatarImgSuccess(res) {
       this.enterpriseInfo.enterprise_img = res.data.file.url;
+    },
+    handleAvatarQfcSuccess(res) {
+      this.enterpriseInfo.enterprise_qfc = res.data.file.url;
     },
     beforeAvatarUpload(file) {
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
@@ -412,8 +474,13 @@ export default {
   margin-bottom: 0;
   width: 100%;
 }
+</style>
+<style lang="scss">
+.ql-container {
+  height: 200px;
+}
 .ql-editor strong {
-  font-style: normal ;
+  font-style: normal;
   font-weight: bold;
 }
 .ql-editor em {

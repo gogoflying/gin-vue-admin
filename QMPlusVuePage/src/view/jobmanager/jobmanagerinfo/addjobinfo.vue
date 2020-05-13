@@ -19,19 +19,19 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="薪资上限" label-width="120px" prop="p_salary_high">
-          <el-input
-            v-model.number="jobmanagerinfo.p_salary_high"
-            placeholder="请输入薪资上限"
-            style="width:50%;"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="薪资下限" label-width="120px" prop="p_salary_low">
-          <el-input
-            v-model.number="jobmanagerinfo.p_salary_low"
-            placeholder="请输入薪资下限"
-            style="width:50%;"
-          ></el-input>
+        <el-form-item label="薪资范围" label-width="120px" prop="p_salary_id">
+          <el-select
+            @change="selectJobtype"
+            placeholder="请选择薪资范围"
+            v-model.number="jobmanagerinfo.p_salary_id"
+          >
+            <el-option
+              :key="js.name"
+              :label="js.name"
+              :value="js.ID"
+              v-for="js in jobsalary"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="工作地点" label-width="120px" prop="p_address">
           <el-input v-model="jobmanagerinfo.p_address" placeholder="请输入工作地点" style="width:45%;"></el-input>
@@ -154,8 +154,8 @@ export default {
       enterpriseInfo: [],
       jobmanagerinfo: {
         p_name: "",
-        p_salary_high: "",
-        p_salary_low: "",
+        p_salary_id: "",
+        p_salary: "",
         p_latitude: "39.916527",
         p_longitude: "116.397128",
         p_address: "",
@@ -186,6 +186,7 @@ export default {
           name: "广州"
         }
       ],
+      jobsalary: [],
       jobyears: [
         {
           id: 0,
@@ -353,6 +354,13 @@ export default {
       });
       this.jobmanagerinfo.p_education = selectedItem.name;
     },
+    selectJobsalary(val) {
+      var selectedItem = {};
+      selectedItem = this.jobsalary.find(item => {
+        return item.id === val;
+      });
+      this.jobmanagerinfo.p_salary = selectedItem.name;
+    },
     // onEditorReady(editor) { // 准备编辑器
 
     // },
@@ -470,10 +478,12 @@ export default {
         if (res.success) {
           this.enterpriseInfo = res.data.rep;
           this.jobyears = res.data.jbwe;
+          this.jobsalary = res.data.js;
           this.cityinfo = res.data.cityinfo;
         } else {
           this.enterpriseInfo = [];
           this.jobyears = [];
+          this.jobsalary = [];
           this.cityinfo = [];
         }
       });
@@ -481,7 +491,10 @@ export default {
   }
 };
 </script>
-<style>
+<style lang="scss">
+.ql-container {
+  height: 200px;
+}
 .ql-editor strong {
   font-style: normal;
   font-weight: bold;

@@ -18,18 +18,21 @@ type Scale struct {
 
 type EnterpriseInfo struct {
 	gorm.Model
-	EnterPriseName    string    `json:"enterprise_name" gorm:"column:enterprise_name;comment:'企业名称'"`
-	EnterpriseLogo    string    `json:"enterprise_logo" gorm:"column:enterprise_logo;comment:'企业logo url'"`
-	EnterpriseImg     string    `json:"enterprise_img" gorm:"column:enterprise_img;comment:'企业主图 url'"`
-	EnterpriseAddress string    `json:"enterprise_address" gorm:"column:enterprise_address;comment:'企业所在城市名称'"`
-	EnterpriseScale   int       `json:"enterprise_scale" gorm:"column:enterprise_scale;comment:'企业人员规模，如200，小程序会显示为200+'"`
-	EnterpriseType    int       `json:"enterprise_type" gorm:"column:enterprise_type;comment:'企业类型id，关联enterprise_industs'"`
-	EnterpriseHot     int       `json:"enterprise_hot" gorm:"column:enterprise_hot;comment:'企业热度'"`
-	IndustryType      int       `json:"industry_type" gorm:"column:industry_type;comment:'行业类型id，关联enterprise_type'"`
-	EnterpriseDesc    string    `json:"enterprise_desc" gorm:"column:enterprise_desc;comment:'企业描述信息'"`
-	EnterpriseCityId  int       `json:"city_id" gorm:"column:city_id;comment:'城市id，关联citynames'"`
-	JobCount          int       `json:"job_count" gorm:"column:job_count;comment:'该企业发布的职位数量'"`
-	Results           []Joblist `json:"result" gorm:"-"`
+	EnterPriseName       string    `json:"enterprise_name" gorm:"column:enterprise_name;comment:'企业名称'"`
+	EnterpriseLogo       string    `json:"enterprise_logo" gorm:"column:enterprise_logo;comment:'企业logo url'"`
+	EnterpriseImg        string    `json:"enterprise_img" gorm:"column:enterprise_img;comment:'企业主图 url'"`
+	EnterpriseQfc        string    `json:"enterprise_qfc" gorm:"column:enterprise_qfc;comment:'企业资质 url'"`
+	EnterpriseAddress    string    `json:"enterprise_address" gorm:"column:enterprise_address;comment:'企业所在城市名称'"`
+	EnterpriseScale      int       `json:"enterprise_scale" gorm:"column:enterprise_scale;comment:'企业人员规模，如200，小程序会显示为200+'"`
+	EnterpriseType       int       `json:"enterprise_type" gorm:"column:enterprise_type;comment:'企业类型id，关联enterprise_type'"`
+	EnterpriseTypeInfo   string    `json:"enterprise_type_info" gorm:"column:enterprise_type_info;comment:'企业类型'"`
+	EnterpriseHot        int       `json:"enterprise_hot" gorm:"column:enterprise_hot;comment:'企业热度'"`
+	IndustryType         int       `json:"industry_type" gorm:"column:industry_type;comment:'行业类型id，关联enterprise_industs'"`
+	EnterpriseIndustInfo string    `json:"enterprise_indust_info" gorm:"column:enterprise_indust_info;comment:'行业类型'"`
+	EnterpriseDesc       string    `json:"enterprise_desc" gorm:"column:enterprise_desc;comment:'企业描述信息'"`
+	EnterpriseCityId     int       `json:"city_id" gorm:"column:city_id;comment:'城市id，关联citynames'"`
+	JobCount             int       `json:"job_count" gorm:"column:job_count;comment:'该企业发布的职位数量'"`
+	Results              []Joblist `json:"result" gorm:"-"`
 }
 
 func (info *EnterpriseInfo) GetEnterpeiseSearchDetail(industrys, enterpriseTypes []int, enterpriseScales []Scale) (infos []EnterpriseInfo, err error) {

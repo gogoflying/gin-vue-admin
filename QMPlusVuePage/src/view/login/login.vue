@@ -3,7 +3,7 @@
     <vue-particle-line></vue-particle-line>
     <el-main class="login-box">
       <h1 class="title-1">
-        <img class="logo" :src="require('@/assets/logo.jpg')" alt="" srcset="">
+        <img class="logo" :src="require('@/assets/logo.jpg')" alt srcset />
       </h1>
       <el-form :model="loginForm" :rules="rules" ref="loginForm">
         <el-form-item prop="username">
@@ -25,7 +25,10 @@
             placeholder="请输入验证码"
             maxlength="10"
           />
-          <img :src="path + picPath" alt="请输入验证码" @click="loginVefify()" class="vPic">
+          <img :src="path + picPath" alt="请输入验证码" @click="loginVefify()" class="vPic" />
+        </el-form-item>
+        <el-form-item>
+          <el-checkbox v-model="checked" style="width:100%">记住密码</el-checkbox>
         </el-form-item>
         <el-form-item>
           <el-button @click="submitForm" style="width:100%">登 录</el-button>
@@ -40,82 +43,125 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { captcha } from '@/api/user'
-const path = process.env.VUE_APP_BASE_API
+import { mapActions } from "vuex";
+import { captcha } from "@/api/user";
+const path = process.env.VUE_APP_BASE_API;
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     const checkUsername = (rule, value, callback) => {
       if (value.length < 5 || value.length > 12) {
-        return callback(new Error('请输入正确的用户名'))
+        return callback(new Error("请输入正确的用户名"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     const checkPassword = (rule, value, callback) => {
       if (value.length < 6 || value.length > 12) {
-        return callback(new Error('请输入正确的密码'))
+        return callback(new Error("请输入正确的密码"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     return {
-      lock: 'lock',
+      checked: false,
+      lock: "lock",
       loginForm: {
-        username: '',
-        password: '',
-        captcha:'',
-        captchaId: '',
+        username: "",
+        password: "",
+        captcha: "",
+        captchaId: ""
       },
       rules: {
-        username: [{ validator: checkUsername, trigger: 'blur' }],
-        password: [{ validator: checkPassword, trigger: 'blur' }]
+        username: [{ validator: checkUsername, trigger: "blur" }],
+        password: [{ validator: checkPassword, trigger: "blur" }]
       },
-      path:path,
-      logVerify:'',
-      picPath:''
-    }
+      path: path,
+      logVerify: "",
+      picPath: ""
+    };
   },
   created() {
-    this.loginVefify()
+    this.loginVefify();
   },
   methods: {
-    ...mapActions('user', ['LoginIn']),
+    ...mapActions("user", ["LoginIn"]),
     async login() {
-      await this.LoginIn(this.loginForm)
+      await this.LoginIn(this.loginForm);
     },
     async submitForm() {
       this.$refs.loginForm.validate(async v => {
         if (v) {
-          this.login()
-          this.loginVefify()
+          this.cookieValid();
+          this.login();
+          this.loginVefify();
         } else {
           this.$message({
-            type: 'error',
-            message: '请正确填写登录信息',
+            type: "error",
+            message: "请正确填写登录信息",
             showClose: true
-          })
-          this.loginVefify()
-          return false
+          });
+          this.loginVefify();
+          return false;
         }
-      })
+      });
     },
     register() {
-      this.$router.push({name:"register"})
+      this.$router.push({ name: "register" });
     },
     changeLock() {
-      this.lock === 'lock' ? (this.lock = 'unlock') : (this.lock = 'lock')
+      this.lock === "lock" ? (this.lock = "unlock") : (this.lock = "lock");
     },
     loginVefify() {
-      captcha({}).then(ele=>{
-        this.picPath = ele.data.picPath
-        this.loginForm.captchaId = ele.data.captchaId
-      })
+      captcha({}).then(ele => {
+        this.picPath = ele.data.picPath;
+        this.loginForm.captchaId = ele.data.captchaId;
+      });
+    },
+    //校验cookie
+    cookieValid() {
+      const self = this;
+      if (self.checked == true) {
+        self.setCookie(self.loginForm.username, self.loginForm.password, 7);
+      } else {
+        self.clearCookie();
+      }
+    },
+    //设置cookie
+    setCookie(c_name, c_pwd, exdays) {
+      var exdate = new Date(); //获取时间
+      exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //保存的天数
+      //字符串拼接cookie
+      window.document.cookie =
+        "userName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
+      window.document.cookie =
+        "userPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
+    },
+    //读取cookie
+    getCookie: function() {
+      if (document.cookie.length > 0) {
+        var arr = document.cookie.split("; "); //这里显示的格式需要切割一下自己可输出看下
+        for (var i = 0; i < arr.length; i++) {
+          var arr2 = arr[i].split("="); //再次切割
+          //判断查找相对应的值
+          if (arr2[0] == "userName") {
+            this.loginForm.username = arr2[1]; //保存到保存数据的地方
+          } else if (arr2[0] == "userPwd") {
+            this.loginForm.password = arr2[1];
+          }
+        }
+      }
+    },
+    //清除cookie
+    clearCookie: function() {
+      this.setCookie("", "", -1); //修改2值都为空，天数为负1天就好了
     }
+  },
+  mounted() {
+    this.getCookie();
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
@@ -127,16 +173,16 @@ export default {
     position: absolute;
     left: 50%;
     margin-left: -22vw;
-    top:5vh;
-    .logo{
+    top: 5vh;
+    .logo {
       height: 35vh;
       width: 35vh;
     }
   }
-  .vPic{
+  .vPic {
     position: absolute;
     right: 10px;
-    bottom: 0px;   // 适配ie
+    bottom: 0px; // 适配ie
   }
 }
 </style>

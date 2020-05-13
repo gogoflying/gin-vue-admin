@@ -11,6 +11,7 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe>
+      <el-table-column type="selection" min-width="55"></el-table-column>
       <el-table-column label="工作名称" min-width="250" prop="job_info.p_name"></el-table-column>
       <el-table-column label="用户名" min-width="150" prop="user_info.userName"></el-table-column>
       <el-table-column label="简历状态" min-width="150">
@@ -31,7 +32,10 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="viewResume(scope.row)" size="small" type="text">查看</el-button>
+          <!-- <el-button @click="viewResume(scope.row)" size="small" type="text">查看</el-button> -->
+          <router-link :to="{name:'resumepreview', query: { id: scope.row.ID }}">
+            <el-button type="primary" size="small" icon="el-icon-edit">查看</el-button>
+          </router-link>
         </template>
       </el-table-column>
     </el-table>

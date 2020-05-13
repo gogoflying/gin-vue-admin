@@ -29,6 +29,8 @@ func RegisterTable(db *gorm.DB) {
 		userJobs.EnterpriseIndust{},
 		userJobs.EnterpriseType{},
 		userJobs.EduProfession{},
+		userJobs.EduLevel{},
+		userJobs.JobWorkType{},
 		userJobs.Users{},
 		userJobs.UserBaseInfo{},
 		userJobs.UserDream{},

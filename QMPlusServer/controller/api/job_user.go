@@ -103,6 +103,22 @@ func FindUsersByOpenid(c *gin.Context) {
 	}
 }
 
+func GetUserOptions(c *gin.Context) {
+	err, wt, el, jwe, js, jdt, citys := new(userJobs.Users).GetAllInfoOption()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"wt":       wt,
+			"el":       el,
+			"jwe":      jwe,
+			"js":       js,
+			"jdt":      jdt,
+			"cityinfo": citys,
+		})
+	}
+}
+
 func GetUsersList(c *gin.Context) {
 	var pageInfo modelInterface.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)

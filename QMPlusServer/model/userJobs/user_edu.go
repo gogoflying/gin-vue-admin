@@ -11,12 +11,13 @@ import (
 
 type UserEducation struct {
 	gorm.Model
-	Graduation     string `json:"graduation" gorm:"column:graduation;comment:''"`
-	Schoolname     string `json:"schoolname" gorm:"column:schoolname;comment:''"`
-	Edulevelindex  int    `json:"edulevelindex" gorm:"column:edulevelindex;comment:''"`
-	Profession     string `json:"profession" gorm:"column:profession;comment:''"`
-	GraduationTime string `json:"graduationTime" gorm:"column:graduationTime;comment:''"`
-	Openid         string `json:"openid" gorm:"column:openid"`
+	Graduation     string   `json:"graduation" gorm:"column:graduation;comment:''"`
+	Schoolname     string   `json:"schoolname" gorm:"column:schoolname;comment:''"`
+	EdulevelIndex  int      `json:"edulevelindex" gorm:"column:edulevelindex;comment:''"`
+	Edulevel       EduLevel `json:"edu_level" gorm:"ForeignKey:EdulevelIndex;AssociationForeignKey:ID"`
+	Profession     string   `json:"profession" gorm:"column:profession;comment:''"`
+	GraduationTime string   `json:"graduationTime" gorm:"column:graduationTime;comment:''"`
+	Openid         string   `json:"openid" gorm:"column:openid"`
 }
 
 // 创建Usereducation
@@ -64,7 +65,7 @@ func (ed *UserEducation) GetInfoListByOpenid(openId string, page, pageSize int) 
 	offset := pageSize * (page - 1)
 	var reUserEduList []UserEducation
 	db := qmsql.DEFAULTDB.Model(ed).Where("openid = ?", openId).Count(&total)
-	err = db.Order("id desc").Offset(offset).Limit(pageSize).Find(&reUserEduList).Error
+	err = db.Order("id desc").Offset(offset).Limit(pageSize).Preload("Edulevel").Find(&reUserEduList).Error
 	if err != nil {
 		return
 	}

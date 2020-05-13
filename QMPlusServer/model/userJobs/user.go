@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+	"gin-vue-admin/model/userCity"
 
 	"github.com/jinzhu/gorm"
 )
@@ -79,6 +80,47 @@ func (users *Users) FindByOpenId() (err error, reusers Users, edus, wks, base, d
 	}
 	return
 
+}
+
+func (users *Users) GetAllInfoOption() (err error, list1, list2, list3, list4, list5, list6 interface{}) {
+	var wt []JobWorkType
+	var el []EduLevel
+	var jwe []JobWorkExpire
+	var js []JobSalary
+	var jdt []JobDutyTime
+	var citys []userCity.Cityname
+
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&wt).Error
+	if err != nil {
+		return err, wt, el, jwe, js, jdt, citys
+	}
+
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&el).Error
+	if err != nil {
+		return err, wt, el, jwe, js, jdt, citys
+	}
+
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&jwe).Error
+	if err != nil {
+		return err, wt, el, jwe, js, jdt, citys
+	}
+
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&js).Error
+	if err != nil {
+		return err, wt, el, jwe, js, jdt, citys
+	}
+
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&jdt).Error
+	if err != nil {
+		return err, wt, el, jwe, js, jdt, citys
+	}
+
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&citys).Error
+	if err != nil {
+		return err, wt, el, jwe, js, jdt, citys
+	}
+
+	return err, wt, el, jwe, js, jdt, citys
 }
 
 // 分页获取Users

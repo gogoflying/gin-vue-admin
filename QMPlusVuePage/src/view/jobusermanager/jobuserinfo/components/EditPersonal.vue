@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import { createUserBaseInfo, updateUserBaseInfo } from "@/api/resumestatus";
+import { createUserBaseInfo, updateUserBaseInfo } from "@/api/jobuser";
 export default {
   props: ["user_base_info", "option", "openid"],
   methods: {
@@ -88,7 +88,7 @@ export default {
     },
     selectWorkYear(val) {
       var selectedItem = {};
-      selectedItem = this.option.jwt.find(item => {
+      selectedItem = this.option.jwe.find(item => {
         return item.ID === val;
       });
       this.user_base_info.job_work_expire = selectedItem;
@@ -103,6 +103,7 @@ export default {
     async addPerson() {
       let res;
       if (this.user_base_info.ID == null) {
+        this.user_base_info.openid = this.openid;
         res = await createUserBaseInfo(this.user_base_info);
       } else {
         res = await updateUserBaseInfo(this.user_base_info);

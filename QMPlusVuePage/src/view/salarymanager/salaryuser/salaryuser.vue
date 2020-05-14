@@ -412,7 +412,7 @@ export default {
         },
         {
           id: 4,
-          name: "合同签约完毕"
+          name: "已入职"
         }
       ],
       leaveSteps: [
@@ -422,15 +422,11 @@ export default {
         },
         {
           id: 1,
-          name: "提交离职"
+          name: "离职申请"
         },
         {
           id: 2,
-          name: "已审批"
-        },
-        {
-          id: 3,
-          name: "已离职,补充离职证明"
+          name: "已离职"
         }
       ]
     };

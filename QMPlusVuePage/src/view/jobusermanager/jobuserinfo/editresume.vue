@@ -1,20 +1,24 @@
 <template>
   <div>
-    <ShowBox v-bind:resume="resume" class="showBox" />
+    <el-row>
+      <el-col :span="10">
+        <!-- 左边编辑器 -->
+        <EditBox v-on:freshResume="loadResume" v-bind:resume="resume" class="editBox" />
+      </el-col>
+      <el-col :span="14">
+        <!-- 右边预览 -->
+        <ShowBox v-bind:resume="resume" class="showBox" />
+      </el-col>
+    </el-row>
     <div>
-      <el-row type="flex" justify="center">
-        <el-col :span="10">
-          <el-button @click="back" type="primary" round>返 回</el-button>
-          <el-button @click="download" type="primary" round>导 出</el-button>
-        </el-col>
-      </el-row>
+      <el-button @click="download" type="primary">导 出</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import { findResumeStatus } from "@/api/resumestatus";
-import { findUsersByOpenid } from "@/api/jobuser";
+import { findJobUserById, findUsersByOpenid } from "@/api/jobuser";
+import EditBox from "./components/EditBox";
 import ShowBox from "./components/ShowBox";
 import html2canvas from "html2canvas";
 import jspdf from "jspdf";
@@ -24,13 +28,15 @@ export default {
       resume: {
         openid: "",
         user_base_info: {
+          openid: "",
           userName: "",
           genderindex: "",
-          edulevel: "",
-          worksYear: "",
-          city: "",
-          mobile: "",
+          worksYearindex: "",
+          edulevelindex: "",
+          cityindex: "",
+          contact: "",
           email: "",
+          birthday: "",
           edu_level: {
             name: ""
           },
@@ -43,17 +49,11 @@ export default {
         },
         //声明工作经历数据
         user_works: [
-          {
-            companyname: "",
-            join: "",
-            leave: "",
-            department: "",
-            workContent: ""
-          }
         ],
         // 声明教育信息
         user_edus: [
           {
+            openid: "",
             schoolname: "",
             graduation: "",
             graduationTime: "",
@@ -65,6 +65,7 @@ export default {
           }
         ],
         user_dreams: {
+          openid: "",
           dreamposi: "",
           workTypeindex: "",
           cityindex: "",
@@ -87,9 +88,6 @@ export default {
     };
   },
   methods: {
-    back() {
-      this.$router.push({ name: "resumeinfo" });
-    },
     download() {
       var opts = { useCORS: true };
       html2canvas(document.querySelector(".showBox"), opts).then(canvas => {
@@ -118,16 +116,27 @@ export default {
       };
       findUsersByOpenid(row).then(res => {
         if (res.success) {
-          this.resume.user = res.data.user;
-          this.resume.user_base_info = res.data.base;
-          this.resume.user_works = res.data.works;
-          this.resume.user_edus = res.data.edus;
-          this.resume.user_dreams = res.data.dream;
+          if (res.data.user != null) {
+            this.resume.user = res.data.user;
+          }
+          if (res.data.base != null) {
+            this.resume.user_base_info = res.data.base;
+          }
+          if (res.data.works != null) {
+            this.resume.user_works = res.data.works;
+          }
+          if (res.data.edus != null) {
+            this.resume.user_edus = res.data.edus;
+          }
+          if (res.data.dream != null) {
+            this.resume.user_dreams = res.data.dream;
+          }
         }
       });
     }
   },
   components: {
+    EditBox,
     ShowBox
   },
   created() {
@@ -136,9 +145,9 @@ export default {
       const row = {
         ID: Number(id)
       };
-      findResumeStatus(row).then(res => {
+      findJobUserById(row).then(res => {
         if (res.success) {
-          this.resume.openid = res.data.rers.openid;
+          this.resume.openid = res.data.reusers.openid;
           this.loadResume();
         }
       });

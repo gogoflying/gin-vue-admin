@@ -253,9 +253,6 @@ export default {
         ],
         enterprise_img: [
           { required: true, message: "请上传企业主图", trigger: "blur" }
-        ],
-        enterprise_qfc: [
-          { required: true, message: "请上传企业资质", trigger: "blur" }
         ]
       },
       cityinfo: [

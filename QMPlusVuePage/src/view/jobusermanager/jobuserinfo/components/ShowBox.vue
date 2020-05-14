@@ -1,5 +1,6 @@
 <template>
   <div id="ShowBox">
+    <div class="motto">座右铭：你与名企之间的距离就差一份简历。</div>
     <div id="show">
       <section>
         <h3>基本信息</h3>
@@ -16,8 +17,8 @@
               <li>生日：{{resume.user_base_info.birthday || '生日'}}</li>
             </ul>
           </div>
-          <div class="print" v-if="resume.user_base_info.avatarUrl != null ">
-            <img v-if="resume.user_base_info.avatarUrl != ''" :src="resume.user_base_info.avatarUrl" height="100" width="100" />
+          <div class="print">
+            <img src="http://qmplusimg.henrongyi.top/1571627762timg.jpg" height="100" width="100" />
           </div>
         </div>
       </section>

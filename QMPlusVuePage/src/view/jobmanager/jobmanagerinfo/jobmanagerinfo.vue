@@ -46,17 +46,20 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column label="薪资上限" min-width="100" prop="p_salary_high"></el-table-column>
+      <!-- <el-table-column label="薪资上限" min-width="100" prop="p_salary_high"></el-table-column>
       <el-table-column label="薪资下限" min-width="100" prop="p_salary_low"></el-table-column>
-      <!-- <el-table-column label="工作地点纬度" min-width="150" prop="p_latitude"></el-table-column>
+      <el-table-column label="工作地点纬度" min-width="150" prop="p_latitude"></el-table-column>
       <el-table-column label="工作地点经度" min-width="150" prop="p_longitude"></el-table-column>-->
       <el-table-column label="工作地点" min-width="100" prop="p_address"></el-table-column>
       <el-table-column label="工作城市" min-width="150" prop="p_city"></el-table-column>
       <el-table-column label="工作年限" min-width="100" prop="p_edujy"></el-table-column>
       <el-table-column label="最低学历" min-width="150" prop="p_education"></el-table-column>
       <el-table-column label="工作类型" min-width="100" prop="p_type"></el-table-column>
+      <el-table-column label="状态" min-width="100" prop="p_status" :formatter="StatusFormat"></el-table-column>
+      <el-table-column label="招聘人数" min-width="100" prop="p_count"></el-table-column>
+      <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
       <!-- <el-table-column label="工作描述" min-width="150" prop="p_des" :show-overflow-tooltip="true"></el-table-column> -->
-      <el-table-column fixed="right" label="操作" width="220">
+      <el-table-column fixed="right" label="操作" width="240">
         <template slot-scope="scope">
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
@@ -67,7 +70,11 @@
             type="primary"
             icon="el-icon-delete"
           >删除</el-button>
-          <el-button size="small" type="primary">置顶</el-button>
+          <el-button
+            @click="changeTop(scope.row)"
+            size="small"
+            type="primary"
+          >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -93,6 +100,7 @@ import {
   deleteJoblist,
   updateJoblist
 } from "@/api/jobmanagerinfo";
+import { formatTimeToStr } from "@/utils/data";
 //import { getCitynameList } from "@/api/cityname";
 //import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";
@@ -109,6 +117,25 @@ export default {
     };
   },
   methods: {
+    StatusFormat(row) {
+      if (row.p_status == 1) {
+        return "急招";
+      } else if (row.p_status == 2) {
+        return "热门";
+      } else if (row.p_status == 3) {
+        return "下线";
+      } else {
+        return "普通";
+      }
+    },
+    dateFormat(row) {
+      if (row.p_outdate != null && row.p_outdate != 0) {
+        var date = new Date(row.p_outdate);
+        return formatTimeToStr(date, "yyyy-MM-dd");
+      } else {
+        return "永久";
+      }
+    },
     //条件搜索前端看此方法
     onSubmit() {
       this.page = 1;
@@ -153,6 +180,18 @@ export default {
       if (res.success) {
         this.$message({ type: "success", message: "指派简历成功" });
       }
+    },
+    async changeTop(row) {
+      if (row.p_top == 0) {
+        row.p_top = 1;
+      } else {
+        row.p_top = 0;
+      }
+      const res = await updateJoblist(row);
+      if (res.success) {
+        this.$message({ type: "success", message: "切换成功" });
+      }
+      this.getTableData();
     }
   },
   async created() {

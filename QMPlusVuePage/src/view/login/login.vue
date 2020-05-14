@@ -5,38 +5,42 @@
       <h1 class="title-1">
         <img class="logo" :src="require('@/assets/logo.jpg')" alt srcset />
       </h1>
-      <el-form :model="loginForm" :rules="rules" ref="loginForm">
-        <el-form-item prop="username">
-          <el-input placeholder="请输入用户名" v-model="loginForm.username"></el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            :type="lock==='lock'?'password':'text'"
-            placeholder="请输入密码"
-            v-model="loginForm.password"
-          >
-            <i :class="'el-input__icon el-icon-' + lock" @click="changeLock" slot="suffix"></i>
-          </el-input>
-        </el-form-item>
-        <el-form-item style="position:relative">
-          <el-input
-            v-model="loginForm.captcha"
-            name="logVerify"
-            placeholder="请输入验证码"
-            maxlength="10"
-          />
-          <img :src="path + picPath" alt="请输入验证码" @click="loginVefify()" class="vPic" />
-        </el-form-item>
-        <el-form-item>
-          <el-checkbox v-model="checked" style="width:100%">记住密码</el-checkbox>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="submitForm" style="width:100%">登 录</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="register" style="width:100%">注 册</el-button>
-        </el-form-item>
-      </el-form>
+      <div class="main">
+        <el-form :model="loginForm" :rules="rules" ref="loginForm">
+          <el-form-item prop="username">
+            <el-input placeholder="请输入用户名" v-model="loginForm.username">
+              <i class="el-input__icon el-icon-user" slot="suffix"></i>
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              :type="lock==='lock'?'password':'text'"
+              placeholder="请输入密码"
+              v-model="loginForm.password"
+            >
+              <i :class="'el-input__icon el-icon-' + lock" @click="changeLock" slot="suffix"></i>
+            </el-input>
+          </el-form-item>
+          <el-form-item style="position:relative">
+            <el-input
+              v-model="loginForm.captcha"
+              name="logVerify"
+              placeholder="请输入验证码"
+              maxlength="10"
+            />
+            <img :src="path + picPath" alt="请输入验证码" @click="loginVefify()" class="vPic" />
+          </el-form-item>
+          <el-form-item>
+            <el-checkbox v-model="checked" style="width:100%">记住密码</el-checkbox>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="submitForm" style="width:100%">登 录</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="register" style="width:100%">注 册</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
       <!-- <h3 class="title-3 fl-right">测试用户:admin 密码:123456</h3> -->
     </el-main>
   </el-container>
@@ -177,6 +181,11 @@ export default {
     .logo {
       height: 35vh;
       width: 35vh;
+    }
+    .main {
+      min-width: 260px;
+      width: 358px;
+      margin: 0 auto;
     }
   }
   .vPic {

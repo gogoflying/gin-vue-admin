@@ -48,7 +48,7 @@ import EditPersonal from "./EditPersonal";
 import EditWork from "./EditWork";
 import EditEdu from "./EditEdu";
 import EditDream from "./EditDream";
-import { getUserOptions } from "@/api/resumestatus";
+import { getUserOptions } from "@/api/jobuser";
 export default {
   components: {
     EditPersonal,

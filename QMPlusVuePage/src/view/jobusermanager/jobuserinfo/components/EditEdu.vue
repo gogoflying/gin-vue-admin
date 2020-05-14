@@ -66,7 +66,7 @@ import {
   createUsereducation,
   deleteUsereducation,
   updateUsereducation
-} from "@/api/resumestatus";
+} from "@/api/jobuser";
 export default {
   props: ["eduExperience", "option", "openid"],
   data() {
@@ -83,6 +83,10 @@ export default {
     }
   },
   methods: {
+    filter(array) {
+      //找出非空对象
+      return array.filter(item => !this.isEmpty(item));
+    },
     selectJobedu(val) {
       var selectedItem = {};
       selectedItem = this.option.el.find(item => {

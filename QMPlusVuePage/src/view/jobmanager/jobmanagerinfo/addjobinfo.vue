@@ -21,16 +21,11 @@
         </el-form-item>
         <el-form-item label="薪资范围" label-width="120px" prop="p_salary_id">
           <el-select
-            @change="selectJobtype"
+            @change="selectJobsalary"
             placeholder="请选择薪资范围"
             v-model.number="jobmanagerinfo.p_salary_id"
           >
-            <el-option
-              :key="js.name"
-              :label="js.name"
-              :value="js.ID"
-              v-for="js in jobsalary"
-            ></el-option>
+            <el-option :key="js.name" :label="js.name" :value="js.ID" v-for="js in jobsalary"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="工作地点" label-width="120px" prop="p_address">
@@ -80,7 +75,7 @@
             <el-option
               :key="jobedu.name"
               :label="jobedu.name"
-              :value="jobedu.id"
+              :value="jobedu.ID"
               v-for="jobedu in jobedus"
             ></el-option>
           </el-select>
@@ -94,10 +89,36 @@
             <el-option
               :key="jobtype.name"
               :label="jobtype.name"
-              :value="jobtype.id"
+              :value="jobtype.ID"
               v-for="jobtype in jobtypes"
             ></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="状态" label-width="120px" prop="p_status">
+          <el-radio-group v-model="jobmanagerinfo.p_status">
+            <el-radio :label="0">普通</el-radio>
+            <el-radio :label="1">急招</el-radio>
+            <el-radio :label="2">热门</el-radio>
+            <el-radio :label="3">下线</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="招聘人数" label-width="120px" prop="p_count">
+          <el-input
+            v-model.number="jobmanagerinfo.p_count"
+            placeholder="请输入招聘人数"
+            style="width:50%;"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="失效日期" label-width="120px" prop="p_outdate">
+          <el-date-picker
+            placeholder="选择结束时间"
+            type="date"
+            :editable="false"
+            format="yyyy-MM-dd"
+            value-format="timestamp"
+            style="width:50%;"
+            v-model="jobmanagerinfo.p_outdate"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="工作描述" label-width="120px" prop="p_desc">
           <quill-editor
@@ -113,8 +134,8 @@
         </el-form-item>
         <el-row type="flex" justify="center">
           <el-col :span="13">
-            <el-button @click="closeAddjobDialog">取 消</el-button>
-            <el-button @click="enterAddjobDialog" type="primary">确 定</el-button>
+            <el-button @click="closeAddjobDialog" type="primary" round>返 回</el-button>
+            <el-button @click="enterAddjobDialog" type="primary" round>确 定</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -168,94 +189,97 @@ export default {
         p_type: "",
         p_type_id: "",
         p_desc: "",
+        p_status: 0,
+        p_count: "",
+        p_outdate: "",
         enterprise_id: "",
         enterprise_name: "",
         enterprise_logo: ""
       },
       cityinfo: [
-        {
-          id: 1,
-          name: "北京"
-        },
-        {
-          id: 2,
-          name: "上海"
-        },
-        {
-          id: 3,
-          name: "广州"
-        }
+        // {
+        //   id: 1,
+        //   name: "北京"
+        // },
+        // {
+        //   id: 2,
+        //   name: "上海"
+        // },
+        // {
+        //   id: 3,
+        //   name: "广州"
+        // }
       ],
       jobsalary: [],
       jobyears: [
-        {
-          id: 0,
-          name: "1年"
-        },
-        {
-          id: 1,
-          name: "3年"
-        },
-        {
-          id: 2,
-          name: "5年"
-        }
+        // {
+        //   id: 0,
+        //   name: "1年"
+        // },
+        // {
+        //   id: 1,
+        //   name: "3年"
+        // },
+        // {
+        //   id: 2,
+        //   name: "5年"
+        // }
       ],
       jobtypes: [
-        {
-          id: 0,
-          name: "全职"
-        },
-        {
-          id: 1,
-          name: "兼职"
-        },
-        {
-          id: 2,
-          name: "实习"
-        },
-        {
-          id: 3,
-          name: "志愿者"
-        }
+        // {
+        //   id: 0,
+        //   name: "全职"
+        // },
+        // {
+        //   id: 1,
+        //   name: "兼职"
+        // },
+        // {
+        //   id: 2,
+        //   name: "实习"
+        // },
+        // {
+        //   id: 3,
+        //   name: "志愿者"
+        // }
       ],
       jobedus: [
-        {
-          id: -1,
-          name: "其他"
-        },
-        {
-          id: 0,
-          name: "不限"
-        },
-        {
-          id: 1,
-          name: "初中"
-        },
-        {
-          id: 2,
-          name: "高中"
-        },
-        {
-          id: 3,
-          name: "中专"
-        },
-        {
-          id: 4,
-          name: "大专"
-        },
-        {
-          id: 5,
-          name: "本科"
-        },
-        {
-          id: 6,
-          name: "硕士"
-        },
-        {
-          id: 7,
-          name: "博士"
-        }
+        // {
+        //   id: -1,
+        //   name: "其他"
+        // },
+        // {
+        //   id: 0,
+        //   name: "不限"
+        // },
+        // {
+        //   id: 1,
+        //   name: "初中"
+        // },
+        // {
+        //   id: 2,
+        //   name: "高中"
+        // },
+        // {
+        //   id: 3,
+        //   name: "中专"
+        // },
+        // {
+        //   id: 4,
+        //   name: "大专"
+        // },
+        // {
+        //   id: 5,
+        //   name: "本科"
+        // },
+        // {
+        //   id: 6,
+        //   name: "硕士"
+        // },
+        // {
+        //   id: 7,
+        //   name: "博士"
+        // }
       ],
       rules: {
         p_name: [
@@ -265,11 +289,8 @@ export default {
             trigger: "blur"
           }
         ],
-        p_salary_high: [
-          { required: true, message: "请输入薪资上限", trigger: "blur" }
-        ],
-        p_salary_low: [
-          { required: true, message: "请输入薪资下限", trigger: "blur" }
+        p_salary_id: [
+          { required: true, message: "请输入薪资范围", trigger: "blur" }
         ],
         p_latitude: [
           { required: true, message: "请输入工作地点纬度", trigger: "blur" },
@@ -343,21 +364,21 @@ export default {
     selectJobtype(val) {
       var selectedItem = {};
       selectedItem = this.jobtypes.find(item => {
-        return item.id === val;
+        return item.ID === val;
       });
       this.jobmanagerinfo.p_type = selectedItem.name;
     },
     selectJobedu(val) {
       var selectedItem = {};
       selectedItem = this.jobedus.find(item => {
-        return item.id === val;
+        return item.ID === val;
       });
       this.jobmanagerinfo.p_education = selectedItem.name;
     },
     selectJobsalary(val) {
       var selectedItem = {};
       selectedItem = this.jobsalary.find(item => {
-        return item.id === val;
+        return item.ID === val;
       });
       this.jobmanagerinfo.p_salary = selectedItem.name;
     },
@@ -387,9 +408,9 @@ export default {
           } else {
             this.$message({ type: "error", message: "添加失败!" });
           }
+          this.$router.push({ name: "jobmanagerinfo" });
         }
       });
-      this.$router.push({ name: "jobmanagerinfo" });
     },
     closeAddjobDialog() {
       this.$router.push({ name: "jobmanagerinfo" });
@@ -479,11 +500,15 @@ export default {
           this.enterpriseInfo = res.data.rep;
           this.jobyears = res.data.jbwe;
           this.jobsalary = res.data.js;
+          this.jobtypes = res.data.jwt;
+          this.jobedus = res.data.el;
           this.cityinfo = res.data.cityinfo;
         } else {
           this.enterpriseInfo = [];
           this.jobyears = [];
           this.jobsalary = [];
+          this.jobtypes = [];
+          this.jobedus = [];
           this.cityinfo = [];
         }
       });

@@ -28,8 +28,8 @@
           placeholder="选择开始时间"
           type="date"
           :editable="false"
-          format="yyyy/MM"
-          value-format="yyyy/MM"
+          format="yyyy-MM"
+          value-format="yyyy-MM"
           style="width:80%;"
           v-model="work_info.join"
         ></el-date-picker>
@@ -64,7 +64,7 @@ import {
   createUserWork,
   deleteUserWork,
   updateUserWork
-} from "@/api/resumestatus";
+} from "@/api/jobuser";
 export default {
   props: ["workExperience", "option", "openid"],
   data() {

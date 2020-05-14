@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { createUserDream, updateUserDream } from "@/api/resumestatus";
+import { createUserDream, updateUserDream } from "@/api/jobuser";
 export default {
   props: ["user_dreams", "option", "openid"],
   methods: {
@@ -87,6 +87,7 @@ export default {
     async addDream() {
       let res;
       if (this.user_dreams.ID == null) {
+        this.user_dreams.openid = this.openid;
         res = await createUserDream(this.user_dreams);
       } else {
         res = await updateUserDream(this.user_dreams);

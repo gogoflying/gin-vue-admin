@@ -61,6 +61,12 @@ func (users *Users) FindById() (err error, reusers Users) {
 }
 
 // 根据ID查看单条Users
+func (users *Users) FindByJobUserId() (err error, reusers Users) {
+	err = qmsql.DEFAULTDB.Where("id = ?", users.ID).First(&reusers).Error
+	return err, reusers
+}
+
+// 根据ID查看单条Users
 func (users *Users) GetByOpenId() (err error, reusers Users) {
 	err = qmsql.DEFAULTDB.Model(users).Where("openid = ? and status = 1", users.Openid).First(&reusers).Error
 	return
@@ -143,7 +149,18 @@ func (users *Users) GetInfoList(info modelInterface.PageInfo) (err error, list i
 		return
 	} else {
 		var reUsersList []Users
-		err = db.Find(&reUsersList).Error
+		model := qmsql.DEFAULTDB.Model(info)
+		if users.Mobile != "" {
+			model = model.Where("mobile = ?", users.Mobile)
+			db = db.Where("mobile = ?", users.Mobile)
+		}
+		err = model.Find(&reUsersList).Count(&total).Error
+		if err != nil {
+			return err, reUsersList, total
+		} else {
+			err = db.Find(&reUsersList).Error
+		}
+
 		return err, reUsersList, total
 	}
 }

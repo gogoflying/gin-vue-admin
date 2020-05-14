@@ -35,6 +35,7 @@ type Joblist struct {
 	Status       int     `json:"p_status" gorm:"column:p_status;comment:'职位状态，0普通，1急招，2热门，3下线'"`
 	Count        int     `json:"p_count" gorm:"column:p_count;comment:'招聘人数'"`
 	OutDate      int64   `json:"p_outdate" gorm:"column:p_outdate;comment:'有效日期，如2020-08-08为失效日期的unix时间戳'"`
+	Top          int     `json:"p_top" gorm:"column:p_top;comment:'0:普通1:置顶'"`
 	Filter       int     `json:"p_filter" gorm:"column:p_filter;comment:'过滤状态，0不启用过滤，1启用过滤'"`
 	SendEmail    string  `json:"p_send_email" gorm:"column:p_send_email;comment:'发送邮件,多个用分号划分'"`
 }
@@ -85,6 +86,14 @@ func (jl *Joblist) GetInfoList(info modelInterface.PageInfo) (err error, list in
 		if jl.CompanyId != 0 {
 			model = model.Where("company_id = ?", jl.CompanyId)
 			db = db.Where("company_id = ?", jl.CompanyId)
+		}
+		if jl.Jobname != "" {
+			model = model.Where("job_name = ?", jl.Jobname)
+			db = db.Where("job_name = ?", jl.Jobname)
+		}
+		if jl.JobCity != "" {
+			model = model.Where("job_city = ?", jl.JobCity)
+			db = db.Where("job_city = ?", jl.JobCity)
 		}
 		err = model.Find(&reJoblistList).Count(&total).Error
 		if err != nil {
@@ -203,26 +212,36 @@ func (jl *Joblist) GetInfoListSearchSimilar(ids []int, name string, eduJyId, edu
 	return err, reJoblistList
 }
 
-func (jl *Joblist) GetAllInfoOption() (err error, list1, list2, list3, list4 interface{}) {
+func (jl *Joblist) GetAllInfoOption() (err error, list1, list2, list3, list4, list5, list6 interface{}) {
 	var enp []EnterpriseInfo
 	var jbe []JobWorkExpire
 	var js []JobSalary
+	var jwt []JobWorkType
+	var el []EduLevel
 	var citys []userCity.Cityname
 	err = qmsql.DEFAULTDB.Select("id,enterprise_name").Find(&enp).Error
 	if err != nil {
-		return err, enp, jbe, js, citys
+		return err, enp, jbe, js, jwt, el, citys
 	}
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&jbe).Error
 	if err != nil {
-		return err, enp, jbe, js, citys
+		return err, enp, jbe, js, jwt, el, citys
 	}
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&js).Error
 	if err != nil {
-		return err, enp, jbe, js, citys
+		return err, enp, jbe, js, jwt, el, citys
 	}
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&citys).Error
 	if err != nil {
-		return err, enp, jbe, js, citys
+		return err, enp, jbe, js, jwt, el, citys
 	}
-	return err, enp, jbe, js, citys
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&jwt).Error
+	if err != nil {
+		return err, enp, jbe, js, jwt, el, citys
+	}
+	err = qmsql.DEFAULTDB.Select("id,name").Find(&el).Error
+	if err != nil {
+		return err, enp, jbe, js, jwt, el, citys
+	}
+	return err, enp, jbe, js, jwt, el, citys
 }

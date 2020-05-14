@@ -110,6 +110,27 @@ func FindUsers(c *gin.Context) {
 	}
 }
 
+// @Tags Users
+// @Summary 用id查询Users
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body userJobs.Users true "用id查询Users"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
+// @Router /users/FindJobUserById [post]
+func FindJobUserById(c *gin.Context) {
+	var users userJobs.Users
+	_ = c.ShouldBindJSON(&users)
+	err, reusers := users.FindByJobUserId()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"reusers": reusers,
+		})
+	}
+}
+
 func FindUsersByOpenid(c *gin.Context) {
 	var users userJobs.Users
 	_ = c.ShouldBindJSON(&users)

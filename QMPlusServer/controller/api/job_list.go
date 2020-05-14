@@ -115,26 +115,28 @@ func FindJoblist(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /jl/getJoblistListBackend [post]
 func GetJoblistListBackend(c *gin.Context) {
-	var pageInfo modelInterface.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
+	type searchParams struct {
+		userJobs.Joblist
+		modelInterface.PageInfo
+	}
+	var sp searchParams
+	_ = c.ShouldBindJSON(&sp)
 	var enPriseID int
 	ei, exist := c.Get("enpInfo")
 	if exist {
 		enpInfo := ei.(*userJobs.EnterpriseInfo)
 		enPriseID = int(enpInfo.ID)
 	}
-	jl := &userJobs.Joblist{
-		CompanyId: enPriseID,
-	}
-	err, list, total := jl.GetInfoList(pageInfo)
+	sp.Joblist.CompanyId = enPriseID
+	err, list, total := sp.Joblist.GetInfoList(sp.PageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
 			"RspJoblistList": list,
 			"total":          total,
-			"page":           pageInfo.Page,
-			"pageSize":       pageInfo.PageSize,
+			"page":           sp.PageInfo.Page,
+			"pageSize":       sp.PageInfo.PageSize,
 		})
 	}
 }
@@ -186,7 +188,7 @@ type ReqJoblist struct {
 }
 
 func GetJoblistOptions(c *gin.Context) {
-	err, rep, jbwe, js, citys := new(userJobs.Joblist).GetAllInfoOption()
+	err, rep, jbwe, js, jwt, el, citys := new(userJobs.Joblist).GetAllInfoOption()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
 	} else {
@@ -194,6 +196,8 @@ func GetJoblistOptions(c *gin.Context) {
 			"rep":      rep,
 			"jbwe":     jbwe,
 			"js":       js,
+			"jwt":      jwt,
+			"el":       el,
 			"cityinfo": citys,
 		})
 	}

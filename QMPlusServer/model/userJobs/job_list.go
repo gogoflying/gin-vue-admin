@@ -148,6 +148,9 @@ func (jl *Joblist) GetInfoListSearchDetail(keyword string, cityId, order int, in
 	if len(enterpriseIds) > 0 {
 		db = db.Where("company_id IN (?)", enterpriseIds)
 	}
+
+	db = db.Order("p_top desc")
+
 	if order == 0 {
 		db = db.Order("id desc")
 	} else {
@@ -208,7 +211,7 @@ func (jl *Joblist) GetInfoListSearchSimilar(ids []int, name string, eduJyId, edu
 		db = db.Where("id NOT IN (?)", ids)
 	}
 	db = db.Where("p_status != 3 and p_outdate >= ?", outData)
-	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&reJoblistList).Error
+	err = db.Limit(limit).Offset(offset).Order("p_top desc").Order("id desc").Find(&reJoblistList).Error
 	return err, reJoblistList
 }
 

@@ -70,9 +70,7 @@ func (un *UserNews) GetInfoListByTyp(typ, page, pageSize int) (err error, list i
 
 	var reUserNewsList []UserNews
 
-	qmsql.DEFAULTDB.LogMode(true)
-
-	qmsql.DEFAULTDB.Model(un).Select("id,title,sub_title,img,count").Where("type = ?", typ).Limit(pageSize).Offset(offset).Order("orders asc").Find(&reUserNewsList)
+	qmsql.DEFAULTDB.Model(un).Select("id,title,sub_title,img,count").Where("status = 2").Where("type = ?", typ).Limit(pageSize).Offset(offset).Order("orders desc").Find(&reUserNewsList)
 
 	return nil, reUserNewsList
 

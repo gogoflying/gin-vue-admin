@@ -109,17 +109,21 @@ func FindUserNews(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /un/getUserNewsList [post]
 func GetUserNewsList(c *gin.Context) {
-	var pageInfo modelInterface.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
-	err, list, total := new(userSalary.UserNews).GetInfoList(pageInfo)
+	type searchParams struct {
+		userSalary.UserNews
+		modelInterface.PageInfo
+	}
+	var sp searchParams
+	_ = c.ShouldBindJSON(&sp)
+	err, list, total := sp.UserNews.GetInfoList(sp.PageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
 			"userSalaryList": list,
 			"total":          total,
-			"page":           pageInfo.Page,
-			"pageSize":       pageInfo.PageSize,
+			"page":           sp.PageInfo.Page,
+			"pageSize":       sp.PageInfo.PageSize,
 		})
 	}
 }

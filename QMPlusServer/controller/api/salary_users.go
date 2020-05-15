@@ -2,11 +2,14 @@ package api
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userJobs"
 	"gin-vue-admin/model/userSalary"
+	uuid "github.com/satori/go.uuid"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -293,7 +296,9 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 			contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " "))
 			card := strings.Trim(row.Cells[6].Value, " ")
 			email := strings.Trim(row.Cells[7].Value, " ")
+			openid := NewOpenID()
 			un := userSalary.SalaryUsers{
+				Openid:       openid,
 				Name:         name,
 				Mobile:       mobile,
 				JobName:      jobname,
@@ -312,4 +317,14 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 		}
 	}
 	return nil
+}
+
+func NewOpenID() string {
+	buf := bytes.Buffer{}
+	u := uuid.NewV4()
+
+	buf.Write(u.Bytes())
+
+	dst := md5.Sum(buf.Bytes())
+	return hex.EncodeToString(dst[:])
 }

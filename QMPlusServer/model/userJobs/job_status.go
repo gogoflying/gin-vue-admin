@@ -14,13 +14,12 @@ type ResumeStatus struct {
 	Jobid        int       `json:"resume_id" gorm:"column:job_id;comment:'职位id'"`
 	ResumeStatus int       `json:"resume_status" gorm:"column:resume_status;comment:'简历状态，0未读，1已读，2有意向，3约面试，4不合适'"`
 	Results      []Joblist `json:"result" gorm:"-"`
-	Jobname      string    `json:"p_name" gorm:"-"`
+	Jobname      string    `json:"p_name" gorm:"column:job_name;comment:'职位名称'"`
 	JobsalaLow   int       `json:"p_salary_low" gorm:"-"`
 	JobCityId    int       `json:"p_city_id" gorm:"-"`
 	JobYearsId   int       `json:"p_edujy_id" gorm:"-"`
 	JobEduId     int       `json:"p_education_id" gorm:"-"`
 	JobTypeId    int       `json:"p_type_id" gorm:"-"`
-	JobInfo      Joblist   `json:"job_info" gorm:"ForeignKey:Jobid;AssociationForeignKey:ID"`
 	UserInfo     Users     `json:"user_info" gorm:"ForeignKey:Openid;AssociationForeignKey:Openid"`
 }
 
@@ -66,7 +65,17 @@ func (rs *ResumeStatus) GetInfoList(info modelInterface.PageInfo) (err error, li
 		return
 	} else {
 		var reResumeStatusList []ResumeStatus
-		err = db.Preload("JobInfo").Preload("UserInfo").Find(&reResumeStatusList).Error
+		model := qmsql.DEFAULTDB.Model(info)
+		if rs.Jobname != "" {
+			model = model.Where("job_name = ?", rs.Jobname)
+			db = db.Where("job_name = ?", rs.Jobname)
+		}
+		err = model.Preload("UserInfo").Find(&reResumeStatusList).Count(&total).Error
+		if err != nil {
+			return err, reResumeStatusList, total
+		} else {
+			err = db.Preload("UserInfo").Find(&reResumeStatusList).Error
+		}
 		return err, reResumeStatusList, total
 	}
 }

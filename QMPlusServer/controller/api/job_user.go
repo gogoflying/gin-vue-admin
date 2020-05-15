@@ -19,8 +19,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var appid string = config.GinVueAdminconfig.WeiXin.Appid
-var appSecret string = config.GinVueAdminconfig.WeiXin.AppSecret
+var appid string = config.GinVueAdminconfig.WeiXin.ResumeApp.Appid
+var appSecret string = config.GinVueAdminconfig.WeiXin.ResumeApp.AppSecret
 
 func CreateUsers(c *gin.Context) {
 	var users userJobs.Users

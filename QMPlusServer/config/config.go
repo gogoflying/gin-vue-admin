@@ -69,9 +69,14 @@ type AliyunOss struct { // 七牛 密钥配置
 	ExpiredInSec    int64  `json:"expiredInSec"`
 }
 
-type WeiXin struct { // 七牛 密钥配置
+type AppInfo struct { // 小程序开发者信息
 	Appid     string `json:"appid"`
 	AppSecret string `json:"appsecret"`
+}
+
+type WeiXin struct { // 小程序配置
+	ResumeApp AppInfo `json:"resumeapp"`
+	SalaryApp AppInfo `json:"salaryapp"`
 }
 
 type Sendsms struct {

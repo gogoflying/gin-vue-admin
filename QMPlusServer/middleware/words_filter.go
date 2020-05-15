@@ -32,8 +32,8 @@ type WX_Access struct {
 
 var g_tocken WX_Access
 
-var appid string = config.GinVueAdminconfig.WeiXin.Appid
-var appSecret string = config.GinVueAdminconfig.WeiXin.AppSecret
+var appid string = config.GinVueAdminconfig.WeiXin.ResumeApp.Appid
+var appSecret string = config.GinVueAdminconfig.WeiXin.ResumeApp.AppSecret
 
 //敏感词过滤
 func GetAccessTocken() (string, error) {

@@ -164,3 +164,36 @@ func (users *Users) GetInfoList(info modelInterface.PageInfo) (err error, list i
 		return err, reUsersList, total
 	}
 }
+
+// 分页获取Users投递记录
+func (users *Users) GetResumeList(info modelInterface.PageInfo, openid string, dataRange []string, resumeStatus int) (err error, list interface{}, total int) {
+	// 封装分页方法 调用即可 传入 当前的结构体和分页信息
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	db := qmsql.DEFAULTDB.Limit(limit).Offset(offset).Order("id desc")
+
+	if openid == "" {
+		return
+	} else {
+		var resumeList []ResumeStatus
+		model := qmsql.DEFAULTDB.Model(info)
+		model = model.Where("open_id = ?", openid)
+		db = db.Where("open_id = ?", openid)
+
+		if len(dataRange) == 2 {
+			model = model.Where("created_at > ? and created_at < ?", dataRange[0], dataRange[1])
+			db = db.Where("created_at > ? and created_at < ?", dataRange[0], dataRange[1])
+		}
+		model = model.Where("resume_status = ?", resumeStatus)
+		db = db.Where("resume_status = ?", resumeStatus)
+
+		err = model.Preload("JobInfo").Find(&resumeList).Count(&total).Error
+		if err != nil {
+			return err, resumeList, total
+		} else {
+			err = db.Preload("JobInfo").Find(&resumeList).Error
+		}
+
+		return err, resumeList, total
+	}
+}

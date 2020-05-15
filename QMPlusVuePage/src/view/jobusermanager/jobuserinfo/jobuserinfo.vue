@@ -37,7 +37,10 @@
         <template slot-scope="scope">
           <!-- <el-button @click="viewResume(scope.row)" size="small" type="text">查看</el-button> -->
           <router-link :to="{name:'editresume', query: { id: scope.row.ID }}">
-            <el-button type="primary" size="small" icon="el-icon-edit">查看</el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
+          </router-link>
+          <router-link :to="{name:'resumelist', query: { id: scope.row.ID }}">
+            <el-button type="primary" size="small" icon="el-icon-view">查看</el-button>
           </router-link>
         </template>
       </el-table-column>

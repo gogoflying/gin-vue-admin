@@ -180,6 +180,29 @@ func GetUsersList(c *gin.Context) {
 	}
 }
 
+func GetUserResumeList(c *gin.Context) {
+	type searchParams struct {
+		DateRange    []string `json:"dateRange"`
+		ResumeStatus int      `json:"resume_status"`
+		Openid       string   `json:"openid"`
+		modelInterface.PageInfo
+	}
+	var sp searchParams
+	_ = c.ShouldBindJSON(&sp)
+	fmt.Println(sp)
+	err, list, total := new(userJobs.Users).GetResumeList(sp.PageInfo, sp.Openid, sp.DateRange, sp.ResumeStatus)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "获取数据成功", gin.H{
+			"resumeList": list,
+			"total":      total,
+			"page":       sp.PageInfo.Page,
+			"pageSize":   sp.PageInfo.PageSize,
+		})
+	}
+}
+
 func JobUserLogin(c *gin.Context) {
 	var loginInfo userJobs.UserLoginInfo
 	_ = c.ShouldBindJSON(&loginInfo)

@@ -10,7 +10,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="tableData" border stripe>
+    <el-table :data="tableData" border stripe @cell-click="editpreview">
       <el-table-column type="selection" min-width="55"></el-table-column>
       <el-table-column label="职位名称" min-width="250" prop="job_info.p_name"></el-table-column>
       <el-table-column label="手机号" min-width="150" prop="user_info.mobile"></el-table-column>
@@ -33,10 +33,10 @@
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button
-            @click="editpreview(scope.row)"
+            @click="editpreview(scope.row,scope.column)"
             type="primary"
             size="small"
-            icon="el-icon-edit"
+            icon="el-icon-view"
           >查看</el-button>
         </template>
       </el-table-column>
@@ -93,11 +93,18 @@ export default {
     };
   },
   methods: {
-    async editpreview(row) {
-      this.$router.push({ name: "resumepreview", query: { id: row.ID } });
-      if (row.resume_status == 0) {
-        row.resume_status = 1;
-        await updateResumeStatus(row);
+    async editpreview(row,column) {
+      //打开简历详情
+      if (column.type !== "selection") {
+        const { href } = this.$router.resolve({
+          name: "resumepreview",
+          query: { id: row.ID }
+        });
+        window.open(href, "_blank");
+        if (row.resume_status == 0) {
+          row.resume_status = 1;
+          await updateResumeStatus(row);
+        }
       }
     },
     onSubmit() {

@@ -14,6 +14,7 @@ func InitUsersRouter(Router *gin.RouterGroup) {
 		UsersRouter.POST("updateUsers", api.UpdateUsers) //更新Users
 		UsersRouter.POST("findUsers", api.FindUsers)
 		UsersRouter.POST("findJobUserById", api.FindJobUserById)     // 根据ID获取Users
+		UsersRouter.POST("getUserResumeList", api.GetUserResumeList) //获取User投递记录
 		UsersRouter.POST("findUsersByOpenid", api.FindUsersByOpenid) // 根据ID获取Users
 		UsersRouter.POST("getUsersList", api.GetUsersList)           //获取Users列表
 		UsersRouter.POST("getUserOptions", api.GetUserOptions)

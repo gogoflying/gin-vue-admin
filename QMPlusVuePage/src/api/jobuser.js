@@ -58,6 +58,14 @@ export const getUserOptions = (data) => {
     })
 }
 
+export const getUserResumeList = (data) => {
+    return service({
+        url: "/users/getUserResumeList",
+        method: 'post',
+        data
+    })
+}
+
 export const createUserBaseInfo = (data) => {
     return service({
         url: "/bf/createUserBaseInfo",

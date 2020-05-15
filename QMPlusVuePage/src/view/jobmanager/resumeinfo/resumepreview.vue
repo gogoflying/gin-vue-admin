@@ -1,14 +1,14 @@
 <template>
   <div>
-    <ShowBox v-bind:resume="resume" class="showBox" />
     <div>
       <el-row type="flex" justify="center">
-        <el-col :span="10">
-          <el-button @click="back" type="primary" round>返 回</el-button>
-          <el-button @click="download" type="primary" round>导 出</el-button>
+        <el-col :span="22">
+          <!-- <el-button @click="back" type="primary" round>返 回</el-button> -->
+          <el-button @click="download" type="success" plain round>导 出</el-button>
         </el-col>
       </el-row>
     </div>
+    <ShowBox v-bind:resume="resume" class="showBox" />
   </div>
 </template>
 

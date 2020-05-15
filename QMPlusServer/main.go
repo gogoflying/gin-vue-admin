@@ -8,6 +8,7 @@ import (
 	"gin-vue-admin/init/initlog/qmlog"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/init/registTerable"
+	"gin-vue-admin/middleware"
 	"os"
 	//"runtime"
 )
@@ -45,6 +46,9 @@ func main() {
 	registerTable.RegisterTable(db)
 	// 程序结束前关闭数据库链接
 	defer qmsql.DEFAULTDB.Close()
+	//
+	wx := middleware.NewPatchIncrCluster()
+	go wx.StartRun()
 	// 注册路由
 	Router := initRouter.InitRouter()
 

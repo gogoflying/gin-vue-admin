@@ -159,6 +159,7 @@ export default {
           } else {
             this.$message({ type: "error", message: "添加失败!" });
           }
+          this.$router.push({ name: "newlist" });
         }
       });
     }

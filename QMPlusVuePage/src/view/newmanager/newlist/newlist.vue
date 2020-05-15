@@ -67,7 +67,7 @@ export default {
   mixins: [infoList],
   filters: {
     statusFilter(status) {
-      if (status == 1) {
+      if (status == 2) {
         return "已发布";
       } else {
         return "草稿";

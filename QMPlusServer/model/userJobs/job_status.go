@@ -20,6 +20,7 @@ type ResumeStatus struct {
 	JobYearsId   int       `json:"p_edujy_id" gorm:"-"`
 	JobEduId     int       `json:"p_education_id" gorm:"-"`
 	JobTypeId    int       `json:"p_type_id" gorm:"-"`
+	JobInfo      Joblist   `json:"job_info" gorm:"ForeignKey:Jobid;AssociationForeignKey:ID"`
 	UserInfo     Users     `json:"user_info" gorm:"ForeignKey:Openid;AssociationForeignKey:Openid"`
 }
 
@@ -70,11 +71,11 @@ func (rs *ResumeStatus) GetInfoList(info modelInterface.PageInfo) (err error, li
 			model = model.Where("job_name = ?", rs.Jobname)
 			db = db.Where("job_name = ?", rs.Jobname)
 		}
-		err = model.Preload("UserInfo").Find(&reResumeStatusList).Count(&total).Error
+		err = model.Preload("JobInfo").Preload("UserInfo").Find(&reResumeStatusList).Count(&total).Error
 		if err != nil {
 			return err, reResumeStatusList, total
 		} else {
-			err = db.Preload("UserInfo").Find(&reResumeStatusList).Error
+			err = db.Preload("JobInfo").Preload("UserInfo").Find(&reResumeStatusList).Error
 		}
 		return err, reResumeStatusList, total
 	}

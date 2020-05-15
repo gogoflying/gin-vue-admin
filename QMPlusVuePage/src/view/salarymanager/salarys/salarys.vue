@@ -366,6 +366,7 @@ export default {
         openid: "",
         year: "",
         month: "",
+        name: "",
         base: "",
         gangwei: "",
         xzhj: "",
@@ -407,7 +408,7 @@ export default {
     async editSalaryDetail(row) {
       this.title = "编辑薪资";
       const res = await findSalarys(row);
-      this.salarydetailinfo = res.data.reinfo;
+      this.salarydetailinfo = res.data.reun;
       this.isEdit = true;
       this.addSalaryDetailDialog = true;
     },

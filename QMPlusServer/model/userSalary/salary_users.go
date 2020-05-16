@@ -2,6 +2,8 @@
 package userSalary
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
@@ -51,6 +53,7 @@ type SalaryUsers struct {
 
 // 创建SalaryUsers
 func (un *SalaryUsers) CreateSalaryUsers() (err error) {
+	un.PassWord = hex.EncodeToString(md5.Sum([]byte(un.Card[len(un.Card)-6:])))
 	err = qmsql.DEFAULTDB.Create(un).Error
 	return err
 }

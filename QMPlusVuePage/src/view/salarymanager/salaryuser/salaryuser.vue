@@ -146,10 +146,10 @@
       </el-table-column>
       <el-table-column label="id" min-width="60" prop="ID"></el-table-column>
       <el-table-column label="姓名" min-width="80" prop="name"></el-table-column>
-      <el-table-column label="手机" min-width="110" prop="mobile"></el-table-column>
+      <!-- <el-table-column label="手机" min-width="110" prop="mobile"></el-table-column> -->
       <el-table-column label="岗位名称" min-width="100" prop="job_name"></el-table-column>
       <el-table-column label="合同期限(月)" min-width="120" prop="contract_date" align="center"></el-table-column>
-      <el-table-column label="邮箱" min-width="100" prop="email"></el-table-column>
+      <!-- <el-table-column label="邮箱" min-width="100" prop="email"></el-table-column> -->
       <el-table-column label="入职企业" min-width="100" prop="enterprise"></el-table-column>
       <el-table-column label="入职进度" min-width="100" prop="enter_step" :formatter="EnstepFormat"></el-table-column>
       <el-table-column label="离职进度" min-width="100" prop="leave_step" :formatter="LestepFormat"></el-table-column>
@@ -193,7 +193,7 @@
       <el-table-column fixed="right" label="操作" width="300">
         <template slot-scope="scope">
           <el-button @click="editSalaryUser(scope.row)" size="small" type="text">编辑</el-button>
-          <el-button @click="deleteSalaryUser(scope.row)" size="small" type="text">删除</el-button>
+         
           <el-upload
             :action="`${path}/un/importUserContract?openid=${scope.row.openid}`"
             style="display: inline-block;"
@@ -211,6 +211,7 @@
             type="text"
             :disabled="scope.row.enter_step < 3 "
           >查看合同</el-button>
+           <el-button @click="deleteSalaryUser(scope.row)" size="small" type="text">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -400,7 +401,7 @@ export default {
         },
         {
           id: 1,
-          name: "已更新"
+          name: "已补充材料"
         },
         {
           id: 2,

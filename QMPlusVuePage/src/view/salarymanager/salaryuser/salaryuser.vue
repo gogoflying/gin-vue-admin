@@ -33,7 +33,7 @@
             :on-success="onSuccess"
             :show-file-list="false"
           >
-            <el-tooltip class="item" effect="light" content="请先选择企业" placement="right">
+            <el-tooltip class="item" effect="dark" content="请先选择企业" placement="top-start">
               <el-button type="success" :icon="importDataBtnIcon">{{importDataBtnText}}</el-button>
             </el-tooltip>
           </el-upload>
@@ -45,31 +45,6 @@
           <el-button type="primary" @click="addSalaryUser" icon="el-icon-plus">新增员工</el-button>
         </el-col>
       </el-row>
-      <!-- <el-select v-model="enterprise_id" placeholder="请选择企业">
-        <el-option
-          v-for="ep in enterpriseInfo"
-          :key="ep.enterprise_name"
-          :value="ep.ID"
-          :label="ep.enterprise_name"
-        ></el-option>
-      </el-select>
-      <el-upload
-        :disabled="importDataDisabled"
-        style="display: inline-flex;margin-right: 8px;"
-        :action="`${path}/un/importsalaryuser?id=${enterprise_id}`"
-        :before-upload="beforeUpload"
-        :headers="{'x-token':token}"
-        :on-error="onError"
-        :on-success="onSuccess"
-        :show-file-list="false"
-      >
-        <el-button
-          :disabled="importDataDisabled"
-          type="success"
-          :icon="importDataBtnIcon"
-        >{{importDataBtnText}}</el-button>
-      </el-upload>
-      <el-button type="primary" @click="addSalaryUser" icon="el-icon-plus">新增员工</el-button>-->
     </div>
     <el-table :data="tableData" border stripe>
       <el-table-column type="expand">
@@ -193,8 +168,9 @@
       <el-table-column fixed="right" label="操作" width="300">
         <template slot-scope="scope">
           <el-button @click="editSalaryUser(scope.row)" size="small" type="text">编辑</el-button>
-         
+
           <el-upload
+            :disabled="scope.row.enter_step < 2"
             :action="`${path}/un/importUserContract?openid=${scope.row.openid}`"
             style="display: inline-block;"
             :headers="{'x-token':token}"
@@ -203,7 +179,7 @@
             :before-upload="beforeUploadPdf"
             :show-file-list="false"
           >
-            <el-button size="small" type="text" :disabled="scope.row.enter_step < 2 ">上传合同</el-button>
+            <el-button size="small" type="text" :disabled="scope.row.enter_step < 2">上传合同</el-button>
           </el-upload>
           <el-button
             @click="viewContract(scope.row)"
@@ -211,7 +187,7 @@
             type="text"
             :disabled="scope.row.enter_step < 3 "
           >查看合同</el-button>
-           <el-button @click="deleteSalaryUser(scope.row)" size="small" type="text">删除</el-button>
+          <el-button @click="deleteSalaryUser(scope.row)" size="small" type="text">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -240,8 +216,11 @@
         <el-form-item label="邮箱" label-width="80px" prop="email">
           <el-input v-model="salaryuserinfo.email"></el-input>
         </el-form-item>
+        <el-form-item label="岗位名称" label-width="80px" prop="job_name">
+          <el-input v-model="salaryuserinfo.job_name"></el-input>
+        </el-form-item>
         <el-form-item v-show="enPriseId == 0" label="入职企业" label-width="80px" prop="email">
-          <el-select placeholder="请选择企业" v-model="salaryuserinfo.enterprise_id">
+          <el-select @change="selectEp" placeholder="请选择企业" v-model="salaryuserinfo.enterprise_id">
             <el-option
               :key="industry.enterprise_name"
               :label="industry.enterprise_name"
@@ -441,14 +420,21 @@ export default {
         this.importDataDisabled = false;
       }
     },
-    'salaryuserinfo.enter_step':'changeData',
-    'salaryuserinfo.leave_step':'changeData'   
+    "salaryuserinfo.enter_step": "changeData",
+    "salaryuserinfo.leave_step": "changeData"
   },
   methods: {
-    changeData(curval,oldval){
-        if (curval < oldval){
-            this.isShow=true;
-        }
+    selectEp(val) {
+      var selectedItem = {};
+      selectedItem = this.enterpriseInfo.find(item => {
+        return item.ID === val;
+      });
+      this.salaryuserinfo.enterprise = selectedItem.enterprise_name;
+    },
+    changeData(curval, oldval) {
+      if (curval < oldval) {
+        this.isShow = true;
+      }
     },
     EnstepFormat(row) {
       var selectedItem = {};
@@ -579,7 +565,7 @@ export default {
     beforeUploadPdf(file) {
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
       const extension = testmsg === "pdf";
-      const isLt1MB = file.size / 1024 < 50;
+      const isLt1MB = file.size / 1024 / 1024 < 1;
       if (!extension) {
         this.$message({
           message: "上传文件只能是 jpg、png格式!",
@@ -589,7 +575,7 @@ export default {
       }
       if (!isLt1MB) {
         this.$message({
-          message: "上传文件大小不能超过 50KB!",
+          message: "上传文件大小不能超过 1MB!",
           type: "warning"
         });
         return false;

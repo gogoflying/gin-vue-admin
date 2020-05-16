@@ -62,6 +62,10 @@ func (un *Salarys) CreateSalarysTx() (err error) {
 	return err
 }
 
+func (un *Salarys) GetDbTx() *gorm.DB {
+	return qmsql.DEFAULTDB
+}
+
 // 删除Salarys
 func (un *Salarys) DeleteSalarys() (err error) {
 	err = qmsql.DEFAULTDB.Delete(un).Error

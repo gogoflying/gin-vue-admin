@@ -137,8 +137,15 @@ func (info *EnterpriseInfo) GetInfoList(pinfo modelInterface.PageInfo) (err erro
 	if err != nil {
 		return
 	} else {
-		var reEnterpriseInfoList []EnterpriseInfo
+		reEnterpriseInfoList := make([]*EnterpriseInfo, 0)
 		err = db.Find(&reEnterpriseInfoList).Error
+		if err == nil {
+			for _, reP := range reEnterpriseInfoList {
+				var count int
+				qmsql.DEFAULTDB.Model(new(Joblist)).Count(&count)
+				reP.JobCount = count
+			}
+		}
 		return err, reEnterpriseInfoList, total
 	}
 }

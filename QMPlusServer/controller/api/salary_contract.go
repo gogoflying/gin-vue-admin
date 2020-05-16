@@ -261,7 +261,10 @@ func runPDFConvert(c *gin.Context, localPath, openId string) {
 		Status:                    int(STATUS_COMPOSE_SUCCESS),
 		Enter_contract_source_url: cloudContractPath,
 	}
-	updateSalarysUserStep(openId)
+	err = updateSalarysUserStep(openId)
+	if err != nil {
+		log.L.Info("updateSalarysUserStep update err:", err)
+	}
 	//var un userSalary.SalaryContract
 	_ = c.ShouldBindJSON(&sc)
 	log.L.Info("UploadUserContract new json:", sc)
@@ -409,14 +412,20 @@ func getContractLastFile(c *gin.Context, openId string) string {
 	return localFile
 }
 
-func updateSalarysUserStep(openid string) {
+func updateSalarysUserStep(openid string) error {
 	if openid == "" {
-		return
+		return fmt.Errorf("openid empty")
 	}
 	//var un userSalary.SalaryUsers
 	salaryUser := userSalary.SalaryUsers{
 		Openid:    openid,
 		EnterStep: 3, //修改用户的状态为"已上传合同"
 	}
-	salaryUser.UpdateEnterStep()
+	err := salaryUser.UpdateEnterStep()
+	if err != nil {
+		fmt.Printf("updateSalarysUserStep update err:%v", err)
+		return err
+	}
+	fmt.Printf("updateSalarysUserStep update success")
+	return nil
 }

@@ -39,6 +39,13 @@ func CreateSalarys(c *gin.Context) {
 		un.Enterprise = enpInfo.EnterPriseName
 		un.EnterpriseId = int(enpInfo.ID)
 	}
+	openid, _ := checkSalarysUserInTable(un.Name, un.Enterprise, un.EnterpriseId)
+	if len(openid) == 0 {
+		fmt.Errorf("batchInsertSalarys user:%s not in table salaryUser", name)
+		return fmt.Errorf("user not in table salaryUser")
+	}
+	un.Openid = openid
+
 	err := un.CreateSalarys()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})

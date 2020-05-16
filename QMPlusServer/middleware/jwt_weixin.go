@@ -5,9 +5,10 @@ import (
 	"gin-vue-admin/config"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/sysModel"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 func JWTAuth_wx() gin.HandlerFunc {
@@ -65,8 +66,8 @@ type JWT_wx struct {
 )*/
 
 type CustomClaims_wx struct {
-	Open_Id      string
-	Session_key  string
+	Open_Id     string
+	Session_key string
 	jwt.StandardClaims
 }
 

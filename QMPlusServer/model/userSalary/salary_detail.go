@@ -106,6 +106,14 @@ func (un *Salarys) GetInfoList(info modelInterface.PageInfo) (err error, list in
 			model = model.Where("month = ?", un.Month)
 			db = db.Where("month = ?", un.Month)
 		}
+		if un.Name != "" {
+			model = model.Where("name = ?", un.Name)
+			db = db.Where("name = ?", un.Name)
+		}
+		if un.Gangwei != "" {
+			model = model.Where("gangwei = ?", un.Gangwei)
+			db = db.Where("gangwei = ?", un.Gangwei)
+		}
 
 		err = model.Find(&reSalarysList).Count(&total).Error
 		if err != nil {

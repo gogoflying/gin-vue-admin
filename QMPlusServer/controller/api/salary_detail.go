@@ -130,8 +130,6 @@ func FindSalarysByIdAndOpenid(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /un/getSalarysList [post]
 func GetSalarysList(c *gin.Context) {
-	var pageInfo modelInterface.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
 
 	type searchParams struct {
 		userSalary.Salarys
@@ -155,15 +153,15 @@ func GetSalarysList(c *gin.Context) {
 	}
 	sp.Salarys.EnterpriseId = enPriseID
 
-	err, list, total := new(userSalary.Salarys).GetInfoList(pageInfo)
+	err, list, total := sp.Salarys.GetInfoList(sp.PageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
 			"userSalaryList": list,
 			"total":          total,
-			"page":           pageInfo.Page,
-			"pageSize":       pageInfo.PageSize,
+			"page":           sp.PageInfo.Page,
+			"pageSize":       sp.PageInfo.PageSize,
 		})
 	}
 }
@@ -248,7 +246,7 @@ func UploadFileLocalEx(file *multipart.FileHeader, id int, ep string) (err error
 	if err != nil {
 		return err
 	}
-	err = batchInsertSalarys(fileTemp)
+	err = batchInsertSalarys(fileTemp, id, ep)
 	if err != nil {
 		servers.DelLocalFile(tmpFilename)
 		return err
@@ -258,7 +256,7 @@ func UploadFileLocalEx(file *multipart.FileHeader, id int, ep string) (err error
 	return
 }
 
-func batchInsertSalarys(file *xlsx.File) error {
+func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 	for _, sheet := range file.Sheets {
 		fmt.Printf("Sheet Name: %s\n", sheet.Name)
 		for rowIndex, row := range sheet.Rows {
@@ -298,36 +296,38 @@ func batchInsertSalarys(file *xlsx.File) error {
 			//salary, _ := strconv.Atoi(strings.Trim(row.Cells[4].Value, " "))
 			//contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " "))
 			un := userSalary.Salarys{
-				Name:    name,
-				Year:    year,
-				Month:   month,
-				Gangwei: gangwei,
-				Xzhj:    xzhj,
-				Yjtc:    yjtc,
-				Jjjs:    jjjs,
-				Fdxs:    fdxs,
-				Ydjj:    ydjj,
-				Gzts:    gzts,
-				Jbf:     jbf,
-				Txbt:    txbt,
-				Csbt:    csbt,
-				Jtbt:    jtbt,
-				Qtbt:    qtbt,
-				Bthj:    bthj,
-				Qtjq:    qtjq,
-				Njts:    njts,
-				Cdkk:    cdkk,
-				Bjts:    bjts,
-				Bjkk:    bjkk,
-				Sjts:    sjts,
-				Sjkk:    sjkk,
-				Kkhj:    kkhj,
-				Yftz:    yftz,
-				Byyf:    byyf,
-				Dkwx:    dkwx,
-				Gjj:     gjj,
-				Dkgs:    dkgs,
-				Sfgz:    sfgz,
+				Enterprise:   ep,
+				EnterpriseId: id,
+				Name:         name,
+				Year:         year,
+				Month:        month,
+				Gangwei:      gangwei,
+				Xzhj:         xzhj,
+				Yjtc:         yjtc,
+				Jjjs:         jjjs,
+				Fdxs:         fdxs,
+				Ydjj:         ydjj,
+				Gzts:         gzts,
+				Jbf:          jbf,
+				Txbt:         txbt,
+				Csbt:         csbt,
+				Jtbt:         jtbt,
+				Qtbt:         qtbt,
+				Bthj:         bthj,
+				Qtjq:         qtjq,
+				Njts:         njts,
+				Cdkk:         cdkk,
+				Bjts:         bjts,
+				Bjkk:         bjkk,
+				Sjts:         sjts,
+				Sjkk:         sjkk,
+				Kkhj:         kkhj,
+				Yftz:         yftz,
+				Byyf:         byyf,
+				Dkwx:         dkwx,
+				Gjj:          gjj,
+				Dkgs:         dkgs,
+				Sfgz:         sfgz,
 			}
 			err := un.CreateSalarysTx()
 			if err != nil {

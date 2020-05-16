@@ -394,11 +394,11 @@ export default {
         },
         {
           id: 1,
-          name: "已补充材料"
+          name: "待补充材料"
         },
         {
           id: 2,
-          name: "已审核"
+          name: "待审核"
         },
         {
           id: 3,
@@ -418,8 +418,12 @@ export default {
           id: 1,
           name: "离职申请"
         },
-        {
+         {
           id: 2,
+          name: "已审批"
+        },
+        {
+          id: 3,
           name: "已离职"
         }
       ]

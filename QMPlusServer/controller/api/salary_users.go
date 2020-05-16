@@ -138,7 +138,7 @@ func SalaryUserUpdatePassword(c *gin.Context) {
 	bMd5 := md5.Sum([]byte(un.PassWord))
 	un.PassWord = hex.EncodeToString(bMd5[:])
 	if len(un.NewPassWord) >= 6 {
-		bMd51 := md5.Sum([]byte(un.PassWord))
+		bMd51 := md5.Sum([]byte(un.NewPassWord))
 		un.NewPassWord = hex.EncodeToString(bMd51[:])
 		err = un.UpdatePassword()
 	} else {

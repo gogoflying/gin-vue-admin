@@ -26,6 +26,25 @@
         <el-button @click="addSalaryDetail" type="primary">新增薪资</el-button>
       </el-col>
     </div>
+    <div class="search-term">
+      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item label="姓名">
+          <el-input placeholder="姓名" style="width:120px" v-model="searchInfo.p_name"></el-input>
+        </el-form-item>
+        <el-form-item label="岗位">
+          <el-input placeholder="岗位" style="width:120px" v-model="searchInfo.p_gangwei"></el-input>
+        </el-form-item>
+        <el-form-item label="年">
+          <el-input placeholder="年" style="width:80px" v-model="searchInfo.p_year"></el-input>
+        </el-form-item>
+        <el-form-item label="月">
+          <el-input placeholder="月" style="width:50px" v-model="searchInfo.p_month"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="onSubmit" type="primary">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <el-table :data="tableData" border stripe>
       <el-table-column label="id" min-width="60" prop="ID"></el-table-column>
       <el-table-column label="姓名" min-width="100" prop="name"></el-table-column>
@@ -82,36 +101,36 @@
     <el-dialog :visible.sync="addSalaryDetailDialog" custom-class="user-dialog" title="新增薪资">
       <el-form :rules="rules" ref="salarydetailForm" :model="salarydetailinfo">
         <el-row style="margin-top:-40px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="姓名" label-width="80px" prop="name">
               <el-input style="width:200px" v-model="salarydetailinfo.name"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="岗位" label-width="80px" prop="gangwei">
               <el-input style="text-align:right" v-model="salarydetailinfo.gangwei"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="年" label-width="80px" prop="year">
               <el-input style="width:200px" v-model="salarydetailinfo.year"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="月" label-width="80px" prop="month">
               <el-input style="width:200px" v-model="salarydetailinfo.month"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="新增合计" label-width="80px" prop="xzhj">
               <el-input style="200px" v-model="salarydetailinfo.xzhj"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="业绩提成" label-width="80px" prop="yjtc">
               <el-input style="200px" v-model="salarydetailinfo.yjtc"></el-input>
             </el-form-item>
@@ -119,48 +138,48 @@
         </el-row>
 
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="奖金基数" label-width="80px" prop="jjjs">
               <el-input style="200px" v-model="salarydetailinfo.jjjs"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="浮动系数" label-width="80px" prop="fdxs">
               <el-input style="200px" v-model="salarydetailinfo.fdxs"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="月度奖金" label-width="80px" prop="ydjj">
               <el-input style="200px" v-model="salarydetailinfo.ydjj"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="本月工作日天数" label-width="80px" prop="gzts">
               <el-input style="200px" v-model="salarydetailinfo.gzts"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="加班费" label-width="80px" prop="jbf">
               <el-input style="200px" v-model="salarydetailinfo.ydjj"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="通讯补贴" label-width="80px" prop="txbt">
               <el-input style="200px" v-model="salarydetailinfo.txbt"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="餐食补贴" label-width="80px" prop="csbt">
               <el-input style="200px" v-model="salarydetailinfo.csbt"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="交通补贴" label-width="80px" prop="jtbt">
               <el-input style="200px" v-model="salarydetailinfo.jtbt"></el-input>
             </el-form-item>
@@ -168,36 +187,36 @@
         </el-row>
 
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="其他补贴" label-width="80px" prop="qtbt">
               <el-input style="200px" v-model="salarydetailinfo.qtbt"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="补贴合计" label-width="80px" prop="bthj">
               <el-input style="200px" v-model="salarydetailinfo.bthj"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="其他假期" label-width="80px" prop="qtjq">
               <el-input style="200px" v-model="salarydetailinfo.qtjq"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="年假天数" label-width="80px" prop="ndts">
               <el-input style="200px" v-model="salarydetailinfo.ndts"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="迟到扣款" label-width="80px" prop="cdkk">
               <el-input style="200px" v-model="salarydetailinfo.cdkk"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="病假天数" label-width="80px" prop="bjts">
               <el-input style="200px" v-model="salarydetailinfo.bjts"></el-input>
             </el-form-item>
@@ -205,60 +224,60 @@
         </el-row>
 
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="病假扣款" label-width="80px" prop="bjkk">
               <el-input style="200px" v-model="salarydetailinfo.bjkk"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="事假天数" label-width="80px" prop="sjts">
               <el-input style="200px" v-model="salarydetailinfo.sjts"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="事假扣款" label-width="80px" prop="sjkk">
               <el-input style="200px" v-model="salarydetailinfo.sjkk"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="扣款合计" label-width="80px" prop="kkhj">
               <el-input style="200px" v-model="salarydetailinfo.kkhj"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="应发调整" label-width="80px" prop="yftz">
               <el-input style="200px" v-model="salarydetailinfo.yftz"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="本月应发工资" label-width="80px" prop="byyf">
               <el-input style="200px" v-model="salarydetailinfo.byyf"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="代扣五险" label-width="80px" prop="dkwx">
               <el-input v-model="salarydetailinfo.dkwx"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="代扣住房公积金" label-width="80px" prop="gjj">
               <el-input style="200px" v-model="salarydetailinfo.gjj"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="margin-top:-20px">
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="代扣个人所得税" label-width="80px" prop="dkgs">
               <el-input style="200px" v-model="salarydetailinfo.dkgs"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="实发工资" label-width="80px" prop="sfgz">
               <el-input style="200px" v-model="salarydetailinfo.sfgz"></el-input>
             </el-form-item>
@@ -366,7 +385,6 @@ export default {
         openid: "",
         year: "",
         month: "",
-        name: "",
         base: "",
         gangwei: "",
         xzhj: "",
@@ -408,7 +426,7 @@ export default {
     async editSalaryDetail(row) {
       this.title = "编辑薪资";
       const res = await findSalarys(row);
-      this.salarydetailinfo = res.data.reun;
+      this.salarydetailinfo = res.data.reinfo;
       this.isEdit = true;
       this.addSalaryDetailDialog = true;
     },

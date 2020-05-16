@@ -11,7 +11,7 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe>
-      <el-table-column label="用户标识码" min-width="150" prop="openid"></el-table-column>
+      <el-table-column label="用户标识" min-width="150" prop="openid"></el-table-column>
       <el-table-column label="手机号" min-width="150" prop="mobile"></el-table-column>
       <el-table-column label="是否存在简历" min-width="150" prop="is_resume">
         <template slot-scope="scope">

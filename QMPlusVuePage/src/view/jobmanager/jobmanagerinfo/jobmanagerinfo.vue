@@ -67,17 +67,19 @@
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
           </router-link>
+          
+          <el-button
+            @click="changeTop(scope.row)"
+            size="small"
+            type="primary"
+          >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
+
           <el-button
             @click="deletejob(scope.row)"
             size="small"
             type="primary"
             icon="el-icon-delete"
           >删除</el-button>
-          <el-button
-            @click="changeTop(scope.row)"
-            size="small"
-            type="primary"
-          >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
         </template>
       </el-table-column>
     </el-table>

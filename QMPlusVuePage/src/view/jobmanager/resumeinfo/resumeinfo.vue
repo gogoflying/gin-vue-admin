@@ -12,7 +12,7 @@
     </div>
     <el-table :data="tableData" border stripe @cell-click="editpreview">
       <el-table-column type="selection" min-width="55"></el-table-column>
-      <el-table-column label="职位名称" min-width="250" prop="job_info.p_name"></el-table-column>
+      <el-table-column label="职位名称" min-width="150" prop="job_info.p_name"></el-table-column>
       <el-table-column label="手机号" min-width="150" prop="user_info.mobile"></el-table-column>
       <el-table-column label="简历状态" min-width="150">
         <template slot-scope="scope">

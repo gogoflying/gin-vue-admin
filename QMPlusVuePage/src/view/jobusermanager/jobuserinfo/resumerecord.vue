@@ -24,6 +24,7 @@
           <el-row>
             <el-col :span="23" :offset="1">
               <el-radio-group @change="onSearch" v-model="searchInfo.resume_status">
+                <el-radio :label="-1">全部</el-radio>
                 <el-radio :label="0">未读</el-radio>
                 <el-radio :label="1">已读</el-radio>
                 <el-radio :label="2">有意向</el-radio>
@@ -108,7 +109,7 @@ export default {
       const row = {
         ID: Number(id)
       };
-      this.searchInfo.resume_status = 0;
+      this.searchInfo.resume_status = -1;
       findJobUserById(row).then(res => {
         if (res.success) {
           this.searchInfo.openid = res.data.reusers.openid;

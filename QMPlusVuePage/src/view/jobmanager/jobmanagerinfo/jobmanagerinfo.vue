@@ -2,11 +2,14 @@
   <div>
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item v-show="enPriseId == 0" label="企业名称">
+          <el-input placeholder="企业名称" v-model="searchInfo.enterprise_name"></el-input>
+        </el-form-item>
         <el-form-item label="职位名称">
           <el-input placeholder="职位名称" v-model="searchInfo.p_name"></el-input>
         </el-form-item>
         <el-form-item label="工作城市">
-          <el-input placeholder="工作城市" v-model="searchInfo.p_city"></el-input>
+          <el-input placeholder="工作城市" v-model="searchInfo.p_city" style="width:140px;"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="onSubmit" type="primary">查询</el-button>
@@ -30,22 +33,7 @@
       <!-- <el-table-column type="selection" min-width="55"></el-table-column> -->
       <el-table-column label="id" min-width="60" prop="ID" fixed></el-table-column>
       <el-table-column label="职位名称" min-width="100" prop="p_name"></el-table-column>
-      <el-table-column label="公司名称" min-width="150" v-if="false">
-        <template slot-scope="scope">
-          <el-select
-            @change="changeEp(scope.row)"
-            placeholder="请选择"
-            v-model="scope.row.enterprise_id"
-          >
-            <el-option
-              :key="ep.enterprise_name"
-              :label="ep.enterprise_name"
-              :value="ep.ID"
-              v-for="ep in enterpriseInfo"
-            ></el-option>
-          </el-select>
-        </template>
-      </el-table-column>
+      <el-table-column label="企业名称" min-width="150" prop="enterprise_name" v-if="enPriseId == 0"></el-table-column>
       <!-- <el-table-column label="薪资上限" min-width="100" prop="p_salary_high"></el-table-column>
       <el-table-column label="薪资下限" min-width="100" prop="p_salary_low"></el-table-column>
       <el-table-column label="工作地点纬度" min-width="150" prop="p_latitude"></el-table-column>
@@ -56,8 +44,8 @@
 
       <!-- <el-table-column label="工作地点" min-width="100" prop="p_address"></el-table-column> 
       <el-table-column label="工作年限" min-width="100" prop="p_edujy"></el-table-column>
-      <el-table-column label="最低学历" min-width="150" prop="p_education"></el-table-column> -->
-      
+      <el-table-column label="最低学历" min-width="150" prop="p_education"></el-table-column>-->
+
       <el-table-column label="状态" min-width="100" prop="p_status" :formatter="StatusFormat"></el-table-column>
       <el-table-column label="浏览数" min-width="100" prop="p_views"></el-table-column>
       <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
@@ -67,7 +55,7 @@
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
           </router-link>
-          
+
           <el-button
             @click="changeTop(scope.row)"
             size="small"
@@ -106,6 +94,7 @@ import {
   updateJoblist
 } from "@/api/jobmanagerinfo";
 import { formatTimeToStr } from "@/utils/data";
+import { mapGetters } from "vuex";
 //import { getCitynameList } from "@/api/cityname";
 //import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";
@@ -120,6 +109,9 @@ export default {
       multipleSelection: [],
       enterpriseInfo: []
     };
+  },
+  computed: {
+    ...mapGetters("user", ["enPriseId"])
   },
   methods: {
     StatusFormat(row) {

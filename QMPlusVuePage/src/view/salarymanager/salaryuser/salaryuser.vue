@@ -210,25 +210,25 @@
     >
       <el-form :rules="rules" ref="salaryuserForm" :model="salaryuserinfo">
         <el-form-item label="姓名" label-width="80px" prop="name">
-          <el-input v-model="salaryuserinfo.name"></el-input>
+          <el-input v-model="salaryuserinfo.name" style="width:80%"></el-input>
         </el-form-item>
         <el-form-item label="手机" label-width="80px" prop="mobile">
-          <el-input v-model="salaryuserinfo.mobile"></el-input>
+          <el-input v-model="salaryuserinfo.mobile" style="width:80%"></el-input>
         </el-form-item>
         <el-form-item label="身份证号" label-width="80px" prop="card">
-          <el-input v-model="salaryuserinfo.card"></el-input>
+          <el-input v-model="salaryuserinfo.card" style="width:80%"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" label-width="80px" prop="email">
-          <el-input v-model="salaryuserinfo.email"></el-input>
+          <el-input v-model="salaryuserinfo.email" style="width:80%"></el-input>
         </el-form-item>
         <el-form-item label="岗位名称" label-width="80px" prop="job_name">
-          <el-input v-model="salaryuserinfo.job_name"></el-input>
+          <el-input v-model="salaryuserinfo.job_name" style="width:80%"></el-input>
         </el-form-item>
         <el-form-item label="岗位工资" label-width="80px" prop="salary">
-          <el-input v-model="salaryuserinfo.salary"></el-input>
+          <el-input v-model.number="salaryuserinfo.salary" style="width:80%"></el-input>
         </el-form-item>
         <el-form-item label="合同期限" label-width="80px" prop="contract_date">
-          <el-input v-model="salaryuserinfo.contract_date"></el-input>
+          <el-input v-model.number="salaryuserinfo.contract_date" style="width:70%"></el-input><span>月</span>
         </el-form-item>
         <el-form-item v-show="enPriseId == 0" label="入职企业" label-width="80px" prop="enterprise_id">
           <el-select @change="selectEp" placeholder="请选择企业" v-model="salaryuserinfo.enterprise_id">

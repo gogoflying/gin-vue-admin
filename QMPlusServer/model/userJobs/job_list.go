@@ -87,6 +87,10 @@ func (jl *Joblist) GetInfoList(info modelInterface.PageInfo) (err error, list in
 			model = model.Where("company_id = ?", jl.CompanyId)
 			db = db.Where("company_id = ?", jl.CompanyId)
 		}
+		if jl.CompanyName != "" {
+			model = model.Where("company_name = ?", jl.CompanyName)
+			db = db.Where("company_name = ?", jl.CompanyName)
+		}
 		if jl.Jobname != "" {
 			model = model.Where("job_name = ?", jl.Jobname)
 			db = db.Where("job_name = ?", jl.Jobname)

@@ -184,8 +184,11 @@ func (users *Users) GetResumeList(info modelInterface.PageInfo, openid string, d
 			model = model.Where("created_at > ? and created_at < ?", dataRange[0], dataRange[1])
 			db = db.Where("created_at > ? and created_at < ?", dataRange[0], dataRange[1])
 		}
-		model = model.Where("resume_status = ?", resumeStatus)
-		db = db.Where("resume_status = ?", resumeStatus)
+
+		if resumeStatus != -1 {
+			model = model.Where("resume_status = ?", resumeStatus)
+			db = db.Where("resume_status = ?", resumeStatus)
+		}
 
 		err = model.Preload("JobInfo").Find(&resumeList).Count(&total).Error
 		if err != nil {

@@ -2,6 +2,9 @@
   <div>
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item v-show="enPriseId == 0" label="企业名称">
+          <el-input placeholder="企业名称" v-model="searchInfo.enterprise_name"></el-input>
+        </el-form-item>
         <el-form-item label="职位名称">
           <el-input placeholder="职位名称" v-model="searchInfo.p_name"></el-input>
         </el-form-item>
@@ -13,6 +16,7 @@
     <el-table :data="tableData" border stripe @cell-click="editpreview">
       <el-table-column type="selection" min-width="55"></el-table-column>
       <el-table-column label="职位名称" min-width="150" prop="job_info.p_name"></el-table-column>
+      <el-table-column label="企业名称" min-width="150" prop="enterprise_name" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="手机号" min-width="150" prop="user_info.mobile"></el-table-column>
       <el-table-column label="简历状态" min-width="150">
         <template slot-scope="scope">
@@ -59,6 +63,7 @@
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
 const path = process.env.VUE_APP_BASE_API;
 import { getResumeStatusList, updateResumeStatus } from "@/api/resumestatus";
+import { mapGetters } from "vuex";
 import infoList from "@/components/mixins/infoList";
 export default {
   name: "Api",
@@ -92,8 +97,11 @@ export default {
       ]
     };
   },
+  computed: {
+    ...mapGetters("user", ["enPriseId"])
+  },
   methods: {
-    async editpreview(row,column) {
+    async editpreview(row, column) {
       //打开简历详情
       if (column.type !== "selection") {
         const { href } = this.$router.resolve({

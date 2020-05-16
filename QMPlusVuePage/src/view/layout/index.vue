@@ -20,7 +20,7 @@
           </el-breadcrumb>
           <div class="fl-right right-box">
             <span v-show="enPriseId != 0" style="color: red;">请上传企业资质进行认证==></span>
-            <el-button @click.native="toCompanyAuth" type="warning" size="small" v-show="enPriseId != 0" style="margin-right:40px">认证</el-button>
+            <el-button @click.native="toCompanyAuth" type="warning" size="small" v-show="enPriseId != 0" style="margin-right:40px">认证信息</el-button>
             <el-dropdown>
               <span class="el-dropdown-link">
                 <img :src="userInfo.headerImg" height="30" width="30" />

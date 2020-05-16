@@ -74,6 +74,10 @@ func (rs *ResumeStatus) GetInfoList(info modelInterface.PageInfo) (err error, li
 			model = model.Where("company_id = ?", rs.CompanyId)
 			db = db.Where("company_id = ?", rs.CompanyId)
 		}
+		if rs.CompanyName != "" {
+			model = model.Where("company_name = ?", rs.CompanyName)
+			db = db.Where("company_name = ?", rs.CompanyName)
+		}
 		if rs.Jobname != "" {
 			model = model.Where("job_name = ?", rs.Jobname)
 			db = db.Where("job_name = ?", rs.Jobname)

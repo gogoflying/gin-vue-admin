@@ -9,7 +9,6 @@ import (
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userJobs"
 	"gin-vue-admin/model/userSalary"
-	uuid "github.com/satori/go.uuid"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -17,6 +16,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tealeg/xlsx"
@@ -326,13 +327,17 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 			if rowIndex == 0 {
 				continue
 			}
-			name := strings.Trim(row.Cells[1].Value, " ")
-			mobile := strings.Trim(row.Cells[2].Value, " ")
-			jobname := strings.Trim(row.Cells[3].Value, " ")
-			salary, _ := strconv.Atoi(strings.Trim(row.Cells[4].Value, " "))
-			contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " "))
-			card := strings.Trim(row.Cells[6].Value, " ")
-			email := strings.Trim(row.Cells[7].Value, " ")
+			if ep != strings.Trim(row.Cells[1].Value, " ") {
+				fmt.Errorf("batchInsertSalaryUser excel name:%s,import target name:%s", strings.Trim(row.Cells[1].Value, " "), ep)
+				return fmt.Errorf("batchInsertSalaryUser Improt enterprise nmae not eq")
+			}
+			name := strings.Trim(row.Cells[2].Value, " ")
+			mobile := strings.Trim(row.Cells[3].Value, " ")
+			jobname := strings.Trim(row.Cells[4].Value, " ")
+			salary, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " "))
+			contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[6].Value, " "))
+			card := strings.Trim(row.Cells[7].Value, " ")
+			email := strings.Trim(row.Cells[8].Value, " ")
 			openid := NewOpenID()
 			un := userSalary.SalaryUsers{
 				Openid:       openid,

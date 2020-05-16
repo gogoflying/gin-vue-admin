@@ -19,7 +19,8 @@
             >{{item.meta.title}}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="fl-right right-box">
-            <el-button @click.native="toCompanyAuth" type="warning" size="small" v-show="enPriseId != 0" style="margin-right:40px">企业认证</el-button>
+            <span v-show="enPriseId != 0" style="color: red;">请上传企业资质进行认证==></span>
+            <el-button @click.native="toCompanyAuth" type="warning" size="small" v-show="enPriseId != 0" style="margin-right:40px">认证</el-button>
             <el-dropdown>
               <span class="el-dropdown-link">
                 <img :src="userInfo.headerImg" height="30" width="30" />
@@ -35,7 +36,6 @@
                 </el-dropdown-item>
                 <el-dropdown-item @click.native="showPassword=true" icon="el-icon-s-custom">修改密码</el-dropdown-item>
                 <el-dropdown-item @click.native="toPerson" icon="el-icon-s-custom">个人信息</el-dropdown-item>
-                <el-dropdown-item @click.native="toCompanyAuth" icon="el-icon-s-check" v-show="enPriseId != 0">企业认证</el-dropdown-item>
                 <el-dropdown-item @click.native="LoginOut" icon="el-icon-table-lamp">登 出</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

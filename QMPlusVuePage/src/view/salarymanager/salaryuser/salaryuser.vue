@@ -404,8 +404,12 @@ export default {
           id: 1,
           name: "离职申请"
         },
-        {
+         {
           id: 2,
+          name: "已审批"
+        },
+        {
+          id: 3,
           name: "已离职"
         }
       ]

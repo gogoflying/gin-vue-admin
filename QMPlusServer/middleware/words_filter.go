@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 
 	//"github.com/gin-gonic/gin"
@@ -179,6 +180,9 @@ func WordFilterHandler() gin.HandlerFunc {
 			}
 			//
 			_, err = CheckWordsIllegal(bodyCopy.String())
+			fmt.Printf("=====start=====")
+			fmt.Printf(bodyCopy.String())
+			fmt.Printf("======end====")
 			if err == nil {
 				c.Next()
 			} else {

@@ -31,10 +31,22 @@
       <el-table-column label="企业性质" min-width="100" prop="enterprise_indust_info"></el-table-column>
       <el-table-column label="所在城市" min-width="100" prop="enterprise_address"></el-table-column>
       <el-table-column label="企业规模" min-width="100" prop="enterprise_scale"></el-table-column>
-      <el-table-column label="职位数量" min-width="100" prop="job_count"></el-table-column>
+      <el-table-column label="职位数量" min-width="80" prop="job_count"></el-table-column>
+      <el-table-column label="企业审核" min-width="200" prop="status">
+        <template slot-scope="scope">
+          <el-switch
+            @change="changestatus(scope.row)"
+            active-text="已审核"
+            inactive-text="未审核"
+            :active-value="1"
+            :inactive-value="0"
+            v-model.number="scope.row.status"
+          ></el-switch>
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="企业热度" min-width="100" prop="enterprise_hot"></el-table-column> -->
       <!-- <el-table-column label="企业描述" min-width="150" prop="enterprise_desc" :show-overflow-tooltip="true"></el-table-column> -->
-      
+
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="editEnterprise(scope.row)" size="small" type="text">编辑</el-button>
@@ -80,7 +92,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        
+
         <el-form-item label="行业类别" label-width="80px" prop="industry_type">
           <el-select
             @change="selectEnpIndust"
@@ -297,6 +309,12 @@ export default {
     }
   },
   methods: {
+    async changestatus(row) {
+      const res = await updateEnterpriseInfo(row);
+      if (res.success) {
+        this.$message({ type: "success", message: "状态设置成功" });
+      }
+    },
     selectCityName(val) {
       var selectedItem = {};
       selectedItem = this.cityinfo.find(item => {

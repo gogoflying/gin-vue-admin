@@ -202,7 +202,12 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
 
-    <el-dialog :visible.sync="addSalaryUserDialog" custom-class="user-dialog" @close="closeAddSalaryUserDialog" title="新增员工">
+    <el-dialog
+      :visible.sync="addSalaryUserDialog"
+      custom-class="user-dialog"
+      @close="closeAddSalaryUserDialog"
+      title="新增员工"
+    >
       <el-form :rules="rules" ref="salaryuserForm" :model="salaryuserinfo">
         <el-form-item label="姓名" label-width="80px" prop="name">
           <el-input v-model="salaryuserinfo.name"></el-input>
@@ -219,7 +224,13 @@
         <el-form-item label="岗位名称" label-width="80px" prop="job_name">
           <el-input v-model="salaryuserinfo.job_name"></el-input>
         </el-form-item>
-        <el-form-item v-show="enPriseId == 0" label="入职企业" label-width="80px" prop="email">
+        <el-form-item label="岗位工资" label-width="80px" prop="salary">
+          <el-input v-model="salaryuserinfo.salary"></el-input>
+        </el-form-item>
+        <el-form-item label="合同期限" label-width="80px" prop="contract_date">
+          <el-input v-model="salaryuserinfo.contract_date"></el-input>
+        </el-form-item>
+        <el-form-item v-show="enPriseId == 0" label="入职企业" label-width="80px" prop="enterprise_id">
           <el-select @change="selectEp" placeholder="请选择企业" v-model="salaryuserinfo.enterprise_id">
             <el-option
               :key="industry.enterprise_name"
@@ -337,6 +348,9 @@ export default {
         mobile: "",
         card: "",
         email: "",
+        job_name: "",
+        salary: "",
+        contract_date: "",
         enterprise: "",
         enterprise_id: "",
         enter_time: "",
@@ -489,6 +503,9 @@ export default {
         mobile: "",
         card: "",
         email: "",
+        job_name: "",
+        salary: "",
+        contract_date: "",
         enterprise: "",
         enterprise_id: "",
         enter_time: "",

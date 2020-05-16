@@ -31,6 +31,7 @@
       <el-table-column label="企业性质" min-width="100" prop="enterprise_indust_info"></el-table-column>
       <el-table-column label="所在城市" min-width="100" prop="enterprise_address"></el-table-column>
       <el-table-column label="企业规模" min-width="100" prop="enterprise_scale"></el-table-column>
+      <el-table-column label="职位数量" min-width="100" prop="job_count"></el-table-column>
       <!-- <el-table-column label="企业热度" min-width="100" prop="enterprise_hot"></el-table-column> -->
       <!-- <el-table-column label="企业描述" min-width="150" prop="enterprise_desc" :show-overflow-tooltip="true"></el-table-column> -->
       

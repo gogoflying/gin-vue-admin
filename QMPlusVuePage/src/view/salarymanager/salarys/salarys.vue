@@ -2,21 +2,29 @@
   <div>
     <div class="button-box clearflex">
       <el-col :span="3">
+        <el-select v-model="enterprise_id" placeholder="请选择企业">
+          <el-option
+            v-for="ep in enterpriseInfo"
+            :key="ep.enterprise_name"
+            :value="ep.ID"
+            :label="ep.enterprise_name"
+          ></el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="3">
         <el-upload
           :disabled="importDataDisabled"
           style="display: inline-flex;margin-right: 8px;"
-          :action="`${path}/un/importsalarys`"
+          :action="`${path}/un/importsalarys?id=${enterprise_id}`"
           :before-upload="beforeUpload"
           :headers="{'x-token':token}"
           :on-error="onError"
           :on-success="onSuccess"
           :show-file-list="false"
         >
-          <el-button
-            :disabled="importDataDisabled"
-            type="success"
-            :icon="importDataBtnIcon"
-          >{{importDataBtnText}}</el-button>
+          <el-tooltip class="item" effect="dark" content="请先选择企业" placement="top-start">
+            <el-button type="success" :icon="importDataBtnIcon">{{importDataBtnText}}</el-button>
+          </el-tooltip>
         </el-upload>
       </el-col>
       <el-col :span="3">
@@ -303,6 +311,7 @@ import {
   findSalarys,
   deleteSalarys
 } from "@/api/salarydetail";
+import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";
 export default {
   name: "Salarys",
@@ -312,12 +321,13 @@ export default {
       listApi: getSalarysList,
       listKey: "userSalaryList",
       path: path,
+      enterprise_id: "",
       addSalaryDetailDialog: false,
       isEdit: false,
       title: "",
       importDataBtnText: "导入数据",
       importDataBtnIcon: "el-icon-upload2",
-      importDataDisabled: false,
+      importDataDisabled: true,
       salarydetailinfo: {
         openid: "",
         year: "",
@@ -352,6 +362,13 @@ export default {
         sfgz: ""
       }
     };
+  },
+  watch: {
+    enterprise_id(val) {
+      if (val != null) {
+        this.importDataDisabled = false;
+      }
+    }
   },
   methods: {
     downSalarytemplate() {
@@ -479,6 +496,15 @@ export default {
       this.importDataDisabled = true;
       this.fullscreenLoading = true;
     }
+  },
+    created() {
+      getEnterpriseAllInfo().then(res => {
+        if (res.success) {
+          this.enterpriseInfo = res.data.result;
+        } else {
+          this.enterpriseInfo = [];
+        }
+      });
   }
 };
 </script>

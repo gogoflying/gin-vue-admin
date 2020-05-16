@@ -12,38 +12,40 @@ import (
 /*基本工资、岗位工资、薪资合计、业绩提成、奖金基数、浮动系数、月度奖金、本月工作日天数、加班费、通讯补贴、餐食补贴、交通补贴、其他补贴、补贴合计、其他假期、年假天数、迟到扣款、病假天数、病假扣款、事假天数、事假扣款、扣款合计、应发调整、本月应发工资、代扣五险、代扣住房公积金、代扣个人所得税、实发工资*/
 type Salarys struct {
 	gorm.Model
-	Year    int    `json:"year" gorm:"column:year"`
-	Month   int    `json:"month" gorm:"column:month"`
-	Openid  string `json:"openid" gorm:"column:openid"`
-	Name    string `json:"name" gorm:"column:name"`
-	Base    string `json:"base" gorm:"column:base"`
-	Gangwei string `json:"gangwei" gorm:"column:gangwei"`
-	Xzhj    string `json:"xzhj" gorm:"column:xzhj"`
-	Yjtc    string `json:"yjtc" gorm:"column:yjtc"`
-	Jjjs    string `json:"jjjs" gorm:"column:jjjs"`
-	Fdxs    string `json:"fdxs" gorm:"column:fdxs"`
-	Ydjj    string `json:"ydjj" gorm:"column:ydjj"`
-	Gzts    string `json:"gzts" gorm:"column:gzts"`
-	Jbf     string `json:"jbf" gorm:"column:jbf"`
-	Txbt    string `json:"txbt" gorm:"column:txbt"`
-	Csbt    string `json:"csbt" gorm:"column:csbt"`
-	Jtbt    string `json:"jtbt" gorm:"column:jtbt"`
-	Qtbt    string `json:"qtbt" gorm:"column:qtbt"`
-	Bthj    string `json:"bthj" gorm:"column:bthj"`
-	Qtjq    string `json:"qtjq" gorm:"column:qtjq"`
-	Njts    string `json:"njts" gorm:"column:njts"`
-	Cdkk    string `json:"cdkk" gorm:"column:cdkk"`
-	Bjts    string `json:"bjts" gorm:"column:bjts"`
-	Bjkk    string `json:"bjkk" gorm:"column:bjkk"`
-	Sjts    string `json:"sjts" gorm:"column:sjts"`
-	Sjkk    string `json:"sjkk" gorm:"column:sjkk"`
-	Kkhj    string `json:"kkhj" gorm:"column:kkhj"`
-	Yftz    string `json:"yftz" gorm:"column:yftz"`
-	Byyf    string `json:"byyf" gorm:"column:byyf"`
-	Dkwx    string `json:"dkwx" gorm:"column:dkwx"`
-	Gjj     string `json:"gjj" gorm:"column:gjj"`
-	Dkgs    string `json:"dkgs" gorm:"column:dkgs"`
-	Sfgz    string `json:"sfgz" gorm:"column:sfgz"`
+	Enterprise   string `json:"enterprise" gorm:"column:enterprise";comment:'入职企业'`
+	EnterpriseId int    `json:"enterprise_id" gorm:"column:enterprise_id;comment:'入职企业id'"`
+	Year         int    `json:"year" gorm:"column:year"`
+	Month        int    `json:"month" gorm:"column:month"`
+	Openid       string `json:"openid" gorm:"column:openid"`
+	Name         string `json:"name" gorm:"column:name"`
+	Base         string `json:"base" gorm:"column:base"`
+	Gangwei      string `json:"gangwei" gorm:"column:gangwei"`
+	Xzhj         string `json:"xzhj" gorm:"column:xzhj"`
+	Yjtc         string `json:"yjtc" gorm:"column:yjtc"`
+	Jjjs         string `json:"jjjs" gorm:"column:jjjs"`
+	Fdxs         string `json:"fdxs" gorm:"column:fdxs"`
+	Ydjj         string `json:"ydjj" gorm:"column:ydjj"`
+	Gzts         string `json:"gzts" gorm:"column:gzts"`
+	Jbf          string `json:"jbf" gorm:"column:jbf"`
+	Txbt         string `json:"txbt" gorm:"column:txbt"`
+	Csbt         string `json:"csbt" gorm:"column:csbt"`
+	Jtbt         string `json:"jtbt" gorm:"column:jtbt"`
+	Qtbt         string `json:"qtbt" gorm:"column:qtbt"`
+	Bthj         string `json:"bthj" gorm:"column:bthj"`
+	Qtjq         string `json:"qtjq" gorm:"column:qtjq"`
+	Njts         string `json:"njts" gorm:"column:njts"`
+	Cdkk         string `json:"cdkk" gorm:"column:cdkk"`
+	Bjts         string `json:"bjts" gorm:"column:bjts"`
+	Bjkk         string `json:"bjkk" gorm:"column:bjkk"`
+	Sjts         string `json:"sjts" gorm:"column:sjts"`
+	Sjkk         string `json:"sjkk" gorm:"column:sjkk"`
+	Kkhj         string `json:"kkhj" gorm:"column:kkhj"`
+	Yftz         string `json:"yftz" gorm:"column:yftz"`
+	Byyf         string `json:"byyf" gorm:"column:byyf"`
+	Dkwx         string `json:"dkwx" gorm:"column:dkwx"`
+	Gjj          string `json:"gjj" gorm:"column:gjj"`
+	Dkgs         string `json:"dkgs" gorm:"column:dkgs"`
+	Sfgz         string `json:"sfgz" gorm:"column:sfgz"`
 }
 
 // 创建Salarys
@@ -91,7 +93,26 @@ func (un *Salarys) GetInfoList(info modelInterface.PageInfo) (err error, list in
 		return
 	} else {
 		var reSalarysList []Salarys
-		err = db.Find(&reSalarysList).Error
+		model := qmsql.DEFAULTDB.Model(info)
+		if un.EnterpriseId != 0 {
+			model = model.Where("enterprise_id = ?", un.EnterpriseId)
+			db = db.Where("enterprise_id = ?", un.EnterpriseId)
+		}
+		if un.Year != 0 {
+			model = model.Where("year = ?", un.Year)
+			db = db.Where("year = ?", un.Year)
+		}
+		if un.Month != 0 {
+			model = model.Where("month = ?", un.Month)
+			db = db.Where("month = ?", un.Month)
+		}
+
+		err = model.Find(&reSalarysList).Count(&total).Error
+		if err != nil {
+			return err, reSalarysList, total
+		} else {
+			err = db.Find(&reSalarysList).Error
+		}
 		return err, reSalarysList, total
 	}
 }

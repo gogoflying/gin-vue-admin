@@ -33,6 +33,12 @@ import (
 func CreateSalaryUsers(c *gin.Context) {
 	var un userSalary.SalaryUsers
 	_ = c.ShouldBindJSON(&un)
+	ei, exist := c.Get("enpInfo")
+	if exist {
+		enpInfo := ei.(*userJobs.EnterpriseInfo)
+		un.Enterprise = enpInfo.EnterPriseName
+		un.EnterpriseId = int(enpInfo.ID)
+	}
 	err := un.CreateSalaryUsers()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
@@ -201,38 +207,70 @@ func FindSalaryUsersByOpenid(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /un/getSalaryUsersList [post]
 func GetSalaryUsersList(c *gin.Context) {
-	var pageInfo modelInterface.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
-	err, list, total := new(userSalary.SalaryUsers).GetInfoList(pageInfo)
+	type searchParams struct {
+		userSalary.SalaryUsers
+		modelInterface.PageInfo
+	}
+	var sp searchParams
+	_ = c.ShouldBindJSON(&sp)
+	var enPriseID int
+	ei, exist := c.Get("enpInfo")
+	if exist {
+		enpInfo := ei.(*userJobs.EnterpriseInfo)
+		enPriseID = int(enpInfo.ID)
+	} else {
+		id, _ := strconv.Atoi(c.Query("id"))
+		err, _ := new(userJobs.EnterpriseInfo).GeteEpById(id)
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
+			return
+		}
+		enPriseID = id
+	}
+	sp.SalaryUsers.EnterpriseId = enPriseID
+	err, list, total := sp.SalaryUsers.GetInfoList(sp.PageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
 			"userSalaryList": list,
 			"total":          total,
-			"page":           pageInfo.Page,
-			"pageSize":       pageInfo.PageSize,
+			"page":           sp.PageInfo.Page,
+			"pageSize":       sp.PageInfo.PageSize,
 		})
 	}
 }
 
 func ImportSalaryUsers(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Query("id"))
-	err, ep := new(userJobs.EnterpriseInfo).GeteEpById(id)
+	var (
+		id     int
+		epName string
+	)
+	ei, exist := c.Get("enpInfo")
+	if exist {
+		enpInfo := ei.(*userJobs.EnterpriseInfo)
+		epName = enpInfo.EnterPriseName
+		id = int(enpInfo.ID)
+	} else {
+		id, _ := strconv.Atoi(c.Query("id"))
+		err, ep := new(userJobs.EnterpriseInfo).GeteEpById(id)
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
+			return
+		}
+		epName = ep.EnterPriseName
+	}
+
+	_, fxlsx, err := c.Request.FormFile("file")
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
 	} else {
-		_, fxlsx, err := c.Request.FormFile("file")
+		//文件上传后拿到文件路径
+		err := UploadFileLocal(fxlsx, id, epName)
 		if err != nil {
-			servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
+			servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
 		} else {
-			//文件上传后拿到文件路径
-			err := UploadFileLocal(fxlsx, id, ep.EnterPriseName)
-			if err != nil {
-				servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
-			} else {
-				servers.ReportFormat(c, true, "上传成功", gin.H{})
-			}
+			servers.ReportFormat(c, true, "上传成功", gin.H{})
 		}
 	}
 }
@@ -282,7 +320,6 @@ func saveXlsxFile(filename, time string, src []byte) error {
 }
 
 func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
-
 	for _, sheet := range file.Sheets {
 		fmt.Printf("Sheet Name: %s\n", sheet.Name)
 		for rowIndex, row := range sheet.Rows {

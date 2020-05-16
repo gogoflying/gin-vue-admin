@@ -25,14 +25,15 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column label="id" min-width="60" prop="ID"></el-table-column>
+      <!-- <el-table-column label="id" min-width="60" prop="ID"></el-table-column> -->
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name"></el-table-column>
-      <el-table-column label="企业规模" min-width="100" prop="enterprise_scale"></el-table-column>
       <el-table-column label="企业类型" min-width="100" prop="enterprise_type_info"></el-table-column>
-      <el-table-column label="企业热度" min-width="100" prop="enterprise_hot"></el-table-column>
       <el-table-column label="企业性质" min-width="100" prop="enterprise_indust_info"></el-table-column>
-      <!-- <el-table-column label="企业描述" min-width="150" prop="enterprise_desc" :show-overflow-tooltip="true"></el-table-column> -->
       <el-table-column label="所在城市" min-width="100" prop="enterprise_address"></el-table-column>
+      <el-table-column label="企业规模" min-width="100" prop="enterprise_scale"></el-table-column>
+      <!-- <el-table-column label="企业热度" min-width="100" prop="enterprise_hot"></el-table-column> -->
+      <!-- <el-table-column label="企业描述" min-width="150" prop="enterprise_desc" :show-overflow-tooltip="true"></el-table-column> -->
+      
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="editEnterprise(scope.row)" size="small" type="text">编辑</el-button>
@@ -78,9 +79,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="企业热度" label-width="80px" prop="enterprise_hot">
-          <el-input v-model.number="enterpriseInfo.enterprise_hot"></el-input>
-        </el-form-item>
+        
         <el-form-item label="行业类别" label-width="80px" prop="industry_type">
           <el-select
             @change="selectEnpIndust"
@@ -94,6 +93,9 @@
               v-for="industry in industrytype"
             ></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="企业热度" label-width="80px" prop="enterprise_hot">
+          <el-input v-model.number="enterpriseInfo.enterprise_hot"></el-input>
         </el-form-item>
         <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
           <quill-editor

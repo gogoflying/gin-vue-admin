@@ -50,13 +50,16 @@
       <el-table-column label="薪资下限" min-width="100" prop="p_salary_low"></el-table-column>
       <el-table-column label="工作地点纬度" min-width="150" prop="p_latitude"></el-table-column>
       <el-table-column label="工作地点经度" min-width="150" prop="p_longitude"></el-table-column>-->
-      <el-table-column label="工作地点" min-width="100" prop="p_address"></el-table-column>
-      <el-table-column label="工作城市" min-width="150" prop="p_city"></el-table-column>
-      <el-table-column label="工作年限" min-width="100" prop="p_edujy"></el-table-column>
-      <el-table-column label="最低学历" min-width="150" prop="p_education"></el-table-column>
+      <el-table-column label="招聘人数" min-width="80" prop="p_count"></el-table-column>
       <el-table-column label="工作类型" min-width="100" prop="p_type"></el-table-column>
+      <el-table-column label="工作城市" min-width="150" prop="p_city"></el-table-column>
+
+      <!-- <el-table-column label="工作地点" min-width="100" prop="p_address"></el-table-column> 
+      <el-table-column label="工作年限" min-width="100" prop="p_edujy"></el-table-column>
+      <el-table-column label="最低学历" min-width="150" prop="p_education"></el-table-column> -->
+      
       <el-table-column label="状态" min-width="100" prop="p_status" :formatter="StatusFormat"></el-table-column>
-      <el-table-column label="招聘人数" min-width="100" prop="p_count"></el-table-column>
+      
       <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
       <!-- <el-table-column label="工作描述" min-width="150" prop="p_des" :show-overflow-tooltip="true"></el-table-column> -->
       <el-table-column fixed="right" label="操作" width="240">
@@ -64,17 +67,19 @@
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
           </router-link>
+          
+          <el-button
+            @click="changeTop(scope.row)"
+            size="small"
+            type="primary"
+          >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
+
           <el-button
             @click="deletejob(scope.row)"
             size="small"
             type="primary"
             icon="el-icon-delete"
           >删除</el-button>
-          <el-button
-            @click="changeTop(scope.row)"
-            size="small"
-            type="primary"
-          >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
         </template>
       </el-table-column>
     </el-table>

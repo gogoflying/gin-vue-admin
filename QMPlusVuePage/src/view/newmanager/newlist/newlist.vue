@@ -19,7 +19,7 @@
       <el-table-column label="id" min-width="60" prop="ID" fixed></el-table-column>
       <el-table-column label="新闻标题" min-width="100" prop="title" fixed></el-table-column>
       <el-table-column label="新闻副标题" min-width="100" prop="sub_title" v-if="false"></el-table-column>
-      <el-table-column label="排序" min-width="100" prop="order"></el-table-column>
+      <!-- <el-table-column label="排序" min-width="100" prop="order"></el-table-column> -->
       <el-table-column label="新闻类型" min-width="150" prop="news_type" :formatter="newTypeFormat"></el-table-column>
       <el-table-column label="状态" min-width="150" prop="status">
         <template slot-scope="scope">

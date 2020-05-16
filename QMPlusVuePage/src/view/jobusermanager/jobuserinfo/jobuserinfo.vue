@@ -11,9 +11,9 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe>
-      <el-table-column label="用户标识码" min-width="150" prop="openid"></el-table-column>
+      <el-table-column label="用户标识" min-width="150" prop="openid"></el-table-column>
       <el-table-column label="手机号" min-width="150" prop="mobile"></el-table-column>
-      <el-table-column label="发布" min-width="150" prop="is_resume">
+      <el-table-column label="是否存在简历" min-width="150" prop="is_resume">
         <template slot-scope="scope">
           <el-radio-group @change="changestatus(scope.row)" v-model="scope.row.is_resume">
             <el-radio :label="0">否</el-radio>

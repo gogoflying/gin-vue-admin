@@ -17,10 +17,10 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe>
-      <el-table-column label="id" min-width="60" prop="ID"></el-table-column>
+      <!-- <el-table-column label="id" min-width="60" prop="ID"></el-table-column> -->
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name"></el-table-column>
-      <el-table-column label="用户名" min-width="150" prop="userName"></el-table-column>
-      <el-table-column label="是否审核" prop="status">
+      <el-table-column label="用户名" min-width="80" prop="userName"></el-table-column>
+      <el-table-column label="审核" min-width="120"  prop="status">
         <template slot-scope="scope">
           <el-switch
             @change="changestatus(scope.row)"
@@ -32,7 +32,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column fixed="right" label="操作" width="80">
         <template slot-scope="scope">
           <el-button @click="deleteUserAuth(scope.row.ID)" size="small" type="text">删除</el-button>
         </template>

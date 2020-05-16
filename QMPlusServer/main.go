@@ -7,7 +7,6 @@ import (
 	"gin-vue-admin/init/initRouter"
 	"gin-vue-admin/init/initlog/qmlog"
 	"gin-vue-admin/init/qmsql"
-	"gin-vue-admin/init/registTerable"
 	"gin-vue-admin/middleware"
 	"os"
 	//"runtime"
@@ -46,13 +45,14 @@ func main() {
 	registerTable.RegisterTable(db)
 	// 程序结束前关闭数据库链接
 	defer qmsql.DEFAULTDB.Close()
-	//
-	wx := middleware.NewPatchIncrCluster()
+	//开启weixin tocken 每2小时刷新一次
+	wx := middleware.NewFilterTocken()
 	go wx.StartRun()
 	// 注册路由
 	Router := initRouter.InitRouter()
 
 	Router.Static("/form-generator", "./static/form-generator")
+
 	//Router.RunTLS(":443","ssl.pem", "ssl.key")  // https支持 需要添加中间件
 	//sysType := runtime.GOOS
 	//
@@ -63,5 +63,6 @@ func main() {
 	//if sysType == "windows" {
 	// WIN系统
 	cmd.RunWindowsServer(Router)
+
 	//}
 }

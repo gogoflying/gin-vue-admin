@@ -142,7 +142,7 @@ func WechatDetectImg(bts []byte) (bool, error) {
 	return false, err
 }
 
-func NewPatchIncrCluster() *WX_Access {
+func NewFilterTocken() *WX_Access {
 	return &WX_Access{
 		access_token: "",
 	}
@@ -180,9 +180,9 @@ func WordFilterHandler() gin.HandlerFunc {
 			}
 			//
 			_, err = CheckWordsIllegal(bodyCopy.String())
-			fmt.Printf("=====start=====")
+			fmt.Printf("=====start=====\n")
 			fmt.Printf(bodyCopy.String())
-			fmt.Printf("======end====")
+			fmt.Printf("======end====\n")
 			if err == nil {
 				c.Next()
 			} else {

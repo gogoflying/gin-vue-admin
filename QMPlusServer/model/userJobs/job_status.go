@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -15,6 +16,8 @@ type ResumeStatus struct {
 	ResumeStatus int       `json:"resume_status" gorm:"column:resume_status;comment:'简历状态，0未读，1已读，2有意向，3约面试，4不合适'"`
 	Results      []Joblist `json:"result" gorm:"-"`
 	Jobname      string    `json:"p_name" gorm:"column:job_name;comment:'职位名称'"`
+	CompanyName  string    `json:"enterprise_name" gorm:"column:company_name;comment:'公司名称'"`
+	CompanyId    int       `json:"enterprise_id" gorm:"column:company_id;comment:'公司id，关联enterprise_infos表'"`
 	JobsalaLow   int       `json:"p_salary_low" gorm:"-"`
 	JobCityId    int       `json:"p_city_id" gorm:"-"`
 	JobYearsId   int       `json:"p_edujy_id" gorm:"-"`

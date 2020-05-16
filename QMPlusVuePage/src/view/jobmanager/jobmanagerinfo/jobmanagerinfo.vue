@@ -52,14 +52,14 @@
       <el-table-column label="工作地点经度" min-width="150" prop="p_longitude"></el-table-column>-->
       <el-table-column label="招聘人数" min-width="80" prop="p_count"></el-table-column>
       <el-table-column label="工作类型" min-width="100" prop="p_type"></el-table-column>
-      <el-table-column label="工作城市" min-width="150" prop="p_city"></el-table-column>
+      <el-table-column label="工作城市" min-width="100" prop="p_city"></el-table-column>
 
       <!-- <el-table-column label="工作地点" min-width="100" prop="p_address"></el-table-column> 
       <el-table-column label="工作年限" min-width="100" prop="p_edujy"></el-table-column>
       <el-table-column label="最低学历" min-width="150" prop="p_education"></el-table-column> -->
       
       <el-table-column label="状态" min-width="100" prop="p_status" :formatter="StatusFormat"></el-table-column>
-      
+      <el-table-column label="浏览数" min-width="100" prop="p_views"></el-table-column>
       <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
       <!-- <el-table-column label="工作描述" min-width="150" prop="p_des" :show-overflow-tooltip="true"></el-table-column> -->
       <el-table-column fixed="right" label="操作" width="240">

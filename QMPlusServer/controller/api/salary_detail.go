@@ -264,7 +264,7 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 	var un userSalary.Salarys
 	var err error
 	tx := un.GetDbTx().Begin()
-	//defer tx.Rollback()
+	defer tx.Rollback()
 	for _, sheet := range file.Sheets {
 		fmt.Printf("Sheet Name: %s\n", sheet.Name)
 
@@ -274,9 +274,15 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 			}
 			if ep != strings.Trim(row.Cells[1].Value, " ") {
 				fmt.Errorf("batchInsertSalarys excel name:%s,import target name:%s", strings.Trim(row.Cells[1].Value, " "), ep)
-				return fmt.Errorf("Improt enterprise nmae not eq")
+				return fmt.Errorf("Improt enterprise name not eq")
 			}
+
 			name := strings.Trim(row.Cells[2].Value, " ")
+			openid, _ := checkSalarysUserInTable(name, ep, id)
+			if len(openid) == 0 {
+				fmt.Errorf("batchInsertSalarys user:%s not in table salaryUser", name)
+				return fmt.Errorf("user not in table salaryUser")
+			}
 			year, _ := strconv.Atoi(strings.Trim(row.Cells[3].Value, " "))
 			month, _ := strconv.Atoi(strings.Trim(row.Cells[4].Value, " "))
 			gangwei := strings.Trim(row.Cells[5].Value, " ")
@@ -309,6 +315,7 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 			//salary, _ := strconv.Atoi(strings.Trim(row.Cells[4].Value, " "))
 			//contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " "))
 			un = userSalary.Salarys{
+				Openid:       openid,
 				Enterprise:   ep,
 				EnterpriseId: id,
 				Name:         name,
@@ -354,4 +361,22 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 	}
 	tx.Commit()
 	return nil
+}
+
+func checkSalarysUserInTable(name, enterprise string, enterpriseID int) (string, error) {
+	if name == "" || enterprise == "" {
+		return "", fmt.Errorf("param empty")
+	}
+	//var un userSalary.SalaryUsers
+	salaryUser := userSalary.SalaryUsers{
+		Name:         name,
+		Enterprise:   enterprise,
+		EnterpriseId: enterpriseID,
+	}
+	_, newSalary := salaryUser.FindByEnterprise()
+	if newSalary.Openid != "" {
+		return newSalary.Openid, nil
+	} else {
+		return "", fmt.Errorf("salary user no this user")
+	}
 }

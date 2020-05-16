@@ -106,6 +106,12 @@ func (un *SalaryUsers) FindByOpenid() (err error, reun SalaryUsers) {
 }
 
 // 根据ID查看单条SalaryUsers
+func (un *SalaryUsers) FindByEnterprise() (err error, reun SalaryUsers) {
+	err = qmsql.DEFAULTDB.Where("enterprise = ? AND enterprise_id = ? AND name = ? ", un.Enterprise, un.EnterpriseId, un.Name).First(&reun).Error
+	return err, reun
+}
+
+// 根据ID查看单条SalaryUsers
 func (un *SalaryUsers) FindByMobile() (err error, reun SalaryUsers) {
 	err = qmsql.DEFAULTDB.Where("mobile = ?", un.Mobile).First(&reun).Error
 	return err, reun

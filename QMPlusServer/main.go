@@ -7,6 +7,7 @@ import (
 	"gin-vue-admin/init/initRouter"
 	"gin-vue-admin/init/initlog/qmlog"
 	"gin-vue-admin/init/qmsql"
+	registerTable "gin-vue-admin/init/registTerable"
 	"gin-vue-admin/middleware"
 	"os"
 	//"runtime"

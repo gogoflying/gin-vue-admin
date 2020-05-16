@@ -240,7 +240,7 @@
         <el-form-item label="邮箱" label-width="80px" prop="email">
           <el-input v-model="salaryuserinfo.email"></el-input>
         </el-form-item>
-        <el-form-item label="入职企业" label-width="80px" prop="email">
+        <el-form-item v-show="enPriseId == 0" label="入职企业" label-width="80px" prop="email">
           <el-select placeholder="请选择企业" v-model="salaryuserinfo.enterprise_id">
             <el-option
               :key="industry.enterprise_name"
@@ -433,7 +433,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("user", ["token"])
+    ...mapGetters("user", ["enPriseId", "token"])
   },
   watch: {
     enterprise_id(val) {

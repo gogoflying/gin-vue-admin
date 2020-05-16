@@ -126,6 +126,18 @@ func GetJoblistListBackend(c *gin.Context) {
 	if exist {
 		enpInfo := ei.(*userJobs.EnterpriseInfo)
 		enPriseID = int(enpInfo.ID)
+	} else {
+		if c.Query("id") != "" {
+			id, _ := strconv.Atoi(c.Query("id"))
+			if id != 0 {
+				err, _ := new(userJobs.EnterpriseInfo).GeteEpById(id)
+				if err != nil {
+					servers.ReportFormat(c, false, fmt.Sprintf("获取企业信息失败，%v", err), gin.H{})
+					return
+				}
+				enPriseID = id
+			}
+		}
 	}
 	sp.Joblist.CompanyId = enPriseID
 	err, list, total := sp.Joblist.GetInfoList(sp.PageInfo)
@@ -188,12 +200,11 @@ type ReqJoblist struct {
 }
 
 func GetJoblistOptions(c *gin.Context) {
-	err, rep, jbwe, js, jwt, el, citys := new(userJobs.Joblist).GetAllInfoOption()
+	err, jbwe, js, jwt, el, citys := new(userJobs.Joblist).GetAllInfoOption()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "查询成功", gin.H{
-			"rep":      rep,
 			"jbwe":     jbwe,
 			"js":       js,
 			"jwt":      jwt,

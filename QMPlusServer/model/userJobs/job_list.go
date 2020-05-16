@@ -215,36 +215,31 @@ func (jl *Joblist) GetInfoListSearchSimilar(ids []int, name string, eduJyId, edu
 	return err, reJoblistList
 }
 
-func (jl *Joblist) GetAllInfoOption() (err error, list1, list2, list3, list4, list5, list6 interface{}) {
-	var enp []EnterpriseInfo
+func (jl *Joblist) GetAllInfoOption() (err error, list1, list2, list3, list4, list5 interface{}) {
 	var jbe []JobWorkExpire
 	var js []JobSalary
 	var jwt []JobWorkType
 	var el []EduLevel
 	var citys []userCity.Cityname
-	err = qmsql.DEFAULTDB.Select("id,enterprise_name").Find(&enp).Error
-	if err != nil {
-		return err, enp, jbe, js, jwt, el, citys
-	}
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&jbe).Error
 	if err != nil {
-		return err, enp, jbe, js, jwt, el, citys
+		return err, jbe, js, jwt, el, citys
 	}
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&js).Error
 	if err != nil {
-		return err, enp, jbe, js, jwt, el, citys
+		return err, jbe, js, jwt, el, citys
 	}
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&citys).Error
 	if err != nil {
-		return err, enp, jbe, js, jwt, el, citys
+		return err, jbe, js, jwt, el, citys
 	}
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&jwt).Error
 	if err != nil {
-		return err, enp, jbe, js, jwt, el, citys
+		return err, jbe, js, jwt, el, citys
 	}
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&el).Error
 	if err != nil {
-		return err, enp, jbe, js, jwt, el, citys
+		return err, jbe, js, jwt, el, citys
 	}
-	return err, enp, jbe, js, jwt, el, citys
+	return err, jbe, js, jwt, el, citys
 }

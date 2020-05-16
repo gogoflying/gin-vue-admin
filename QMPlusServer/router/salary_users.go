@@ -11,11 +11,11 @@ import (
 func InitSalaryUsersRouter(Router *gin.RouterGroup) {
 	SalaryUsersRouter := Router.Group("un") //.Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())
 	{
-		SalaryUsersRouter.POST("createSalaryUsers", middleware.EnterpriseHandler(), api.CreateSalaryUsers)   // 新建SalaryUsers
-		SalaryUsersRouter.POST("deleteSalaryUsers", api.DeleteSalaryUsers)                                   //删除SalaryUsers
-		SalaryUsersRouter.POST("updateSalaryUsers", api.UpdateSalaryUsers)                                   //更新SalaryUsers
-		SalaryUsersRouter.POST("findSalaryUsers", api.FindSalaryUsers)                                       // 根据ID获取SalaryUsers
-		SalaryUsersRouter.POST("getSalaryUsersList", middleware.EnterpriseHandler(), api.GetSalaryUsersList) //获取SalaryUsers列表
+		SalaryUsersRouter.POST("createSalaryUsers", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.CreateSalaryUsers)   // 新建SalaryUsers
+		SalaryUsersRouter.POST("deleteSalaryUsers", api.DeleteSalaryUsers)                                                         //删除SalaryUsers
+		SalaryUsersRouter.POST("updateSalaryUsers", api.UpdateSalaryUsers)                                                         //更新SalaryUsers
+		SalaryUsersRouter.POST("findSalaryUsers", api.FindSalaryUsers)                                                             // 根据ID获取SalaryUsers
+		SalaryUsersRouter.POST("getSalaryUsersList", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.GetSalaryUsersList) //获取SalaryUsers列表
 		SalaryUsersRouter.POST("findSalaryUsersByOpenid", api.FindSalaryUsersByOpenid)
 		SalaryUsersRouter.POST("importsalaryuser", api.ImportSalaryUsers)
 		SalaryUsersRouter.POST("updateSalaryUsersLeaveStep", api.UpdateSalaryUsersLeaveStep)

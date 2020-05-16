@@ -162,6 +162,7 @@ import {
   findJoblist,
   getjoblistOptions
 } from "@/api/jobmanagerinfo";
+import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
 import { mapGetters } from "vuex";
 export default {
   name: "NewJobInfo",
@@ -495,24 +496,29 @@ export default {
       });
     }
     if (this.enPriseId == 0) {
-      getjoblistOptions().then(res => {
+      getEnterpriseAllInfo().then(res => {
         if (res.success) {
-          this.enterpriseInfo = res.data.rep;
-          this.jobyears = res.data.jbwe;
-          this.jobsalary = res.data.js;
-          this.jobtypes = res.data.jwt;
-          this.jobedus = res.data.el;
-          this.cityinfo = res.data.cityinfo;
+          this.enterpriseInfo = res.data.result;
         } else {
           this.enterpriseInfo = [];
-          this.jobyears = [];
-          this.jobsalary = [];
-          this.jobtypes = [];
-          this.jobedus = [];
-          this.cityinfo = [];
         }
       });
     }
+    getjoblistOptions().then(res => {
+      if (res.success) {
+        this.jobyears = res.data.jbwe;
+        this.jobsalary = res.data.js;
+        this.jobtypes = res.data.jwt;
+        this.jobedus = res.data.el;
+        this.cityinfo = res.data.cityinfo;
+      } else {
+        this.jobyears = [];
+        this.jobsalary = [];
+        this.jobtypes = [];
+        this.jobedus = [];
+        this.cityinfo = [];
+      }
+    });
   }
 };
 </script>

@@ -70,6 +70,10 @@ func (rs *ResumeStatus) GetInfoList(info modelInterface.PageInfo) (err error, li
 	} else {
 		var reResumeStatusList []ResumeStatus
 		model := qmsql.DEFAULTDB.Model(info)
+		if rs.CompanyId != 0 {
+			model = model.Where("company_id = ?", rs.CompanyId)
+			db = db.Where("company_id = ?", rs.CompanyId)
+		}
 		if rs.Jobname != "" {
 			model = model.Where("job_name = ?", rs.Jobname)
 			db = db.Where("job_name = ?", rs.Jobname)

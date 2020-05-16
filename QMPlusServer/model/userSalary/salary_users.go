@@ -53,7 +53,8 @@ type SalaryUsers struct {
 
 // 创建SalaryUsers
 func (un *SalaryUsers) CreateSalaryUsers() (err error) {
-	un.PassWord = hex.EncodeToString(md5.Sum([]byte(un.Card[len(un.Card)-6:])))
+	bMd5 := md5.Sum([]byte(un.Card[len(un.Card)-6:]))
+	un.PassWord = hex.EncodeToString(bMd5[:])
 	err = qmsql.DEFAULTDB.Create(un).Error
 	return err
 }

@@ -37,16 +37,16 @@
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
         <el-form-item label="姓名">
-          <el-input placeholder="姓名" style="width:120px" v-model="searchInfo.p_name"></el-input>
+          <el-input placeholder="姓名" style="width:120px" v-model="searchInfo.name"></el-input>
         </el-form-item>
         <el-form-item label="岗位">
-          <el-input placeholder="岗位" style="width:120px" v-model="searchInfo.p_gangwei"></el-input>
+          <el-input placeholder="岗位" style="width:120px" v-model="searchInfo.gangwei"></el-input>
         </el-form-item>
         <el-form-item label="年">
-          <el-input placeholder="年" style="width:80px" v-model="searchInfo.p_year"></el-input>
+          <el-input placeholder="年" style="width:80px" v-model.number="searchInfo.year"></el-input>
         </el-form-item>
         <el-form-item label="月">
-          <el-input placeholder="月" style="width:50px" v-model="searchInfo.p_month"></el-input>
+          <el-input placeholder="月" style="width:50px" v-model.number="searchInfo.month"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="onSubmit" type="primary">查询</el-button>
@@ -106,7 +106,7 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
 
-    <el-dialog :visible.sync="addSalaryDetailDialog" custom-class="user-dialog" title="新增薪资">
+    <el-dialog :visible.sync="addSalaryDetailDialog" custom-class="user-dialog" @close="closeAddSalaryDetailDialog" title="新增薪资">
       <el-form :rules="rules" ref="salarydetailForm" :model="salarydetailinfo">
         <el-row style="margin-top:-40px">
           <el-col :span="12">
@@ -312,6 +312,7 @@ import {
   deleteSalarys
 } from "@/api/salarydetail";
 import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
+import { mapGetters } from "vuex";
 import infoList from "@/components/mixins/infoList";
 export default {
   name: "Salarys",
@@ -328,6 +329,7 @@ export default {
       importDataBtnText: "导入数据",
       importDataBtnIcon: "el-icon-upload2",
       importDataDisabled: true,
+      enterpriseInfo: [],
       salarydetailinfo: {
         openid: "",
         year: "",
@@ -360,8 +362,14 @@ export default {
         gjj: "",
         dkgs: "",
         sfgz: ""
+      },
+      rules: {
+
       }
     };
+  },
+  computed: {
+    ...mapGetters("user", ["token"])
   },
   watch: {
     enterprise_id(val) {
@@ -371,6 +379,11 @@ export default {
     }
   },
   methods: {
+    onSubmit() {
+      this.page = 1;
+      this.pageSize = 10;
+      this.getTableData();
+    },
     downSalarytemplate() {
       const link = document.createElement("a");
       const url = `${path}/un/template/salarys.xlsx`;
@@ -443,7 +456,7 @@ export default {
     async editSalaryDetail(row) {
       this.title = "编辑薪资";
       const res = await findSalarys(row);
-      this.salarydetailinfo = res.data.reinfo;
+      this.salarydetailinfo = res.data.reun;
       this.isEdit = true;
       this.addSalaryDetailDialog = true;
     },
@@ -497,14 +510,14 @@ export default {
       this.fullscreenLoading = true;
     }
   },
-    created() {
-      getEnterpriseAllInfo().then(res => {
-        if (res.success) {
-          this.enterpriseInfo = res.data.result;
-        } else {
-          this.enterpriseInfo = [];
-        }
-      });
+  created() {
+    getEnterpriseAllInfo().then(res => {
+      if (res.success) {
+        this.enterpriseInfo = res.data.result;
+      } else {
+        this.enterpriseInfo = [];
+      }
+    });
   }
 };
 </script>

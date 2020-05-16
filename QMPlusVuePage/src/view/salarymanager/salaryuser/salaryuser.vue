@@ -202,7 +202,7 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
 
-    <el-dialog :visible.sync="addSalaryUserDialog" custom-class="user-dialog" title="新增员工">
+    <el-dialog :visible.sync="addSalaryUserDialog" custom-class="user-dialog" @close="closeAddSalaryUserDialog" title="新增员工">
       <el-form :rules="rules" ref="salaryuserForm" :model="salaryuserinfo">
         <el-form-item label="姓名" label-width="80px" prop="name">
           <el-input v-model="salaryuserinfo.name"></el-input>

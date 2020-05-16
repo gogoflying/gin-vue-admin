@@ -180,9 +180,6 @@ func WordFilterHandler() gin.HandlerFunc {
 			}
 			//
 			_, err = CheckWordsIllegal(bodyCopy.String())
-			fmt.Printf("=====start=====\n")
-			fmt.Printf(bodyCopy.String())
-			fmt.Printf("======end====\n")
 			if err == nil {
 				c.Next()
 			} else {

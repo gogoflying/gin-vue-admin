@@ -135,7 +135,11 @@ func SalaryUserUpdatePassword(c *gin.Context) {
 	var un userSalary.SalaryUsers
 	var err error
 	_ = c.ShouldBindJSON(&un)
+	bMd5 := md5.Sum([]byte(un.PassWord))
+	un.PassWord = hex.EncodeToString(bMd5[:])
 	if len(un.NewPassWord) >= 6 {
+		bMd51 := md5.Sum([]byte(un.NewPassWord))
+		un.NewPassWord = hex.EncodeToString(bMd51[:])
 		err = un.UpdatePassword()
 	} else {
 		err = fmt.Errorf("新密码长度小于6位")
@@ -151,6 +155,8 @@ func SalaryUserUpdatePassword(c *gin.Context) {
 func SalaryUserLoginMobile(c *gin.Context) {
 	var un userSalary.SalaryUsers
 	_ = c.ShouldBindJSON(&un)
+	bMd5 := md5.Sum([]byte(un.PassWord))
+	un.PassWord = hex.EncodeToString(bMd5[:])
 	err, reun := un.LoginMobile()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})

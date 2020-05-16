@@ -2,12 +2,16 @@
 package userSalary
 
 import (
+	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
 	"strings"
 
 	"github.com/jinzhu/gorm"
+	uuid "github.com/satori/go.uuid"
 )
 
 type SalaryUsers struct {
@@ -51,6 +55,9 @@ type SalaryUsers struct {
 
 // 创建SalaryUsers
 func (un *SalaryUsers) CreateSalaryUsers() (err error) {
+	bMd5 := md5.Sum([]byte(un.Card[len(un.Card)-6:]))
+	un.PassWord = hex.EncodeToString(bMd5[:])
+	un.Openid = NewOpenID()
 	err = qmsql.DEFAULTDB.Create(un).Error
 	return err
 }
@@ -171,4 +178,14 @@ func (un *SalaryUsers) GetInfoList(info modelInterface.PageInfo) (err error, lis
 		}
 		return err, reSalaryUsersList, total
 	}
+}
+
+func NewOpenID() string {
+	buf := bytes.Buffer{}
+	u := uuid.NewV4()
+
+	buf.Write(u.Bytes())
+
+	dst := md5.Sum(buf.Bytes())
+	return hex.EncodeToString(dst[:])
 }

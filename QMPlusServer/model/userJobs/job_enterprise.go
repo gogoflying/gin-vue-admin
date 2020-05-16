@@ -32,6 +32,7 @@ type EnterpriseInfo struct {
 	EnterpriseDesc       string    `json:"enterprise_desc" gorm:"column:enterprise_desc;comment:'企业描述信息'"`
 	EnterpriseCityId     int       `json:"city_id" gorm:"column:city_id;comment:'城市id，关联citynames'"`
 	JobCount             int       `json:"job_count" gorm:"column:job_count;comment:'该企业发布的职位数量'"`
+	Status               int       `json:"status" gorm:"column:status;comment:'0、未审核1、审核通过'"`
 	Results              []Joblist `json:"result" gorm:"-"`
 }
 
@@ -109,7 +110,7 @@ func (info *EnterpriseInfo) FindById() (err error, reinfo EnterpriseInfo) {
 }
 
 func (info *EnterpriseInfo) GeteEpById(id int) (err error, reinfo EnterpriseInfo) {
-	err = qmsql.DEFAULTDB.Where("id = ?", id).First(&reinfo).Error
+	err = qmsql.DEFAULTDB.Where("id = ? and status = 1", id).First(&reinfo).Error
 	return
 }
 
@@ -172,7 +173,7 @@ func (info *EnterpriseInfo) GetInfoListSearch(keyword string, cityId, page, page
 
 func (info *EnterpriseInfo) GetAllInfoList() (err error, list interface{}) {
 	var reEnterpriseInfoList []EnterpriseInfo
-	err = qmsql.DEFAULTDB.Select("id,enterprise_name,enterprise_img").Find(&reEnterpriseInfoList).Error
+	err = qmsql.DEFAULTDB.Select("id,enterprise_name,enterprise_img").Where("status = 1").Find(&reEnterpriseInfoList).Error
 	return err, reEnterpriseInfoList
 }
 

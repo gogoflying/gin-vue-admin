@@ -1,122 +1,110 @@
 <template>
   <div>
-    <el-form :rules="rules" :model="authform" label-width="80px" ref="authEnform">
-      <el-row>
-        <el-col :span="3">
-          <label for>企业名称</label>
-        </el-col>
-        <el-col :span="10">
-          <el-input v-model="authform.enterprise_name"></el-input>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3">
-          <label for>注册地址</label>
-        </el-col>
-        <el-col :span="10">
-          <el-input v-model="authform.enterprise_address"></el-input>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3">
-          <label for>企业规模</label>
-        </el-col>
-        <el-col :span="10">
-          <el-input v-model.number="authform.enterprise_scale"></el-input>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3">
-          <label for>企业类型</label>
-        </el-col>
-        <el-col :span="10">
-          <el-input v-model.number="authform.enterprise_type"></el-input>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3">
-          <label for>企业热度</label>
-        </el-col>
-        <el-col :span="10">
-          <el-input v-model.number="authform.enterprise_hot"></el-input>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3">
-          <label for>企业性质</label>
-        </el-col>
-        <el-col :span="10">
-          <el-select placeholder="请选择企业性质" v-model="authform.industry_type">
-            <el-option
-              :key="industry.name"
-              :label="industry.name"
-              :value="industry.id"
-              v-for="industry in industrytype"
-            ></el-option>
-          </el-select>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3">
-          <label for>企业描述</label>
-        </el-col>
-        <el-col :span="10">
-          <el-input v-model="authform.enterprise_desc"></el-input>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3">
-          <label for>所在城市</label>
-        </el-col>
-        <el-col :span="10">
-          <el-select placeholder="请选择注册城市" v-model="authform.city_id">
-            <el-option
-              :key="city.name"
-              :label="city.name"
-              :value="city.id"
-              v-for="city in cityinfo"
-            ></el-option>
-          </el-select>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3">
-          <label for>企业logo</label>
-        </el-col>
-        <el-col :span="10">
-          <el-upload
-            :headers="{'x-token':token}"
-            :on-success="handleAvatarLogoSuccess"
-            :show-file-list="false"
-            :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
-            class="avatar-uploader"
-            name="file"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img :src="authform.enterprise_logo" class="avatar" v-if="authform.enterprise_logo" />
-            <i class="el-icon-plus avatar-uploader-icon" v-else></i>
-          </el-upload>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3">
-          <label for>企业资质</label>
-        </el-col>
-        <el-col :span="10">
-          <el-upload
-            :headers="{'x-token':token}"
-            :on-success="handleAvatarImgSuccess"
-            :show-file-list="false"
-            :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
-            class="avatar-uploader"
-            name="file"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img :src="authform.enterprise_img" class="avatar" v-if="authform.enterprise_img" />
-            <i class="el-icon-plus avatar-uploader-icon" v-else></i>
-          </el-upload>
-        </el-col>
-      </el-row>
+    <el-form :rules="rules" ref="authEnform" :model="authform" label-width="80px">
+      <el-form-item label="企业名称" label-width="80px" prop="enterprise_name">
+        <el-input v-model="authform.enterprise_name" style="width:50%;"></el-input>
+      </el-form-item>
+      <el-form-item label="企业规模" label-width="80px" prop="enterprise_scale">
+        <el-input v-model.number="authform.enterprise_scale" style="width:50%;"></el-input>
+      </el-form-item>
+      <el-form-item label="企业性质" label-width="80px" prop="enterprise_type">
+        <el-select
+          @change="selectEnpType"
+          placeholder="请选择企业性质"
+          v-model="authform.enterprise_type"
+        >
+          <el-option
+            :key="enptype.name"
+            :label="enptype.name"
+            :value="enptype.ID"
+            v-for="enptype in enterprisetype"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="行业类别" label-width="80px" prop="industry_type">
+        <el-select
+          @change="selectEnpIndust"
+          placeholder="请选择行业类别"
+          v-model="authform.industry_type"
+        >
+          <el-option
+            :key="industry.name"
+            :label="industry.name"
+            :value="industry.ID"
+            v-for="industry in industrytype"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="企业热度" label-width="80px" prop="enterprise_hot">
+        <el-input v-model.number="authform.enterprise_hot" style="width:50%;"></el-input>
+      </el-form-item>
+      <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
+        <quill-editor
+          class="ql-editor"
+          ref="myQuillEditor"
+          v-model="authform.enterprise_desc"
+        ></quill-editor>
+      </el-form-item>
+      <el-form-item label="所在城市" label-width="80px" prop="city_id">
+        <el-select @change="selectCityName" placeholder="请选择注册城市" v-model="authform.city_id">
+          <el-option :key="city.name" :label="city.name" :value="city.ID" v-for="city in cityinfo"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="企业logo" label-width="80px" prop="enterprise_logo">
+        <el-upload
+          :headers="{'x-token':token}"
+          :on-success="handleAvatarLogoSuccess"
+          :show-file-list="false"
+          :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
+          class="avatar-uploader"
+          name="file"
+          :before-upload="beforeAvatarUpload"
+        >
+          <img
+            :src="authform.enterprise_logo"
+            class="avatar"
+            v-if="authform.enterprise_logo"
+          />
+          <i class="el-icon-plus avatar-uploader-icon" v-else></i>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="企业主图" label-width="80px" prop="enterprise_img">
+        <el-upload
+          :headers="{'x-token':token}"
+          :on-success="handleAvatarImgSuccess"
+          :show-file-list="false"
+          :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
+          class="avatar-uploader"
+          name="file"
+          :before-upload="beforeAvatarUpload"
+        >
+          <img
+            :src="authform.enterprise_img"
+            class="avatar"
+            v-if="authform.enterprise_img"
+          />
+          <i class="el-icon-plus avatar-uploader-icon" v-else></i>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="企业资质" label-width="80px" prop="enterprise_qfc">
+        <el-upload
+          :headers="{'x-token':token}"
+          :on-success="handleAvatarQfcSuccess"
+          :show-file-list="false"
+          :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
+          class="avatar-uploader"
+          name="file"
+          :before-upload="beforeAvatarUpload"
+        >
+          <img
+            :src="authform.enterprise_qfc"
+            class="avatar"
+            v-if="authform.enterprise_qfc"
+          />
+          <i class="el-icon-plus avatar-uploader-icon" v-else></i>
+        </el-upload>
+      </el-form-item>
       <el-row type="flex" justify="center">
         <el-col :span="16">
           <el-button @click="onSubmit" type="primary">立即认证</el-button>
@@ -149,7 +137,8 @@ export default {
         enterprise_desc: "",
         city_id: null,
         enterprise_logo: "",
-        enterprise_img: ""
+        enterprise_img: "",
+        enterprise_qfc: ""
       },
       rules: {
         enterprise_name: [
@@ -226,7 +215,7 @@ export default {
     filterMethod(query, item) {
       return item.pinyin.indexOf(query) > -1;
     },
-    onSubmit() {
+    async onSubmit() {
       this.$refs.authEnform.validate(async valid => {
         if (valid) {
           let res;
@@ -240,8 +229,6 @@ export default {
           } else {
             this.$message({ type: "error", message: "添加失败!" });
           }
-          await this.getTableData();
-          this.closeAddCompanyDialog();
         }
       });
     },
@@ -250,6 +237,9 @@ export default {
     },
     handleAvatarImgSuccess(res) {
       this.authform.enterprise_img = res.data.file.url;
+    },
+    handleAvatarQfcSuccess(res) {
+      this.authform.enterprise_qfc = res.data.file.url;
     },
     beforeAvatarUpload(file) {
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
@@ -312,5 +302,15 @@ export default {
   width: 178px;
   height: 178px;
   display: block;
+}
+.ql-container {
+  height: 200px;
+}
+.ql-editor strong {
+  font-style: normal ;
+  font-weight: bold;
+}
+.ql-editor em {
+  font-style: italic;
 }
 </style>

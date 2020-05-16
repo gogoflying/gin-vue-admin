@@ -119,7 +119,22 @@ func (un *SalaryUsers) GetInfoList(info modelInterface.PageInfo) (err error, lis
 		return
 	} else {
 		reSalaryUsersList := make([]*SalaryUsers, 0)
-		err = db.Find(&reSalaryUsersList).Error
+		model := qmsql.DEFAULTDB.Model(info)
+		if un.EnterpriseId != 0 {
+			model = model.Where("enterprise_id = ?", un.EnterpriseId)
+			db = db.Where("enterprise_id = ?", un.EnterpriseId)
+		}
+		if un.Name != "" {
+			model = model.Where("name = ?", un.Name)
+			db = db.Where("name = ?", un.Name)
+		}
+
+		err = model.Find(&reSalaryUsersList).Count(&total).Error
+		if err != nil {
+			return err, reSalaryUsersList, total
+		} else {
+			err = db.Find(&reSalaryUsersList).Error
+		}
 		if err == nil {
 			for _, reun := range reSalaryUsersList {
 				if len(reun.CardPhotos) > 0 {

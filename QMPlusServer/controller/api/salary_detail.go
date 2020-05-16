@@ -2,6 +2,8 @@ package api
 
 import (
 	"fmt"
+	"gin-vue-admin/model/userJobs"
+
 	//"bytes"
 	//"io"
 	"io/ioutil"
@@ -31,6 +33,12 @@ import (
 func CreateSalarys(c *gin.Context) {
 	var un userSalary.Salarys
 	_ = c.ShouldBindJSON(&un)
+	ei, exist := c.Get("enpInfo")
+	if exist {
+		enpInfo := ei.(*userJobs.EnterpriseInfo)
+		un.Enterprise = enpInfo.EnterPriseName
+		un.EnterpriseId = int(enpInfo.ID)
+	}
 	err := un.CreateSalarys()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
@@ -124,6 +132,29 @@ func FindSalarysByIdAndOpenid(c *gin.Context) {
 func GetSalarysList(c *gin.Context) {
 	var pageInfo modelInterface.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
+
+	type searchParams struct {
+		userSalary.Salarys
+		modelInterface.PageInfo
+	}
+	var sp searchParams
+	_ = c.ShouldBindJSON(&sp)
+	var enPriseID int
+	ei, exist := c.Get("enpInfo")
+	if exist {
+		enpInfo := ei.(*userJobs.EnterpriseInfo)
+		enPriseID = int(enpInfo.ID)
+	} else {
+		id, _ := strconv.Atoi(c.Query("id"))
+		err, _ := new(userJobs.EnterpriseInfo).GeteEpById(id)
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
+			return
+		}
+		enPriseID = id
+	}
+	sp.Salarys.EnterpriseId = enPriseID
+
 	err, list, total := new(userSalary.Salarys).GetInfoList(pageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
@@ -163,13 +194,30 @@ func GetSalarysListSearch(c *gin.Context) {
 }
 
 func ImportSalarys(c *gin.Context) {
-
+	var (
+		id     int
+		epName string
+	)
+	ei, exist := c.Get("enpInfo")
+	if exist {
+		enpInfo := ei.(*userJobs.EnterpriseInfo)
+		epName = enpInfo.EnterPriseName
+		id = int(enpInfo.ID)
+	} else {
+		id, _ := strconv.Atoi(c.Query("id"))
+		err, ep := new(userJobs.EnterpriseInfo).GeteEpById(id)
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
+			return
+		}
+		epName = ep.EnterPriseName
+	}
 	_, fxlsx, err := c.Request.FormFile("file")
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
 	} else {
 		//文件上传后拿到文件路径
-		err := UploadFileLocalEx(fxlsx)
+		err := UploadFileLocalEx(fxlsx, id, epName)
 		if err != nil {
 			servers.ReportFormat(c, false, fmt.Sprintf("接收返回值失败，%v", err), gin.H{})
 		} else {
@@ -179,7 +227,7 @@ func ImportSalarys(c *gin.Context) {
 }
 
 // 上传文件到本地
-func UploadFileLocalEx(file *multipart.FileHeader) (err error) {
+func UploadFileLocalEx(file *multipart.FileHeader, id int, ep string) (err error) {
 	f, err := file.Open()
 	if err != nil {
 		return err

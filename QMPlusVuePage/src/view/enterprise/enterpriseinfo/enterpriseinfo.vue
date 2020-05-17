@@ -27,8 +27,8 @@
       </el-table-column>
       <!-- <el-table-column label="id" min-width="60" prop="ID"></el-table-column> -->
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name"></el-table-column>
-      <el-table-column label="企业类型" min-width="100" prop="enterprise_type_info"></el-table-column>
-      <el-table-column label="企业性质" min-width="100" prop="enterprise_indust_info"></el-table-column>
+      <el-table-column label="企业性质" min-width="100" prop="enterprise_type_info"></el-table-column>
+      <el-table-column label="行业类别" min-width="100" prop="enterprise_indust_info"></el-table-column>
       <el-table-column label="所在城市" min-width="100" prop="enterprise_address"></el-table-column>
       <el-table-column label="企业规模" min-width="100" prop="enterprise_scale"></el-table-column>
       <el-table-column label="职位数量" min-width="80" prop="job_count"></el-table-column>
@@ -250,9 +250,6 @@ export default {
         ],
         enterprise_type: [
           { required: true, message: "请输入企业性质", trigger: "blur" }
-        ],
-        enterprise_hot: [
-          { required: true, message: "请输入企业热度", trigger: "blur" }
         ],
         industry_type: [
           { required: true, message: "请输入行业类别", trigger: "blur" }

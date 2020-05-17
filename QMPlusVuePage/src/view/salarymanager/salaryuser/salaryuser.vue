@@ -46,6 +46,22 @@
         </el-col>
       </el-row>
     </div>
+    <div class="search-term">
+      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item label="姓名">
+          <el-input placeholder="姓名" style="width:120px" v-model="searchInfo.name"></el-input>
+        </el-form-item>
+        <el-form-item label="身份证">
+          <el-input placeholder="身份证" style="width:200px" v-model="searchInfo.card"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input placeholder="手机号" style="width:150px" v-model="searchInfo.mobile"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="onSubmit" type="primary">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <el-table :data="tableData" border stripe>
       <el-table-column type="expand">
         <template slot-scope="scope">
@@ -228,7 +244,8 @@
           <el-input v-model.number="salaryuserinfo.salary" style="width:80%"></el-input>
         </el-form-item>
         <el-form-item label="合同期限" label-width="80px" prop="contract_date">
-          <el-input v-model.number="salaryuserinfo.contract_date" style="width:70%"></el-input><span>月</span>
+          <el-input v-model.number="salaryuserinfo.contract_date" style="width:70%"></el-input>
+          <span>月</span>
         </el-form-item>
         <el-form-item v-show="enPriseId == 0" label="入职企业" label-width="80px" prop="enterprise_id">
           <el-select @change="selectEp" placeholder="请选择企业" v-model="salaryuserinfo.enterprise_id">
@@ -418,7 +435,7 @@ export default {
           id: 1,
           name: "离职申请"
         },
-         {
+        {
           id: 2,
           name: "已审批"
         },
@@ -442,6 +459,11 @@ export default {
     "salaryuserinfo.leave_step": "changeData"
   },
   methods: {
+    onSubmit() {
+      this.page = 1;
+      this.pageSize = 10;
+      this.getTableData();
+    },
     selectEp(val) {
       var selectedItem = {};
       selectedItem = this.enterpriseInfo.find(item => {

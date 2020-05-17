@@ -39,11 +39,13 @@ func CreateSalarys(c *gin.Context) {
 		un.Enterprise = enpInfo.EnterPriseName
 		un.EnterpriseId = int(enpInfo.ID)
 	}
+	fmt.Printf("checkSalarysUserInTable %v\n", un)
 	openid, err := checkSalarysUserInTable(un.Name, un.Enterprise, un.EnterpriseId)
 	if len(openid) == 0 {
-		fmt.Errorf("batchInsertSalarys user:%s not in table salaryUser", un.Name)
+		fmt.Errorf("checkSalarysUserInTable user:%s not in table salaryUser", un.Name)
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 	}
+	fmt.Printf("checkSalarysUserInTable openid:%s\n", openid)
 	un.Openid = openid
 
 	err = un.CreateSalarys()
@@ -207,6 +209,7 @@ func ImportSalarys(c *gin.Context) {
 		id     int
 		epName string
 	)
+
 	ei, exist := c.Get("enpInfo")
 	if exist {
 		enpInfo := ei.(*userJobs.EnterpriseInfo)
@@ -221,6 +224,7 @@ func ImportSalarys(c *gin.Context) {
 		}
 		epName = ep.EnterPriseName
 	}
+	fmt.Printf("ImportSalarys enter: %v--%v\n", id, epName)
 	_, fxlsx, err := c.Request.FormFile("file")
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
@@ -268,6 +272,7 @@ func UploadFileLocalEx(file *multipart.FileHeader, id int, ep string) (err error
 }
 
 func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
+	fmt.Printf("batchInsertSalarys: %v--%v\n", id, ep)
 	var un userSalary.Salarys
 	var err error
 	tx := un.GetDbTx().Begin()

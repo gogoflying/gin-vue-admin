@@ -397,9 +397,6 @@ export default {
             trigger: "blur"
           }
         ],
-        enterprise_id: [
-          { required: true, message: "请输入企业", trigger: "blur" }
-        ],
         enter_time: [
           { required: true, message: "请输入入职日期", trigger: "blur" }
         ]

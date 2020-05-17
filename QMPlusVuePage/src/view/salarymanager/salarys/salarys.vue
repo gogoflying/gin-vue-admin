@@ -115,6 +115,27 @@
     >
       <el-form :rules="rules" ref="salarydetailForm" :model="salarydetailinfo">
         <el-row style="margin-top:-40px">
+          <el-col>
+            <el-form-item
+              v-show="enPriseId == 0"
+              label="所属企业"
+              label-width="80px"
+              prop="enterprise_id"
+            >
+              <el-select
+                @change="selectEp"
+                placeholder="请选择企业"
+                v-model="salarydetailinfo.enterprise_id"
+              >
+                <el-option
+                  :key="industry.enterprise_name"
+                  :label="industry.enterprise_name"
+                  :value="industry.ID"
+                  v-for="industry in enterpriseInfo"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
             <el-form-item label="姓名" label-width="80px" prop="name">
               <el-input style="width:200px" v-model="salarydetailinfo.name"></el-input>
@@ -342,6 +363,8 @@ export default {
         month: "",
         base: "",
         gangwei: "",
+        enterprise: "",
+        enterprise_id: "",
         xzhj: "",
         yjtc: "",
         jjjs: "",
@@ -373,7 +396,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("user", ["enPriseId","token"])
+    ...mapGetters("user", ["enPriseId", "token"])
   },
   watch: {
     enterprise_id(val) {
@@ -387,6 +410,13 @@ export default {
       this.page = 1;
       this.pageSize = 10;
       this.getTableData();
+    },
+    selectEp(val) {
+      var selectedItem = {};
+      selectedItem = this.enterpriseInfo.find(item => {
+        return item.ID === val;
+      });
+      this.salarydetailinfo.enterprise = selectedItem.enterprise_name;
     },
     downSalarytemplate() {
       const link = document.createElement("a");
@@ -421,6 +451,8 @@ export default {
         month: "",
         base: "",
         gangwei: "",
+        enterprise: "",
+        enterprise_id: "",
         xzhj: "",
         yjtc: "",
         jjjs: "",

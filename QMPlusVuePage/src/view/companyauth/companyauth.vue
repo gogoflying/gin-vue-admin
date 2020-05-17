@@ -28,9 +28,6 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="企业热度" label-width="80px" prop="enterprise_hot">
-        <el-input v-model.number="authform.enterprise_hot" style="width:50%;"></el-input>
-      </el-form-item>
       <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
         <quill-editor class="ql-editor" ref="myQuillEditor" v-model="authform.enterprise_desc"></quill-editor>
       </el-form-item>
@@ -109,7 +106,6 @@ export default {
         enterprise_address: "",
         enterprise_scale: null,
         enterprise_type: null,
-        enterprise_hot: null,
         industry_type: null,
         enterprise_desc: "",
         city_id: null,
@@ -133,9 +129,6 @@ export default {
         ],
         enterprise_type: [
           { required: true, message: "请输入企业类型", trigger: "blur" }
-        ],
-        enterprise_hot: [
-          { required: true, message: "请输入企业热度", trigger: "blur" }
         ],
         industry_type: [
           { required: true, message: "请输入企业性质", trigger: "blur" }

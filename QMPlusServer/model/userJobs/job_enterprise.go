@@ -173,7 +173,7 @@ func (info *EnterpriseInfo) GetInfoListSearch(keyword string, cityId, page, page
 
 func (info *EnterpriseInfo) GetAllInfoList() (err error, list interface{}) {
 	var reEnterpriseInfoList []EnterpriseInfo
-	err = qmsql.DEFAULTDB.Select("id,enterprise_name,enterprise_img").Where("status = 1").Find(&reEnterpriseInfoList).Error
+	err = qmsql.DEFAULTDB.Select("id,enterprise_name,enterprise_logo").Where("status = 1").Find(&reEnterpriseInfoList).Error
 	return err, reEnterpriseInfoList
 }
 

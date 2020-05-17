@@ -141,6 +141,14 @@ func (un *SalaryUsers) GetInfoList(info modelInterface.PageInfo) (err error, lis
 			model = model.Where("name = ?", un.Name)
 			db = db.Where("name = ?", un.Name)
 		}
+		if un.Card != "" {
+			model = model.Where("card = ?", un.Card)
+			db = db.Where("card = ?", un.Card)
+		}
+		if un.Mobile != "" {
+			model = model.Where("mobile = ?", un.Mobile)
+			db = db.Where("mobile = ?", un.Mobile)
+		}
 
 		err = model.Find(&reSalaryUsersList).Count(&total).Error
 		if err != nil {

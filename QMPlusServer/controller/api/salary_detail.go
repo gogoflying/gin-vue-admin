@@ -273,10 +273,10 @@ func UploadFileLocalEx(file *multipart.FileHeader, id int, ep string) (err error
 
 func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 	fmt.Printf("batchInsertSalarys: %v--%v\n", id, ep)
-	var un userSalary.Salarys
-	var err error
-	tx := un.GetDbTx().Begin()
-	defer tx.Rollback()
+	//var un userSalary.Salarys
+	//var err error
+	//tx := un.GetDbTx().Begin()
+	//defer tx.Rollback()
 	for _, sheet := range file.Sheets {
 		fmt.Printf("Sheet Name: %s\n", sheet.Name)
 
@@ -326,7 +326,7 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 			sfgz := strings.Trim(row.Cells[31].Value, " ")
 			//salary, _ := strconv.Atoi(strings.Trim(row.Cells[4].Value, " "))
 			//contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " "))
-			un = userSalary.Salarys{
+			un := userSalary.Salarys{
 				Openid:       openid,
 				Enterprise:   ep,
 				EnterpriseId: id,
@@ -361,18 +361,18 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 				Dkgs:         dkgs,
 				Sfgz:         sfgz,
 			}
-			//err = tx.CreateSalarys()
-			err = tx.Create(un).Error
+			err := un.CreateSalarys()
+			//err = tx.Create(un).Error
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
 		}
 	}
-	if err != nil {
+	/*if err != nil {
 		tx.Rollback()
 	}
-	tx.Commit()
+	tx.Commit()*/
 	return nil
 }
 

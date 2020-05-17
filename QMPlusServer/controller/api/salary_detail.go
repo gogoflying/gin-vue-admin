@@ -39,14 +39,14 @@ func CreateSalarys(c *gin.Context) {
 		un.Enterprise = enpInfo.EnterPriseName
 		un.EnterpriseId = int(enpInfo.ID)
 	}
-	openid, _ := checkSalarysUserInTable(un.Name, un.Enterprise, un.EnterpriseId)
+	openid, err := checkSalarysUserInTable(un.Name, un.Enterprise, un.EnterpriseId)
 	if len(openid) == 0 {
-		fmt.Errorf("batchInsertSalarys user:%s not in table salaryUser", name)
-		return fmt.Errorf("user not in table salaryUser")
+		fmt.Errorf("batchInsertSalarys user:%s not in table salaryUser", un.Name)
+		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 	}
 	un.Openid = openid
 
-	err := un.CreateSalarys()
+	err = un.CreateSalarys()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 	} else {
@@ -356,7 +356,8 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 				Dkgs:         dkgs,
 				Sfgz:         sfgz,
 			}
-			err = un.CreateSalarys()
+			//err = tx.CreateSalarys()
+			err = tx.Create(un).Error
 			if err != nil {
 				fmt.Println(err)
 				continue

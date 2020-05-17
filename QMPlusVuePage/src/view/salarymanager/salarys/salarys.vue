@@ -58,6 +58,7 @@
       <el-table-column label="姓名" min-width="100" prop="name"></el-table-column>
       <el-table-column label="年" min-width="60" prop="year"></el-table-column>
       <el-table-column label="月" min-width="40" prop="month"></el-table-column>
+      <el-table-column label="入职企业" min-width="80" prop="enterprise" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="岗位" min-width="100" prop="gangwei"></el-table-column>
       <el-table-column label="新增合计" min-width="80" prop="xzhj"></el-table-column>
       <el-table-column label="业绩提成" min-width="80" prop="yjtc"></el-table-column>
@@ -106,7 +107,12 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
 
-    <el-dialog :visible.sync="addSalaryDetailDialog" custom-class="user-dialog" @close="closeAddSalaryDetailDialog" title="新增薪资">
+    <el-dialog
+      :visible.sync="addSalaryDetailDialog"
+      custom-class="user-dialog"
+      @close="closeAddSalaryDetailDialog"
+      title="新增薪资"
+    >
       <el-form :rules="rules" ref="salarydetailForm" :model="salarydetailinfo">
         <el-row style="margin-top:-40px">
           <el-col :span="12">
@@ -363,13 +369,11 @@ export default {
         dkgs: "",
         sfgz: ""
       },
-      rules: {
-
-      }
+      rules: {}
     };
   },
   computed: {
-    ...mapGetters("user", ["token"])
+    ...mapGetters("user", ["enPriseId","token"])
   },
   watch: {
     enterprise_id(val) {

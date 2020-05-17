@@ -125,7 +125,7 @@
       <el-table-column label="岗位名称" min-width="100" prop="job_name"></el-table-column>
       <el-table-column label="合同期限(月)" min-width="120" prop="contract_date" align="center"></el-table-column>
       <!-- <el-table-column label="邮箱" min-width="100" prop="email"></el-table-column> -->
-      <el-table-column label="入职企业" min-width="100" prop="enterprise"></el-table-column>
+      <el-table-column label="入职企业" min-width="100" prop="enterprise" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="入职进度" min-width="100" prop="enter_step" :formatter="EnstepFormat"></el-table-column>
       <el-table-column label="离职进度" min-width="100" prop="leave_step" :formatter="LestepFormat"></el-table-column>
       <!-- <el-table-column label="工资" min-width="100" prop="salary"></el-table-column>

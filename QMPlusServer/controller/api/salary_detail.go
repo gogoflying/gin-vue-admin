@@ -213,7 +213,7 @@ func ImportSalarys(c *gin.Context) {
 		epName = enpInfo.EnterPriseName
 		id = int(enpInfo.ID)
 	} else {
-		id, _ := strconv.Atoi(c.Query("id"))
+		id, _ = strconv.Atoi(c.Query("id"))
 		err, ep := new(userJobs.EnterpriseInfo).GeteEpById(id)
 		if err != nil {
 			servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})

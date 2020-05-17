@@ -8,11 +8,7 @@
         <el-input v-model.number="authform.enterprise_scale" style="width:50%;"></el-input>
       </el-form-item>
       <el-form-item label="企业性质" label-width="80px" prop="enterprise_type">
-        <el-select
-          @change="selectEnpType"
-          placeholder="请选择企业性质"
-          v-model="authform.enterprise_type"
-        >
+        <el-select @change="selectEnpType" placeholder="请选择企业性质" v-model="authform.enterprise_type">
           <el-option
             :key="enptype.name"
             :label="enptype.name"
@@ -23,11 +19,7 @@
       </el-form-item>
 
       <el-form-item label="行业类别" label-width="80px" prop="industry_type">
-        <el-select
-          @change="selectEnpIndust"
-          placeholder="请选择行业类别"
-          v-model="authform.industry_type"
-        >
+        <el-select @change="selectEnpIndust" placeholder="请选择行业类别" v-model="authform.industry_type">
           <el-option
             :key="industry.name"
             :label="industry.name"
@@ -40,11 +32,7 @@
         <el-input v-model.number="authform.enterprise_hot" style="width:50%;"></el-input>
       </el-form-item>
       <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
-        <quill-editor
-          class="ql-editor"
-          ref="myQuillEditor"
-          v-model="authform.enterprise_desc"
-        ></quill-editor>
+        <quill-editor class="ql-editor" ref="myQuillEditor" v-model="authform.enterprise_desc"></quill-editor>
       </el-form-item>
       <el-form-item label="所在城市" label-width="80px" prop="city_id">
         <el-select @change="selectCityName" placeholder="请选择注册城市" v-model="authform.city_id">
@@ -61,11 +49,7 @@
           name="file"
           :before-upload="beforeAvatarUpload"
         >
-          <img
-            :src="authform.enterprise_logo"
-            class="avatar"
-            v-if="authform.enterprise_logo"
-          />
+          <img :src="authform.enterprise_logo" class="avatar" v-if="authform.enterprise_logo" />
           <i class="el-icon-plus avatar-uploader-icon" v-else></i>
         </el-upload>
       </el-form-item>
@@ -79,11 +63,7 @@
           name="file"
           :before-upload="beforeAvatarUpload"
         >
-          <img
-            :src="authform.enterprise_img"
-            class="avatar"
-            v-if="authform.enterprise_img"
-          />
+          <img :src="authform.enterprise_img" class="avatar" v-if="authform.enterprise_img" />
           <i class="el-icon-plus avatar-uploader-icon" v-else></i>
         </el-upload>
       </el-form-item>
@@ -97,11 +77,7 @@
           name="file"
           :before-upload="beforeAvatarUpload"
         >
-          <img
-            :src="authform.enterprise_qfc"
-            class="avatar"
-            v-if="authform.enterprise_qfc"
-          />
+          <img :src="authform.enterprise_qfc" class="avatar" v-if="authform.enterprise_qfc" />
           <i class="el-icon-plus avatar-uploader-icon" v-else></i>
         </el-upload>
       </el-form-item>
@@ -120,7 +96,8 @@ const path = process.env.VUE_APP_BASE_API;
 import {
   createEnterpriseInfo,
   updateEnterpriseInfo,
-  findEnterpriseInfo
+  findEnterpriseInfo,
+  getEnterpriseOptions
 } from "@/api/enterpriseinfo";
 export default {
   name: "companyauth",
@@ -190,6 +167,7 @@ export default {
           name: "广州"
         }
       ],
+      enterprisetype: [],
       industrytype: [
         {
           id: 1,
@@ -204,7 +182,6 @@ export default {
           name: "个体"
         }
       ],
-      value: [],
       path: path
     };
   },
@@ -264,6 +241,17 @@ export default {
     }
   },
   created() {
+    getEnterpriseOptions().then(res => {
+      if (res.success) {
+        this.enterprisetype = res.data.enterprisetype;
+        this.industrytype = res.data.industrytype;
+        this.cityinfo = res.data.cityinfo;
+      } else {
+        this.enterprisetype = [];
+        this.industrytype = [];
+        this.cityinfo = [];
+      }
+    });
     let row = {
       ID: this.enPriseId
     };
@@ -307,7 +295,7 @@ export default {
   height: 200px;
 }
 .ql-editor strong {
-  font-style: normal ;
+  font-style: normal;
   font-weight: bold;
 }
 .ql-editor em {

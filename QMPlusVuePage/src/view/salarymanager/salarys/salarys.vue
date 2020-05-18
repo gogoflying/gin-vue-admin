@@ -58,7 +58,7 @@
       <el-table-column label="姓名" min-width="100" prop="name"></el-table-column>
       <el-table-column label="年" min-width="60" prop="year"></el-table-column>
       <el-table-column label="月" min-width="40" prop="month"></el-table-column>
-      <el-table-column label="所属企业" min-width="80" prop="enterprise" v-if="enPriseId == 0"></el-table-column>
+      <el-table-column label="所属企业" min-width="120" prop="enterprise" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="基本工资" min-width="100" prop="base"></el-table-column>
       <el-table-column label="岗位工资" min-width="100" prop="gangwei"></el-table-column>
       <el-table-column label="新增合计" min-width="80" prop="xzhj"></el-table-column>

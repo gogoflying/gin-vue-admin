@@ -1,6 +1,6 @@
 <template>
   <div id="ShowBox">
-    <div class="motto">座右铭：你与名企之间的距离就差一份简历。</div>
+    <!-- <div class="motto">座右铭：你与名企之间的距离就差一份简历。</div> -->
     <div id="show">
       <section>
         <h3>基本信息</h3>
@@ -18,7 +18,7 @@
             </ul>
           </div>
           <div class="print">
-            <img src="http://qmplusimg.henrongyi.top/1571627762timg.jpg" height="100" width="100" />
+            <img :src="resume.user_base_info.avatarUrl" height="100" width="100" />
           </div>
         </div>
       </section>

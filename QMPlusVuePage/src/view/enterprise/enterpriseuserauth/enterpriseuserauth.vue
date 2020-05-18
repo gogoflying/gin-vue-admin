@@ -20,6 +20,7 @@
       <!-- <el-table-column label="id" min-width="60" prop="ID"></el-table-column> -->
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name"></el-table-column>
       <el-table-column label="用户名" min-width="80" prop="userName"></el-table-column>
+      <el-table-column label="角色" min-width="80" prop="authorityName"></el-table-column>
       <el-table-column label="审核" min-width="120"  prop="status">
         <template slot-scope="scope">
           <el-switch

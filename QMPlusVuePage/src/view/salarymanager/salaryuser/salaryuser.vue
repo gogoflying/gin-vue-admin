@@ -675,8 +675,20 @@ export default {
       });
     },
     download() {
-      let resume = document.getElementById("ShowBox");
-      html2canvas(resume, { useCORS: true }).then(canvas => {
+      //let resume = document.getElementById("ShowBox");
+      //let c = document.createElement("canvas");
+      let opts = {
+        useCORS: true,
+        // scale: 2,
+        // canvas: c,
+        // logging: true,
+        // width: document.getElementById("ShowBox").clientWidth,
+        // height: document.getElementById("ShowBox").clientHeight
+      };
+      // c.width = document.getElementById("ShowBox").clientWidth * 2;
+      // c.height = document.getElementById("ShowBox").clientHeight * 2;
+      // c.getContext("2d").scale(2, 2);
+      html2canvas(document.querySelector("#ShowBox"), opts).then(canvas => {
         var contentWidth = canvas.width;
         var contentHeight = canvas.height;
         //一页pdf显示html页面生成的canvas高度;

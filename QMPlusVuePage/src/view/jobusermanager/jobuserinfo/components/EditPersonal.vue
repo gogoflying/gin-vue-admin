@@ -70,14 +70,34 @@
           v-model="user_base_info.birthday"
         ></el-date-picker>
       </el-form-item>
+      <el-form-item label="头像" label-width="80px">
+        <el-upload
+          :headers="{'x-token':token}"
+          :on-success="handleAvatarSuccess"
+          :show-file-list="false"
+          :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
+          class="avatar-uploader"
+          name="file"
+          :before-upload="beforeAvatarUpload"
+        >
+          <img :src="user_base_info.avatarUrl" class="avatar" v-if="user_base_info.avatarUrl" />
+          <i class="el-icon-plus avatar-uploader-icon" v-else></i>
+        </el-upload>
+      </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+const path = process.env.VUE_APP_BASE_API;
 import { createUserBaseInfo, updateUserBaseInfo } from "@/api/jobuser";
 export default {
   props: ["user_base_info", "option", "openid"],
+  data() {
+    return {
+      path: path
+    };
+  },
   methods: {
     selectCityName(val) {
       var selectedItem = {};
@@ -114,12 +134,54 @@ export default {
         this.$message({ type: "error", message: "添加失败!" });
       }
       this.$emit("freshResume");
+    },
+    handleAvatarSuccess(res) {
+      this.user_base_info.avatarUrl = res.data.file.url;
+    },
+    beforeAvatarUpload(file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension = testmsg === "jpg";
+      const extension2 = testmsg === "png";
+      const isLt50KB = file.size / 1024 < 50;
+      if (!extension && !extension2) {
+        this.$message({
+          message: "上传文件只能是 jpg、png格式!",
+          type: "warning"
+        });
+        return false;
+      }
+      if (!isLt50KB) {
+        this.$message({
+          message: "上传文件大小不能超过 50KB!",
+          type: "warning"
+        });
+        return false;
+      }
+      return (extension || extension2) && isLt50KB;
     }
   }
 };
 </script>
 
 <style lang="scss">
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  border: 1px dashed #d9d9d9 !important;
+  border-radius: 6px;
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 .el-form-item {
   margin-bottom: 3px;
 }

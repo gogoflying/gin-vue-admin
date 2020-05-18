@@ -110,6 +110,8 @@ func (jl *Joblist) GetInfoList(info modelInterface.PageInfo) (err error, list in
 }
 
 func (jl *Joblist) GetInfoListSearchDetail(keyword string, cityId, order int, industrys, enterpriseTypes, salarys, expires, edus, jobTyps []int, enterpriseScales []Scale, info modelInterface.PageInfo) (err error, list interface{}, total int) {
+	var reJoblistList []Joblist
+
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 
@@ -123,9 +125,9 @@ func (jl *Joblist) GetInfoListSearchDetail(keyword string, cityId, order int, in
 		for _, enterprise := range enterprises {
 			enterpriseIds = append(enterpriseIds, enterprise.ID)
 		}
+	} else {
+		return nil, reJoblistList, 0
 	}
-
-	var reJoblistList []Joblist
 
 	outData := time.Now().Unix()
 

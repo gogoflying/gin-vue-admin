@@ -160,7 +160,7 @@ func (info *EnterpriseInfo) GetInfoListSearch(keyword string, cityId, page, page
 		return
 	}
 	var infoList []EnterpriseInfo
-	db := qmsql.DEFAULTDB.Model(info)
+	db := qmsql.DEFAULTDB.Model(info).Where("status = 1")
 	if cityId > 0 {
 		db = db.Where("city_id = ?", cityId)
 	}

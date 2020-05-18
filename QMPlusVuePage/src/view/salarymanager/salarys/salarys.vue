@@ -256,8 +256,8 @@
           <h3>假期明细</h3>
           <el-row>
             <el-col :span="6">
-              <el-form-item label="年假天数" label-width="80px" prop="ndts">
-                <el-input v-model="salarydetailinfo.ndts"></el-input>
+              <el-form-item label="年假天数" label-width="80px" prop="njts">
+                <el-input v-model="salarydetailinfo.njts"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">

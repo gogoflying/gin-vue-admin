@@ -42,7 +42,7 @@ func (info *EnterpriseInfo) GetEnterpeiseSearchDetail(industrys, enterpriseTypes
 		return
 	}
 
-	db := qmsql.DEFAULTDB.Model(info)
+	db := qmsql.DEFAULTDB.Model(info).Where("status = 1")
 
 	if len(industrys) > 0 {
 		db = db.Where("industry_type IN (?)", industrys)

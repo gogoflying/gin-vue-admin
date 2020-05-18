@@ -39,8 +39,11 @@
           <router-link :to="{name:'editresume', query: { id: scope.row.ID }}">
             <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
           </router-link>
-          <router-link :to="{name:'resumelist', query: { id: scope.row.ID }}">
+          <router-link :to="{name:'userpreview', query: { id: scope.row.ID }}">
             <el-button type="primary" size="small" icon="el-icon-view">查看</el-button>
+          </router-link>
+          <router-link :to="{name:'resumelist', query: { id: scope.row.ID }}">
+            <el-button type="primary" size="small" icon="el-icon-view">投递记录</el-button>
           </router-link>
         </template>
       </el-table-column>

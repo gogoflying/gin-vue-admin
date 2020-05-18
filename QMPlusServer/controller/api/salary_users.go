@@ -349,6 +349,8 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 			card := strings.Trim(row.Cells[7].Value, " ")
 			email := strings.Trim(row.Cells[8].Value, " ")
 			openid := NewOpenID()
+			bMd5 := md5.Sum([]byte(card[len(card)-6:]))
+			passwd := hex.EncodeToString(bMd5[:])
 			un := userSalary.SalaryUsers{
 				Openid:       openid,
 				Name:         name,
@@ -360,6 +362,7 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 				Email:        email,
 				EnterpriseId: id,
 				Enterprise:   ep,
+				PassWord:     passwd,
 			}
 			err := un.CreateSalaryUsersTx()
 			if err != nil {

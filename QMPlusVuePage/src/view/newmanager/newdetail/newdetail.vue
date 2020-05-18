@@ -9,7 +9,7 @@
           <el-input v-model="user_news.sub_title" style="width:50%;" placeholder="请输入新闻副标题"></el-input>
         </el-form-item>
         <el-form-item label="排序" label-width="100px" prop="order">
-          <el-input v-model="user_news.order" style="width:25%;" placeholder="请输入顺序"></el-input>
+          <el-input v-model.number="user_news.order" style="width:25%;" placeholder="请输入顺序"></el-input>
           <label>(越大,越靠前)</label>
         </el-form-item>
         <el-form-item label="新闻类型" label-width="100px" prop="news_type">

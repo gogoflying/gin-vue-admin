@@ -36,7 +36,7 @@ type RegestStuct struct {
 	Password       string `json:"passWord"`
 	EnterPriseName string `json:"enterprise_name"`
 	NickName       string `json:"nickName" gorm:"default:'QMPlusUser'"`
-	HeaderImg      string `json:"headerImg" gorm:"default:'http://www.henrongyi.top/avatar/lufu.jpg'"`
+	HeaderImg      string `json:"headerImg" gorm:"default:'https://bda-edu-hr.oss-cn-beijing.aliyuncs.com/002.png'"`
 	AuthorityId    string `json:"authorityId" gorm:"default:9528"`
 }
 

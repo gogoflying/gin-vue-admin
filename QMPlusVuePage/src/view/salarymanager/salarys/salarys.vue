@@ -58,8 +58,9 @@
       <el-table-column label="姓名" min-width="100" prop="name"></el-table-column>
       <el-table-column label="年" min-width="60" prop="year"></el-table-column>
       <el-table-column label="月" min-width="40" prop="month"></el-table-column>
-      <el-table-column label="入职企业" min-width="80" prop="enterprise" v-if="enPriseId == 0"></el-table-column>
-      <el-table-column label="岗位" min-width="100" prop="gangwei"></el-table-column>
+      <el-table-column label="所属企业" min-width="80" prop="enterprise" v-if="enPriseId == 0"></el-table-column>
+      <el-table-column label="基本工资" min-width="100" prop="base"></el-table-column>
+      <el-table-column label="岗位工资" min-width="100" prop="gangwei"></el-table-column>
       <el-table-column label="新增合计" min-width="80" prop="xzhj"></el-table-column>
       <el-table-column label="业绩提成" min-width="80" prop="yjtc"></el-table-column>
       <el-table-column label="奖金基数" min-width="80" prop="jjjs"></el-table-column>
@@ -116,12 +117,40 @@
       <el-form :rules="rules" ref="salarydetailForm" :model="salarydetailinfo">
         <el-row style="margin-top:-40px">
           <el-col :span="12">
+            <el-form-item
+              v-show="enPriseId == 0"
+              label="所属企业"
+              label-width="80px"
+              prop="enterprise_id"
+            >
+              <el-select
+                @change="selectEp"
+                placeholder="请选择企业"
+                v-model="salarydetailinfo.enterprise_id"
+              >
+                <el-option
+                  :key="industry.enterprise_name"
+                  :label="industry.enterprise_name"
+                  :value="industry.ID"
+                  v-for="industry in enterpriseInfo"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="姓名" label-width="80px" prop="name">
               <el-input style="width:200px" v-model="salarydetailinfo.name"></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row style="margin-top:-20px">
           <el-col :span="12">
-            <el-form-item label="岗位" label-width="80px" prop="gangwei">
+            <el-form-item label="基本工资" label-width="80px" prop="base">
+              <el-input style="width:200px" v-model="salarydetailinfo.base"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="岗位工资" label-width="80px" prop="gangwei">
               <el-input style="text-align:right" v-model="salarydetailinfo.gangwei"></el-input>
             </el-form-item>
           </el-col>
@@ -337,11 +366,14 @@ export default {
       importDataDisabled: true,
       enterpriseInfo: [],
       salarydetailinfo: {
+        name: "",
         openid: "",
         year: "",
         month: "",
         base: "",
         gangwei: "",
+        enterprise: "",
+        enterprise_id: "",
         xzhj: "",
         yjtc: "",
         jjjs: "",
@@ -373,7 +405,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("user", ["enPriseId","token"])
+    ...mapGetters("user", ["enPriseId", "token"])
   },
   watch: {
     enterprise_id(val) {
@@ -387,6 +419,13 @@ export default {
       this.page = 1;
       this.pageSize = 10;
       this.getTableData();
+    },
+    selectEp(val) {
+      var selectedItem = {};
+      selectedItem = this.enterpriseInfo.find(item => {
+        return item.ID === val;
+      });
+      this.salarydetailinfo.enterprise = selectedItem.enterprise_name;
     },
     downSalarytemplate() {
       const link = document.createElement("a");
@@ -416,11 +455,14 @@ export default {
     },
     closeAddSalaryDetailDialog() {
       this.salarydetailinfo = {
+        name: "",
         openid: "",
         year: "",
         month: "",
         base: "",
         gangwei: "",
+        enterprise: "",
+        enterprise_id: "",
         xzhj: "",
         yjtc: "",
         jjjs: "",

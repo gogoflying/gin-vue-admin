@@ -23,6 +23,12 @@ func EnterpriseHandler() gin.HandlerFunc {
 				c.Abort()
 				return
 			}
+			if enpInfo.Status != 1 {
+				servers.ReportFormat(c, false, fmt.Sprintf("企业审核中..."), gin.H{})
+				c.Abort()
+				return
+			}
+
 			c.Set("enpInfo", &enpInfo)
 			//获取登录用户Id
 			ua := &userJobs.UserAuth{
@@ -35,11 +41,10 @@ func EnterpriseHandler() gin.HandlerFunc {
 				return
 			}
 			if ua.Status != 1 {
-				servers.ReportFormat(c, false, fmt.Sprintf("管理员审核中"), gin.H{})
+				servers.ReportFormat(c, false, fmt.Sprintf("用户审核中..."), gin.H{})
 				c.Abort()
 				return
 			}
-
 		}
 		c.Next()
 	}

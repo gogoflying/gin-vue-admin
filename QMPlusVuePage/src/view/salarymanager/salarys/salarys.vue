@@ -59,37 +59,46 @@
       <el-table-column label="年" min-width="60" prop="year"></el-table-column>
       <el-table-column label="月" min-width="40" prop="month"></el-table-column>
       <el-table-column label="所属企业" min-width="120" prop="enterprise" v-if="enPriseId == 0"></el-table-column>
-      <el-table-column label="基本工资" min-width="100" prop="base"></el-table-column>
-      <el-table-column label="岗位工资" min-width="100" prop="gangwei"></el-table-column>
-      <el-table-column label="新增合计" min-width="80" prop="xzhj"></el-table-column>
-      <el-table-column label="业绩提成" min-width="80" prop="yjtc"></el-table-column>
-      <el-table-column label="奖金基数" min-width="80" prop="jjjs"></el-table-column>
-      <el-table-column label="浮动系数" min-width="80" prop="fdxs"></el-table-column>
-      <el-table-column label="月度奖金" min-width="80" prop="ydjj"></el-table-column>
-
-      <el-table-column label="本月工作日天数" min-width="120" prop="gzts"></el-table-column>
-      <el-table-column label="加班费" min-width="80" prop="jbf"></el-table-column>
-      <el-table-column label="通讯补贴" min-width="80" prop="txbt"></el-table-column>
-      <el-table-column label="餐食补贴" min-width="80" prop="csbt"></el-table-column>
-      <el-table-column label="交通补贴" min-width="80" prop="jtbt"></el-table-column>
-      <el-table-column label="其他补贴" min-width="80" prop="qtbt"></el-table-column>
-      <el-table-column label="补贴合计" min-width="80" prop="bthj"></el-table-column>
-      <el-table-column label="其他假期" min-width="80" prop="qtjq"></el-table-column>
-      <el-table-column label="年假天数" min-width="80" prop="njts"></el-table-column>
-      <el-table-column label="迟到扣款" min-width="80" prop="cdkk"></el-table-column>
-      <el-table-column label="病假天数" min-width="80" prop="bjts"></el-table-column>
-
-      <el-table-column label="病假扣款" min-width="80" prop="bjkk"></el-table-column>
-      <el-table-column label="事假天数" min-width="80" prop="sjts"></el-table-column>
-      <el-table-column label="事假扣款" min-width="80" prop="sjkk"></el-table-column>
-      <el-table-column label="扣款合计" min-width="80" prop="kkhj"></el-table-column>
-      <el-table-column label="应发调整" min-width="80" prop="yftz"></el-table-column>
-      <el-table-column label="本月应发工资" min-width="80" prop="byyf"></el-table-column>
-      <el-table-column label="代扣五险" min-width="80" prop="dkwx"></el-table-column>
-      <el-table-column label="代扣住房公积金" min-width="80" prop="gjj"></el-table-column>
-      <el-table-column label="代扣个人所得税" min-width="80" prop="dkgs"></el-table-column>
-      <el-table-column label="实发工资" min-width="80" prop="sfgz"></el-table-column>
-
+      <el-table-column label="薪资构成" align="center">
+        <el-table-column label="基本工资" min-width="100" prop="base"></el-table-column>
+        <el-table-column label="岗位工资" min-width="100" prop="gangwei"></el-table-column>
+        <el-table-column label="业绩提成" min-width="80" prop="yjtc"></el-table-column>
+        <el-table-column label="奖金基数" min-width="80" prop="jjjs"></el-table-column>
+        <el-table-column label="浮动系数" min-width="80" prop="fdxs"></el-table-column>
+        <el-table-column label="月度奖金" min-width="80" prop="ydjj"></el-table-column>
+        <el-table-column label="工作天数" min-width="120" prop="gzts"></el-table-column>
+        <el-table-column label="加班费" min-width="80" prop="jbf"></el-table-column>
+        <el-table-column label="薪资合计" min-width="80" prop="xzhj"></el-table-column>
+      </el-table-column>
+      <el-table-column label="补贴明细" align="center">
+        <el-table-column label="通讯补贴" min-width="80" prop="txbt"></el-table-column>
+        <el-table-column label="餐食补贴" min-width="80" prop="csbt"></el-table-column>
+        <el-table-column label="交通补贴" min-width="80" prop="jtbt"></el-table-column>
+        <el-table-column label="其他补贴" min-width="80" prop="qtbt"></el-table-column>
+        <el-table-column label="补贴合计" min-width="80" prop="bthj"></el-table-column>
+      </el-table-column>
+      <el-table-column label="假期明细" align="center">
+        <el-table-column label="年假天数" min-width="80" prop="njts"></el-table-column>
+        <el-table-column label="病假天数" min-width="80" prop="bjts"></el-table-column>
+        <el-table-column label="事假天数" min-width="80" prop="sjts"></el-table-column>
+        <el-table-column label="其他假期" min-width="80" prop="qtjq"></el-table-column>
+      </el-table-column>
+      <el-table-column label="扣款明细" align="center">
+        <el-table-column label="迟到扣款" min-width="80" prop="cdkk"></el-table-column>
+        <el-table-column label="病假扣款" min-width="80" prop="bjkk"></el-table-column>
+        <el-table-column label="事假扣款" min-width="80" prop="sjkk"></el-table-column>
+        <el-table-column label="扣款合计" min-width="80" prop="kkhj"></el-table-column>
+      </el-table-column>
+      <el-table-column label="五险一金" align="center">
+        <el-table-column label="代扣五险" min-width="80" prop="dkwx"></el-table-column>
+        <el-table-column label="代扣住房公积金" min-width="80" prop="gjj"></el-table-column>
+        <el-table-column label="代扣个人所得税" min-width="80" prop="dkgs"></el-table-column>
+      </el-table-column>
+      <el-table-column label="应发调整" align="center">
+        <el-table-column label="应发工资" min-width="80" prop="byyf"></el-table-column>
+        <el-table-column label="应发调整" min-width="80" prop="yftz"></el-table-column>
+        <el-table-column label="实发工资" min-width="80" prop="sfgz"></el-table-column>
+      </el-table-column>
       <el-table-column fixed="right" label="操作" width="140">
         <template slot-scope="scope">
           <el-button @click="editSalaryDetail(scope.row)" size="small" type="text">编辑</el-button>

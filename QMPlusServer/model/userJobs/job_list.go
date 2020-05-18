@@ -88,12 +88,12 @@ func (jl *Joblist) GetInfoList(info modelInterface.PageInfo) (err error, list in
 			db = db.Where("company_id = ?", jl.CompanyId)
 		}
 		if jl.CompanyName != "" {
-			model = model.Where("company_name = ?", jl.CompanyName)
-			db = db.Where("company_name = ?", jl.CompanyName)
+			model = model.Where("company_name LIKE ?", "%"+jl.CompanyName+"%")
+			db = db.Where("company_name LIKE ?", "%"+jl.CompanyName+"%")
 		}
 		if jl.Jobname != "" {
-			model = model.Where("job_name = ?", jl.Jobname)
-			db = db.Where("job_name = ?", jl.Jobname)
+			model = model.Where("job_name LIKE ?", "%"+jl.Jobname+"%")
+			db = db.Where("job_name LIKE ?", "%"+jl.Jobname+"%")
 		}
 		if jl.JobCity != "" {
 			model = model.Where("job_city = ?", jl.JobCity)

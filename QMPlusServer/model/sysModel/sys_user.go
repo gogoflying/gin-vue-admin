@@ -48,6 +48,13 @@ func (u *SysUser) FindById() (err error, user SysUser) {
 	return err, user
 }
 
+// 根据ID查看单条User
+func (u *SysUser) FindSysUserById(id uint) (err error, user SysUser) {
+	qmsql.DEFAULTDB.LogMode(true)
+	err = qmsql.DEFAULTDB.Preload("Authority").Where("id = ?", id).First(&user).Error
+	return err, user
+}
+
 // 删除User
 func (u *SysUser) DeleteUser() (err error) {
 	err = qmsql.DEFAULTDB.Delete(u).Error

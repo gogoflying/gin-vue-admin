@@ -75,13 +75,14 @@ func (rs *ResumeStatus) GetInfoList(info modelInterface.PageInfo) (err error, li
 			db = db.Where("company_id = ?", rs.CompanyId)
 		}
 		if rs.CompanyName != "" {
-			model = model.Where("company_name = ?", rs.CompanyName)
-			db = db.Where("company_name = ?", rs.CompanyName)
+			model = model.Where("company_name LIKE ?", "%"+rs.CompanyName+"%")
+			db = db.Where("company_name LIKE ?", "%"+rs.CompanyName+"%")
 		}
 		if rs.Jobname != "" {
-			model = model.Where("job_name = ?", rs.Jobname)
-			db = db.Where("job_name = ?", rs.Jobname)
+			model = model.Where("job_name LIKE ?", "%"+rs.Jobname+"%")
+			db = db.Where("job_name LIKE ?", "%"+rs.Jobname+"%")
 		}
+
 		err = model.Preload("JobInfo").Preload("UserInfo").Find(&reResumeStatusList).Count(&total).Error
 		if err != nil {
 			return err, reResumeStatusList, total

@@ -5,7 +5,7 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
-
+	"gin-vue-admin/model/sysModel"
 	"github.com/jinzhu/gorm"
 )
 
@@ -16,6 +16,7 @@ type UserAuth struct {
 	Username       string `json:"userName" gorm:"column:username;comment:'企业用户名'"`
 	UserId         uint   `json:"user_id" gorm:"column:user_id;comment:'企业用户id'"`
 	Status         int    `json:"status" gorm:"column:status;comment:'0、审核中1、审核通过'"`
+	AuthorityName  string `json:"authorityName" gorm:"-"`
 }
 
 // 创建UserAuth
@@ -55,7 +56,7 @@ func (ua *UserAuth) GetInfoList(info modelInterface.PageInfo) (err error, list i
 	if err != nil {
 		return
 	} else {
-		var reUserauthList []UserAuth
+		reUserauthList := make([]*UserAuth, 0)
 		if ua.EnterPriseName != "" {
 			db = db.Where("enterprise_name LIKE ?", "%"+ua.EnterPriseName+"%")
 		}
@@ -70,6 +71,16 @@ func (ua *UserAuth) GetInfoList(info modelInterface.PageInfo) (err error, list i
 		} else {
 			err = db.Find(&reUserauthList).Error
 		}
+		if err == nil {
+			for _, ru := range reUserauthList {
+				err, rers := new(sysModel.SysUser).FindSysUserById(ru.UserId)
+				if err != nil {
+					return err, reUserauthList, total
+				}
+				ru.AuthorityName = rers.Authority.AuthorityName
+			}
+		}
+
 		return err, reUserauthList, total
 	}
 }

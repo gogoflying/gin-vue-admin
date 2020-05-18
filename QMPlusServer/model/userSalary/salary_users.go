@@ -138,16 +138,16 @@ func (un *SalaryUsers) GetInfoList(info modelInterface.PageInfo) (err error, lis
 			db = db.Where("enterprise_id = ?", un.EnterpriseId)
 		}
 		if un.Name != "" {
-			model = model.Where("name = ?", un.Name)
-			db = db.Where("name = ?", un.Name)
+			model = model.Where("name LIKE ?", "%"+un.Name+"%")
+			db = db.Where("name LIKE ?", "%"+un.Name+"%")
 		}
 		if un.Card != "" {
-			model = model.Where("card = ?", un.Card)
-			db = db.Where("card = ?", un.Card)
+			model = model.Where("card LIKE ?", "%"+un.Card+"%")
+			db = db.Where("card LIKE ?", "%"+un.Card+"%")
 		}
 		if un.Mobile != "" {
-			model = model.Where("mobile = ?", un.Mobile)
-			db = db.Where("mobile = ?", un.Mobile)
+			model = model.Where("mobile LIKE ?", "%"+un.Mobile+"%")
+			db = db.Where("mobile LIKE ?", "%"+un.Mobile+"%")
 		}
 
 		err = model.Find(&reSalaryUsersList).Count(&total).Error

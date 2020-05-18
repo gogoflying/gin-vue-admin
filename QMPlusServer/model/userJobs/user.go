@@ -151,8 +151,8 @@ func (users *Users) GetInfoList(info modelInterface.PageInfo) (err error, list i
 		var reUsersList []Users
 		model := qmsql.DEFAULTDB.Model(info)
 		if users.Mobile != "" {
-			model = model.Where("mobile = ?", users.Mobile)
-			db = db.Where("mobile = ?", users.Mobile)
+			model = model.Where("mobile LIKE ?", "%"+users.Mobile+"%")
+			db = db.Where("mobile LIKE ?", "%"+users.Mobile+"%")
 		}
 		err = model.Find(&reUsersList).Count(&total).Error
 		if err != nil {

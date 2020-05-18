@@ -60,8 +60,8 @@ func (un *UserNews) GetInfoList(info modelInterface.PageInfo) (err error, list i
 		var reUserNewsList []UserNews
 		model := qmsql.DEFAULTDB.Model(info)
 		if un.Title != "" {
-			model = model.Where("title = ?", un.Title)
-			db = db.Where("title = ?", un.Title)
+			model = model.Where("title LIKE ?", "%"+un.Title+"%")
+			db = db.Where("title LIKE ?", "%"+un.Title+"%")
 		}
 		err = model.Find(&reUserNewsList).Count(&total).Error
 		if err != nil {

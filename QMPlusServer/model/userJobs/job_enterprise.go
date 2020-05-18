@@ -38,10 +38,6 @@ type EnterpriseInfo struct {
 
 func (info *EnterpriseInfo) GetEnterpeiseSearchDetail(industrys, enterpriseTypes []int, enterpriseScales []Scale) (infos []EnterpriseInfo, err error) {
 
-	if len(industrys) == 0 && len(enterpriseTypes) == 0 && len(enterpriseScales) == 0 {
-		return
-	}
-
 	db := qmsql.DEFAULTDB.Model(info).Where("status = 1")
 
 	if len(industrys) > 0 {

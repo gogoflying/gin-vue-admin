@@ -117,7 +117,7 @@ func (jl *Joblist) GetInfoListSearchDetail(keyword string, cityId, order int, in
 
 	enterprises, err := new(EnterpriseInfo).GetEnterpeiseSearchDetail(industrys, enterpriseTypes, enterpriseScales)
 	if err != nil {
-		return
+		return nil, reJoblistList, 0
 	}
 
 	var enterpriseIds []uint

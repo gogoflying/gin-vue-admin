@@ -159,7 +159,7 @@ func (jl *Joblist) GetInfoListSearchDetail(keyword string, cityId, order int, in
 	db = db.Order("p_top desc")
 
 	if order == 0 {
-		db = db.Order("id desc")
+		db = db.Order("updated_at desc")
 	} else {
 		db = db.Order("p_views desc")
 	}

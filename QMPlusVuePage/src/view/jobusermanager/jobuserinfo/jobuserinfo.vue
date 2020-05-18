@@ -21,7 +21,7 @@
           </el-radio-group>
         </template>
       </el-table-column>
-      <el-table-column label="用户状态" min-width="250" prop="status">
+      <el-table-column label="用户状态" min-width="100" prop="status">
         <template slot-scope="scope">
           <el-switch
             @change="changestatus(scope.row)"

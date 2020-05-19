@@ -15,5 +15,6 @@ func InitUserBaseInfoRouter(Router *gin.RouterGroup) {
 		UserBaseInfoRouter.POST("findUserBaseInfo", api.FindUserBaseInfo)       // 根据ID获取UserBaseInfo
 		UserBaseInfoRouter.POST("getUserBaseInfoList", api.GetUserBaseInfoList) //获取UserBaseInfo列表
 		UserBaseInfoRouter.POST("findUserBaseInfobyOpenid", api.FindUserBaseInfoByOpenid)
+		UserBaseInfoRouter.POST("updateUserAvatarUrlbyOpenid", api.UpdateUserAvatarUrl)
 	}
 }

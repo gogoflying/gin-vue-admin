@@ -68,6 +68,17 @@ func UpdateUserBaseInfo(c *gin.Context) {
 	}
 }
 
+func UpdateUserAvatarUrl(c *gin.Context) {
+	var bf userJobs.UserBaseInfo
+	_ = c.ShouldBindJSON(&bf)
+	err := bf.UpdateUserAvatarUrl()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "更新成功", gin.H{})
+	}
+}
+
 // @Tags UserBaseInfo
 // @Summary 用id查询UserBaseInfo
 // @Security ApiKeyAuth

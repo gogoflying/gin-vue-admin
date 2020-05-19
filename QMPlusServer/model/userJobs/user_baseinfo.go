@@ -59,6 +59,12 @@ func (bf *UserBaseInfo) UpdateUserBaseInfo() (err error, rebf UserBaseInfo) {
 	return err, *bf
 }
 
+// 更新UserBaseInfo
+func (bf *UserBaseInfo) UpdateUserAvatarUrl() (err error) {
+	err = qmsql.DEFAULTDB.Model(bf).Where("openid = ?", bf.Openid).Update("avatarUrl", bf.AvatarUrl).Error
+	return err
+}
+
 // 根据ID查看单条UserBaseInfo
 func (bf *UserBaseInfo) FindById() (err error, rebf UserBaseInfo) {
 	err = qmsql.DEFAULTDB.Where("id = ?", bf.ID).First(&rebf).Error

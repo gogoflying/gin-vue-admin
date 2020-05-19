@@ -6,11 +6,11 @@
           <el-input placeholder="新闻标题" v-model="searchInfo.title"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="onSubmit" type="primary">查询</el-button>
+          <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
         </el-form-item>
         <el-form-item>
           <router-link :to="{name:'newdetail'}">
-            <el-button type="primary" size="small" icon="el-icon-edit">创建文章</el-button>
+            <el-button type="primary" size="small" icon="el-icon-plus">创建文章</el-button>
           </router-link>
         </el-form-item>
       </el-form>

@@ -6,7 +6,7 @@
           <el-input placeholder="手机号" v-model="searchInfo.mobile"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="onSubmit" type="primary">查询</el-button>
+          <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -33,7 +33,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column fixed="right" label="操作" width="250">
         <template slot-scope="scope">
           <!-- <el-button @click="viewResume(scope.row)" size="small" type="text">查看</el-button> -->
           <router-link :to="{name:'editresume', query: { id: scope.row.ID }}">
@@ -43,7 +43,7 @@
             <el-button type="primary" size="small" icon="el-icon-view">查看</el-button>
           </router-link>
           <router-link :to="{name:'resumelist', query: { id: scope.row.ID }}">
-            <el-button type="primary" size="small" icon="el-icon-view">投递记录</el-button>
+            <el-button type="primary" size="small" icon="el-icon-more">投递记录</el-button>
           </router-link>
         </template>
       </el-table-column>

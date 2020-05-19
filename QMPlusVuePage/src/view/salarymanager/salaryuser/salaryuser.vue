@@ -58,7 +58,7 @@
           <el-input placeholder="手机号" style="width:150px" v-model="searchInfo.mobile"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="onSubmit" type="primary">查询</el-button>
+          <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -72,7 +72,7 @@
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
               </el-row>
-              <span v-else>身份证未上传</span>
+              <span v-else style="color:red">身份证未上传</span>
             </el-form-item>
             <el-form-item label="银行卡正反面:">
               <el-row v-if="scope.row.banks != null ">
@@ -80,7 +80,7 @@
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
               </el-row>
-              <span v-else>银行卡未上传</span>
+              <span v-else style="color:red">银行卡未上传</span>
             </el-form-item>
             <el-form-item label="户口本照片:">
               <el-row v-if="scope.row.hukous != null ">
@@ -96,7 +96,7 @@
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
               </el-row>
-              <span v-else>本人照片未上传</span>
+              <span v-else style="color:red">本人照片未上传</span>
             </el-form-item>
             <el-form-item label="体检报告合格照片:">
               <el-row v-if="scope.row.checkups != null ">
@@ -104,7 +104,7 @@
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
               </el-row>
-              <span v-else>体检报告未上传</span>
+              <span v-else style="color:red">体检报告未上传</span>
             </el-form-item>
             <el-form-item label="离职证明照片:">
               <span v-if="scope.row.leaves != null ">
@@ -122,7 +122,7 @@
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
               </el-row>
-              <span v-else>未上传</span>
+              <span v-else style="color:red">毕业证未上传</span>
             </el-form-item>
             <el-form-item label="其他:">
               <el-row v-if="scope.row.others != null ">
@@ -130,7 +130,7 @@
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
               </el-row>
-              <span v-else>未上传</span>
+              <span v-else style="color:red">未上传</span>
             </el-form-item>
           </el-form>
         </template>

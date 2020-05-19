@@ -31,7 +31,7 @@
         <el-button type="primary" @click="downSalarytemplate" icon="el-icon-download">下载模板</el-button>
       </el-col>
       <el-col :span="3">
-        <el-button @click="addSalaryDetail" type="primary">新增薪资</el-button>
+        <el-button @click="addSalaryDetail" type="primary" icon="el-icon-plus">新增薪资</el-button>
       </el-col>
     </div>
     <div class="search-term">
@@ -49,7 +49,7 @@
           <el-input placeholder="月" style="width:50px" v-model.number="searchInfo.month"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="onSubmit" type="primary">查询</el-button>
+          <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
         </el-form-item>
       </el-form>
     </div>

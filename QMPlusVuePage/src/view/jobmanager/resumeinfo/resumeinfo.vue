@@ -14,7 +14,7 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe @cell-click="editpreview">
-      <el-table-column type="selection" min-width="55"></el-table-column>
+      <!-- <el-table-column type="selection" min-width="55"></el-table-column> -->
       <el-table-column label="职位名称" min-width="150" prop="job_info.p_name"></el-table-column>
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="手机号" min-width="150" prop="user_info.mobile"></el-table-column>
@@ -34,7 +34,7 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column fixed="right" label="操作" width="150">
         <template slot-scope="scope">
           <el-button
             @click="editpreview(scope.row,scope.column)"

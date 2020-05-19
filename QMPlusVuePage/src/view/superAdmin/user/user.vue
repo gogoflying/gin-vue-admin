@@ -32,7 +32,7 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
-          <!-- <el-button @click="editUser(scope.row)" size="small" type="text">编辑</el-button> -->
+          <el-button @click="resetPass(scope.row)" size="small" type="text">重置密码</el-button>
           <el-button @click="deleteUser(scope.row)" size="small" type="text">删除</el-button>
         </template>
       </el-table-column>
@@ -50,11 +50,11 @@
 
     <el-dialog :visible.sync="addUserDialog" custom-class="user-dialog" :title="title">
       <el-form :rules="rules" ref="userForm" :model="userInfo">
-        <el-form-item label="用户名" label-width="80px" prop="username">
-          <el-input v-model="userInfo.username"></el-input>
+        <el-form-item label="用户名" label-width="80px" prop="userName">
+          <el-input v-model="userInfo.userName"></el-input>
         </el-form-item>
-        <el-form-item label="密码" label-width="80px" prop="password">
-          <el-input v-model="userInfo.password"></el-input>
+        <el-form-item label="密码" label-width="80px" prop="passWord">
+          <el-input v-model="userInfo.passWord"></el-input>
         </el-form-item>
         <el-form-item label="别名" label-width="80px" prop="nickName">
           <el-input v-model="userInfo.nickName"></el-input>
@@ -100,9 +100,8 @@ import {
   getUserList,
   setUserAuthority,
   register,
-  findSysUserById,
   deleteSysUser,
-  updateSysUser
+  resetPassword
 } from "@/api/user";
 import { getAuthorityList } from "@/api/authority";
 import infoList from "@/components/mixins/infoList";
@@ -120,17 +119,17 @@ export default {
       isEdit: false,
       title: "",
       userInfo: {
-        username: "",
-        password: "",
+        userName: "",
+        passWord: "",
         nickName: "",
         headerImg: "",
         authorityId: ""
       },
       rules: {
-        username: [
+        userName: [
           { required: true, message: "请输入用户名", trigger: "blur" }
         ],
-        password: [
+        passWord: [
           { required: true, message: "请输入用户密码", trigger: "blur" }
         ],
         nickName: [
@@ -150,11 +149,7 @@ export default {
       this.$refs.userForm.validate(async valid => {
         if (valid) {
           let res;
-          if (this.isEdit) {
-            res = await updateSysUser(this.userInfo);
-          } else {
-            res = await register(this.userInfo);
-          }
+          res = await register(this.userInfo);
           if (res.success) {
             this.$message({ type: "success", message: "创建成功" });
           }
@@ -165,8 +160,8 @@ export default {
     },
     closeAddUserDialog() {
       this.userInfo = {
-        username: "",
-        password: "",
+        userName: "",
+        passWord: "",
         nickName: "",
         headerImg: "",
         authorityId: ""
@@ -178,16 +173,33 @@ export default {
     },
     addUser() {
       this.title = "新增用户";
+      this.userInfo = {};
       this.isEdit = false;
       this.addUserDialog = true;
     },
-    //编辑用户
-    async editUser(row) {
-      this.title = "编辑用户";
-      const res = await findSysUserById(row);
-      this.userInfo = res.data.user;
-      this.isEdit = true;
-      this.addUserDialog = true;
+    //重置密码
+    resetPass(row) {
+      this.$confirm("此操作将重置该用户密码, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          const res = await resetPassword(row);
+          if (res.success) {
+            this.$message({
+              type: "success",
+              message: "重置成功!"
+            });
+            this.getTableData();
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消重置"
+          });
+        });
     },
     // 删除用户
     deleteUser(row) {

@@ -55,6 +55,14 @@ func (u *SysUser) FindSysUserById(id uint) (err error, user SysUser) {
 	return err, user
 }
 
+// 更新User
+func (u *SysUser) ResetPassword() (err error, ru SysUser) {
+	var user SysUser
+	password := tools.MD5V([]byte("123456"))
+	err = qmsql.DEFAULTDB.Where("username = ?", u.Username).First(&user).Update("password", password).Error
+	return err, *u
+}
+
 // 删除User
 func (u *SysUser) DeleteUser() (err error) {
 	err = qmsql.DEFAULTDB.Delete(u).Error

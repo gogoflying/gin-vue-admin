@@ -237,6 +237,17 @@ func UploadHeaderImg(c *gin.Context) {
 	}
 }
 
+func ResetPassword(c *gin.Context) {
+	var ur sysModel.SysUser
+	_ = c.ShouldBindJSON(&ur)
+	err, _ := ur.ResetPassword()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("重置密码失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "重置密码成功", gin.H{})
+	}
+}
+
 func DeleteUser(c *gin.Context) {
 	var ur sysModel.SysUser
 	_ = c.ShouldBindJSON(&ur)

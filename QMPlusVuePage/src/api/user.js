@@ -79,9 +79,9 @@ export const setUserAuthority = (data) => {
     })
 }
 
-export const updateSysUser = (data) => {
+export const resetPassword = (data) => {
     return service({
-        url: "/user/updateSysUser",
+        url: "/user/resetPassword",
         method: 'post',
         data: data
     })

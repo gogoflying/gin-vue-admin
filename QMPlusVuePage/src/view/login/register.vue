@@ -7,14 +7,14 @@
       </h1>
       <div class="main">
         <el-form :model="registerForm" :rules="rules" ref="registerForm">
-          <el-form-item label="用户名" label-width="80px" prop="username">
-            <el-input placeholder="请输入用户名" v-model="registerForm.username"></el-input>
+          <el-form-item label="用户名" label-width="80px" prop="userName">
+            <el-input placeholder="请输入用户名" v-model="registerForm.userName"></el-input>
           </el-form-item>
-          <el-form-item label="密码" label-width="80px" prop="password">
+          <el-form-item label="密码" label-width="80px" prop="passWord">
             <el-input
               :type="lock==='lock'?'password':'text'"
               placeholder="请输入密码"
-              v-model="registerForm.password"
+              v-model="registerForm.passWord"
             >
               <i :class="'el-input__icon el-icon-' + lock" @click="changeLock" slot="suffix"></i>
             </el-input>
@@ -63,7 +63,7 @@ export default {
   name: "Register",
   data() {
     const ratioPassword = (rule, value, callback) => {
-      if (value != this.registerForm.password) {
+      if (value != this.registerForm.passWord) {
         return callback(new Error("两次密码不同"));
       } else {
         callback();
@@ -94,8 +94,8 @@ export default {
     return {
       lock: "lock",
       registerForm: {
-        username: "",
-        password: "",
+        userName: "",
+        passWord: "",
         rePassword: "",
         enterprise_name: "",
         authorityId: ""
@@ -111,8 +111,8 @@ export default {
         }
       ],
       rules: {
-        username: [{ validator: checkUsername, trigger: "blur" }],
-        password: [{ validator: checkPassword, trigger: "blur" }],
+        userName: [{ validator: checkUsername, trigger: "blur" }],
+        passWord: [{ validator: checkPassword, trigger: "blur" }],
         rePassword: [{ validator: ratioPassword, trigger: "blur" }],
         authorityId: [{ validator: checkRole, trigger: "blur" }]
       }

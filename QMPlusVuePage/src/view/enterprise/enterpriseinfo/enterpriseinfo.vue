@@ -1,26 +1,29 @@
 <template>
   <div>
     <div class="button-box clearflex">
-      <el-button @click="addEnterprise" type="primary">新增企业</el-button>
+      <el-button @click="addEnterprise" type="primary" icon="el-icon-plus">新增企业</el-button>
     </div>
     <el-table :data="tableData" border stripe>
       <el-table-column type="expand">
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="企业logo:">
-              <span>
+              <span v-if="scope.row.enterprise_logo">
                 <img :src="scope.row.enterprise_logo" height="500" width="500" />
               </span>
+              <span v-else style="color:red">企业logo未上传</span>
             </el-form-item>
             <el-form-item label="企业主图:">
-              <span>
+              <span v-if="scope.row.enterprise_img">
                 <img :src="scope.row.enterprise_img" height="500" width="500" />
               </span>
+              <span v-else style="color:red">企业主图未上传</span>
             </el-form-item>
             <el-form-item label="企业资质:">
-              <span>
+              <span v-if="scope.row.enterprise_qfc">
                 <img :src="scope.row.enterprise_qfc" height="500" width="500" />
               </span>
+              <span v-else style="color:red">企业资质未上传</span>
             </el-form-item>
           </el-form>
         </template>

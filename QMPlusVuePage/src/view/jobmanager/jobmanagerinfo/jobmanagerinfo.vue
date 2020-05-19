@@ -12,11 +12,11 @@
           <el-input placeholder="工作城市" v-model="searchInfo.p_city" style="width:140px;"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="onSubmit" type="primary">查询</el-button>
+          <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
         </el-form-item>
         <el-form-item>
           <router-link :to="{name:'newjobinfo'}">
-            <el-button type="primary" size="small" icon="el-icon-edit">新增职位</el-button>
+            <el-button type="primary" size="small" icon="el-icon-plus">新增职位</el-button>
           </router-link>
         </el-form-item>
       </el-form>
@@ -50,7 +50,7 @@
       <el-table-column label="浏览数" min-width="100" prop="p_views"></el-table-column>
       <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
       <!-- <el-table-column label="工作描述" min-width="150" prop="p_des" :show-overflow-tooltip="true"></el-table-column> -->
-      <el-table-column fixed="right" label="操作" width="240">
+      <el-table-column fixed="right" label="操作" width="330">
         <template slot-scope="scope">
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
@@ -60,7 +60,15 @@
             @click="changeTop(scope.row)"
             size="small"
             type="primary"
+            :icon="scope.row.p_top == 0 ? 'el-icon-top':'el-icon-bottom'"
           >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
+
+          <el-button
+            @click="flush(scope.row)"
+            size="small"
+            type="primary"
+            icon="el-icon-refresh"
+          >刷新</el-button>
 
           <el-button
             @click="deletejob(scope.row)"
@@ -165,6 +173,13 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    async flush(row) {
+      const res = await updateJoblist(row);
+      if (res.success) {
+        this.$message({ type: "success", message: "更新成功" });
+      }
+      this.getTableData();
     },
     async changeEp(row) {
       var selectedItem = {};

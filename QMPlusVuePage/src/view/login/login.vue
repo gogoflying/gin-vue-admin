@@ -179,8 +179,8 @@ export default {
     margin-left: -22vw;
     top: 5vh;
     .logo {
-      height: 35vh;
-      width: 35vh;
+      height: 14vh;
+      width: 49vh;
     }
     .main {
       min-width: 260px;

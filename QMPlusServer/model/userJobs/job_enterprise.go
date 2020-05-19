@@ -139,7 +139,7 @@ func (info *EnterpriseInfo) GetInfoList(pinfo modelInterface.PageInfo) (err erro
 		if err == nil {
 			for _, reP := range reEnterpriseInfoList {
 				var count int
-				qmsql.DEFAULTDB.Model(new(Joblist)).Count(&count)
+				qmsql.DEFAULTDB.Model(new(Joblist)).Where("company_id = ?", rep.ID).Count(&count)
 				reP.JobCount = count
 			}
 		}

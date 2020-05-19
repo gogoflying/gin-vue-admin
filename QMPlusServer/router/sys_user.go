@@ -11,7 +11,7 @@ func InitUserRouter(Router *gin.RouterGroup) {
 	{
 		UserRouter.POST("changePassword", api.ChangePassword)   // 修改密码
 		UserRouter.POST("uploadHeaderImg", api.UploadHeaderImg) //上传头像
-		//UserRouter.POST("updateSysUser", api.UpdateUser)
+		UserRouter.POST("resetPassword", api.ResetPassword)
 		UserRouter.POST("findSysUserById", api.FindUserById)
 		UserRouter.POST("deleteSysUser", api.DeleteUser)
 		UserRouter.POST("getUserList", api.GetUserList)           // 分页获取用户列表

@@ -165,17 +165,21 @@ func GetUserOptions(c *gin.Context) {
 }
 
 func GetUsersList(c *gin.Context) {
-	var pageInfo modelInterface.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
-	err, list, total := new(userJobs.Users).GetInfoList(pageInfo)
+	type searchParams struct {
+		userJobs.Users
+		modelInterface.PageInfo
+	}
+	var sp searchParams
+	_ = c.ShouldBindJSON(&sp)
+	err, list, total := sp.Users.GetInfoList(sp.PageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
 			"userList": list,
 			"total":    total,
-			"page":     pageInfo.Page,
-			"pageSize": pageInfo.PageSize,
+			"page":     sp.PageInfo.Page,
+			"pageSize": sp.PageInfo.PageSize,
 		})
 	}
 }

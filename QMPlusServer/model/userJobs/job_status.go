@@ -51,7 +51,29 @@ func (rs *ResumeStatus) DeleteResumeStatus() (err error) {
 
 // 更新ResumeStatus
 func (rs *ResumeStatus) UpdateResumeStatus() (err error, rers ResumeStatus) {
-	err = qmsql.DEFAULTDB.Save(rs).Error
+	//err = qmsql.DEFAULTDB.Save(rs).Error
+	//return err, *rs
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp ResumeStatus
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, rs.ID).Error; err != nil {
+		tx.Rollback()
+		return err, *rs
+	}
+	if err := tx.Save(rs).Error; err != nil {
+		tx.Rollback()
+		return err, *rs
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, *rs
+	}
 	return err, *rs
 }
 

@@ -33,7 +33,29 @@ func (ua *UserAuth) DeleteUserAuth() (err error) {
 
 // 更新UserAuth
 func (ua *UserAuth) UpdateUserAuth() (err error, reuserauth UserAuth) {
-	err = qmsql.DEFAULTDB.Save(ua).Error
+	//err = qmsql.DEFAULTDB.Save(ua).Error
+	//return err, *ua
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp UserAuth
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, ua.ID).Error; err != nil {
+		tx.Rollback()
+		return err, *ua
+	}
+	if err := tx.Save(ua).Error; err != nil {
+		tx.Rollback()
+		return err, *ua
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, *ua
+	}
 	return err, *ua
 }
 

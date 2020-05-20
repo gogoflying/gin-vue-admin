@@ -33,6 +33,7 @@ type EnterpriseInfo struct {
 	EnterpriseCityId     int       `json:"city_id" gorm:"column:city_id;comment:'城市id，关联citynames'"`
 	JobCount             int       `json:"job_count" gorm:"column:job_count;comment:'该企业发布的职位数量'"`
 	Status               int       `json:"status" gorm:"column:status;comment:'0、未审核1、审核通过'"`
+	Errors               string    `json:"errors" gorm:"column:errors;comment:'信息错误反馈内容'"`
 	Results              []Joblist `json:"result" gorm:"-"`
 }
 

@@ -17,6 +17,7 @@ func InitEnterpriseInfoRouter(Router *gin.RouterGroup) {
 		EnterpriseInfoRouter.POST("findEnterpriseJobs", api.FindEnterpriseJobs)                   //获取该企业信息以及发布的职位
 		EnterpriseInfoRouter.POST("getEnterpriseInfoList", api.GetEnterpriseInfoList)             //获取EnterpriseInfo列表
 		EnterpriseInfoRouter.POST("getEnterpriseAllInfo", api.GetEnterpriseAllInfo)               //获取EnterpriseInfo列表
+		EnterpriseInfoRouter.POST("getEnterpriseListBySearch", api.GetEnterpriseListBySearch)     //获取EnterpriseInfo列表
 		EnterpriseInfoRouter.POST("getEnterpriseInfoListSearch", api.GetEnterpriseInfoListSearch) //根据cityid，keyword查询公司列表
 
 	}

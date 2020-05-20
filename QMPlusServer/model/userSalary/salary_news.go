@@ -18,7 +18,7 @@ type UserNews struct {
 	Type     int    `json:"news_type" gorm:"column:type;comment:'新闻类型，1社保，2个税'"`
 	Img      string `json:"img" gorm:"column:img;comment:'新闻图片'"`
 	Status   int    `json:"status" gorm:"column:status;comment:'状态，1草稿，2发布';default:1"`
-	Count    int    `json:"count" gorm:"column:count;comment:'阅读数'`
+	Count    int    `json:"count" gorm:"column:count;comment:'阅读数'"`
 }
 
 // 创建UserNews
@@ -35,7 +35,29 @@ func (un *UserNews) DeleteUserNews() (err error) {
 
 // 更新UserNews
 func (un *UserNews) UpdateUserNews() (err error, reun UserNews) {
-	err = qmsql.DEFAULTDB.Save(un).Error
+	//err = qmsql.DEFAULTDB.Save(un).Error
+	//return err, *un
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp UserNews
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, un.ID).Error; err != nil {
+		tx.Rollback()
+		return err, *un
+	}
+	if err := tx.Save(un).Error; err != nil {
+		tx.Rollback()
+		return err, *un
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, *un
+	}
 	return err, *un
 }
 

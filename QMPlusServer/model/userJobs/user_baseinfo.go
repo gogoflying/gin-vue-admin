@@ -12,7 +12,7 @@ import (
 
 type EduLevel struct {
 	gorm.Model
-	Name string `json:"name" gorm:"column:name";comment:''`
+	Name string `json:"name" gorm:"column:name;comment:'学历'"`
 }
 
 type UserBaseInfo struct {
@@ -55,7 +55,29 @@ func (bf *UserBaseInfo) DeleteUserBaseInfo() (err error) {
 
 // 更新UserBaseInfo
 func (bf *UserBaseInfo) UpdateUserBaseInfo() (err error, rebf UserBaseInfo) {
-	err = qmsql.DEFAULTDB.Save(bf).Error
+	//err = qmsql.DEFAULTDB.Save(bf).Error
+	//return err, *bf
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp UserBaseInfo
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, bf.ID).Error; err != nil {
+		tx.Rollback()
+		return err, *bf
+	}
+	if err := tx.Save(bf).Error; err != nil {
+		tx.Rollback()
+		return err, *bf
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, *bf
+	}
 	return err, *bf
 }
 

@@ -42,7 +42,7 @@ type SalaryUsers struct {
 	Diploma      string   `json:"diploma" gorm:"column:diploma;comment:'毕业证照片'"`
 	Diplomas     []string `json:"diplomas" gorm:"-"`
 	Email        string   `json:"email" gorm:"column:email"`
-	Enterprise   string   `json:"enterprise" gorm:"column:enterprise";comment:'入职企业'`
+	Enterprise   string   `json:"enterprise" gorm:"column:enterprise;comment:'入职企业'"`
 	EnterpriseId int      `json:"enterprise_id" gorm:"column:enterprise_id;comment:'入职企业id'"`
 	EnterTime    string   `json:"enter_time" gorm:"column:enter_time;comment:'入职日期'"`
 	LeaveTime    string   `json:"leave_time" gorm:"column:LeaveTime;comment:'离职日期'"`
@@ -78,7 +78,29 @@ func (un *SalaryUsers) DeleteSalaryUsers() (err error) {
 
 // 更新SalaryUsers
 func (un *SalaryUsers) UpdateSalaryUsers() (err error, reun SalaryUsers) {
-	err = qmsql.DEFAULTDB.Save(un).Error
+	//err = qmsql.DEFAULTDB.Save(un).Error
+	//return err, *un
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp SalaryUsers
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, un.ID).Error; err != nil {
+		tx.Rollback()
+		return err, *un
+	}
+	if err := tx.Save(un).Error; err != nil {
+		tx.Rollback()
+		return err, *un
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, *un
+	}
 	return err, *un
 }
 

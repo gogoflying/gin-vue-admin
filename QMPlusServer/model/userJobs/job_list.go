@@ -54,7 +54,29 @@ func (jl *Joblist) DeleteJoblist() (err error) {
 
 // 更新Joblist
 func (jl *Joblist) UpdateJoblist() (err error, rejl Joblist) {
-	err = qmsql.DEFAULTDB.Save(jl).Error
+	//err = qmsql.DEFAULTDB.Save(jl).Error
+	//return err, *jl
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp Joblist
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, jl.ID).Error; err != nil {
+		tx.Rollback()
+		return err, *jl
+	}
+	if err := tx.Save(jl).Error; err != nil {
+		tx.Rollback()
+		return err, *jl
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, *jl
+	}
 	return err, *jl
 }
 
@@ -71,7 +93,6 @@ func (jl *Joblist) UpdateViews() {
 		return
 	}
 	qmsql.DEFAULTDB.Model(jl).Where("id = ?", jl.ID).Update("p_views", rejl.Views+1)
-	return
 }
 
 // 分页获取Joblist

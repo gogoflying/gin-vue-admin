@@ -35,7 +35,29 @@ func (wk *UserWork) DeleteUserWork() (err error, list interface{}) {
 
 // 更新UserWork
 func (wk *UserWork) UpdateUserWork() (err error, rewk UserWork) {
-	err = qmsql.DEFAULTDB.Save(wk).Error
+	//err = qmsql.DEFAULTDB.Save(wk).Error
+	//return err, *wk
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp UserWork
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, wk.ID).Error; err != nil {
+		tx.Rollback()
+		return err, *wk
+	}
+	if err := tx.Save(wk).Error; err != nil {
+		tx.Rollback()
+		return err, *wk
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, *wk
+	}
 	return err, *wk
 }
 

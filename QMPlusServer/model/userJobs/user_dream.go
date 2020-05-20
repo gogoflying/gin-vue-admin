@@ -12,7 +12,7 @@ import (
 
 type JobWorkType struct {
 	gorm.Model
-	Name string `json:"name" gorm:"column:name";comment:''`
+	Name string `json:"name" gorm:"column:name;comment:'工作类型'"`
 }
 
 type UserDream struct {
@@ -49,7 +49,29 @@ func (dm *UserDream) DeleteUserDream() (err error) {
 
 // 更新UserDream
 func (dm *UserDream) UpdateUserDream() (err error, redm UserDream) {
-	err = qmsql.DEFAULTDB.Save(dm).Error
+	//err = qmsql.DEFAULTDB.Save(dm).Error
+	//return err, *dm
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp UserDream
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, dm.ID).Error; err != nil {
+		tx.Rollback()
+		return err, *dm
+	}
+	if err := tx.Save(dm).Error; err != nil {
+		tx.Rollback()
+		return err, *dm
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, *dm
+	}
 	return err, *dm
 }
 

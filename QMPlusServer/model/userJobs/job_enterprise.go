@@ -94,7 +94,29 @@ func (info *EnterpriseInfo) DeleteEnterpriseInfo() (err error) {
 
 // 更新EnterpriseInfo
 func (info *EnterpriseInfo) UpdateEnterpriseInfo() (err error, reinfo EnterpriseInfo) {
-	err = qmsql.DEFAULTDB.Save(info).Error
+	//err = qmsql.DEFAULTDB.Save(info).Error
+	//return err, *info
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp EnterpriseInfo
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, info.ID).Error; err != nil {
+		tx.Rollback()
+		return err, *info
+	}
+	if err := tx.Save(info).Error; err != nil {
+		tx.Rollback()
+		return err, *info
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, *info
+	}
 	return err, *info
 }
 
@@ -167,9 +189,13 @@ func (info *EnterpriseInfo) GetInfoListSearch(keyword string, cityId, page, page
 	return err, infoList, total
 }
 
-func (info *EnterpriseInfo) GetAllInfoList() (err error, list interface{}) {
+func (info *EnterpriseInfo) GetAllInfoList(query string) (err error, list interface{}) {
 	var reEnterpriseInfoList []EnterpriseInfo
-	err = qmsql.DEFAULTDB.Select("id,enterprise_name,enterprise_logo").Where("status = 1").Find(&reEnterpriseInfoList).Error
+	db := qmsql.DEFAULTDB.Select("id,enterprise_name,enterprise_logo").Where("status = 1")
+	if len(query) > 0 {
+		db = db.Where("enterprise_name LIKE ? ", "%"+query+"%")
+	}
+	err = db.Find(&reEnterpriseInfoList).Error
 	return err, reEnterpriseInfoList
 }
 

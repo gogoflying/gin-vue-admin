@@ -12,7 +12,7 @@ import (
 /*基本工资、岗位工资、薪资合计、业绩提成、奖金基数、浮动系数、月度奖金、本月工作日天数、加班费、通讯补贴、餐食补贴、交通补贴、其他补贴、补贴合计、其他假期、年假天数、迟到扣款、病假天数、病假扣款、事假天数、事假扣款、扣款合计、应发调整、本月应发工资、代扣五险、代扣住房公积金、代扣个人所得税、实发工资*/
 type Salarys struct {
 	gorm.Model
-	Enterprise   string `json:"enterprise" gorm:"column:enterprise";comment:'入职企业'`
+	Enterprise   string `json:"enterprise" gorm:"column:enterprise;comment:'入职企业'"`
 	EnterpriseId int    `json:"enterprise_id" gorm:"column:enterprise_id;comment:'入职企业id'"`
 	Year         int    `json:"year" gorm:"column:year"`
 	Month        int    `json:"month" gorm:"column:month"`
@@ -74,7 +74,29 @@ func (un *Salarys) DeleteSalarys() (err error) {
 
 // 更新Salarys
 func (un *Salarys) UpdateSalarys() (err error, reun Salarys) {
-	err = qmsql.DEFAULTDB.Save(un).Error
+	//err = qmsql.DEFAULTDB.Save(un).Error
+	//return err, *un
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp Salarys
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, un.ID).Error; err != nil {
+		tx.Rollback()
+		return err, *un
+	}
+	if err := tx.Save(un).Error; err != nil {
+		tx.Rollback()
+		return err, *un
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, *un
+	}
 	return err, *un
 }
 

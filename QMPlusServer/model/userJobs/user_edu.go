@@ -36,7 +36,30 @@ func (ed *UserEducation) DeleteUsereducation() (err error, list interface{}) {
 
 // 更新Usereducation
 func (ed *UserEducation) UpdateUsereducation() (err error, list interface{}) {
-	qmsql.DEFAULTDB.Save(ed)
+	//qmsql.DEFAULTDB.Save(ed)
+	//err, eds, _ := ed.GetInfoListByOpenid(ed.Openid, 1, 20)
+	//return err, eds
+
+	db := qmsql.DEFAULTDB
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	var tmp UserEducation
+	if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&tmp, ed.ID).Error; err != nil {
+		tx.Rollback()
+		return err, nil
+	}
+	if err := tx.Save(ed).Error; err != nil {
+		tx.Rollback()
+		return err, nil
+	}
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err, nil
+	}
 	err, eds, _ := ed.GetInfoListByOpenid(ed.Openid, 1, 20)
 	return err, eds
 }

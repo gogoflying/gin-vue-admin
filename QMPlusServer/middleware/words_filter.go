@@ -46,7 +46,7 @@ func GetAccessTocken() (string, error) {
 	var mapResult map[string]interface{}
 	err = json.Unmarshal([]byte(body), &mapResult)
 	if err != nil {
-		fmt.Println("JsonToMapDemo err: ", err)
+		return "", err
 	}
 
 	return mapResult["access_token"].(string), nil
@@ -61,16 +61,14 @@ func CheckWordsIllegal(words string) (bool, error) {
 	}
 
 	//var access_token string
-	fmt.Printf("StartRun 001 a:%v\n", g_tocken.access_token)
 	if g_tocken.access_token == "" {
-		fmt.Printf("StartRun 002 b:%v\n", g_tocken.access_token)
 		access_token, err := GetAccessTocken()
 		if err != nil {
 			return false, err
 		}
 		g_tocken.access_token = access_token
 	}
-	fmt.Printf("StartRun 003 c:%v\n", g_tocken.access_token)
+
 	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=%s", g_tocken.access_token)
 	con := ContentInfo{
 		Content: words,
@@ -82,7 +80,6 @@ func CheckWordsIllegal(words string) (bool, error) {
 	}
 	var returnErr ReturnErrorInfo
 	json.Unmarshal([]byte(body), &returnErr)
-	fmt.Println(returnErr)
 	if returnErr.ErrCode != 0 {
 		return false, fmt.Errorf("%v", "禁止上传敏感信息")
 	}
@@ -97,7 +94,6 @@ func WechatDetectImg(bts []byte) (bool, error) {
 	fileName := "detect"
 	writer, err := mpWriter.CreateFormFile("media", fileName)
 	if err != nil {
-		fmt.Println(err.Error())
 		return false, err
 	}
 	reader := bytes.NewReader(bts)
@@ -105,15 +101,12 @@ func WechatDetectImg(bts []byte) (bool, error) {
 	//关闭了才能把内容写入
 	mpWriter.Close()
 
-	fmt.Printf("StartRun before 001\n")
 	if g_tocken.access_token == "" {
-		fmt.Printf("StartRun before 002\n")
 		g_tocken.access_token, err = GetAccessTocken()
 		if err != nil {
 			return false, err
 		}
 	}
-	fmt.Printf("StartRun before 003\n")
 
 	client := http.DefaultClient
 	destURL := "https://api.weixin.qq.com/wxa/img_sec_check?access_token=" + g_tocken.access_token
@@ -122,7 +115,7 @@ func WechatDetectImg(bts []byte) (bool, error) {
 	req.Header.Set("Content-Type", "application/octet-stream")
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err.Error())
+		return false, err
 	}
 	defer resp.Body.Close()
 	vs := make(map[string]interface{})
@@ -151,7 +144,6 @@ func NewFilterTocken() *WX_Access {
 func (wx_a *WX_Access) StartRun() {
 	var mtx sync.Mutex
 	for {
-		fmt.Printf("StartRun before g_id:%v\n", g_tocken.access_token)
 		token, err := GetAccessTocken()
 		if err != nil {
 			time.Sleep(time.Second)
@@ -160,7 +152,6 @@ func (wx_a *WX_Access) StartRun() {
 			mtx.Lock()
 			g_tocken.access_token = token
 			mtx.Unlock()
-			fmt.Printf("StartRun after g_id:%v\n", g_tocken.access_token)
 			time.Sleep(time.Hour)
 		}
 	}

@@ -8,7 +8,8 @@ import (
 	"gin-vue-admin/init/initlog/qmlog"
 	"gin-vue-admin/init/qmsql"
 	registerTable "gin-vue-admin/init/registTerable"
-	"gin-vue-admin/middleware"
+
+	//	"gin-vue-admin/middleware"
 	"os"
 	//"runtime"
 )
@@ -47,8 +48,8 @@ func main() {
 	// 程序结束前关闭数据库链接
 	defer qmsql.DEFAULTDB.Close()
 	//开启weixin tocken 每2小时刷新一次
-	wx := middleware.NewFilterTocken()
-	go wx.StartRun()
+	//wx := middleware.NewFilterTocken()
+	//go wx.StartRun()
 	// 注册路由
 	Router := initRouter.InitRouter()
 

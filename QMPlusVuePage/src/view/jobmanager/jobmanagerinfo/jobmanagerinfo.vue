@@ -2,13 +2,7 @@
   <div>
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item v-show="enPriseId == 0" label="企业名称">
-          <el-input placeholder="企业名称" v-model="searchInfo.enterprise_name"></el-input>
-        </el-form-item>
-        <el-form-item label="职位名称">
-          <el-input placeholder="职位名称" v-model="searchInfo.p_name"></el-input>
-        </el-form-item>
-        <el-form-item label="工作城市" label-width="120px" prop="p_city_id">
+        <el-form-item label="工作城市">
           <el-select
             @change="selectCityName"
             placeholder="请选择工作城市"
@@ -22,7 +16,13 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="工作年限" label-width="120px" prop="p_edujy_id">
+        <el-form-item v-show="enPriseId == 0" label="企业名称">
+          <el-input placeholder="企业名称" v-model="searchInfo.enterprise_name"></el-input>
+        </el-form-item>
+        <el-form-item label="职位名称" label-width="85px">
+          <el-input placeholder="职位名称" v-model="searchInfo.p_name"></el-input>
+        </el-form-item>
+        <el-form-item label="工作年限" prop="p_edujy_id">
           <el-select
             @change="selectJobyear"
             placeholder="请选择工作年限"
@@ -36,7 +36,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="最低学历" label-width="120px" prop="p_education_id">
+        <el-form-item label="最低学历" prop="p_education_id">
           <el-select
             @change="selectJobedu"
             placeholder="请选择最低学历"
@@ -50,7 +50,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="工作类型" label-width="120px" prop="p_type_id">
+        <el-form-item label="工作类型" prop="p_type_id">
           <el-select
             @change="selectJobtype"
             placeholder="请选择工作类型"
@@ -64,14 +64,36 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="状态" label-width="120px" prop="p_status">
-          <el-radio-group v-model="jobmanagerinfo.p_status">
-            <el-radio :label="0">普通</el-radio>
-            <el-radio :label="1">急招</el-radio>
-            <el-radio :label="2">热门</el-radio>
-            <el-radio :label="3">下线</el-radio>
-          </el-radio-group>
+        <el-form-item label="职位状态" prop="p_status">
+          <el-select
+            @change="selectJobtype"
+            placeholder="请选择职位状态"
+            v-model.number="jobmanagerinfo.p_status"
+          >
+            <el-option
+              :key="jobstatus.name"
+              :label="jobstatus.name"
+              :value="jobstatus.ID"
+              v-for="jobstatus in jobstatuss"
+            ></el-option>
+          </el-select>
         </el-form-item>
+
+        <el-form-item label="是否置顶" prop="p_top">
+          <el-select
+            @change="selectJobtype"
+            placeholder="请选择是否置顶"
+            v-model.number="jobmanagerinfo.p_top"
+          >
+            <el-option
+              :key="jobtop.name"
+              :label="jobtop.name"
+              :value="jobtop.ID"
+              v-for="jobtop in jobtops"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        
         <el-form-item>
           <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
         </el-form-item>
@@ -172,7 +194,76 @@ export default {
       jobsalary: [],
       jobtypes: [],
       jobedus: [],
-      cityinfo: []
+      cityinfo: [],
+      jobtops:[{
+        ID:0,
+        name:'否'
+      },
+      {
+        ID:1,
+        name:'是'
+      }],
+      jobstatuss: [
+        {
+          ID: 0,
+          name: "普通"
+        },
+        {
+          ID: 1,
+          name: "急招"
+        },
+        {
+          ID: 2,
+          name: "热门"
+        },
+        {
+          ID: 3,
+          name: "下线"
+        }
+      ],
+      jobmanagerinfo: {
+        p_name: "",
+        p_salary_id: "",
+        p_salary: "",
+        p_latitude: "39.916527",
+        p_longitude: "116.397128",
+        p_address: "",
+        p_city: "",
+        p_city_id: "",
+        p_edujy: "",
+        p_edujy_id: "",
+        p_education: "",
+        p_education_id: "",
+        p_type: "",
+        p_type_id: "",
+        p_desc: "",
+        p_status: 0,
+        p_count: "",
+        p_outdate: "",
+        enterprise_id: "",
+        enterprise_name: "",
+        p_top:0,
+      },
+      rules: {
+        p_salary_id: [
+          { required: true, message: "请输入薪资范围", trigger: "blur" }
+        ],
+        p_address: [
+          { required: true, message: "请输入工作地点", trigger: "blur" }
+        ],
+        p_city_id: [
+          { required: true, message: "请输入工作城市", trigger: "blur" }
+        ],
+        p_edujy_id: [
+          { required: true, message: "请输入工作年限", trigger: "blur" }
+        ],
+        p_education_id: [
+          { required: true, message: "请输入最低学历", trigger: "blur" }
+        ],
+        p_type_id: [
+          { required: true, message: "请输入工作类型", trigger: "blur" }
+        ]
+      }
     };
   },
   computed: {

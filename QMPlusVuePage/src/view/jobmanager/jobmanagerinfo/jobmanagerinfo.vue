@@ -8,8 +8,69 @@
         <el-form-item label="职位名称">
           <el-input placeholder="职位名称" v-model="searchInfo.p_name"></el-input>
         </el-form-item>
-        <el-form-item label="工作城市">
-          <el-input placeholder="工作城市" v-model="searchInfo.p_city" style="width:140px;"></el-input>
+        <el-form-item label="工作城市" label-width="120px" prop="p_city_id">
+          <el-select
+            @change="selectCityName"
+            placeholder="请选择工作城市"
+            v-model.number="jobmanagerinfo.p_city_id"
+          >
+            <el-option
+              :key="city.name"
+              :label="city.name"
+              :value="city.ID"
+              v-for="city in cityinfo"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="工作年限" label-width="120px" prop="p_edujy_id">
+          <el-select
+            @change="selectJobyear"
+            placeholder="请选择工作年限"
+            v-model="jobmanagerinfo.p_edujy_id"
+          >
+            <el-option
+              :key="jobyear.name"
+              :label="jobyear.name"
+              :value="jobyear.ID"
+              v-for="jobyear in jobyears"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="最低学历" label-width="120px" prop="p_education_id">
+          <el-select
+            @change="selectJobedu"
+            placeholder="请选择最低学历"
+            v-model="jobmanagerinfo.p_education_id"
+          >
+            <el-option
+              :key="jobedu.name"
+              :label="jobedu.name"
+              :value="jobedu.ID"
+              v-for="jobedu in jobedus"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="工作类型" label-width="120px" prop="p_type_id">
+          <el-select
+            @change="selectJobtype"
+            placeholder="请选择工作类型"
+            v-model.number="jobmanagerinfo.p_type_id"
+          >
+            <el-option
+              :key="jobtype.name"
+              :label="jobtype.name"
+              :value="jobtype.ID"
+              v-for="jobtype in jobtypes"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态" label-width="120px" prop="p_status">
+          <el-radio-group v-model="jobmanagerinfo.p_status">
+            <el-radio :label="0">普通</el-radio>
+            <el-radio :label="1">急招</el-radio>
+            <el-radio :label="2">热门</el-radio>
+            <el-radio :label="3">下线</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item>
           <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
@@ -23,7 +84,7 @@
     </div>
     <el-table
       :data="tableData"
-      border
+      border=""
       stripe
       @selection-change="handleSelectionChange"
       ref="multipleTable"
@@ -41,11 +102,9 @@
       <el-table-column label="招聘人数" min-width="80" prop="p_count"></el-table-column>
       <el-table-column label="工作类型" min-width="100" prop="p_type"></el-table-column>
       <el-table-column label="工作城市" min-width="100" prop="p_city"></el-table-column>
-
       <!-- <el-table-column label="工作地点" min-width="100" prop="p_address"></el-table-column> 
       <el-table-column label="工作年限" min-width="100" prop="p_edujy"></el-table-column>
       <el-table-column label="最低学历" min-width="150" prop="p_education"></el-table-column>-->
-
       <el-table-column label="状态" min-width="100" prop="p_status" :formatter="StatusFormat"></el-table-column>
       <el-table-column label="浏览数" min-width="100" prop="p_views"></el-table-column>
       <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
@@ -55,21 +114,13 @@
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
           </router-link>
-
           <el-button
             @click="changeTop(scope.row)"
             size="small"
             type="primary"
             :icon="scope.row.p_top == 0 ? 'el-icon-top':'el-icon-bottom'"
           >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
-
-          <el-button
-            @click="flush(scope.row)"
-            size="small"
-            type="primary"
-            icon="el-icon-refresh"
-          >刷新</el-button>
-
+          <el-button @click="flush(scope.row)" size="small" type="primary" icon="el-icon-refresh">刷新</el-button>
           <el-button
             @click="deletejob(scope.row)"
             size="small"
@@ -99,7 +150,8 @@ const path = process.env.VUE_APP_BASE_API;
 import {
   getJoblistListBackend,
   deleteJoblist,
-  updateJoblist
+  updateJoblist,
+  getjoblistOptions
 } from "@/api/jobmanagerinfo";
 import { formatTimeToStr } from "@/utils/data";
 import { mapGetters } from "vuex";
@@ -115,7 +167,12 @@ export default {
       listKey: "RspJoblistList",
       path: path,
       multipleSelection: [],
-      enterpriseInfo: []
+      enterpriseInfo: [],
+      jobyears: [],
+      jobsalary: [],
+      jobtypes: [],
+      jobedus: [],
+      cityinfo: []
     };
   },
   computed: {
@@ -216,6 +273,21 @@ export default {
     //     this.enterpriseInfo = [];
     //   }
     // });
+    getjoblistOptions().then(res => {
+      if (res.success) {
+        this.jobyears = res.data.jbwe;
+        this.jobsalary = res.data.js;
+        this.jobtypes = res.data.jwt;
+        this.jobedus = res.data.el;
+        this.cityinfo = res.data.cityinfo;
+      } else {
+        this.jobyears = [];
+        this.jobsalary = [];
+        this.jobtypes = [];
+        this.jobedus = [];
+        this.cityinfo = [];
+      }
+    });
   }
 };
 </script>

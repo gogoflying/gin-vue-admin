@@ -1,8 +1,65 @@
 <template>
   <div>
-    <div class="button-box clearflex">
-      <el-button @click="addEnterprise" type="primary" icon="el-icon-plus">新增企业</el-button>
+    <div class="search-term">
+      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item label="企业名称">
+          <el-input placeholder="企业名称" v-model="searchInfo.enterprise_name"></el-input>
+        </el-form-item>
+        <el-form-item label="企业性质" prop="enterprise_type">
+          <el-select
+            @change="selectEnpType"
+            placeholder="请选择企业性质"
+            v-model="searchInfo.enterprise_type"
+          >
+            <el-option
+              :key="enptype.name"
+              :label="enptype.name"
+              :value="enptype.ID"
+              v-for="enptype in enterprisetype"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="行业类别" prop="industry_type">
+          <el-select
+            @change="selectEnpIndust"
+            placeholder="请选择行业类别"
+            v-model="searchInfo.industry_type"
+          >
+            <el-option
+              :key="industry.name"
+              :label="industry.name"
+              :value="industry.ID"
+              v-for="industry in industrytype"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所在城市" prop="city_id">
+          <el-select
+            @change="selectCityName"
+            placeholder="请选择注册城市"
+            v-model="searchInfo.city_id"
+            style="width:92%"
+          >
+            <el-option
+              :key="city.name"
+              :label="city.name"
+              :value="city.ID"
+              v-for="city in cityinfo"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="searchClear" type="primary" icon="el-icon-search">清空</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="addEnterprise" type="primary" icon="el-icon-plus">新增企业</el-button>
+        </el-form-item>
+      </el-form>
     </div>
+
     <el-table :data="tableData" border stripe>
       <el-table-column type="expand">
         <template slot-scope="scope">
@@ -309,6 +366,12 @@ export default {
     }
   },
   methods: {
+    //条件搜索前端看此方法
+    onSubmit() {
+      this.page = 1;
+      this.pageSize = 10;
+      this.getTableData();
+    },
     async changestatus(row) {
       const res = await updateEnterpriseInfo(row);
       if (res.success) {
@@ -373,6 +436,12 @@ export default {
         enterprise_qfc: ""
       };
       this.addCompanyDialog = false;
+    },
+    searchClear() {
+      this.searchInfo.city_id = [];
+      this.searchInfo.enterprise_type = [];
+      this.searchInfo.industry_type = [];
+      this.searchInfo.enterprise_name = "";
     },
     //新增企业
     addEnterprise() {

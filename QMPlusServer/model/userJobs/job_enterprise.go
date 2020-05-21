@@ -158,14 +158,46 @@ func (info *EnterpriseInfo) GetInfoList(pinfo modelInterface.PageInfo) (err erro
 		return
 	} else {
 		reEnterpriseInfoList := make([]*EnterpriseInfo, 0)
-		err = db.Find(&reEnterpriseInfoList).Error
+		model := qmsql.DEFAULTDB.Model(pinfo)
+		if info.EnterPriseName != "" {
+			model = model.Where("enterprise_name = ?", info.EnterPriseName)
+			db = db.Where("enterprise_name = ?", info.EnterPriseName)
+		}
+
+		if info.IndustryType > 0 {
+			model = model.Where("industry_type = ?", info.IndustryType)
+			db = db.Where("industry_type = ?", info.IndustryType)
+		}
+
+		if info.EnterpriseType > 0 {
+			model = model.Where("enterprise_type = ?", info.EnterpriseType)
+			db = db.Where("enterprise_type = ?", info.EnterpriseType)
+		}
+
+		if info.EnterpriseCityId > 0 {
+			model = model.Where("city_id = ?", info.EnterpriseCityId)
+			db = db.Where("city_id = ?", info.EnterpriseCityId)
+		}
+
+		err = model.Find(&reEnterpriseInfoList).Count(&total).Error
+		if err != nil {
+			return err, reEnterpriseInfoList, total
+		} else {
+			err = db.Find(&reEnterpriseInfoList).Error
+			/*for _, reP := range reEnterpriseInfoList {
+				var count int
+				qmsql.DEFAULTDB.Model(new(Joblist)).Where("company_id = ?", reP.ID).Count(&count)
+				reP.JobCount = count
+			}*/
+		}
+		/*err = db.Find(&reEnterpriseInfoList).Error
 		if err == nil {
 			for _, reP := range reEnterpriseInfoList {
 				var count int
 				qmsql.DEFAULTDB.Model(new(Joblist)).Where("company_id = ?", reP.ID).Count(&count)
 				reP.JobCount = count
 			}
-		}
+		}*/
 		return err, reEnterpriseInfoList, total
 	}
 }

@@ -27,6 +27,7 @@
               name="logVerify"
               placeholder="请输入验证码"
               maxlength="10"
+              @keyup.enter.native="submitForm('ruleForm2')"
             />
             <img :src="path + picPath" alt="请输入验证码" @click="loginVefify()" class="vPic" />
           </el-form-item>

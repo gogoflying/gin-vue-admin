@@ -1,13 +1,22 @@
 <template>
   <div>
-    <el-form :rules="rules" ref="authEnform" :model="authform" label-width="80px">
-      <el-form-item label="企业名称" label-width="80px" prop="enterprise_name">
+    <el-form
+      :rules="rules"
+      ref="authEnform"
+      :model="authform"
+      label-width="80px"
+      :disabled="authform.status == 1"
+    >
+      <el-form-item label="提示信息" prop="errors" v-show="authform.errors != '' && authform.status == 0">
+        <span style="color:red">{{authform.errors}}</span>
+      </el-form-item>
+      <el-form-item label="企业名称" prop="enterprise_name">
         <el-input v-model="authform.enterprise_name" style="width:50%;"></el-input>
       </el-form-item>
-      <el-form-item label="企业规模" label-width="80px" prop="enterprise_scale">
-        <el-input v-model.number="authform.enterprise_scale" style="width:50%;"></el-input>
+      <el-form-item label="企业规模" prop="enterprise_scale">
+        <el-input type="number" v-model.number="authform.enterprise_scale" style="width:50%;"></el-input>
       </el-form-item>
-      <el-form-item label="企业性质" label-width="80px" prop="enterprise_type">
+      <el-form-item label="企业性质" prop="enterprise_type">
         <el-select @change="selectEnpType" placeholder="请选择企业性质" v-model="authform.enterprise_type">
           <el-option
             :key="enptype.name"
@@ -18,7 +27,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="行业类别" label-width="80px" prop="industry_type">
+      <el-form-item label="行业类别" prop="industry_type">
         <el-select @change="selectEnpIndust" placeholder="请选择行业类别" v-model="authform.industry_type">
           <el-option
             :key="industry.name"
@@ -28,15 +37,20 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
-        <quill-editor class="ql-editor" ref="myQuillEditor" v-model="authform.enterprise_desc"></quill-editor>
+      <el-form-item label="企业描述" prop="enterprise_desc">
+        <quill-editor
+          class="ql-editor"
+          ref="myQuillEditor"
+          v-model="authform.enterprise_desc"
+          :disabled="authform.status == 1"
+        ></quill-editor>
       </el-form-item>
-      <el-form-item label="所在城市" label-width="80px" prop="city_id">
+      <el-form-item label="所在城市" prop="city_id">
         <el-select @change="selectCityName" placeholder="请选择注册城市" v-model="authform.city_id">
           <el-option :key="city.name" :label="city.name" :value="city.ID" v-for="city in cityinfo"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="企业logo" label-width="80px" prop="enterprise_logo">
+      <el-form-item label="企业logo" prop="enterprise_logo">
         <el-upload
           :headers="{'x-token':token}"
           :on-success="handleAvatarLogoSuccess"
@@ -50,7 +64,7 @@
           <i class="el-icon-plus avatar-uploader-icon" v-else></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="企业主图" label-width="80px" prop="enterprise_img">
+      <el-form-item label="企业主图" prop="enterprise_img">
         <el-upload
           :headers="{'x-token':token}"
           :on-success="handleAvatarImgSuccess"
@@ -64,7 +78,7 @@
           <i class="el-icon-plus avatar-uploader-icon" v-else></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="企业资质" label-width="80px" prop="enterprise_qfc">
+      <el-form-item label="企业资质" prop="enterprise_qfc">
         <el-upload
           :headers="{'x-token':token}"
           :on-success="handleAvatarQfcSuccess"
@@ -106,12 +120,15 @@ export default {
         enterprise_address: "",
         enterprise_scale: null,
         enterprise_type: null,
+        enterprise_type_info: "",
         industry_type: null,
+        enterprise_indust_info: "",
         enterprise_desc: "",
         city_id: null,
         enterprise_logo: "",
         enterprise_img: "",
-        enterprise_qfc: ""
+        enterprise_qfc: "",
+        errors:""
       },
       rules: {
         enterprise_name: [
@@ -182,6 +199,27 @@ export default {
     ...mapGetters("user", ["enPriseId", "token"])
   },
   methods: {
+    selectCityName(val) {
+      var selectedItem = {};
+      selectedItem = this.cityinfo.find(item => {
+        return item.ID === val;
+      });
+      this.authform.enterprise_address = selectedItem.name;
+    },
+    selectEnpType(val) {
+      var selectedItem = {};
+      selectedItem = this.enterprisetype.find(item => {
+        return item.ID === val;
+      });
+      this.authform.enterprise_type_info = selectedItem.name;
+    },
+    selectEnpIndust(val) {
+      var selectedItem = {};
+      selectedItem = this.industrytype.find(item => {
+        return item.ID === val;
+      });
+      this.authform.enterprise_indust_info = selectedItem.name;
+    },
     filterMethod(query, item) {
       return item.pinyin.indexOf(query) > -1;
     },

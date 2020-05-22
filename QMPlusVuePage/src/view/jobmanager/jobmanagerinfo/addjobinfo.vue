@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="edit_container">
-      <el-form :rules="rules" ref="jobForm" :model="jobmanagerinfo">
-        <el-form-item label="工作名称" label-width="120px" prop="p_name">
+    <div>
+      <el-form :rules="rules" ref="jobForm" :model="jobmanagerinfo" label-width="80px">
+        <el-form-item label="工作名称" prop="p_name">
           <el-input v-model="jobmanagerinfo.p_name" placeholder="请输入工作名称" style="width:50%;"></el-input>
         </el-form-item>
-        <el-form-item v-show="enPriseId == 0" label="所属公司" label-width="120px" prop="p_salary_high">
-          <el-select
+        <el-form-item v-show="enPriseId == 0" label="所属公司" prop="enterprise_id">
+          <!-- <el-select
             @change="selectEp"
             placeholder="请选择所属公司"
             v-model="jobmanagerinfo.enterprise_id"
@@ -17,9 +17,26 @@
               :value="ep.ID"
               v-for="ep in enterpriseInfo"
             ></el-option>
+          </el-select>-->
+          <el-select
+            @change="selectEp"
+            v-model="jobmanagerinfo.enterprise_id"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请选择所属公司"
+            :remote-method="remoteMethod"
+            :loading="loading"
+          >
+            <el-option
+              v-for="ep in enterpriseInfo"
+              :key="ep.enterprise_name"
+              :value="ep.ID"
+              :label="ep.enterprise_name"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="薪资范围" label-width="120px" prop="p_salary_id">
+        <el-form-item label="薪资范围" prop="p_salary_id">
           <el-select
             @change="selectJobsalary"
             placeholder="请选择薪资范围"
@@ -28,17 +45,17 @@
             <el-option :key="js.name" :label="js.name" :value="js.ID" v-for="js in jobsalary"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="工作地点" label-width="120px" prop="p_address">
+        <el-form-item label="工作地点" prop="p_address">
           <el-input v-model="jobmanagerinfo.p_address" placeholder="请输入工作地点" style="width:45%;"></el-input>
           <el-button size="mini" icon="el-icon-map-location" @click="openMap"></el-button>
         </el-form-item>
-        <el-form-item label="工作地点纬度" label-width="120px" prop="p_latitude" hidden>
+        <el-form-item label="工作地点纬度" prop="p_latitude" hidden>
           <el-input v-model="jobmanagerinfo.p_latitude" placeholder="请输入工作地点纬度" style="width:50%;"></el-input>
         </el-form-item>
-        <el-form-item label="工作地点经度" label-width="120px" prop="p_longitude" hidden>
+        <el-form-item label="工作地点经度" prop="p_longitude" hidden>
           <el-input v-model="jobmanagerinfo.p_longitude" placeholder="请输入工作地点经度" style="width:50%;"></el-input>
         </el-form-item>
-        <el-form-item label="工作城市" label-width="120px" prop="p_city_id">
+        <el-form-item label="工作城市" prop="p_city_id">
           <el-select
             @change="selectCityName"
             placeholder="请选择工作城市"
@@ -52,7 +69,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="工作年限" label-width="120px" prop="p_edujy_id">
+        <el-form-item label="工作年限" prop="p_edujy_id">
           <el-select
             @change="selectJobyear"
             placeholder="请选择工作年限"
@@ -66,7 +83,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="最低学历" label-width="120px" prop="p_education_id">
+        <el-form-item label="最低学历" prop="p_education_id">
           <el-select
             @change="selectJobedu"
             placeholder="请选择最低学历"
@@ -80,7 +97,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="工作类型" label-width="120px" prop="p_type_id">
+        <el-form-item label="工作类型" prop="p_type_id">
           <el-select
             @change="selectJobtype"
             placeholder="请选择工作类型"
@@ -94,7 +111,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="状态" label-width="120px" prop="p_status">
+        <el-form-item label="状态" prop="p_status">
           <el-radio-group v-model="jobmanagerinfo.p_status">
             <el-radio :label="0">普通</el-radio>
             <el-radio :label="1">急招</el-radio>
@@ -102,14 +119,14 @@
             <el-radio :label="3">下线</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="招聘人数" label-width="120px" prop="p_count">
+        <el-form-item label="招聘人数" prop="p_count">
           <el-input
             v-model.number="jobmanagerinfo.p_count"
             placeholder="请输入招聘人数"
             style="width:50%;"
           ></el-input>
         </el-form-item>
-        <el-form-item label="失效日期" label-width="120px" prop="p_outdate">
+        <el-form-item label="失效日期" prop="p_outdate">
           <el-date-picker
             placeholder="选择结束时间"
             type="date"
@@ -120,7 +137,7 @@
             v-model="jobmanagerinfo.p_outdate"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="工作描述" label-width="120px" prop="p_desc">
+        <el-form-item label="工作描述" prop="p_desc">
           <quill-editor
             class="ql-editor"
             style="width:80%;"
@@ -132,12 +149,14 @@
             v-model="jobmanagerinfo.p_desc"
           ></quill-editor>
         </el-form-item>
-        <el-row type="flex" justify="center">
-          <el-col :span="13">
-            <el-button @click="closeAddjobDialog" type="primary" round>返 回</el-button>
-            <el-button @click="enterAddjobDialog" type="primary" round>确 定</el-button>
-          </el-col>
-        </el-row>
+        <el-form-item label-width="100px">
+          <el-row justify="center">
+            <el-col>
+              <el-button @click="closeAddjobDialog" type="primary" round>返 回</el-button>
+              <el-button @click="enterAddjobDialog" type="primary" round>确 定</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
       </el-form>
     </div>
     <el-dialog :visible.sync="addMapDialog" custom-class="user-dialog">
@@ -162,7 +181,7 @@ import {
   findJoblist,
   getjoblistOptions
 } from "@/api/jobmanagerinfo";
-import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
+import { getEnterpriseListBySearch } from "@/api/enterpriseinfo";
 import { mapGetters } from "vuex";
 export default {
   name: "NewJobInfo",
@@ -174,6 +193,7 @@ export default {
       editorOption: {},
       searchaddress: "",
       enterpriseInfo: [],
+      loading: false,
       jobmanagerinfo: {
         p_name: "",
         p_salary_id: "",
@@ -340,6 +360,26 @@ export default {
     }
   },
   methods: {
+    remoteMethod(query) {
+      if (query !== "") {
+        this.loading = true;
+        setTimeout(() => {
+          this.loading = false;
+          const params = {
+            query: query
+          };
+          getEnterpriseListBySearch(params).then(res => {
+            if (res.success) {
+              this.enterpriseInfo = res.data.result;
+            } else {
+              this.enterpriseInfo = [];
+            }
+          });
+        }, 200);
+      } else {
+        this.enterpriseInfo = [];
+      }
+    },
     selectEp(val) {
       var selectedItem = {};
       selectedItem = this.enterpriseInfo.find(item => {
@@ -479,30 +519,36 @@ export default {
       });
     }
   },
-  created() {
+  async created() {
     if (this.$route.query && this.$route.query.id) {
       const id = this.$route.query && this.$route.query.id;
       const row = {
         ID: Number(id)
       };
-      findJoblist(row).then(res => {
-        if (res.success) {
-          this.isEdit = true;
-          this.jobmanagerinfo = res.data.rejl;
-        } else {
-          this.isEdit = false;
-          this.jobmanagerinfo = {};
-        }
-      });
+      const res = await findJoblist(row);
+      if (res.success) {
+        this.isEdit = true;
+        this.jobmanagerinfo = res.data.rejl;
+      } else {
+        this.isEdit = false;
+        this.jobmanagerinfo = {};
+      }
     }
     if (this.enPriseId == 0) {
-      getEnterpriseAllInfo().then(res => {
-        if (res.success) {
-          this.enterpriseInfo = res.data.result;
-        } else {
-          this.enterpriseInfo = [];
-        }
-      });
+      if (this.jobmanagerinfo != null) {
+        //this.remoteMethod(this.jobmanagerinfo.enterprise_name);
+        this.enterpriseInfo.push({
+          ID: this.jobmanagerinfo.enterprise_id,
+          enterprise_name: this.jobmanagerinfo.enterprise_name
+        });
+      }
+      // getEnterpriseAllInfo().then(res => {
+      //   if (res.success) {
+      //     this.enterpriseInfo = res.data.result;
+      //   } else {
+      //     this.enterpriseInfo = [];
+      //   }
+      // });
     }
     getjoblistOptions().then(res => {
       if (res.success) {

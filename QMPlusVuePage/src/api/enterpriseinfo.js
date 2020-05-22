@@ -91,6 +91,15 @@ export const createEnterpriseInfo = (data) => {
     })
 }
 
+export const getEnterpriseListBySearch = (params) => {
+    return service({
+        url: "/enterprise/getEnterpriseListBySearch",
+        method: 'post',
+        params
+    })
+}
+
+
 export const getEnterpriseOptions = (data) => {
     return service({
         url: "/enterprise/getEnterpriseOptions",

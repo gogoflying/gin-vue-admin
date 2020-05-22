@@ -16,30 +16,25 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe>
-      <el-table-column label="id" min-width="30" prop="ID" fixed></el-table-column>
-      <el-table-column label="新闻标题" min-width="150" prop="title" fixed></el-table-column>
+      <el-table-column label="id" min-width="40" prop="ID"></el-table-column>
+      <el-table-column label="新闻标题" min-width="100" prop="title" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="新闻副标题" min-width="100" prop="sub_title" v-if="false"></el-table-column>
       <!-- <el-table-column label="排序" min-width="100" prop="order"></el-table-column> -->
-      <el-table-column label="新闻类型" min-width="35" prop="news_type" :formatter="newTypeFormat"></el-table-column>
-      <el-table-column label="状态" min-width="30" prop="status">
+      <el-table-column label="新闻类型" min-width="80" prop="news_type" :formatter="newTypeFormat"></el-table-column>
+      <el-table-column label="状态" min-width="80" prop="status">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.status | statusFilter }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="浏览量" min-width="30" prop="count"></el-table-column>
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column label="浏览量" min-width="80" prop="count"></el-table-column>
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <router-link
             :to="{name:'newdetail', params:{row:scope.row}, query: { id: scope.row.ID }}"
           >
-            <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
+            <el-button type="text" size="small" icon="el-icon-edit">编辑</el-button>
           </router-link>
-          <el-button
-            @click="deletenew(scope.row)"
-            size="small"
-            icon="el-icon-delete"
-            type="primary"
-          >删除</el-button>
+          <el-button @click="deletenew(scope.row)" size="small" icon="el-icon-delete" type="text">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -82,7 +77,7 @@ export default {
     };
   },
   methods: {
-    newTypeFormat(row){
+    newTypeFormat(row) {
       if (row.news_type == 1) {
         return "社保";
       } else {

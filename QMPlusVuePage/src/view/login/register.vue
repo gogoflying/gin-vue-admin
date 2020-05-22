@@ -154,18 +154,18 @@ export default {
   background: #fff;
   height: 100vh;
   .login-box {
-    width: 40vw;
+    width: 80vw;
     position: absolute;
     left: 50%;
-    margin-left: -22vw;
+    margin-left: -40vw;
     top: 5vh;
     .logo {
       height: 14vh;
       width: 49vh;
     }
     .main {
-      min-width: 260px;
-      width: 358px;
+      min-width: 200px;
+      width: 260px;
       margin: 0 auto;
     }
   }

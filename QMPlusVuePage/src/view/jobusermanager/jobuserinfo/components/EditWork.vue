@@ -52,19 +52,15 @@
         <el-input type="textarea" v-model="work_info.workContent" placeholder="请输入专业"></el-input>
       </el-form-item>
       <el-form-item>
-          <el-button style="margin-left:50px;margin-top:20px;" @click="save" size="small" round>保存</el-button>
-          <el-button style="margin-left:50px;margin-top:20px;" @click="cancle" size="small" round>取消</el-button>
+        <el-button style="margin-left:50px;margin-top:20px;" @click="save" size="small" round>保存</el-button>
+        <el-button style="margin-left:50px;margin-top:20px;" @click="cancle" size="small" round>取消</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
-import {
-  createUserWork,
-  deleteUserWork,
-  updateUserWork
-} from "@/api/jobuser";
+import { createUserWork, deleteUserWork, updateUserWork } from "@/api/jobuser";
 export default {
   props: ["workExperience", "option", "openid"],
   data() {
@@ -90,6 +86,7 @@ export default {
     },
     editWork(row) {
       this.isShow = true;
+      this.enable = true;
       this.work_info = row;
       this.isEdit = true;
     },
@@ -135,6 +132,8 @@ export default {
         this.$message({ type: "error", message: "添加失败!" });
       }
       this.$emit("freshResume");
+      this.isShow = true;
+      this.enable = true;
     },
     cancle() {
       if (this.work_info.ID == null) {

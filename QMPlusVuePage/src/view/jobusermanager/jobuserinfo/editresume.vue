@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="10">
         <!-- 左边编辑器 -->
-        <EditBox v-on:freshResume="loadResume" v-bind:resume="resume" class="editBox" />
+        <EditBox v-on:freshResume="loadResume" v-bind:resume="resume" />
       </el-col>
       <el-col :span="14">
         <!-- 右边预览 -->

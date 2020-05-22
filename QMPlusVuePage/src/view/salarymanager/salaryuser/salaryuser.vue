@@ -1,19 +1,26 @@
 <template>
   <div v-loading.fullscreen.lock="fullscreenLoading">
-    <div class="button-box clearflex">
+    <div class="search-term">
       <el-row>
-        <el-col :span="15">
-          <!-- <el-form :inline="true" :model="form">
-            <el-form-item label="姓名">
-              <el-input placeholder="请输入姓名" v-model="searchInfo.p_city"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="info" icon="search" @click="query">查询</el-button>
-            </el-form-item>
-          </el-form>-->
-        </el-col>
-        <el-col :span="3">
-          <el-select v-model="enterprise_id" placeholder="请选择企业">
+        <el-col :span="4">
+          <!-- <el-select v-model="enterprise_id" placeholder="请选择企业">
+            <el-option
+              v-for="ep in enterpriseInfo"
+              :key="ep.enterprise_name"
+              :value="ep.ID"
+              :label="ep.enterprise_name"
+            ></el-option>
+          </el-select>-->
+          <el-select
+            v-show="enPriseId == 0"
+            v-model="enterprise_id"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请选择企业"
+            :remote-method="remoteMethod"
+            :loading="loading"
+          >
             <el-option
               v-for="ep in enterpriseInfo"
               :key="ep.enterprise_name"
@@ -22,7 +29,7 @@
             ></el-option>
           </el-select>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="20">
           <el-upload
             :disabled="importDataDisabled"
             style="display: inline-flex;margin-right: 8px;"
@@ -37,25 +44,21 @@
               <el-button type="success" :icon="importDataBtnIcon">{{importDataBtnText}}</el-button>
             </el-tooltip>
           </el-upload>
-        </el-col>
-        <el-col :span="3">
           <el-button type="primary" @click="downSalarytemplate" icon="el-icon-download">下载模板</el-button>
-        </el-col>
-        <el-col :span="3">
           <el-button type="primary" @click="addSalaryUser" icon="el-icon-plus">新增员工</el-button>
         </el-col>
       </el-row>
     </div>
     <div class="search-term">
-      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+      <el-form :inline="true" :model="searchInfo" class="demo-form-inline" label-width="60px">
         <el-form-item label="姓名">
-          <el-input placeholder="姓名" style="width:120px" v-model="searchInfo.name"></el-input>
+          <el-input placeholder="姓名" v-model="searchInfo.name"></el-input>
         </el-form-item>
         <el-form-item label="身份证">
-          <el-input placeholder="身份证" style="width:200px" v-model="searchInfo.card"></el-input>
+          <el-input placeholder="身份证" v-model="searchInfo.card"></el-input>
         </el-form-item>
         <el-form-item label="手机号">
-          <el-input placeholder="手机号" style="width:150px" v-model="searchInfo.mobile"></el-input>
+          <el-input placeholder="手机号" v-model="searchInfo.mobile"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
@@ -88,7 +91,7 @@
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
               </el-row>
-              <span v-else>户口本未上传</span>
+              <span v-else style="color:red">户口本未上传</span>
             </el-form-item>
             <el-form-item label="本人照片:">
               <el-row v-if="scope.row.photos != null ">
@@ -114,7 +117,7 @@
                   </li>
                 </ul>
               </span>
-              <span v-else>离职证明未上传</span>
+              <span v-else style="color:red">离职证明未上传</span>
             </el-form-item>
             <el-form-item label="毕业证照片:">
               <el-row v-if="scope.row.diplomas != null ">
@@ -181,9 +184,14 @@
           <span>{{scope.row.date}}</span>
         </template>
       </el-table-column>-->
-      <el-table-column fixed="right" label="操作" width="300">
+      <el-table-column label="操作" width="350px">
         <template slot-scope="scope">
-          <el-button @click="editSalaryUser(scope.row)" size="small" type="text">编辑</el-button>
+          <el-button
+            @click="editSalaryUser(scope.row)"
+            icon="el-icon-edit"
+            size="small"
+            type="text"
+          >编辑</el-button>
 
           <el-upload
             :disabled="scope.row.enter_step < 2"
@@ -195,15 +203,26 @@
             :before-upload="beforeUploadPdf"
             :show-file-list="false"
           >
-            <el-button size="small" type="text" :disabled="scope.row.enter_step < 2">上传合同</el-button>
+            <el-button
+              icon="el-icon-upload"
+              size="small"
+              type="text"
+              :disabled="scope.row.enter_step < 2"
+            >上传合同</el-button>
           </el-upload>
           <el-button
             @click="viewContract(scope.row)"
+            icon="el-icon-view"
             size="small"
             type="text"
             :disabled="scope.row.enter_step < 3 "
           >查看合同</el-button>
-          <el-button @click="deleteSalaryUser(scope.row)" size="small" type="text">删除</el-button>
+          <el-button
+            @click="deleteSalaryUser(scope.row)"
+            icon="el-icon-delete"
+            size="small"
+            type="text"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -223,37 +242,55 @@
       custom-class="user-dialog"
       @close="closeAddSalaryUserDialog"
       title="新增员工"
+      width="600px"
     >
       <el-form :rules="rules" ref="salaryuserForm" :model="salaryuserinfo">
         <el-form-item label="姓名" label-width="80px" prop="name">
-          <el-input v-model="salaryuserinfo.name" style="width:80%"></el-input>
+          <el-input v-model="salaryuserinfo.name" style="width:90%"></el-input>
         </el-form-item>
         <el-form-item label="手机" label-width="80px" prop="mobile">
-          <el-input v-model="salaryuserinfo.mobile" style="width:80%"></el-input>
+          <el-input v-model="salaryuserinfo.mobile" style="width:90%"></el-input>
         </el-form-item>
         <el-form-item label="身份证号" label-width="80px" prop="card">
-          <el-input v-model="salaryuserinfo.card" style="width:80%"></el-input>
+          <el-input v-model="salaryuserinfo.card" style="width:90%"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" label-width="80px" prop="email">
-          <el-input v-model="salaryuserinfo.email" style="width:80%"></el-input>
+          <el-input v-model="salaryuserinfo.email" style="width:90%"></el-input>
         </el-form-item>
         <el-form-item label="岗位名称" label-width="80px" prop="job_name">
-          <el-input v-model="salaryuserinfo.job_name" style="width:80%"></el-input>
+          <el-input v-model="salaryuserinfo.job_name" style="width:90%"></el-input>
         </el-form-item>
         <el-form-item label="岗位工资" label-width="80px" prop="salary">
-          <el-input v-model.number="salaryuserinfo.salary" style="width:80%"></el-input>
+          <el-input v-model.number="salaryuserinfo.salary" style="width:90%"></el-input>
         </el-form-item>
         <el-form-item label="合同期限" label-width="80px" prop="contract_date">
-          <el-input v-model.number="salaryuserinfo.contract_date" style="width:70%"></el-input>
+          <el-input v-model.number="salaryuserinfo.contract_date" style="width:90%"></el-input>
           <span>月</span>
         </el-form-item>
-        <el-form-item v-show="enPriseId == 0" label="入职企业" label-width="80px" prop="enterprise_id">
-          <el-select @change="selectEp" placeholder="请选择企业" v-model="salaryuserinfo.enterprise_id">
+        <el-form-item v-show="enPriseId == 0" label="入职企业" label-width="90px" prop="enterprise_id">
+          <!-- <el-select @change="selectEp" placeholder="请选择企业" v-model="salaryuserinfo.enterprise_id">
             <el-option
               :key="industry.enterprise_name"
               :label="industry.enterprise_name"
               :value="industry.ID"
               v-for="industry in enterpriseInfo"
+            ></el-option>
+          </el-select>-->
+          <el-select
+            @change="selectEp"
+            v-model="salaryuserinfo.enterprise_id"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请选择所属公司"
+            :remote-method="remoteMethod"
+            :loading="loading"
+          >
+            <el-option
+              v-for="ep in enterpriseInfo"
+              :key="ep.enterprise_name"
+              :value="ep.ID"
+              :label="ep.enterprise_name"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -334,7 +371,7 @@ import {
   uploadUserContract,
   downloadContractList
 } from "@/api/salaryuser";
-import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
+import { getEnterpriseListBySearch } from "@/api/enterpriseinfo";
 import infoList from "@/components/mixins/infoList";
 import { mapGetters } from "vuex";
 import html2canvas from "html2canvas";
@@ -355,6 +392,7 @@ export default {
       isEdit: false,
       isShow: false,
       title: "",
+      loading: false,
       importDataBtnText: "导入数据",
       importDataBtnIcon: "el-icon-upload2",
       importDataDisabled: true,
@@ -366,7 +404,7 @@ export default {
         card: "",
         email: "",
         job_name: "",
-        salary: "",
+        salary: 0,
         contract_date: "",
         enterprise: "",
         enterprise_id: "",
@@ -456,6 +494,26 @@ export default {
     "salaryuserinfo.leave_step": "changeData"
   },
   methods: {
+    remoteMethod(query) {
+      if (query !== "") {
+        this.loading = true;
+        setTimeout(() => {
+          this.loading = false;
+          const params = {
+            query: query
+          };
+          getEnterpriseListBySearch(params).then(res => {
+            if (res.success) {
+              this.enterpriseInfo = res.data.result;
+            } else {
+              this.enterpriseInfo = [];
+            }
+          });
+        }, 200);
+      } else {
+        this.enterpriseInfo = [];
+      }
+    },
     onSubmit() {
       this.page = 1;
       this.pageSize = 10;
@@ -543,13 +601,21 @@ export default {
     addSalaryUser() {
       this.title = "新增员工";
       this.isEdit = false;
+      this.enterpriseInfo = [];
       this.addSalaryUserDialog = true;
     },
     //编辑企业
     async editSalaryUser(row) {
       this.title = "编辑员工";
+      this.enterpriseInfo = [];
       const res = await findSalaryUsers(row);
       this.salaryuserinfo = res.data.reun;
+      if (this.salaryuserinfo != null) {
+        this.enterpriseInfo.push({
+          ID: this.salaryuserinfo.enterprise_id,
+          enterprise_name: this.salaryuserinfo.enterprise
+        });
+      }
       this.isEdit = true;
       this.addSalaryUserDialog = true;
     },
@@ -666,19 +732,20 @@ export default {
       this.viewContractDialog = false;
     },
     onCreated() {
-      getEnterpriseAllInfo().then(res => {
-        if (res.success) {
-          this.enterpriseInfo = res.data.result;
-        } else {
-          this.enterpriseInfo = [];
-        }
-      });
+      this.importDataDisabled = this.enPriseId == 0 ? true:false;
+      // getEnterpriseAllInfo().then(res => {
+      //   if (res.success) {
+      //     this.enterpriseInfo = res.data.result;
+      //   } else {
+      //     this.enterpriseInfo = [];
+      //   }
+      // });
     },
     download() {
       //let resume = document.getElementById("ShowBox");
       //let c = document.createElement("canvas");
       let opts = {
-        useCORS: true,
+        useCORS: true
         // scale: 2,
         // canvas: c,
         // logging: true,

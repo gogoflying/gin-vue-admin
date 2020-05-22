@@ -6,7 +6,7 @@
           <el-select
             @change="selectCityName"
             placeholder="请选择工作城市"
-            v-model.number="jobmanagerinfo.p_city_id"
+            v-model.number="searchInfo.p_city_id"
           >
             <el-option
               :key="city.name"
@@ -26,7 +26,7 @@
           <el-select
             @change="selectJobyear"
             placeholder="请选择工作年限"
-            v-model="jobmanagerinfo.p_edujy_id"
+            v-model="searchInfo.p_edujy_id"
           >
             <el-option
               :key="jobyear.name"
@@ -40,7 +40,7 @@
           <el-select
             @change="selectJobedu"
             placeholder="请选择最低学历"
-            v-model="jobmanagerinfo.p_education_id"
+            v-model="searchInfo.p_education_id"
           >
             <el-option
               :key="jobedu.name"
@@ -54,7 +54,7 @@
           <el-select
             @change="selectJobtype"
             placeholder="请选择工作类型"
-            v-model.number="jobmanagerinfo.p_type_id"
+            v-model.number="searchInfo.p_type_id"
           >
             <el-option
               :key="jobtype.name"
@@ -68,7 +68,7 @@
           <el-select
             @change="selectJobtype"
             placeholder="请选择职位状态"
-            v-model.number="jobmanagerinfo.p_status"
+            v-model.number="searchInfo.p_status"
           >
             <el-option
               :key="jobstatus.name"
@@ -83,7 +83,7 @@
           <el-select
             @change="selectJobtype"
             placeholder="请选择是否置顶"
-            v-model.number="jobmanagerinfo.p_top"
+            v-model.number="searchInfo.p_top"
           >
             <el-option
               :key="jobtop.name"
@@ -221,49 +221,25 @@ export default {
           name: "下线"
         }
       ],
-      jobmanagerinfo: {
-        p_name: "",
-        p_salary_id: "",
-        p_salary: "",
-        p_latitude: "39.916527",
-        p_longitude: "116.397128",
-        p_address: "",
-        p_city: "",
-        p_city_id: "",
-        p_edujy: "",
-        p_edujy_id: "",
-        p_education: "",
-        p_education_id: "",
-        p_type: "",
-        p_type_id: "",
-        p_desc: "",
-        p_status: 0,
-        p_count: "",
-        p_outdate: "",
-        enterprise_id: "",
-        enterprise_name: "",
-        p_top:0,
-      },
-      rules: {
-        p_salary_id: [
-          { required: true, message: "请输入薪资范围", trigger: "blur" }
-        ],
-        p_address: [
-          { required: true, message: "请输入工作地点", trigger: "blur" }
-        ],
-        p_city_id: [
-          { required: true, message: "请输入工作城市", trigger: "blur" }
-        ],
-        p_edujy_id: [
-          { required: true, message: "请输入工作年限", trigger: "blur" }
-        ],
-        p_education_id: [
-          { required: true, message: "请输入最低学历", trigger: "blur" }
-        ],
-        p_type_id: [
-          { required: true, message: "请输入工作类型", trigger: "blur" }
-        ]
-      }
+      // searchInfo: {
+      //   p_name: "",
+      //   p_salary_id: "",
+      //   p_salary: "",
+      //   p_city_id: "",
+      //   p_edujy: "",
+      //   p_edujy_id: "",
+      //   p_education: "",
+      //   p_education_id: "",
+      //   p_type: "",
+      //   p_type_id: "",
+      //   p_desc: "",
+      //   p_status: 0,
+      //   p_count: "",
+      //   p_outdate: "",
+      //   enterprise_id: "",
+      //   enterprise_name: "",
+      //   p_top:0,
+      // },
     };
   },
   computed: {

@@ -19,6 +19,7 @@ func InitEnterpriseInfoRouter(Router *gin.RouterGroup) {
 		EnterpriseInfoRouter.POST("getEnterpriseAllInfo", api.GetEnterpriseAllInfo)               //获取EnterpriseInfo列表
 		EnterpriseInfoRouter.POST("getEnterpriseListBySearch", api.GetEnterpriseListBySearch)     //获取EnterpriseInfo列表
 		EnterpriseInfoRouter.POST("getEnterpriseInfoListSearch", api.GetEnterpriseInfoListSearch) //根据cityid，keyword查询公司列表
+		//EnterpriseInfoRouter.POST("getJobSalaryList", api.GetJobSalaryList)
 
 	}
 }

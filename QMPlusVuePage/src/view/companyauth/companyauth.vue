@@ -7,16 +7,16 @@
       label-width="80px"
       :disabled="authform.status == 1"
     >
-      <el-form-item label="提示信息" label-width="80px" prop="errors" v-show="authform.errors != '' && authform.status == 0">
+      <el-form-item label="提示信息" prop="errors" v-show="authform.errors != '' && authform.status == 0">
         <span style="color:red">{{authform.errors}}</span>
       </el-form-item>
-      <el-form-item label="企业名称" label-width="80px" prop="enterprise_name">
+      <el-form-item label="企业名称" prop="enterprise_name">
         <el-input v-model="authform.enterprise_name" style="width:50%;"></el-input>
       </el-form-item>
-      <el-form-item label="企业规模" label-width="80px" prop="enterprise_scale">
+      <el-form-item label="企业规模" prop="enterprise_scale">
         <el-input type="number" v-model.number="authform.enterprise_scale" style="width:50%;"></el-input>
       </el-form-item>
-      <el-form-item label="企业性质" label-width="80px" prop="enterprise_type">
+      <el-form-item label="企业性质" prop="enterprise_type">
         <el-select @change="selectEnpType" placeholder="请选择企业性质" v-model="authform.enterprise_type">
           <el-option
             :key="enptype.name"
@@ -27,7 +27,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="行业类别" label-width="80px" prop="industry_type">
+      <el-form-item label="行业类别" prop="industry_type">
         <el-select @change="selectEnpIndust" placeholder="请选择行业类别" v-model="authform.industry_type">
           <el-option
             :key="industry.name"
@@ -37,7 +37,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
+      <el-form-item label="企业描述" prop="enterprise_desc">
         <quill-editor
           class="ql-editor"
           ref="myQuillEditor"
@@ -45,12 +45,12 @@
           :disabled="authform.status == 1"
         ></quill-editor>
       </el-form-item>
-      <el-form-item label="所在城市" label-width="80px" prop="city_id">
+      <el-form-item label="所在城市" prop="city_id">
         <el-select @change="selectCityName" placeholder="请选择注册城市" v-model="authform.city_id">
           <el-option :key="city.name" :label="city.name" :value="city.ID" v-for="city in cityinfo"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="企业logo" label-width="80px" prop="enterprise_logo">
+      <el-form-item label="企业logo" prop="enterprise_logo">
         <el-upload
           :headers="{'x-token':token}"
           :on-success="handleAvatarLogoSuccess"
@@ -64,7 +64,7 @@
           <i class="el-icon-plus avatar-uploader-icon" v-else></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="企业主图" label-width="80px" prop="enterprise_img">
+      <el-form-item label="企业主图" prop="enterprise_img">
         <el-upload
           :headers="{'x-token':token}"
           :on-success="handleAvatarImgSuccess"
@@ -78,7 +78,7 @@
           <i class="el-icon-plus avatar-uploader-icon" v-else></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="企业资质" label-width="80px" prop="enterprise_qfc">
+      <el-form-item label="企业资质" prop="enterprise_qfc">
         <el-upload
           :headers="{'x-token':token}"
           :on-success="handleAvatarQfcSuccess"

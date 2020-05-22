@@ -81,8 +81,8 @@
             overflow: hidden;
             font-size: 16px;
             > li {
-              padding: 10px;
-              line-height: 4px;
+              padding: 5px;
+              line-height: 20px;
             }
           }
         }

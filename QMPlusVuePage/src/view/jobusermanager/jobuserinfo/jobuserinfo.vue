@@ -1,9 +1,132 @@
 <template>
   <div>
     <div class="search-term">
-      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="手机号">
-          <el-input placeholder="手机号" v-model="searchInfo.mobile"></el-input>
+      <el-form :inline="true" :model="searchInfo" label-width="80px" class="demo-form-inline">
+        <el-form-item label="姓名">
+          <el-input placeholder="姓名" clearable v-model="searchInfo.userName" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" label-width="80px">
+          <el-input placeholder="手机号" clearable v-model="searchInfo.mobile" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="期望职位" label-width="80px">
+          <el-input placeholder="期望职位" clearable v-model="searchInfo.dreamposi" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="性别">
+          <!-- <el-radio-group v-model="searchInfo.genderindex">
+                <el-radio :label="0">男</el-radio>
+                <el-radio :label="1">女</el-radio>
+          </el-radio-group>-->
+          <el-select
+            placeholder="请选择性别"
+            clearable
+            @clear="clearOptionGender"
+            v-model="searchInfo.genderindex"
+          >
+            <el-option label="男" :value="0"></el-option>
+            <el-option label="女" :value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="工作年限" style="workTime">
+          <el-select
+            placeholder="请选择工作年限"
+            clearable
+            @clear="clearOptionWY"
+            v-model="searchInfo.worksYearindex"
+          >
+            <!-- <el-option></el-option> -->
+            <el-option
+              :key="item.name"
+              :label="item.name"
+              :value="item.ID"
+              v-for="item in option.jwe"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="学历">
+          <el-select
+            placeholder="请选择学历"
+            clearable
+            @clear="clearOptionEdu"
+            v-model="searchInfo.edulevelindex"
+          >
+            <el-option
+              :key="item.name"
+              :label="item.name"
+              :value="item.ID"
+              v-for="item in option.el"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="工作类型">
+          <el-select
+            placeholder="请选择工作类型"
+            clearable
+            @clear="clearOptionWT"
+            v-model="searchInfo.workTypeindex"
+          >
+            <el-option
+              :key="item.name"
+              :label="item.name"
+              :value="item.ID"
+              v-for="item in option.wt"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="期望薪资">
+          <el-select
+            placeholder="请选择期望薪资"
+            clearable
+            @clear="clearOptionSalary"
+            v-model="searchInfo.salaryindex"
+          >
+            <el-option
+              :key="item.name"
+              :label="item.name"
+              :value="item.ID"
+              v-for="item in option.js"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="期望城市">
+          <el-select
+            placeholder="请选择期望城市"
+            clearable
+            @clear="clearOptionCity"
+            v-model="searchInfo.cityindex"
+          >
+            <el-option
+              :key="item.name"
+              :label="item.name"
+              :value="item.ID"
+              v-for="item in option.cityinfo"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="到岗时间">
+          <el-select
+            placeholder="请选择到岗时间"
+            clearable
+            @clear="clearOptionDT"
+            v-model="searchInfo.dutyTimeindex"
+          >
+            <el-option
+              :key="item.name"
+              :label="item.name"
+              :value="item.ID"
+              v-for="item in option.jdt"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="照片">
+          <el-select
+            placeholder="请选择"
+            clearable
+            @clear="clearOptionPhoto"
+            v-model="searchInfo.hasAvatarurl"
+          >
+            <el-option label="无" :value="0"></el-option>
+            <el-option label="有" :value="1"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
@@ -33,17 +156,21 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="250">
+      <el-table-column label="操作" width="250">
         <template slot-scope="scope">
           <!-- <el-button @click="viewResume(scope.row)" size="small" type="text">查看</el-button> -->
           <router-link :to="{name:'editresume', query: { id: scope.row.ID }}">
-            <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
+            <el-button
+              type="text"
+              size="small"
+              :icon="scope.row.is_resume == 0 ? 'el-icon-plus':'el-icon-edit'"
+            >{{scope.row.is_resume == 0 ? '新建':'编辑'}}</el-button>
           </router-link>
           <router-link :to="{name:'userpreview', query: { id: scope.row.ID }}">
-            <el-button type="primary" size="small" icon="el-icon-view">查看</el-button>
+            <el-button type="text" size="small" icon="el-icon-view">查看</el-button>
           </router-link>
           <router-link :to="{name:'resumelist', query: { id: scope.row.ID }}">
-            <el-button type="primary" size="small" icon="el-icon-more">投递记录</el-button>
+            <el-button type="text" size="small" icon="el-icon-more">投递记录</el-button>
           </router-link>
         </template>
       </el-table-column>
@@ -65,7 +192,7 @@
 <script>
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
 const path = process.env.VUE_APP_BASE_API;
-import { getUsersList, updateUsers } from "@/api/jobuser";
+import { getUsersList, updateUsers, getUserOptions } from "@/api/jobuser";
 import infoList from "@/components/mixins/infoList";
 export default {
   name: "Jobuser",
@@ -74,10 +201,35 @@ export default {
     return {
       listApi: getUsersList,
       listKey: "userList",
-      path: path
+      path: path,
+      option: {}
     };
   },
   methods: {
+    clearOptionGender() {
+      this.searchInfo.genderindex = null;
+    },
+    clearOptionEdu() {
+      this.searchInfo.edulevelindex = null;
+    },
+    clearOptionWY() {
+      this.searchInfo.worksYearindex = null;
+    },
+    clearOptionWT() {
+      this.searchInfo.workTypeindex = null;
+    },
+    clearOptionCity() {
+      this.searchInfo.cityindex = null;
+    },
+    clearOptionSalary() {
+      this.searchInfo.salaryindex = null;
+    },
+    clearOptionDT() {
+      this.searchInfo.dutyTimeindex = null;
+    },
+    clearOptionPhoto(){
+      this.searchInfo.hasAvatarurl = null;
+    },
     onSubmit() {
       this.page = 1;
       this.pageSize = 10;
@@ -89,6 +241,19 @@ export default {
         this.$message({ type: "success", message: "状态设置成功" });
       }
     }
+  },
+  async created() {
+    const res = await getUserOptions();
+    if (res.success) {
+      this.option = res.data;
+    }
   }
 };
 </script>
+<style lang="scss" scoped>
+.workTime {
+  .el-input {
+    width: 40%;
+  }
+}
+</style>>

@@ -134,19 +134,19 @@
       <el-table-column fixed="right" label="操作" width="330">
         <template slot-scope="scope">
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
-            <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
+            <el-button type="text" size="small" icon="el-icon-edit">编辑</el-button>
           </router-link>
           <el-button
             @click="changeTop(scope.row)"
             size="small"
-            type="primary"
+            type="text"
             :icon="scope.row.p_top == 0 ? 'el-icon-top':'el-icon-bottom'"
           >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
-          <el-button @click="flush(scope.row)" size="small" type="primary" icon="el-icon-refresh">刷新</el-button>
+          <el-button @click="flush(scope.row)" size="small" type="text" icon="el-icon-refresh">刷新</el-button>
           <el-button
             @click="deletejob(scope.row)"
             size="small"
-            type="primary"
+            type="text"
             icon="el-icon-delete"
           >删除</el-button>
         </template>

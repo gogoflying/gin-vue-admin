@@ -91,12 +91,16 @@
 <script>
 const path = process.env.VUE_APP_BASE_API;
 import { createUserBaseInfo, updateUserBaseInfo } from "@/api/jobuser";
+import { mapGetters } from "vuex";
 export default {
   props: ["user_base_info", "option", "openid"],
   data() {
     return {
       path: path
     };
+  },
+  computed: {
+    ...mapGetters("user", ["token"])
   },
   methods: {
     selectCityName(val) {

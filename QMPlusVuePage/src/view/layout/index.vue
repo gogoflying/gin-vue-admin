@@ -23,7 +23,7 @@
             <el-button @click.native="toCompanyAuth" type="warning" size="small" v-show="enPriseId != 0" style="margin-right:40px">认证信息</el-button>
             <el-dropdown>
               <span class="el-dropdown-link">
-                <img :src="userInfo.headerImg" height="30" width="30" />
+                <img :src="userInfo.headerImg" height="20" width="20" />
                 {{userInfo.nickName}}
                 <i class="el-icon-arrow-down"></i>
               </span>

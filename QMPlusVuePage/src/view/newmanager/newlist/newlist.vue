@@ -32,14 +32,9 @@
           <router-link
             :to="{name:'newdetail', params:{row:scope.row}, query: { id: scope.row.ID }}"
           >
-            <el-button type="primary" size="small" icon="el-icon-edit">编辑</el-button>
+            <el-button type="text" size="small" icon="el-icon-edit">编辑</el-button>
           </router-link>
-          <el-button
-            @click="deletenew(scope.row)"
-            size="small"
-            icon="el-icon-delete"
-            type="primary"
-          >删除</el-button>
+          <el-button @click="deletenew(scope.row)" size="small" icon="el-icon-delete" type="text">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -82,7 +77,7 @@ export default {
     };
   },
   methods: {
-    newTypeFormat(row){
+    newTypeFormat(row) {
       if (row.news_type == 1) {
         return "社保";
       } else {

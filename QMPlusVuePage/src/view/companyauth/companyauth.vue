@@ -1,11 +1,20 @@
 <template>
   <div>
-    <el-form :rules="rules" ref="authEnform" :model="authform" label-width="80px">
+    <el-form
+      :rules="rules"
+      ref="authEnform"
+      :model="authform"
+      label-width="80px"
+      :disabled="authform.status == 1"
+    >
+      <el-form-item label="提示信息" label-width="80px" prop="errors" v-show="authform.errors != '' && authform.status == 0">
+        <span style="color:red">{{authform.errors}}</span>
+      </el-form-item>
       <el-form-item label="企业名称" label-width="80px" prop="enterprise_name">
         <el-input v-model="authform.enterprise_name" style="width:50%;"></el-input>
       </el-form-item>
       <el-form-item label="企业规模" label-width="80px" prop="enterprise_scale">
-        <el-input v-model.number="authform.enterprise_scale" style="width:50%;"></el-input>
+        <el-input type="number" v-model.number="authform.enterprise_scale" style="width:50%;"></el-input>
       </el-form-item>
       <el-form-item label="企业性质" label-width="80px" prop="enterprise_type">
         <el-select @change="selectEnpType" placeholder="请选择企业性质" v-model="authform.enterprise_type">
@@ -29,7 +38,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
-        <quill-editor class="ql-editor" ref="myQuillEditor" v-model="authform.enterprise_desc"></quill-editor>
+        <quill-editor
+          class="ql-editor"
+          ref="myQuillEditor"
+          v-model="authform.enterprise_desc"
+          :disabled="authform.status == 1"
+        ></quill-editor>
       </el-form-item>
       <el-form-item label="所在城市" label-width="80px" prop="city_id">
         <el-select @change="selectCityName" placeholder="请选择注册城市" v-model="authform.city_id">
@@ -106,12 +120,15 @@ export default {
         enterprise_address: "",
         enterprise_scale: null,
         enterprise_type: null,
+        enterprise_type_info: "",
         industry_type: null,
+        enterprise_indust_info: "",
         enterprise_desc: "",
         city_id: null,
         enterprise_logo: "",
         enterprise_img: "",
-        enterprise_qfc: ""
+        enterprise_qfc: "",
+        errors:""
       },
       rules: {
         enterprise_name: [
@@ -182,6 +199,27 @@ export default {
     ...mapGetters("user", ["enPriseId", "token"])
   },
   methods: {
+    selectCityName(val) {
+      var selectedItem = {};
+      selectedItem = this.cityinfo.find(item => {
+        return item.ID === val;
+      });
+      this.authform.enterprise_address = selectedItem.name;
+    },
+    selectEnpType(val) {
+      var selectedItem = {};
+      selectedItem = this.enterprisetype.find(item => {
+        return item.ID === val;
+      });
+      this.authform.enterprise_type_info = selectedItem.name;
+    },
+    selectEnpIndust(val) {
+      var selectedItem = {};
+      selectedItem = this.industrytype.find(item => {
+        return item.ID === val;
+      });
+      this.authform.enterprise_indust_info = selectedItem.name;
+    },
     filterMethod(query, item) {
       return item.pinyin.indexOf(query) > -1;
     },

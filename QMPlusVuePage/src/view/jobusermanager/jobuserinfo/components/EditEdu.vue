@@ -103,6 +103,7 @@ export default {
     },
     editEdu(row) {
       this.isShow = true;
+      this.enable = true;
       this.edu_info = row;
       this.isEdit = true;
     },
@@ -148,6 +149,8 @@ export default {
         this.$message({ type: "error", message: "添加失败!" });
       }
       this.$emit("freshResume");
+      this.isShow = false;
+      this.enable = false;
     },
     cancle() {
       if (this.edu_info.ID == null) {

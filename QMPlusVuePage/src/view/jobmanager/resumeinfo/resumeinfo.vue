@@ -38,7 +38,7 @@
         <template slot-scope="scope">
           <el-button
             @click="editpreview(scope.row,scope.column)"
-            type="primary"
+            type="text"
             size="small"
             icon="el-icon-view"
           >查看</el-button>

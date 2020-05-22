@@ -52,7 +52,7 @@
           <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button @click="searchClear" type="primary" icon="el-icon-search">清空</el-button>
+          <el-button @click="searchClear" type="primary" icon="el-icon-remove">清空</el-button>
         </el-form-item>
         <el-form-item>
           <el-button @click="addEnterprise" type="primary" icon="el-icon-plus">新增企业</el-button>
@@ -140,6 +140,7 @@
       custom-class="user-dialog"
       @close="closeAddCompanyDialog"
       title="新增企业"
+      width="600px"
     >
       <el-form :rules="rules" ref="enterpriseForm" :model="enterpriseInfo">
         <el-form-item label="企业名称" label-width="80px" prop="enterprise_name">
@@ -454,9 +455,9 @@ export default {
       this.addCompanyDialog = false;
     },
     searchClear() {
-      this.searchInfo.city_id = [];
-      this.searchInfo.enterprise_type = [];
-      this.searchInfo.industry_type = [];
+      this.searchInfo.city_id = null;
+      this.searchInfo.enterprise_type = null;
+      this.searchInfo.industry_type = null;
       this.searchInfo.enterprise_name = "";
     },
     //新增企业

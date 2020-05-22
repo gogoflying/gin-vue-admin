@@ -1,38 +1,53 @@
 <template>
   <div>
-    <div class="button-box clearflex">
-      <el-col :span="3">
-        <el-select v-model="enterprise_id" placeholder="请选择企业">
+    <div class="search-term">
+      <el-row>
+        <el-col :span="4">
+          <!-- <el-select v-model="enterprise_id" placeholder="请选择企业">
           <el-option
             v-for="ep in enterpriseInfo"
             :key="ep.enterprise_name"
             :value="ep.ID"
             :label="ep.enterprise_name"
           ></el-option>
-        </el-select>
-      </el-col>
-      <el-col :span="3">
-        <el-upload
-          :disabled="importDataDisabled"
-          style="display: inline-flex;margin-right: 8px;"
-          :action="`${path}/un/importsalarys?id=${enterprise_id}`"
-          :before-upload="beforeUpload"
-          :headers="{'x-token':token}"
-          :on-error="onError"
-          :on-success="onSuccess"
-          :show-file-list="false"
-        >
-          <el-tooltip class="item" effect="dark" content="请先选择企业" placement="top-start">
-            <el-button type="success" :icon="importDataBtnIcon">{{importDataBtnText}}</el-button>
-          </el-tooltip>
-        </el-upload>
-      </el-col>
-      <el-col :span="3">
-        <el-button type="primary" @click="downSalarytemplate" icon="el-icon-download">下载模板</el-button>
-      </el-col>
-      <el-col :span="3">
-        <el-button @click="addSalaryDetail" type="primary" icon="el-icon-plus">新增薪资</el-button>
-      </el-col>
+          </el-select>-->
+          <el-select
+            v-show="enPriseId == 0"
+            v-model="enterprise_id"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请选择企业"
+            :remote-method="remoteMethod"
+            :loading="loading"
+          >
+            <el-option
+              v-for="ep in enterpriseInfo"
+              :key="ep.enterprise_name"
+              :value="ep.ID"
+              :label="ep.enterprise_name"
+            ></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="20">
+          <el-upload
+            :disabled="importDataDisabled"
+            style="display: inline-flex;margin-right: 8px;"
+            :action="`${path}/un/importsalarys?id=${enterprise_id}`"
+            :before-upload="beforeUpload"
+            :headers="{'x-token':token}"
+            :on-error="onError"
+            :on-success="onSuccess"
+            :show-file-list="false"
+          >
+            <el-tooltip class="item" effect="dark" content="请先选择企业" placement="top-start">
+              <el-button type="success" :icon="importDataBtnIcon">{{importDataBtnText}}</el-button>
+            </el-tooltip>
+          </el-upload>
+          <el-button type="primary" @click="downSalarytemplate" icon="el-icon-download">下载模板</el-button>
+          <el-button @click="addSalaryDetail" type="primary" icon="el-icon-plus">新增薪资</el-button>
+        </el-col>
+      </el-row>
     </div>
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
@@ -99,10 +114,20 @@
         <el-table-column label="应发调整" min-width="80" prop="yftz"></el-table-column>
         <el-table-column label="实发工资" min-width="80" prop="sfgz"></el-table-column>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="140">
+      <el-table-column fixed="right" label="操作" width="180">
         <template slot-scope="scope">
-          <el-button @click="editSalaryDetail(scope.row)" size="small" type="text">编辑</el-button>
-          <el-button @click="deleteSalaryDetail(scope.row)" size="small" type="text">删除</el-button>
+          <el-button
+            @click="editSalaryDetail(scope.row)"
+            icon="el-icon-edit"
+            size="small"
+            type="text"
+          >编辑</el-button>
+          <el-button
+            @click="deleteSalaryDetail(scope.row)"
+            icon="el-icon-delete"
+            size="small"
+            type="text"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -122,7 +147,7 @@
       custom-class="user-dialog"
       @close="closeAddSalaryDetailDialog"
       title="新增薪资"
-      width="70%"
+      width="800px"
     >
       <el-form :rules="rules" ref="salarydetailForm" :model="salarydetailinfo">
         <section>
@@ -135,7 +160,7 @@
                 label-width="80px"
                 prop="enterprise_id"
               >
-                <el-select
+                <!-- <el-select
                   @change="selectEp"
                   placeholder="请选择企业"
                   v-model="salarydetailinfo.enterprise_id"
@@ -145,6 +170,23 @@
                     :label="industry.enterprise_name"
                     :value="industry.ID"
                     v-for="industry in enterpriseInfo"
+                  ></el-option>
+                </el-select>-->
+                <el-select
+                  @change="selectEp"
+                  v-model="salarydetailinfo.enterprise_id"
+                  filterable
+                  remote
+                  reserve-keyword
+                  placeholder="请选择所属公司"
+                  :remote-method="remoteMethod"
+                  :loading="loading"
+                >
+                  <el-option
+                    v-for="ep in enterpriseInfo"
+                    :key="ep.enterprise_name"
+                    :value="ep.ID"
+                    :label="ep.enterprise_name"
                   ></el-option>
                 </el-select>
               </el-form-item>
@@ -362,7 +404,7 @@ import {
   findSalarys,
   deleteSalarys
 } from "@/api/salarydetail";
-import { getEnterpriseAllInfo } from "@/api/enterpriseinfo";
+import { getEnterpriseListBySearch } from "@/api/enterpriseinfo";
 import { mapGetters } from "vuex";
 import infoList from "@/components/mixins/infoList";
 export default {
@@ -376,6 +418,7 @@ export default {
       enterprise_id: "",
       addSalaryDetailDialog: false,
       isEdit: false,
+      loading: false,
       title: "",
       importDataBtnText: "导入数据",
       importDataBtnIcon: "el-icon-upload2",
@@ -431,6 +474,26 @@ export default {
     }
   },
   methods: {
+    remoteMethod(query) {
+      if (query !== "") {
+        this.loading = true;
+        setTimeout(() => {
+          this.loading = false;
+          const params = {
+            query: query
+          };
+          getEnterpriseListBySearch(params).then(res => {
+            if (res.success) {
+              this.enterpriseInfo = res.data.result;
+            } else {
+              this.enterpriseInfo = [];
+            }
+          });
+        }, 200);
+      } else {
+        this.enterpriseInfo = [];
+      }
+    },
     onSubmit() {
       this.page = 1;
       this.pageSize = 10;
@@ -512,13 +575,21 @@ export default {
     addSalaryDetail() {
       this.title = "新增薪资";
       this.isEdit = false;
+      this.enterpriseInfo = [];
       this.addSalaryDetailDialog = true;
     },
     //编辑企业
     async editSalaryDetail(row) {
       this.title = "编辑薪资";
+      this.enterpriseInfo = [];
       const res = await findSalarys(row);
       this.salarydetailinfo = res.data.reun;
+      if (this.salarydetailinfo != null) {
+        this.enterpriseInfo.push({
+          ID: this.salarydetailinfo.enterprise_id,
+          enterprise_name: this.salarydetailinfo.enterprise
+        });
+      }
       this.isEdit = true;
       this.addSalaryDetailDialog = true;
     },
@@ -573,13 +644,14 @@ export default {
     }
   },
   created() {
-    getEnterpriseAllInfo().then(res => {
-      if (res.success) {
-        this.enterpriseInfo = res.data.result;
-      } else {
-        this.enterpriseInfo = [];
-      }
-    });
+    this.importDataDisabled = this.enPriseId == 0 ? true : false;
+    // getEnterpriseAllInfo().then(res => {
+    //   if (res.success) {
+    //     this.enterpriseInfo = res.data.result;
+    //   } else {
+    //     this.enterpriseInfo = [];
+    //   }
+    // });
   }
 };
 </script>

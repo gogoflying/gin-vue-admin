@@ -50,10 +50,20 @@
       <!-- <el-table-column label="企业热度" min-width="100" prop="enterprise_hot"></el-table-column> -->
       <!-- <el-table-column label="企业描述" min-width="150" prop="enterprise_desc" :show-overflow-tooltip="true"></el-table-column> -->
 
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="editEnterprise(scope.row)" size="small" type="text">编辑</el-button>
-          <el-button @click="deleteEnterprise(scope.row)" size="small" type="text">删除</el-button>
+          <el-button
+            @click="editEnterprise(scope.row)"
+            icon="el-icon-edit"
+            size="small"
+            type="text"
+          >编辑</el-button>
+          <el-button
+            @click="deleteEnterprise(scope.row)"
+            icon="el-icon-delete"
+            size="small"
+            type="text"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -188,6 +198,10 @@
             <i class="el-icon-plus avatar-uploader-icon" v-else></i>
           </el-upload>
         </el-form-item>
+        <el-form-item label="提示信息" label-width="80px" prop="errors">
+          <el-input type="textarea" v-model="enterpriseInfo.errors"></el-input>
+          <span style="color:red">资质不合格时，必填，提示企业</span>
+        </el-form-item>
       </el-form>
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeAddCompanyDialog">取 消</el-button>
@@ -235,7 +249,8 @@ export default {
         city_id: null,
         enterprise_logo: "",
         enterprise_img: "",
-        enterprise_qfc: ""
+        enterprise_qfc: "",
+        errors: ""
       },
       rules: {
         enterprise_name: [
@@ -370,7 +385,8 @@ export default {
         city_id: "",
         enterprise_logo: "",
         enterprise_img: "",
-        enterprise_qfc: ""
+        enterprise_qfc: "",
+        errors: ""
       };
       this.addCompanyDialog = false;
     },

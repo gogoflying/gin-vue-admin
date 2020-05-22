@@ -165,6 +165,93 @@ func (users *Users) GetInfoList(info modelInterface.PageInfo) (err error, list i
 	}
 }
 
+type ResumeUserView struct {
+	Users
+	Mobile         string `json:"mobile"`
+	UserName       string `json:"userName"`
+	HasAvatarUrl   *int   `json:"hasAvatarurl"`
+	Genderindex    *int   `json:"genderindex"`
+	EdulevelIndex  *int   `json:"edulevelindex"`
+	WorksYearindex *int   `json:"worksYearindex"`
+
+	Dreamposi     string `json:"dreamposi" `
+	WorkTypeindex *int   `json:"workTypeindex"`
+	Cityindex     *int   `json:"cityindex"`
+	Salaryindex   *int   `json:"salaryindex"`
+	DutyTimeindex *int   `json:"dutyTimeindex"`
+}
+
+// 分页获取Users
+func (users *Users) GetInfoListNew(ruv ResumeUserView, info modelInterface.PageInfo) (err error, list interface{}, total int) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	db := qmsql.DEFAULTDB
+	db.LogMode(true)
+	table := db.Select([]string{
+		"users.*",
+		"user_base_infos.user_name",
+		"user_base_infos.avatarUrl",
+		"user_base_infos.genderindex",
+		"user_base_infos.edulevelindex",
+		"user_base_infos.worksYearindex",
+		"user_dreams.dreamposi",
+		"user_dreams.workTypeindex",
+		"user_dreams.cityindex",
+		"user_dreams.salaryindex",
+		"user_dreams.dutyTimeindex",
+	}).Table("users")
+	table = table.Joins("left join user_base_infos on users.openid=user_base_infos.openid")
+	table = table.Joins("left join user_dreams on users.openid=user_dreams.openid")
+
+	var reUsersViewList []ResumeUserView
+	if ruv.Mobile != "" {
+		table = table.Where("users.mobile LIKE ?", "%"+ruv.Mobile+"%")
+	}
+	if ruv.UserName != "" {
+		table = table.Where("user_base_infos.user_name LIKE ?", "%"+ruv.UserName+"%")
+	}
+	if ruv.HasAvatarUrl != nil {
+		if *ruv.HasAvatarUrl == 0 {
+			table = table.Where("LENGTH(trim(user_base_infos.avatarUrl))<1")
+		} else {
+			table = table.Where("LENGTH(trim(user_base_infos.avatarUrl))>0")
+		}
+	}
+	if ruv.Genderindex != nil {
+		table = table.Where("user_base_infos.genderindex = ?", *ruv.Genderindex)
+	}
+	if ruv.EdulevelIndex != nil {
+		table = table.Where("user_base_infos.edulevelindex = ?", *ruv.EdulevelIndex)
+	}
+	if ruv.WorksYearindex != nil {
+		table = table.Where("user_base_infos.worksYearindex = ?", *ruv.WorksYearindex)
+	}
+	if ruv.Dreamposi != "" {
+		table = table.Where("user_dreams.dreamposi LIKE ?", "%"+ruv.Dreamposi+"%")
+	}
+	if ruv.WorkTypeindex != nil {
+		table = table.Where("user_dreams.workTypeindex = ?", *ruv.WorkTypeindex)
+	}
+	if ruv.Cityindex != nil {
+		table = table.Where("user_dreams.cityindex = ?", *ruv.Cityindex)
+	}
+	if ruv.Salaryindex != nil {
+		table = table.Where("user_dreams.salaryindex = ?", *ruv.Salaryindex)
+	}
+	if ruv.DutyTimeindex != nil {
+		table = table.Where("user_dreams.dutyTimeindex = ?", *ruv.DutyTimeindex)
+	}
+
+	err = table.Find(&reUsersViewList).Count(&total).Error
+	if err != nil {
+		return err, reUsersViewList, total
+	} else {
+		table = table.Limit(limit).Offset(offset)
+		err = table.Find(&reUsersViewList).Error
+	}
+	return err, reUsersViewList, total
+}
+
 // 分页获取Users投递记录
 func (users *Users) GetResumeList(info modelInterface.PageInfo, openid string, dataRange []string, resumeStatus int) (err error, list interface{}, total int) {
 	// 封装分页方法 调用即可 传入 当前的结构体和分页信息

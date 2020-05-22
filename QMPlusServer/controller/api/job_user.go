@@ -166,12 +166,13 @@ func GetUserOptions(c *gin.Context) {
 
 func GetUsersList(c *gin.Context) {
 	type searchParams struct {
-		userJobs.Users
+		userJobs.ResumeUserView
 		modelInterface.PageInfo
 	}
 	var sp searchParams
+
 	_ = c.ShouldBindJSON(&sp)
-	err, list, total := sp.Users.GetInfoList(sp.PageInfo)
+	err, list, total := new(userJobs.Users).GetInfoListNew(sp.ResumeUserView, sp.PageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {

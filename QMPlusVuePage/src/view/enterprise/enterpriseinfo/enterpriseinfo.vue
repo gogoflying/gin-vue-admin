@@ -3,13 +3,15 @@
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
         <el-form-item label="企业名称">
-          <el-input placeholder="企业名称" v-model="searchInfo.enterprise_name"></el-input>
+          <el-input placeholder="企业名称" clearable v-model="searchInfo.enterprise_name"></el-input>
         </el-form-item>
         <el-form-item label="企业性质" prop="enterprise_type">
           <el-select
             @change="selectEnpType"
             placeholder="请选择企业性质"
             v-model="searchInfo.enterprise_type"
+            clearable
+            @clear="clearEnpType"
           >
             <el-option
               :key="enptype.name"
@@ -24,6 +26,8 @@
             @change="selectEnpIndust"
             placeholder="请选择行业类别"
             v-model="searchInfo.industry_type"
+            clearable
+            @clear="clearEnpIndust"
           >
             <el-option
               :key="industry.name"
@@ -39,6 +43,8 @@
             placeholder="请选择注册城市"
             v-model="searchInfo.city_id"
             style="width:92%"
+            clearable
+            @clear="clearCitystatus"
           >
             <el-option
               :key="city.name"
@@ -453,6 +459,15 @@ export default {
         errors: ""
       };
       this.addCompanyDialog = false;
+    },
+    clearCitystatus() {
+      this.searchInfo.city_id = null;
+    },
+    clearEnpType() {
+      this.searchInfo.enterprise_type = null;
+    },
+    clearEnpIndust() {
+      this.searchInfo.industry_type = null;
     },
     searchClear() {
       this.searchInfo.city_id = null;

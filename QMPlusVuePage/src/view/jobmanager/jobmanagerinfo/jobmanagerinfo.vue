@@ -145,6 +145,7 @@
       <el-table-column label="状态" min-width="100" prop="p_status" :formatter="StatusFormat"></el-table-column>
       <el-table-column label="浏览数" min-width="100" prop="p_views"></el-table-column>
       <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
+      <el-table-column label="备注" min-width="150" prop="p_memo"></el-table-column>
       <!-- <el-table-column label="工作描述" min-width="150" prop="p_des" :show-overflow-tooltip="true"></el-table-column> -->
       <el-table-column label="操作" width="360">
         <template slot-scope="scope">

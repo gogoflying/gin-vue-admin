@@ -54,9 +54,6 @@
         <el-form-item label="姓名">
           <el-input placeholder="姓名" style="width:120px" v-model="searchInfo.name"></el-input>
         </el-form-item>
-        <el-form-item label="岗位">
-          <el-input placeholder="岗位" style="width:120px" v-model="searchInfo.gangwei"></el-input>
-        </el-form-item>
         <el-form-item label="年">
           <el-input placeholder="年" style="width:80px" v-model.number="searchInfo.year"></el-input>
         </el-form-item>

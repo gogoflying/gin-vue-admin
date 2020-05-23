@@ -160,8 +160,8 @@ func (info *EnterpriseInfo) GetInfoList(pinfo modelInterface.PageInfo) (err erro
 		reEnterpriseInfoList := make([]*EnterpriseInfo, 0)
 		model := qmsql.DEFAULTDB.Model(pinfo)
 		if info.EnterPriseName != "" {
-			model = model.Where("enterprise_name = ?", info.EnterPriseName)
-			db = db.Where("enterprise_name = ?", info.EnterPriseName)
+			model = model.Where("enterprise_name LIKE ?", "%"+info.EnterPriseName+"%")
+			db = db.Where("enterprise_name LIKE ?", "%"+info.EnterPriseName+"%")
 		}
 
 		if info.IndustryType > 0 {

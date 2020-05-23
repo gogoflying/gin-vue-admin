@@ -4,7 +4,8 @@
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
         <el-form-item label="工作城市">
           <el-select
-            @change="selectCityName"
+            clearable
+            @clear="clearOptionCity"
             placeholder="请选择工作城市"
             v-model.number="searchInfo.p_city_id"
           >
@@ -17,16 +18,17 @@
           </el-select>
         </el-form-item>
         <el-form-item v-show="enPriseId == 0" label="企业名称">
-          <el-input placeholder="企业名称" v-model="searchInfo.enterprise_name"></el-input>
+          <el-input placeholder="企业名称" clearable v-model="searchInfo.enterprise_name"></el-input>
         </el-form-item>
         <el-form-item label="职位名称" label-width="85px">
-          <el-input placeholder="职位名称" v-model="searchInfo.p_name"></el-input>
+          <el-input placeholder="职位名称" clearable v-model="searchInfo.p_name"></el-input>
         </el-form-item>
         <el-form-item label="工作年限" prop="p_edujy_id">
           <el-select
-            @change="selectJobyear"
             placeholder="请选择工作年限"
             v-model="searchInfo.p_edujy_id"
+            clearable
+            @clear="clearOptionJobyear"
           >
             <el-option
               :key="jobyear.name"
@@ -38,9 +40,10 @@
         </el-form-item>
         <el-form-item label="最低学历" prop="p_education_id">
           <el-select
-            @change="selectJobedu"
             placeholder="请选择最低学历"
             v-model="searchInfo.p_education_id"
+            clearable
+            @clear="clearOptionJobedu"
           >
             <el-option
               :key="jobedu.name"
@@ -52,9 +55,10 @@
         </el-form-item>
         <el-form-item label="工作类型" prop="p_type_id">
           <el-select
-            @change="selectJobtype"
             placeholder="请选择工作类型"
             v-model.number="searchInfo.p_type_id"
+            clearable
+            @clear="clearOptionPType"
           >
             <el-option
               :key="jobtype.name"
@@ -66,9 +70,10 @@
         </el-form-item>
         <el-form-item label="职位状态" prop="p_status">
           <el-select
-            @change="selectJobtype"
             placeholder="请选择职位状态"
             v-model.number="searchInfo.p_status"
+            clearable
+            @clear="clearOptionJobstatus"
           >
             <el-option
               :key="jobstatus.name"
@@ -81,9 +86,10 @@
 
         <el-form-item label="是否置顶" prop="p_top">
           <el-select
-            @change="selectJobtype"
             placeholder="请选择是否置顶"
             v-model.number="searchInfo.p_top"
+            clearable
+            @clear="clearOptionPTop"
           >
             <el-option
               :key="jobtop.name"
@@ -93,7 +99,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        
+
         <el-form-item>
           <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>
         </el-form-item>
@@ -106,7 +112,7 @@
     </div>
     <el-table
       :data="tableData"
-      border=""
+      border
       stripe
       @selection-change="handleSelectionChange"
       ref="multipleTable"
@@ -143,12 +149,7 @@
             :icon="scope.row.p_top == 0 ? 'el-icon-top':'el-icon-bottom'"
           >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
           <el-button @click="flush(scope.row)" size="small" type="text" icon="el-icon-refresh">刷新</el-button>
-          <el-button
-            @click="deletejob(scope.row)"
-            size="small"
-            type="text"
-            icon="el-icon-delete"
-          >删除</el-button>
+          <el-button @click="deletejob(scope.row)" size="small" type="text" icon="el-icon-delete">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -195,14 +196,16 @@ export default {
       jobtypes: [],
       jobedus: [],
       cityinfo: [],
-      jobtops:[{
-        ID:0,
-        name:'否'
-      },
-      {
-        ID:1,
-        name:'是'
-      }],
+      jobtops: [
+        {
+          ID: 0,
+          name: "否"
+        },
+        {
+          ID: 1,
+          name: "是"
+        }
+      ],
       jobstatuss: [
         {
           ID: 0,
@@ -220,7 +223,7 @@ export default {
           ID: 3,
           name: "下线"
         }
-      ],
+      ]
       // searchInfo: {
       //   p_name: "",
       //   p_salary_id: "",
@@ -246,6 +249,26 @@ export default {
     ...mapGetters("user", ["enPriseId"])
   },
   methods: {
+
+    clearOptionPTop() {
+      this.searchInfo.p_top = null;
+    },
+    clearOptionJobstatus() {
+      this.searchInfo.p_status = null
+    },
+    clearOptionCity() {
+      this.searchInfo.p_city_id = null
+    },
+    clearOptionJobyear() {
+      this.searchInfo.p_edujy_id = null
+    },
+    clearOptionJobedu() {
+      this.searchInfo.p_education_id = null
+    },
+    clearOptionPType(){
+      this.searchInfo.p_type_id = null
+    },
+
     StatusFormat(row) {
       if (row.p_status == 1) {
         return "急招";

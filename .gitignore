@@ -1,1 +1,5 @@
 .idea/
+.DS_Store
+QMPlusServer/controller/.DS_Store
+QMPlusServer/gin-vue-admin
+QMPlusServer/static/.DS_Store

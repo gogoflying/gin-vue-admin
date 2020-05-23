@@ -39,6 +39,16 @@ type Joblist struct {
 	Filter       int     `json:"p_filter" gorm:"column:p_filter;comment:'过滤状态，0不启用过滤，1启用过滤'"`
 	SendEmail    string  `json:"p_send_email" gorm:"column:p_send_email;comment:'发送邮件,多个用分号划分'"`
 }
+type SearchInfo struct {
+	EnterPriseName string `json:"enterprise_name"`
+	Jobname        string `json:"p_name"`
+	JobCityId      *int   `json:"p_city_id"`
+	JobYearsId     *int   `json:"p_edujy_id"`
+	JobEduId       *int   `json:"p_education_id"`
+	JobTypeId      *int   `json:"p_type_id"`
+	Top            *int   `json:"p_top"`
+	Status         *int   `json:"p_status"`
+}
 
 // 创建Joblist
 func (jl *Joblist) CreateJoblist() (err error) {
@@ -270,4 +280,43 @@ func (jl *Joblist) GetAllInfoOption() (err error, list1, list2, list3, list4, li
 		return err, jbe, js, jwt, el, citys
 	}
 	return err, jbe, js, jwt, el, citys
+}
+
+func (jl *Joblist) GetSearchlistForVue(sc SearchInfo, info modelInterface.PageInfo) (err error, list interface{}, total int) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	db := qmsql.DEFAULTDB
+	var reJoblistList []Joblist
+
+	if sc.EnterPriseName != "" {
+		db = db.Where("company_name LIKE ?", "%"+sc.EnterPriseName+"%")
+	}
+	if sc.Jobname != "" {
+		db = db.Where("job_name LIKE ?", "%"+sc.Jobname+"%")
+	}
+	if sc.JobCityId != nil && *sc.JobCityId != 0 {
+		db = db.Where("job_city_id = ?", sc.JobCityId)
+	}
+	if sc.JobEduId != nil {
+		db = db.Where("job_edu_id = ?", sc.JobEduId)
+	}
+	if sc.JobTypeId != nil {
+		db = db.Where("job_type_id = ?", sc.JobTypeId)
+	}
+	if sc.JobYearsId != nil {
+		db = db.Where("job_years_id = ?", sc.JobYearsId)
+	}
+	if sc.Status != nil {
+		db = db.Where("p_status = ?", sc.Status)
+	}
+	if sc.Top != nil {
+		db = db.Where("p_top = ?", sc.Top)
+	}
+
+	err = db.Find(&reJoblistList).Count(&total).Error
+	if err != nil {
+		return err, reJoblistList, total
+	}
+	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&reJoblistList).Error
+	return err, reJoblistList, total
 }

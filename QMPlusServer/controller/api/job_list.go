@@ -114,44 +114,44 @@ func FindJoblist(c *gin.Context) {
 // @Param data body modelInterface.PageInfo true "分页获取Joblist列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /jl/getJoblistListBackend [post]
-func GetJoblistListBackend(c *gin.Context) {
-	type searchParams struct {
-		userJobs.Joblist
-		modelInterface.PageInfo
-	}
-	var sp searchParams
-	_ = c.ShouldBindJSON(&sp)
-	var enPriseID int
-	ei, exist := c.Get("enpInfo")
-	if exist {
-		enpInfo := ei.(*userJobs.EnterpriseInfo)
-		enPriseID = int(enpInfo.ID)
-	} else {
-		//if c.Query("id") != "" {
-		//	id, _ := strconv.Atoi(c.Query("id"))
-		//	if id != 0 {
-		//		err, _ := new(userJobs.EnterpriseInfo).GeteEpById(id)
-		//		if err != nil {
-		//			servers.ReportFormat(c, false, fmt.Sprintf("获取企业信息失败，%v", err), gin.H{})
-		//			return
-		//		}
-		//		enPriseID = id
-		//	}
-		//}
-	}
-	sp.Joblist.CompanyId = enPriseID
-	err, list, total := sp.Joblist.GetInfoList(sp.PageInfo)
-	if err != nil {
-		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
-	} else {
-		servers.ReportFormat(c, true, "获取数据成功", gin.H{
-			"RspJoblistList": list,
-			"total":          total,
-			"page":           sp.PageInfo.Page,
-			"pageSize":       sp.PageInfo.PageSize,
-		})
-	}
-}
+// func GetJoblistListBackend(c *gin.Context) {
+// 	type searchParams struct {
+// 		userJobs.Joblist
+// 		modelInterface.PageInfo
+// 	}
+// 	var sp searchParams
+// 	_ = c.ShouldBindJSON(&sp)
+// 	var enPriseID int
+// 	ei, exist := c.Get("enpInfo")
+// 	if exist {
+// 		enpInfo := ei.(*userJobs.EnterpriseInfo)
+// 		enPriseID = int(enpInfo.ID)
+// 	} else {
+// 		//if c.Query("id") != "" {
+// 		//	id, _ := strconv.Atoi(c.Query("id"))
+// 		//	if id != 0 {
+// 		//		err, _ := new(userJobs.EnterpriseInfo).GeteEpById(id)
+// 		//		if err != nil {
+// 		//			servers.ReportFormat(c, false, fmt.Sprintf("获取企业信息失败，%v", err), gin.H{})
+// 		//			return
+// 		//		}
+// 		//		enPriseID = id
+// 		//	}
+// 		//}
+// 	}
+// 	sp.Joblist.CompanyId = enPriseID
+// 	err, list, total := sp.Joblist.GetInfoList(sp.PageInfo)
+// 	if err != nil {
+// 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
+// 	} else {
+// 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
+// 			"RspJoblistList": list,
+// 			"total":          total,
+// 			"page":           sp.PageInfo.Page,
+// 			"pageSize":       sp.PageInfo.PageSize,
+// 		})
+// 	}
+// }
 
 // @Tags Joblist
 // @Summary 分页获取Joblist列表
@@ -247,6 +247,34 @@ func GetJoblistListSearch(c *gin.Context) {
 			"total":    total,
 			"page":     req.PageInfo.Page,
 			"pageSize": req.PageInfo.PageSize,
+		})
+	}
+}
+
+func GetJoblistListBackend(c *gin.Context) {
+
+	type SearchParams struct {
+		modelInterface.PageInfo
+		userJobs.SearchInfo
+	}
+
+	var (
+		req   SearchParams
+		err   error
+		list  interface{}
+		total int
+	)
+	_ = c.ShouldBindJSON(&req)
+
+	err, list, total = new(userJobs.Joblist).GetSearchlistForVue(req.SearchInfo, req.PageInfo)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "获取数据成功", gin.H{
+			"RspJoblistList": list,
+			"total":          total,
+			"page":           req.PageInfo.Page,
+			"pageSize":       req.PageInfo.PageSize,
 		})
 	}
 }

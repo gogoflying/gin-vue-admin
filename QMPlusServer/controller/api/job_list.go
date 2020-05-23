@@ -78,6 +78,17 @@ func UpdateJoblist(c *gin.Context) {
 	}
 }
 
+func UpdateJoblistMemo(c *gin.Context) {
+	var jl userJobs.Joblist
+	_ = c.ShouldBindJSON(&jl)
+	err := jl.UpdateMemo()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "更新成功", gin.H{})
+	}
+}
+
 func UpdateJoblistView(c *gin.Context) {
 	var jl userJobs.Joblist
 	_ = c.ShouldBindJSON(&jl)

@@ -110,6 +110,15 @@
         </el-form-item>
       </el-form>
     </div>
+
+    <el-dialog title="备注信息" :visible.sync="dialogFormVisible" append-to-body>
+      <el-input type="textarea" :rows="3" placeholder="请输入备注" v-model="p_memo"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogOK()">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <el-table
       :data="tableData"
       border
@@ -120,7 +129,7 @@
       tooltip-effect="dark"
     >
       <!-- <el-table-column type="selection" min-width="55"></el-table-column> -->
-      <el-table-column label="id" min-width="60" prop="ID" fixed></el-table-column>
+      <el-table-column label="id" min-width="60" prop="ID" ></el-table-column>
       <el-table-column label="职位名称" min-width="100" prop="p_name"></el-table-column>
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name" v-if="enPriseId == 0"></el-table-column>
       <!-- <el-table-column label="薪资上限" min-width="100" prop="p_salary_high"></el-table-column>
@@ -137,7 +146,7 @@
       <el-table-column label="浏览数" min-width="100" prop="p_views"></el-table-column>
       <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
       <!-- <el-table-column label="工作描述" min-width="150" prop="p_des" :show-overflow-tooltip="true"></el-table-column> -->
-      <el-table-column label="操作" width="330">
+      <el-table-column label="操作" width="360">
         <template slot-scope="scope">
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="text" size="small" icon="el-icon-edit">编辑</el-button>
@@ -149,6 +158,12 @@
             :icon="scope.row.p_top == 0 ? 'el-icon-top':'el-icon-bottom'"
           >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
           <el-button @click="flush(scope.row)" size="small" type="text" icon="el-icon-refresh">刷新</el-button>
+          <el-button
+            @click="memo(scope.row)"
+            size="small"
+            type="text"
+            icon="el-icon-collection-tag"
+          >备注</el-button>
           <el-button @click="deletejob(scope.row)" size="small" type="text" icon="el-icon-delete">删除</el-button>
         </template>
       </el-table-column>
@@ -174,7 +189,8 @@ import {
   getJoblistListBackend,
   deleteJoblist,
   updateJoblist,
-  getjoblistOptions
+  getjoblistOptions,
+  updateJoblistMemo
 } from "@/api/jobmanagerinfo";
 import { formatTimeToStr } from "@/utils/data";
 import { mapGetters } from "vuex";
@@ -186,9 +202,12 @@ export default {
   mixins: [infoList],
   data() {
     return {
+      p_memo: "",
+      Id: 0,
       listApi: getJoblistListBackend,
       listKey: "RspJoblistList",
       path: path,
+      dialogFormVisible: false,
       multipleSelection: [],
       enterpriseInfo: [],
       jobyears: [],
@@ -249,24 +268,23 @@ export default {
     ...mapGetters("user", ["enPriseId"])
   },
   methods: {
-
     clearOptionPTop() {
       this.searchInfo.p_top = null;
     },
     clearOptionJobstatus() {
-      this.searchInfo.p_status = null
+      this.searchInfo.p_status = null;
     },
     clearOptionCity() {
-      this.searchInfo.p_city_id = null
+      this.searchInfo.p_city_id = null;
     },
     clearOptionJobyear() {
-      this.searchInfo.p_edujy_id = null
+      this.searchInfo.p_edujy_id = null;
     },
     clearOptionJobedu() {
-      this.searchInfo.p_education_id = null
+      this.searchInfo.p_education_id = null;
     },
-    clearOptionPType(){
-      this.searchInfo.p_type_id = null
+    clearOptionPType() {
+      this.searchInfo.p_type_id = null;
     },
 
     StatusFormat(row) {
@@ -328,6 +346,21 @@ export default {
       }
       this.getTableData();
     },
+    async memo(row) {
+      this.Id = row.ID;
+      this.p_memo = row.p_memo;
+      this.dialogFormVisible = !this.dialogFormVisible;
+    },
+
+    async dialogOK() {
+      const res = await updateJoblistMemo({ ID: this.Id, p_memo: this.p_memo });
+      if (res.success) {
+        this.$message({ type: "success", message: "更新备注成功" });
+      }
+      this.getTableData();
+      this.dialogFormVisible = false;
+    },
+
     async changeEp(row) {
       var selectedItem = {};
       selectedItem = this.enterpriseInfo.find(item => {

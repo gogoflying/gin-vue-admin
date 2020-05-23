@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userJobs"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -66,6 +67,17 @@ func UpdateResumeStatus(c *gin.Context) {
 		servers.ReportFormat(c, true, "更新成功", gin.H{
 			"rers": rers,
 		})
+	}
+}
+
+func UpdateResumeMemo(c *gin.Context) {
+	var rs userJobs.ResumeStatus
+	_ = c.ShouldBindJSON(&rs)
+	err := rs.UpdateMemo()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "更新成功", gin.H{})
 	}
 }
 

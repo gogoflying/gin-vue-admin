@@ -7,10 +7,10 @@
       </h1>
       <div class="main">
         <el-form :model="registerForm" :rules="rules" ref="registerForm">
-          <el-form-item label="用户名" label-width="80px" prop="userName">
+          <el-form-item prop="userName">
             <el-input placeholder="请输入用户名" v-model="registerForm.userName"></el-input>
           </el-form-item>
-          <el-form-item label="密码" label-width="80px" prop="passWord">
+          <el-form-item prop="passWord">
             <el-input
               :type="lock==='lock'?'password':'text'"
               placeholder="请输入密码"
@@ -19,7 +19,7 @@
               <i :class="'el-input__icon el-icon-' + lock" @click="changeLock" slot="suffix"></i>
             </el-input>
           </el-form-item>
-          <el-form-item label="确认密码" label-width="80px" prop="rePassword">
+          <el-form-item  prop="rePassword">
             <el-input
               :type="lock==='lock'?'password':'text'"
               placeholder="请再一次输入密码"
@@ -30,10 +30,10 @@
           </el-form-item>
           <br />
           <br />
-          <el-form-item label="企业名称" label-width="80px" prop="enterprise_name">
-            <el-input placeholder="请输入与营业执照一致的企业名称" v-model="registerForm.enterprise_name"></el-input>
+          <el-form-item  prop="enterprise_name">
+            <el-input placeholder="请输入企业名称" v-model="registerForm.enterprise_name"></el-input>
           </el-form-item>
-          <el-form-item label="用户角色" label-width="80px" prop="authorityId">
+          <el-form-item  prop="authorityId">
             <el-select placeholder="请选择用户角色" v-model="registerForm.authorityId" style="width:100%">
               <el-option :key="role.name" :label="role.name" :value="role.id" v-for="role in roles"></el-option>
             </el-select>

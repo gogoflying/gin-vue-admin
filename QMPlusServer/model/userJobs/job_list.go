@@ -38,7 +38,6 @@ type Joblist struct {
 	Top          int     `json:"p_top" gorm:"column:p_top;comment:'0:普通1:置顶'"`
 	Filter       int     `json:"p_filter" gorm:"column:p_filter;comment:'过滤状态，0不启用过滤，1启用过滤'"`
 	SendEmail    string  `json:"p_send_email" gorm:"column:p_send_email;comment:'发送邮件,多个用分号划分'"`
-	Memo         string  `json:"p_memo" gorm:"column:p_memo;comment:'备注'"`
 }
 type SearchInfo struct {
 	EnterPriseName string `json:"enterprise_name"`
@@ -104,10 +103,6 @@ func (jl *Joblist) UpdateViews() {
 		return
 	}
 	qmsql.DEFAULTDB.Model(jl).Where("id = ?", jl.ID).Update("p_views", rejl.Views+1)
-}
-
-func (jl *Joblist) UpdateMemo() error {
-	return qmsql.DEFAULTDB.Model(jl).Where("id = ?", jl.ID).Update("p_memo", jl.Memo).Error
 }
 
 // 分页获取Joblist

@@ -91,10 +91,3 @@ export const createJoblist = (data) => {
     })
 }
 
-export const updateJoblistMemo = (data) => {
-    return service({
-        url: "/jl/updateJoblistMemo",
-        method:'post',
-        data
-    })
-}

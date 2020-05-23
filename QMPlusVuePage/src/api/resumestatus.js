@@ -82,3 +82,11 @@ export const createResumeStatus = (data) => {
          data
      })
  }
+
+ export const updateResumeMemo = (data) => {
+    return service({
+        url: "/jobstatus/updateResumeMemo",
+        method:'post',
+        data
+    })
+}

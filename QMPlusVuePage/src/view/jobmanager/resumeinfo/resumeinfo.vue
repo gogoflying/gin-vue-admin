@@ -8,16 +8,49 @@
         <el-form-item label="职位名称">
           <el-input placeholder="职位名称" v-model="searchInfo.p_name"></el-input>
         </el-form-item>
+        <el-form-item label="投递人">
+          <el-input placeholder="投递人" v-model="searchInfo.userName"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input placeholder="手机号" v-model="searchInfo.mobile"></el-input>
+        </el-form-item>
+
+        <el-form-item label="简历状态">
+          <el-select
+            clearable
+            @clear="clearStatus"
+            placeholder="请选择"
+            v-model.number="searchInfo.resume_status_search"
+          >
+            <el-option
+              :key="item.name"
+              :label="item.name"
+              :value="item.id"
+              v-for="item in resume_status_infos"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item>
           <el-button @click="onSubmit" type="primary">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="tableData" border stripe @cell-click="editpreview">
+
+    <el-dialog title="备注信息" :visible.sync="dialogFormVisible" append-to-body>
+      <el-input type="textarea" :rows="3" placeholder="请输入备注" v-model="p_memo"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogOK()">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-table :data="tableData" border stripe>
       <!-- <el-table-column type="selection" min-width="55"></el-table-column> -->
       <el-table-column label="职位名称" min-width="150" prop="job_info.p_name"></el-table-column>
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name" v-if="enPriseId == 0"></el-table-column>
-      <el-table-column label="手机号" min-width="150" prop="user_info.mobile"></el-table-column>
+      <el-table-column label="投递人" min-width="100" prop="user_info.userName"></el-table-column>
+      <el-table-column label="手机号" min-width="150" prop="user_info.contact"></el-table-column>
       <el-table-column label="简历状态" min-width="150">
         <template slot-scope="scope">
           <el-select
@@ -34,7 +67,7 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="150">
+      <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button
             @click="editpreview(scope.row,scope.column)"
@@ -42,6 +75,12 @@
             size="small"
             icon="el-icon-view"
           >查看</el-button>
+          <el-button
+            @click="memo(scope.row)"
+            size="small"
+            type="text"
+            icon="el-icon-collection-tag"
+          >备注</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,7 +101,11 @@
 <script>
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
 const path = process.env.VUE_APP_BASE_API;
-import { getResumeStatusList, updateResumeStatus } from "@/api/resumestatus";
+import {
+  getResumeStatusList,
+  updateResumeStatus,
+  updateResumeMemo
+} from "@/api/resumestatus";
 import { mapGetters } from "vuex";
 import infoList from "@/components/mixins/infoList";
 export default {
@@ -73,6 +116,9 @@ export default {
       listApi: getResumeStatusList,
       listKey: "resumeStatusList",
       path: path,
+      p_memo: "",
+      Id: 0,
+      dialogFormVisible: false,
       resume_status_infos: [
         {
           id: 0,
@@ -120,6 +166,23 @@ export default {
       this.pageSize = 10;
       this.getTableData();
     },
+    async memo(row) {
+      this.Id = row.ID;
+      this.p_memo = row.p_memo;
+      this.dialogFormVisible = !this.dialogFormVisible;
+    },
+    clearStatus() {
+      this.searchInfo.resume_status_search = null;
+    },
+    async dialogOK() {
+      const res = await updateResumeMemo({ ID: this.Id, p_memo: this.p_memo });
+      if (res.success) {
+        this.$message({ type: "success", message: "更新备注成功" });
+      }
+      this.getTableData();
+      this.dialogFormVisible = false;
+    },
+
     async changeResumeStatus(row) {
       const res = await updateResumeStatus(row);
       if (res.success) {

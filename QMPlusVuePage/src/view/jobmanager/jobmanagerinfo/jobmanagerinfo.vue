@@ -111,14 +111,6 @@
       </el-form>
     </div>
 
-    <el-dialog title="备注信息" :visible.sync="dialogFormVisible" append-to-body>
-      <el-input type="textarea" :rows="3" placeholder="请输入备注" v-model="p_memo"></el-input>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogOK()">确 定</el-button>
-      </div>
-    </el-dialog>
-
     <el-table
       :data="tableData"
       border
@@ -145,9 +137,8 @@
       <el-table-column label="状态" min-width="100" prop="p_status" :formatter="StatusFormat"></el-table-column>
       <el-table-column label="浏览数" min-width="100" prop="p_views"></el-table-column>
       <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
-      <el-table-column label="备注" min-width="150" prop="p_memo"></el-table-column>
       <!-- <el-table-column label="工作描述" min-width="150" prop="p_des" :show-overflow-tooltip="true"></el-table-column> -->
-      <el-table-column label="操作" width="360">
+      <el-table-column label="操作" width="300">
         <template slot-scope="scope">
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="text" size="small" icon="el-icon-edit">编辑</el-button>
@@ -159,12 +150,6 @@
             :icon="scope.row.p_top == 0 ? 'el-icon-top':'el-icon-bottom'"
           >{{scope.row.p_top == 0 ? '置顶':'取消置顶'}}</el-button>
           <el-button @click="flush(scope.row)" size="small" type="text" icon="el-icon-refresh">刷新</el-button>
-          <el-button
-            @click="memo(scope.row)"
-            size="small"
-            type="text"
-            icon="el-icon-collection-tag"
-          >备注</el-button>
           <el-button @click="deletejob(scope.row)" size="small" type="text" icon="el-icon-delete">删除</el-button>
         </template>
       </el-table-column>
@@ -190,8 +175,7 @@ import {
   getJoblistListBackend,
   deleteJoblist,
   updateJoblist,
-  getjoblistOptions,
-  updateJoblistMemo
+  getjoblistOptions
 } from "@/api/jobmanagerinfo";
 import { formatTimeToStr } from "@/utils/data";
 import { mapGetters } from "vuex";
@@ -203,12 +187,9 @@ export default {
   mixins: [infoList],
   data() {
     return {
-      p_memo: "",
-      Id: 0,
       listApi: getJoblistListBackend,
       listKey: "RspJoblistList",
       path: path,
-      dialogFormVisible: false,
       multipleSelection: [],
       enterpriseInfo: [],
       jobyears: [],
@@ -347,21 +328,6 @@ export default {
       }
       this.getTableData();
     },
-    async memo(row) {
-      this.Id = row.ID;
-      this.p_memo = row.p_memo;
-      this.dialogFormVisible = !this.dialogFormVisible;
-    },
-
-    async dialogOK() {
-      const res = await updateJoblistMemo({ ID: this.Id, p_memo: this.p_memo });
-      if (res.success) {
-        this.$message({ type: "success", message: "更新备注成功" });
-      }
-      this.getTableData();
-      this.dialogFormVisible = false;
-    },
-
     async changeEp(row) {
       var selectedItem = {};
       selectedItem = this.enterpriseInfo.find(item => {

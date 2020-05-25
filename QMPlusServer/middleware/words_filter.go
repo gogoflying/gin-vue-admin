@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 
@@ -87,11 +88,20 @@ func CheckWordsIllegal(words string) (bool, error) {
 	return true, nil
 }
 
-func WechatDetectImg(bts []byte) (bool, error) {
+func WechatDetectImg(file *multipart.FileHeader) (bool, error) {
 	var bufReader bytes.Buffer
+	b, err := file.Open()
+	if err != nil {
+		log.Fatal("copying contents:", err)
+	}
+	_, err = io.Copy(&bufReader, b) //复制文件中的内容到b中
+	if err != nil {
+		log.Fatal("copying contents:", err)
+	}
+	/*var bufReader bytes.Buffer
 	mpWriter := multipart.NewWriter(&bufReader)
 	//文件名无所谓
-	fileName := "detect"
+	fileName := "./tmp/detect.tmp"
 	writer, err := mpWriter.CreateFormFile("media", fileName)
 	if err != nil {
 		return false, err
@@ -99,7 +109,7 @@ func WechatDetectImg(bts []byte) (bool, error) {
 	reader := bytes.NewReader(bts)
 	io.Copy(writer, reader)
 	//关闭了才能把内容写入
-	mpWriter.Close()
+	mpWriter.Close()*/
 
 	if g_tocken.access_token == "" {
 		g_tocken.access_token, err = GetAccessTocken()
@@ -181,3 +191,7 @@ func WordFilterHandler() gin.HandlerFunc {
 		}
 	}
 }
+
+/*func ImgFilterHandler() gin.HandlerFunc {
+	return
+}*/

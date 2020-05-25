@@ -18,7 +18,7 @@ require (
 	github.com/go-openapi/swag v0.19.8 // indirect
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
-	github.com/golang/protobuf v1.3.5 // indirect
+	github.com/golang/protobuf v1.3.5
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
 	github.com/jinzhu/gorm v1.9.12
 	github.com/lestrrat/go-envload v0.0.0-20180220120943-6ed08b54a570 // indirect

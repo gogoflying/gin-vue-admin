@@ -1,5 +1,55 @@
 <template>
   <el-container class="login-register-box">
+    <el-dialog title="找回密码" :visible.sync="dialogFormVisible">
+      <el-form :model="forgetForm">
+        <el-form-item>
+          <el-input
+            style="width:80%;"
+            placeholder="请输入邮箱"
+            v-model="forgetForm.email"
+            autocomplete="off"
+          >
+            <i class="el-input__icon el-icon-message" slot="suffix"></i>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-select style="width:80%;" placeholder="请选择用户角色" v-model="forgetForm.roleId">
+            <el-option :key="role.name" :label="role.name" :value="role.id" v-for="role in roles"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item style="position:relative;width:80%;">
+          <el-row :gutter="10">
+            <el-col :span="20">
+              <el-input
+                v-model="forgetForm.captcha"
+                name="logVerify"
+                placeholder="请输入验证码"
+                maxlength="10"
+              />
+              <img :src="path + picPath" alt="请输入验证码" @click="loginVefify1()" class="vPic1" />
+            </el-col>
+            <el-col :span="4">
+              <el-button type="primary" size="small" :disabled="btnEnable" @click="sendEmail()" round>{{btnName}}</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            style="width:80%;"
+            placeholder="请输入邮箱验证码"
+            v-model="forgetForm.code"
+            autocomplete="off"
+          >
+            <i class="el-input__icon el-icon-orange" slot="suffix"></i>
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="onOK()">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <vue-particle-line></vue-particle-line>
     <el-main class="login-box">
       <h1 class="title-1">
@@ -32,7 +82,14 @@
             <img :src="path + picPath" alt="请输入验证码" @click="loginVefify()" class="vPic" />
           </el-form-item>
           <el-form-item>
-            <el-checkbox v-model="checked" style="width:100%">记住密码</el-checkbox>
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-checkbox v-model="checked" style="width:100%">记住密码</el-checkbox>
+              </el-col>
+              <el-col :span="16">
+                <el-link class="fl-right" @click="forgetPass()" type="primary">忘记密码</el-link>
+              </el-col>
+            </el-row>
           </el-form-item>
           <el-form-item>
             <el-button @click="submitForm" style="width:100%">登 录</el-button>
@@ -49,7 +106,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { captcha } from "@/api/user";
+import { captcha, forgetVerify, forgetSendEmail } from "@/api/user";
 const path = process.env.VUE_APP_BASE_API;
 export default {
   name: "Login",
@@ -71,6 +128,7 @@ export default {
 
     return {
       checked: false,
+      dialogFormVisible: false,
       lock: "lock",
       loginForm: {
         username: "",
@@ -78,13 +136,35 @@ export default {
         captcha: "",
         captchaId: ""
       },
+      forgetForm: {
+        email: "",
+        code: "",
+        captcha: "",
+        captchaId: "",
+        roleId:""
+      },
+      roles: [
+        {
+          id: "9528",
+          name: "招聘管理员"
+        },
+        {
+          id: "9529",
+          name: "薪酬管理员"
+        }
+      ],
       rules: {
         username: [{ validator: checkUsername, trigger: "blur" }],
         password: [{ validator: checkPassword, trigger: "blur" }]
       },
       path: path,
       logVerify: "",
-      picPath: ""
+      picPath: "",
+      isOk: false,
+      btnName:"发送验证码",
+      btnEnable:false,
+      count:90,
+      timer:null
     };
   },
   created() {
@@ -94,6 +174,58 @@ export default {
     ...mapActions("user", ["LoginIn"]),
     async login() {
       await this.LoginIn(this.loginForm);
+    },
+    async sendEmail() {
+      var regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+      if(this.forgetForm.email == "" || this.forgetForm.roleId == ""){
+        this.$message({ type: "error", message: "不能为空" });
+        return;
+      }
+      if (!regEmail.test(this.forgetForm.email)) {
+        this.$message({ type: "error", message: "请输入正确的邮箱地址" });
+        return;
+      } 
+      var res = await forgetSendEmail(this.forgetForm);
+      if (res.success) {
+        this.isOk = true;
+        this.timer = setInterval(this.callbackTimer, 1000);
+        this.btnEnable = true;
+      } else {
+        this.$message({ type: "error", message: res.msg });
+      }
+      this.loginVefify1() 
+    },
+
+    callbackTimer(){
+      this.count --
+      if(this.count == 0){
+        this.btnEnable = false;
+        this.btnName = "发送验证码";
+        this.count = 90;
+        clearInterval(this.timer);
+      }else{
+        this.btnName = "发送验证码（ " + this.count + "）";
+      }
+    },
+
+    async onOK() {
+      if (this.isOk) {
+        if(this.forgetForm.email == "" || this.forgetForm.code == ""){
+          this.$message({ type: "error", message: "不能为空" });
+          return;
+        }
+        var res = await forgetVerify(this.forgetForm);
+        if (res.success) {
+          this.$message({ type: "success", message: res.msg });
+        } else {
+          this.$message({ type: "error", message: res.msg });
+        }
+      } else {
+        this.$message({ type: "error", message: "请先发送邮箱验证码" });
+      }
+    },
+    async forgetPass() {
+      this.dialogFormVisible = !this.dialogFormVisible;
     },
     async submitForm() {
       this.$refs.loginForm.validate(async v => {
@@ -122,6 +254,12 @@ export default {
       captcha({}).then(ele => {
         this.picPath = ele.data.picPath;
         this.loginForm.captchaId = ele.data.captchaId;
+      });
+    },
+    loginVefify1() {
+      captcha({}).then(ele => {
+        this.picPath = ele.data.picPath;
+        this.forgetForm.captchaId = ele.data.captchaId;
       });
     },
     //校验cookie
@@ -193,6 +331,11 @@ export default {
     position: absolute;
     right: 10px;
     bottom: 0px; // 适配ie
+  }
+  .vPic1 {
+    position: absolute;
+    right: 90px;
+    bottom: 10px; // 适配ie
   }
 }
 </style>

@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/tools"
+
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
@@ -19,6 +20,7 @@ type SysUser struct {
 	HeaderImg   string       `json:"headerImg" gorm:"default:'https://bda-edu-hr.oss-cn-beijing.aliyuncs.com/002.png'"`
 	Authority   SysAuthority `json:"authority" gorm:"ForeignKey:AuthorityId;AssociationForeignKey:AuthorityId"`
 	AuthorityId string       `json:"authorityId" gorm:"default:9528"`
+	Email       string       `json:"email" gorm:"email"`
 }
 
 //type Propertie struct {
@@ -82,6 +84,20 @@ func (u *SysUser) ChangePassword(newPassword string) (err error, userInter *SysU
 func (u *SysUser) SetUserAuthority(uuid uuid.UUID, AuthorityId string) (err error) {
 	err = qmsql.DEFAULTDB.Where("uuid = ?", uuid).First(&SysUser{}).Update("authority_id", AuthorityId).Error
 	return err
+}
+
+func (u *SysUser) GetByEmail() (err error, userInter *SysUser) {
+	var user SysUser
+	err = qmsql.DEFAULTDB.Model(u).Where("email = ? and authorityId = ?", u.Email, u.AuthorityId).First(&user).Error
+	return err, &user
+}
+
+// 更新User
+func (u *SysUser) ResetPasswordForget() (err error, ru SysUser) {
+	var user SysUser
+	password := tools.MD5V([]byte("12345678"))
+	err = qmsql.DEFAULTDB.Where("email = ? and authorityId = ?", u.Email, u.AuthorityId).First(&user).Update("password", password).Error
+	return err, *u
 }
 
 //用户登录

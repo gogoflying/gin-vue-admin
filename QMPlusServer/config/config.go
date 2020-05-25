@@ -19,6 +19,18 @@ type Config struct {
 	AliyunOss    AliyunOss    `json:"aliyunoss"`
 	WeiXin       WeiXin       `json:"weiXin"`
 	Sendsms      Sendsms      `json:"Sendsms"`
+	SendEmail    SendEmail    `json:"sendEmail"`
+}
+
+type SendEmail struct {
+	// ServerHost 邮箱服务器地址，如腾讯企业邮箱为smtp.exmail.qq.com
+	ServerHost string `json:"serverHost"`
+	// ServerPort 邮箱服务器端口，如腾讯企业邮箱为465
+	ServerPort int `json:"serverPort"`
+	// FromEmail　发件人邮箱地址
+	FromEmail string `json:"fromEmail"`
+	// FromPasswd 发件人邮箱密码（注意，这里是明文形式）
+	FromPasswd string `json:"fromPasswd"`
 }
 
 type System struct { // 系统配置

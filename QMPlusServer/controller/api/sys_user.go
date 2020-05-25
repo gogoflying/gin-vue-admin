@@ -8,6 +8,7 @@ import (
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/sysModel"
 	"gin-vue-admin/model/userJobs"
+	"math/rand"
 	"mime/multipart"
 	"time"
 
@@ -38,6 +39,15 @@ type RegestStuct struct {
 	NickName       string `json:"nickName" gorm:"default:'QMPlusUser'"`
 	HeaderImg      string `json:"headerImg" gorm:"default:'https://bda-edu-hr.oss-cn-beijing.aliyuncs.com/002.png'"`
 	AuthorityId    string `json:"authorityId" gorm:"default:9528"`
+	Email          string `json:"email" gorm:"email"`
+}
+
+type ForgetPass struct {
+	Email     string `json:"email"`
+	Code      string `json:"code" `
+	Captcha   string `json:"captcha"`
+	CaptchaId string `json:"captchaId"`
+	RoleId    string `json:"roleId"`
 }
 
 // @Tags Base
@@ -52,7 +62,7 @@ func Register(c *gin.Context) {
 	if R.AuthorityId == "" {
 		R.AuthorityId = "9528"
 	}
-	user := &sysModel.SysUser{Username: R.Username, NickName: R.NickName, Password: R.Password, HeaderImg: R.HeaderImg, AuthorityId: R.AuthorityId}
+	user := &sysModel.SysUser{Username: R.Username, NickName: R.NickName, Password: R.Password, HeaderImg: R.HeaderImg, AuthorityId: R.AuthorityId, Email: R.Email}
 	err, user := user.Register()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("%v", err), gin.H{
@@ -108,6 +118,51 @@ func Login(c *gin.Context) {
 		servers.ReportFormat(c, false, "验证码错误", gin.H{})
 	}
 
+}
+
+func VerifyEmailCode(c *gin.Context) {
+	var req ForgetPass
+	_ = c.ShouldBindJSON(&req)
+	code := servers.GetMap(req.Email)
+	if code == nil {
+		servers.ReportFormat(c, false, "邮箱验证码失效或者尚未发送", gin.H{})
+		return
+	}
+	if code.(string) != req.Code {
+		servers.ReportFormat(c, false, "邮箱验证码错误", gin.H{})
+		return
+	}
+	U := &sysModel.SysUser{Email: req.Email, AuthorityId: req.RoleId}
+	if err, _ := U.ResetPasswordForget(); err != nil {
+		servers.ReportFormat(c, false, "重置密码失败", gin.H{})
+		return
+	}
+	servers.ReportFormat(c, true, "密码重置为：12345678, 请登录后及时修改！", gin.H{})
+}
+
+func SendEmailForget(c *gin.Context) {
+	var req ForgetPass
+	_ = c.ShouldBindJSON(&req)
+	if captcha.VerifyString(req.CaptchaId, req.Captcha) {
+		U := &sysModel.SysUser{Email: req.Email, AuthorityId: req.RoleId}
+		if err, _ := U.GetByEmail(); err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("用户邮箱不存在", err), gin.H{})
+			return
+		}
+		var s string
+		for i := 0; i < 6; i++ {
+			rand.Seed(time.Now().UnixNano())
+			s = s + fmt.Sprintf("%v", rand.Intn(10))
+		}
+		if err := servers.SendEmail(req.Email, "密码找回验证码", "你正在使用邮箱找回密码功能，本次邮箱验证码为： "+s); err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("发送邮箱验证码失败", err), gin.H{})
+			return
+		}
+		servers.AddMap(req.Email, s)
+		servers.ReportFormat(c, true, "发送成功，请登录邮箱获取验证码", gin.H{})
+	} else {
+		servers.ReportFormat(c, false, "验证码错误", gin.H{})
+	}
 }
 
 //登录以后签发jwt

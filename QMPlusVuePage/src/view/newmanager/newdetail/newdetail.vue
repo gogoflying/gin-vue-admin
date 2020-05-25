@@ -10,7 +10,7 @@
         </el-form-item>
         <el-form-item label="排序" prop="order">
           <el-input v-model.number="user_news.order" style="width:25%;" placeholder="请输入顺序"></el-input>
-          <label>(越大,越靠前)</label>
+          <label>【数值越大,越靠前】</label>
         </el-form-item>
         <el-form-item label="新闻类型" prop="news_type">
           <el-select placeholder="请选择新闻类型" v-model.number="user_news.news_type">
@@ -203,7 +203,7 @@ export default {
   display: block;
 }
 .ql-container {
-  height: 200px;
+  height: 500px;
 }
 .ql-editor strong {
   font-style: normal;

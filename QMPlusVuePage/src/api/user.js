@@ -102,3 +102,19 @@ export const deleteSysUser = (data) => {
         data: data
     })
 }
+
+export const forgetSendEmail = (data) =>{
+    return service({
+        url:"/user/forgetSendEmail",
+        method:'post',
+        data:data
+    })
+}
+
+export const forgetVerify = (data) =>{
+    return service({
+        url:"/user/forgetVerify",
+        method:'post',
+        data:data
+    })
+}

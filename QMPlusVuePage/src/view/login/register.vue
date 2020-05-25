@@ -10,6 +10,9 @@
           <el-form-item prop="userName">
             <el-input placeholder="请输入用户名" v-model="registerForm.userName"></el-input>
           </el-form-item>
+          <el-form-item prop="email">
+            <el-input placeholder="请输入邮箱【用于找回密码】" v-model="registerForm.email"></el-input>
+          </el-form-item>
           <el-form-item prop="passWord">
             <el-input
               :type="lock==='lock'?'password':'text'"
@@ -76,6 +79,14 @@ export default {
         callback();
       }
     };
+    const checkEmail = (rule, value, callback) => {
+      var regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+      if (value != '' && !regEmail.test(value)) {
+        return callback(new Error("请输入正确的邮箱地址"));
+      } else {
+        callback();
+      }
+    };
     const checkPassword = (rule, value, callback) => {
       if (value.length < 6 || value.length > 12) {
         return callback(new Error("请输入正确的密码"));
@@ -95,6 +106,7 @@ export default {
       lock: "lock",
       registerForm: {
         userName: "",
+        email:"",
         passWord: "",
         rePassword: "",
         enterprise_name: "",
@@ -111,6 +123,7 @@ export default {
         }
       ],
       rules: {
+        email: [{ validator: checkEmail, trigger: "blur" }],
         userName: [{ validator: checkUsername, trigger: "blur" }],
         passWord: [{ validator: checkPassword, trigger: "blur" }],
         rePassword: [{ validator: ratioPassword, trigger: "blur" }],

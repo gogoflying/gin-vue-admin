@@ -86,9 +86,9 @@ func (u *SysUser) SetUserAuthority(uuid uuid.UUID, AuthorityId string) (err erro
 	return err
 }
 
-func (u *SysUser) GetByEmail() (err error, userInter *SysUser) {
+func (u *SysUser) GetByUsername() (err error, userInter *SysUser) {
 	var user SysUser
-	err = qmsql.DEFAULTDB.Model(u).Where("email = ? and authorityId = ?", u.Email, u.AuthorityId).First(&user).Error
+	err = qmsql.DEFAULTDB.Model(u).Where("username = ? and authorityId = ?", u.Username, u.AuthorityId).First(&user).Error
 	return err, &user
 }
 
@@ -96,7 +96,7 @@ func (u *SysUser) GetByEmail() (err error, userInter *SysUser) {
 func (u *SysUser) ResetPasswordForget() (err error, ru SysUser) {
 	var user SysUser
 	password := tools.MD5V([]byte("12345678"))
-	err = qmsql.DEFAULTDB.Where("email = ? and authorityId = ?", u.Email, u.AuthorityId).First(&user).Update("password", password).Error
+	err = qmsql.DEFAULTDB.Where("username = ? and authorityId = ?", u.Username, u.AuthorityId).First(&user).Update("password", password).Error
 	return err, *u
 }
 

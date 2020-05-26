@@ -43,7 +43,7 @@ type RegestStuct struct {
 }
 
 type ForgetPass struct {
-	Email     string `json:"email"`
+	Username  string `json:"userName"`
 	Code      string `json:"code" `
 	Captcha   string `json:"captcha"`
 	CaptchaId string `json:"captchaId"`
@@ -123,7 +123,7 @@ func Login(c *gin.Context) {
 func VerifyEmailCode(c *gin.Context) {
 	var req ForgetPass
 	_ = c.ShouldBindJSON(&req)
-	code := servers.GetMap(req.Email)
+	code := servers.GetMap(req.Username)
 	if code == nil {
 		servers.ReportFormat(c, false, "邮箱验证码失效或者尚未发送", gin.H{})
 		return
@@ -132,7 +132,7 @@ func VerifyEmailCode(c *gin.Context) {
 		servers.ReportFormat(c, false, "邮箱验证码错误", gin.H{})
 		return
 	}
-	U := &sysModel.SysUser{Email: req.Email, AuthorityId: req.RoleId}
+	U := &sysModel.SysUser{Username: req.Username, AuthorityId: req.RoleId}
 	if err, _ := U.ResetPasswordForget(); err != nil {
 		servers.ReportFormat(c, false, "重置密码失败", gin.H{})
 		return
@@ -144,9 +144,10 @@ func SendEmailForget(c *gin.Context) {
 	var req ForgetPass
 	_ = c.ShouldBindJSON(&req)
 	if captcha.VerifyString(req.CaptchaId, req.Captcha) {
-		U := &sysModel.SysUser{Email: req.Email, AuthorityId: req.RoleId}
-		if err, _ := U.GetByEmail(); err != nil {
-			servers.ReportFormat(c, false, fmt.Sprintf("用户邮箱不存在", err), gin.H{})
+		U := &sysModel.SysUser{Username: req.Username, AuthorityId: req.RoleId}
+		err, user := U.GetByUsername()
+		if err != nil {
+			servers.ReportFormat(c, false, "用户不存在", gin.H{})
 			return
 		}
 		var s string
@@ -154,11 +155,11 @@ func SendEmailForget(c *gin.Context) {
 			rand.Seed(time.Now().UnixNano())
 			s = s + fmt.Sprintf("%v", rand.Intn(10))
 		}
-		if err := servers.SendEmail(req.Email, "密码找回验证码", "你正在使用邮箱找回密码功能，本次邮箱验证码为： "+s); err != nil {
+		if err := servers.SendEmail(user.Email, "密码找回", "你正在使用邮箱找回密码功能，本次邮箱验证码为： "+s); err != nil {
 			servers.ReportFormat(c, false, fmt.Sprintf("发送邮箱验证码失败", err), gin.H{})
 			return
 		}
-		servers.AddMap(req.Email, s)
+		servers.AddMap(req.Username, s)
 		servers.ReportFormat(c, true, "发送成功，请登录邮箱获取验证码", gin.H{})
 	} else {
 		servers.ReportFormat(c, false, "验证码错误", gin.H{})

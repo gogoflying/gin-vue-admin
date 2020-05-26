@@ -5,11 +5,11 @@
         <el-form-item>
           <el-input
             style="width:80%;"
-            placeholder="请输入邮箱"
-            v-model="forgetForm.email"
+            placeholder="请输入用户名"
+            v-model="forgetForm.userName"
             autocomplete="off"
           >
-            <i class="el-input__icon el-icon-message" slot="suffix"></i>
+            <i class="el-input__icon el-icon-user" slot="suffix"></i>
           </el-input>
         </el-form-item>
         <el-form-item>
@@ -137,7 +137,7 @@ export default {
         captchaId: ""
       },
       forgetForm: {
-        email: "",
+        userName: "",
         code: "",
         captcha: "",
         captchaId: "",
@@ -176,15 +176,10 @@ export default {
       await this.LoginIn(this.loginForm);
     },
     async sendEmail() {
-      var regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-      if(this.forgetForm.email == "" || this.forgetForm.roleId == ""){
+      if(this.forgetForm.userName == "" || this.forgetForm.roleId == "" || this.forgetForm.captcha == ""){
         this.$message({ type: "error", message: "不能为空" });
         return;
       }
-      if (!regEmail.test(this.forgetForm.email)) {
-        this.$message({ type: "error", message: "请输入正确的邮箱地址" });
-        return;
-      } 
       var res = await forgetSendEmail(this.forgetForm);
       if (res.success) {
         this.isOk = true;
@@ -210,7 +205,7 @@ export default {
 
     async onOK() {
       if (this.isOk) {
-        if(this.forgetForm.email == "" || this.forgetForm.code == ""){
+        if(this.forgetForm.userName == "" || this.forgetForm.code == ""){
           this.$message({ type: "error", message: "不能为空" });
           return;
         }

@@ -35,6 +35,7 @@ type WX_Access struct {
 }
 
 var g_tocken WX_Access
+var mtx sync.Mutex
 
 var appid string = config.GinVueAdminconfig.WeiXin.ResumeApp.Appid
 var appSecret string = config.GinVueAdminconfig.WeiXin.ResumeApp.AppSecret
@@ -84,6 +85,7 @@ func CheckWordsIllegal(words string) (bool, error) {
 	var returnErr ReturnErrorInfo
 	json.Unmarshal([]byte(body), &returnErr)
 	if returnErr.ErrCode != 0 {
+		RefreshTockenFromDB()
 		return false, fmt.Errorf("%v", "禁止上传敏感信息")
 	}
 
@@ -140,6 +142,8 @@ func WechatDetectImg(file *multipart.FileHeader) (bool, error) {
 	//errcode 存在，且为0，返回通过
 	if _, ok := vs["errcode"]; ok && vs["errcode"].(float64) == 0.0 {
 		return true, nil
+	} else {
+		RefreshTockenFromDB()
 	}
 
 	return false, err
@@ -152,10 +156,10 @@ func NewFilterTocken() *WX_Access {
 }
 
 func (wx_a *WX_Access) StartRun() {
-	var mtx sync.Mutex
 	var tocken string
 	for {
-		//tocken = sysModel.GetNewFilterTocken(salaryAppName)
+		hfirst := sysModel.GetWxFliterTockenHndle(salaryAppName, "")
+		tocken = hfirst.GetNewFilterTocken(salaryAppName)
 		if tocken == "" {
 			ntoken, err := GetAccessTocken()
 			if err != nil {
@@ -173,7 +177,7 @@ func (wx_a *WX_Access) StartRun() {
 		} else {
 			err := checkTockenExpired(tocken)
 			if err != nil {
-				fmt.Printf("tocken :%s had expired,need refresh", tocken)
+				fmt.Printf("tocken :%s had expired,need refresh:%v", tocken, err)
 				for {
 					tocken, err = GetAccessTocken()
 					if err != nil {
@@ -183,13 +187,13 @@ func (wx_a *WX_Access) StartRun() {
 						break
 					}
 				}
+				h := sysModel.GetWxFliterTockenHndle(salaryAppName, tocken)
+				h.UpdateFilterTocken(salaryAppName, tocken)
 				fmt.Printf("new tocken :%s", tocken)
 			}
 			mtx.Lock()
 			g_tocken.access_token = tocken
 			mtx.Unlock()
-			h := sysModel.GetWxFliterTockenHndle(salaryAppName, tocken)
-			h.UpdateFilterTocken(salaryAppName, tocken)
 
 			time.Sleep(time.Hour)
 		}
@@ -227,6 +231,15 @@ func WordFilterHandler() gin.HandlerFunc {
 }*/
 
 func checkTockenExpired(tocken string) error {
+	mtx.Lock()
+	g_tocken.access_token = tocken
+	mtx.Unlock()
 	_, err := CheckWordsIllegal("test content")
 	return err
+}
+func RefreshTockenFromDB() {
+	mtx.Lock()
+	h := sysModel.GetWxFliterTockenHndle(salaryAppName, "")
+	g_tocken.access_token = h.GetNewFilterTocken(salaryAppName)
+	mtx.Unlock()
 }

@@ -50,10 +50,6 @@ func (wft *WxFliterTocken) UpdateFilterTocken(appname string, tocken string) {
 		AppName: appname,
 	}
 	err, cur := nTocken.FindById()
-	if err != nil {
-		fmt.Printf("UpdateFilterTocken FindById err :%v", err)
-		return
-	}
 	if cur.AppName == "" {
 		nTocken.Tocken = tocken
 		err = nTocken.CreateWxFliterTocken()

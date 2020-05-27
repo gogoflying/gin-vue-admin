@@ -29,7 +29,7 @@ func UploadFile(c *gin.Context) {
 		servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
 	} else {
 		//文件上传后拿到文件路径
-		isValid, err := middleware.WechatDetectImg(header)
+		isValid, err := middleware.WechatDetectImg_Re(header)
 		if !isValid {
 			servers.ReportFormat(c, false, fmt.Sprintf("img鉴权失败：%v", err), gin.H{})
 			return

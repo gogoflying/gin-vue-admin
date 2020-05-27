@@ -7,7 +7,7 @@ import (
 	"gin-vue-admin/router"
 
 	"github.com/gin-gonic/gin"
-	"github.com/swaggo/gin-swagger"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
@@ -22,7 +22,7 @@ func InitRouter() *gin.Engine {
 	// 跨域
 	Router.Use(middleware.Cors())
 	log.L.Debug("use middleware cors")
-	//Router.Use(middleware.WordFilterHandler())
+	//Router.Use(middleware.WordFilterHandler_Re())
 	log.L.Debug("use middleware wordfilter")
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	log.L.Debug("register swagger handler")

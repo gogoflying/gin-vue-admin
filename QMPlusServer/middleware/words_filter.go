@@ -10,7 +10,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"gin-vue-admin/config"
+
 	"gin-vue-admin/controller/servers"
+	"gin-vue-admin/model/sysModel"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -36,6 +38,9 @@ var g_tocken WX_Access
 
 var appid string = config.GinVueAdminconfig.WeiXin.ResumeApp.Appid
 var appSecret string = config.GinVueAdminconfig.WeiXin.ResumeApp.AppSecret
+
+const salaryAppName = "salary-app"
+const resumeAppName = "resume-app"
 
 //敏感词过滤
 func GetAccessTocken() (string, error) {
@@ -63,11 +68,8 @@ func CheckWordsIllegal(words string) (bool, error) {
 
 	//var access_token string
 	if g_tocken.access_token == "" {
-		access_token, err := GetAccessTocken()
-		if err != nil {
-			return false, err
-		}
-		g_tocken.access_token = access_token
+		fmt.Printf("access tocken illegal")
+		return false, fmt.Errorf("access tocken illegal")
 	}
 
 	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=%s", g_tocken.access_token)
@@ -112,10 +114,8 @@ func WechatDetectImg(file *multipart.FileHeader) (bool, error) {
 	mpWriter.Close()*/
 
 	if g_tocken.access_token == "" {
-		g_tocken.access_token, err = GetAccessTocken()
-		if err != nil {
-			return false, err
-		}
+		fmt.Printf("access tocken illegal")
+		return false, fmt.Errorf("access tocken illegal")
 	}
 
 	client := http.DefaultClient
@@ -153,17 +153,47 @@ func NewFilterTocken() *WX_Access {
 
 func (wx_a *WX_Access) StartRun() {
 	var mtx sync.Mutex
+	var tocken string
 	for {
-		token, err := GetAccessTocken()
-		if err != nil {
-			time.Sleep(time.Second)
-			continue
+		//tocken = sysModel.GetNewFilterTocken(salaryAppName)
+		if tocken == "" {
+			ntoken, err := GetAccessTocken()
+			if err != nil {
+				time.Sleep(time.Second)
+				continue
+			} else {
+				mtx.Lock()
+				g_tocken.access_token = ntoken
+				mtx.Unlock()
+				h := sysModel.GetWxFliterTockenHndle(salaryAppName, tocken)
+				h.UpdateFilterTocken(salaryAppName, ntoken)
+
+				time.Sleep(time.Hour)
+			}
 		} else {
+			err := checkTockenExpired(tocken)
+			if err != nil {
+				fmt.Printf("tocken :%s had expired,need refresh", tocken)
+				for {
+					tocken, err = GetAccessTocken()
+					if err != nil {
+						time.Sleep(time.Second)
+						continue
+					} else {
+						break
+					}
+				}
+				fmt.Printf("new tocken :%s", tocken)
+			}
 			mtx.Lock()
-			g_tocken.access_token = token
+			g_tocken.access_token = tocken
 			mtx.Unlock()
+			h := sysModel.GetWxFliterTockenHndle(salaryAppName, tocken)
+			h.UpdateFilterTocken(salaryAppName, tocken)
+
 			time.Sleep(time.Hour)
 		}
+
 	}
 }
 
@@ -195,3 +225,8 @@ func WordFilterHandler() gin.HandlerFunc {
 /*func ImgFilterHandler() gin.HandlerFunc {
 	return
 }*/
+
+func checkTockenExpired(tocken string) error {
+	_, err := CheckWordsIllegal("test content")
+	return err
+}

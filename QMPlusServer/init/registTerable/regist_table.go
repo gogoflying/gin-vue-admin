@@ -1,7 +1,7 @@
 package registerTable
 
 import (
-	"gin-vue-admin/init/initlog"
+	log "gin-vue-admin/init/initlog"
 	"gin-vue-admin/model/dbModel"
 	"gin-vue-admin/model/sysModel"
 	"gin-vue-admin/model/userCity"
@@ -49,6 +49,7 @@ func RegisterTable(db *gorm.DB) {
 		sysModel.JwtBlacklist{},
 		sysModel.SysWorkflow{},
 		sysModel.SysWorkflowStepInfo{},
+		sysModel.WxFliterTocken{},
 		dbModel.ExaFileUploadAndDownload{},
 		dbModel.ExaFile{},
 		dbModel.ExaFileChunk{},

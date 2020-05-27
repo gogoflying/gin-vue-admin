@@ -185,18 +185,19 @@ func (users *Users) GetInfoList(info modelInterface.PageInfo) (err error, list i
 
 type ResumeUserView struct {
 	Users
-	Mobile         string `json:"contact"`
-	UserName       string `json:"userName"`
-	HasAvatarUrl   *int   `json:"hasAvatarurl"`
-	Genderindex    *int   `json:"genderindex"`
-	EdulevelIndex  *int   `json:"edulevelindex"`
-	WorksYearindex *int   `json:"worksYearindex"`
 
-	Dreamposi     string `json:"dreamposi" `
-	WorkTypeindex *int   `json:"workTypeindex"`
-	Cityindex     *int   `json:"cityindex"`
-	Salaryindex   *int   `json:"salaryindex"`
-	DutyTimeindex *int   `json:"dutyTimeindex"`
+	UserName       string `json:"userName" gorm:"column:user_name"`
+	Mobile         string `json:"contact" gorm:"column:mobile"`
+	HasAvatarUrl   *int   `json:"hasAvatarurl" gorm:"column:avatarUrl"`
+	Genderindex    *int   `json:"genderindex" gorm:"column:genderindex"`
+	EdulevelIndex  *int   `json:"edulevelindex" gorm:"column:edulevelindex"`
+	WorksYearindex *int   `json:"worksYearindex" gorm:"column:worksYearindex"`
+
+	Dreamposi     string `json:"dreamposi" gorm:"column:dreamposi"`
+	WorkTypeindex *int   `json:"workTypeindex" gorm:"column:workTypeindex"`
+	Cityindex     *int   `json:"cityindex" gorm:"column:cityindex"`
+	Salaryindex   *int   `json:"salaryindex" gorm:"column:salaryindex"`
+	DutyTimeindex *int   `json:"dutyTimeindex" gorm:"column:dutyTimeindex"`
 }
 
 // 分页获取Users
@@ -209,7 +210,6 @@ func (users *Users) GetInfoListNew(ruv ResumeUserView, info modelInterface.PageI
 		"users.*",
 		"user_base_infos.mobile",
 		"user_base_infos.user_name",
-		"user_base_infos.avatarUrl",
 		"user_base_infos.genderindex",
 		"user_base_infos.edulevelindex",
 		"user_base_infos.worksYearindex",
@@ -268,6 +268,7 @@ func (users *Users) GetInfoListNew(ruv ResumeUserView, info modelInterface.PageI
 		table = table.Limit(limit).Offset(offset)
 		err = table.Find(&reUsersViewList).Error
 	}
+
 	return err, reUsersViewList, total
 }
 

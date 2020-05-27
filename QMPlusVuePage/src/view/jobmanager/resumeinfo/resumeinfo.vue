@@ -51,6 +51,9 @@
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="投递人" min-width="100" prop="user_info.userName"></el-table-column>
       <el-table-column label="手机号" min-width="150" prop="user_info.contact"></el-table-column>
+      <el-table-column label="工作年限" min-width="150" prop="user_info.worksYearindex" :formatter="wyFormat"></el-table-column>
+      <el-table-column label="学历" min-width="150" prop="user_info.edulevelindex" :formatter="elFormat"></el-table-column>
+      <el-table-column label="年龄" min-width="150" prop="user_info.birthday" :formatter="ageFormat"></el-table-column>
       <el-table-column label="简历状态" min-width="150">
         <template slot-scope="scope">
           <el-select
@@ -106,6 +109,7 @@ import {
   updateResumeStatus,
   updateResumeMemo
 } from "@/api/resumestatus";
+import { getUserOptions } from "@/api/jobuser";
 import { mapGetters } from "vuex";
 import infoList from "@/components/mixins/infoList";
 export default {
@@ -118,6 +122,7 @@ export default {
       path: path,
       p_memo: "",
       Id: 0,
+      option: {},
       dialogFormVisible: false,
       resume_status_infos: [
         {
@@ -147,6 +152,37 @@ export default {
     ...mapGetters("user", ["enPriseId"])
   },
   methods: {
+    wyFormat(row) {
+      if (row.user_info.worksYearindex == null || this.option.jwe == null) {
+        return "";
+      } else {
+        var selectedItem = null;
+        selectedItem = this.option.jwe.find(item => {
+          return item.ID === row.user_info.worksYearindex;
+        });
+        return selectedItem == null ? "" : selectedItem.name;
+      }
+    },
+    elFormat(row) {
+      if (row.user_info.edulevelindex == null || this.option.el == null) {
+        return "";
+      } else {
+        var selectedItem = null;
+        selectedItem = this.option.el.find(item => {
+          return item.ID === row.user_info.edulevelindex;
+        });
+        return selectedItem === null ? "" : selectedItem.name;
+      }
+    },
+    ageFormat(row) {
+      if (row.user_info.birthday != "") {
+        var date = new Date(row.user_info.birthday);
+        var d = new Date();
+        return d.getFullYear()-date.getFullYear()
+      } else {
+        return "";
+      }
+    },
     async editpreview(row, column) {
       //打开简历详情
       if (column.type !== "selection") {
@@ -188,6 +224,12 @@ export default {
       if (res.success) {
         this.$message({ type: "success", message: "状态设置成功" });
       }
+    }
+  },
+  async created() {
+    const res = await getUserOptions();
+    if (res.success) {
+      this.option = res.data;
     }
   }
 };

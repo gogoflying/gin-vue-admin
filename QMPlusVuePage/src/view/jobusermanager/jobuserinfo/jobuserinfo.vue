@@ -138,11 +138,18 @@
       <el-table-column label="姓名" min-width="100" prop="userName"></el-table-column>
       <el-table-column label="手机号" min-width="100" prop="contact"></el-table-column>
       <el-table-column label="期望职位" min-width="100" prop="dreamposi"></el-table-column>
-      <el-table-column label="是否存在简历" min-width="100" prop="is_resume">
+      <el-table-column label="性别" min-width="100" prop="genderindex" :formatter="genderFormat"></el-table-column>
+      <el-table-column label="工作年限" min-width="100" prop="worksYearindex" :formatter="wyFormat"></el-table-column>
+      <el-table-column label="学历" min-width="100" prop="edulevelindex" :formatter="elFormat"></el-table-column>
+      <el-table-column label="工作类型" min-width="100" prop="workTypeindex" :formatter="wtFormat"></el-table-column>
+      <el-table-column label="期望薪资" min-width="100" prop="salaryindex" :formatter="salaryFormat"></el-table-column>
+      <el-table-column label="期望城市" min-width="100" prop="cityindex" :formatter="cityFormat"></el-table-column>
+      <el-table-column label="到岗时间" min-width="100" prop="dutyTimeindex" :formatter="dtFormat"></el-table-column>
+      <el-table-column label="有无简历" min-width="120" prop="is_resume">
         <template slot-scope="scope">
           <el-radio-group @change="changestatus(scope.row)" v-model="scope.row.is_resume">
-            <el-radio :label="0">否</el-radio>
-            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">无</el-radio>
+            <el-radio :label="1">有</el-radio>
           </el-radio-group>
         </template>
       </el-table-column>
@@ -206,6 +213,75 @@ export default {
     };
   },
   methods: {
+    genderFormat(row) {
+      return row.genderindex === 0 ? "男" : row.genderindex === 1 ? "女" : "";
+    },
+    wyFormat(row) {
+      if (row.worksYearindex == null || this.option.jwe == null) {
+        return "";
+      } else {
+        var selectedItem = null;
+        selectedItem = this.option.jwe.find(item => {
+          return item.ID === row.worksYearindex;
+        });
+        return selectedItem == null ? "" : selectedItem.name;
+      }
+    },
+    elFormat(row) {
+      if (row.edulevelindex == null || this.option.el == null) {
+        return "";
+      } else {
+        var selectedItem = null;
+        selectedItem = this.option.el.find(item => {
+          return item.ID === row.edulevelindex;
+        });
+        return selectedItem === null ? "" : selectedItem.name;
+      }
+    },
+    wtFormat(row) {
+      if (row.workTypeindex == null || this.option.wt == null) {
+        return "";
+      } else {
+        var selectedItem = null;
+        selectedItem = this.option.wt.find(item => {
+          return item.ID === row.workTypeindex;
+        });
+        return selectedItem === null ? "" : selectedItem.name;
+      }
+    },
+    salaryFormat(row) {
+      if (row.salaryindex == null || this.option.js == null) {
+        return "";
+      } else {
+        var selectedItem = null;
+        selectedItem = this.option.js.find(item => {
+          return item.ID === row.salaryindex;
+        });
+        return selectedItem === null ? "" : selectedItem.name;
+      }
+    },
+    cityFormat(row) {
+      if (row.cityindex == null || this.option.cityinfo == null) {
+        return "";
+      } else {
+        var selectedItem = null;
+        selectedItem = this.option.cityinfo.find(item => {
+          return item.ID === row.cityindex;
+        });
+        return selectedItem === null ? "" : selectedItem.name;
+      }
+    },
+    dtFormat(row) {
+      if (row.dutyTimeindex == null || this.option.jdt == null) {
+        return "";
+      } else {
+        var selectedItem = null;
+        selectedItem = this.option.jdt.find(item => {
+          return item.ID === row.dutyTimeindex;
+        });
+        return selectedItem === null ? "" : selectedItem.name;
+      }
+    },
     clearOptionGender() {
       this.searchInfo.genderindex = null;
     },

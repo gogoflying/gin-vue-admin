@@ -88,6 +88,24 @@ func (users *Users) FindByOpenId() (err error, reusers Users, edus, wks, base, d
 
 }
 
+func (users *Users) FindResumeInfoByOpenId() (err error, reusers Users, edus, wks, base, dream interface{}) {
+	err = qmsql.DEFAULTDB.Model(users).Where("openid = ?", users.Openid).First(&reusers).Error
+	if err != nil {
+		return
+	}
+	_, edus, _ = new(UserEducation).GetInfoListByOpenid(users.Openid, 1, 20)
+	_, wks, _ = new(UserWork).GetInfoListOpenId(users.Openid, 1, 20)
+	err1, baseTemp := (&UserBaseInfo{Openid: users.Openid}).FindByOpenid()
+	if err1 == nil {
+		base = baseTemp
+	}
+	err2, dreamTemp := (&UserDream{Openid: users.Openid}).FindByOpenid()
+	if err2 == nil {
+		dream = dreamTemp
+	}
+	return
+}
+
 func (users *Users) GetEduLevels() (err error, list interface{}) {
 	var els []EduLevel
 	err = qmsql.DEFAULTDB.Select("id,name").Find(&els).Error
@@ -167,7 +185,7 @@ func (users *Users) GetInfoList(info modelInterface.PageInfo) (err error, list i
 
 type ResumeUserView struct {
 	Users
-	Mobile         string `json:"mobile"`
+	Mobile         string `json:"contact"`
 	UserName       string `json:"userName"`
 	HasAvatarUrl   *int   `json:"hasAvatarurl"`
 	Genderindex    *int   `json:"genderindex"`
@@ -189,6 +207,7 @@ func (users *Users) GetInfoListNew(ruv ResumeUserView, info modelInterface.PageI
 	db.LogMode(true)
 	table := db.Select([]string{
 		"users.*",
+		"user_base_infos.mobile",
 		"user_base_infos.user_name",
 		"user_base_infos.avatarUrl",
 		"user_base_infos.genderindex",
@@ -205,7 +224,7 @@ func (users *Users) GetInfoListNew(ruv ResumeUserView, info modelInterface.PageI
 
 	var reUsersViewList []ResumeUserView
 	if ruv.Mobile != "" {
-		table = table.Where("users.mobile LIKE ?", "%"+ruv.Mobile+"%")
+		table = table.Where("user_base_infos.mobile LIKE ?", "%"+ruv.Mobile+"%")
 	}
 	if ruv.UserName != "" {
 		table = table.Where("user_base_infos.user_name LIKE ?", "%"+ruv.UserName+"%")

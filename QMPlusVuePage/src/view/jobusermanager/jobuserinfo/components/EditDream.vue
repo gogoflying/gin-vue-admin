@@ -6,25 +6,25 @@
         @click="addDream"
         size="small"
         type="text"
-        style="padding-left:60%;font-size: 15px;"
+        style="margin-left:50%;font-size: 15px;"
       >保存</el-button>
     </h2>
-    <el-form>
-      <el-form-item label="期望职位" label-width="80px">
+    <el-form :rules="rules" ref="dreamForm" :model="user_dreams" label-width="80px">
+      <el-form-item label="期望职位" prop="dreamposi">
         <el-input v-model="user_dreams.dreamposi" placeholder="请输入期望职位"></el-input>
       </el-form-item>
-      <el-form-item label="工作类型" label-width="80px">
+      <el-form-item label="工作类型" prop="workTypeindex">
         <el-select @change="selectWorkType" placeholder="工作类型" v-model="user_dreams.workTypeindex">
           <el-option :key="item.name" :label="item.name" :value="item.ID" v-for="item in option.wt"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="期望薪资" label-width="80px">
+      <el-form-item label="期望薪资" prop="salaryindex">
         <el-select @change="selectSalary" placeholder="请输入期望薪资" v-model="user_dreams.salaryindex">
           <el-option :key="item.name" :label="item.name" :value="item.ID" v-for="item in option.js"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="期望城市" label-width="80px">
-        <el-select @change="selectCityName" placeholder="请输入期望薪资" v-model="user_dreams.cityindex">
+      <el-form-item label="期望城市" prop="cityindex">
+        <el-select @change="selectCityName" placeholder="请输入期望城市" v-model="user_dreams.cityindex">
           <el-option
             :key="item.name"
             :label="item.name"
@@ -33,7 +33,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="到岗时间" label-width="80px">
+      <el-form-item label="到岗时间" prop="dutyTimeindex">
         <el-select
           @change="selectJobDuty"
           placeholder="请输入到岗时间"
@@ -55,6 +55,31 @@
 import { createUserDream, updateUserDream } from "@/api/jobuser";
 export default {
   props: ["user_dreams", "option", "openid"],
+  data() {
+    return {
+      rules: {
+        dreamposi: [
+          {
+            required: true,
+            message: "请输入期望职位",
+            trigger: "blur"
+          }
+        ],
+        workTypeindex: [
+          { required: true, message: "请选择工作类型", trigger: "blur" }
+        ],
+        salaryindex: [
+          { required: true, message: "请选择期望薪资", trigger: "blur" }
+        ],
+        cityindex: [
+          { required: true, message: "请选择期望城市", trigger: "blur" }
+        ],
+        dutyTimeindex: [
+          { required: true, message: "请输入到岗时间", trigger: "blur" }
+        ]
+      }
+    };
+  },
   methods: {
     selectWorkType(val) {
       var selectedItem = {};
@@ -85,25 +110,30 @@ export default {
       this.user_dreams.job_duty_time = selectedItem;
     },
     async addDream() {
-      let res;
-      if (this.user_dreams.ID == null) {
-        this.user_dreams.openid = this.openid;
-        res = await createUserDream(this.user_dreams);
-      } else {
-        res = await updateUserDream(this.user_dreams);
-      }
-      if (res.success) {
-        this.$message({ type: "success", message: "创建成功" });
-      } else {
-        this.$message({ type: "error", message: "添加失败!" });
-      }
-      this.$emit("freshResume");
+      this.$refs.dreamForm.validate(async valid => {
+        if (valid) {
+          let res;
+          if (this.user_dreams.ID == null) {
+            this.user_dreams.openid = this.openid;
+            res = await createUserDream(this.user_dreams);
+          } else {
+            res = await updateUserDream(this.user_dreams);
+          }
+          if (res.success) {
+            this.$message({ type: "success", message: "创建成功" });
+          } else {
+            this.$message({ type: "error", message: "添加失败!" });
+          }
+          this.$emit("freshResume");
+        }
+      });
     }
   }
 };
 </script>
 <style lang="scss">
-.el-form-item {
-  margin-bottom: 3px;
-}
+// .el-form-item {
+//   margin-bottom: 3px;
+//   margin-top:10px;
+// }
 </style>

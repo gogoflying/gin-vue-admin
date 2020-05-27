@@ -16,7 +16,7 @@ type SysUser struct {
 	UUID        uuid.UUID    `json:"uuid"`
 	Username    string       `json:"userName"`
 	Password    string       `json:"-"`
-	NickName    string       `json:"nickName" gorm:"default:'QMPlusUser'"`
+	NickName    string       `json:"nickName" gorm:"default:'BDAPlusUser'"`
 	HeaderImg   string       `json:"headerImg" gorm:"default:'https://bda-edu-hr.oss-cn-beijing.aliyuncs.com/002.png'"`
 	Authority   SysAuthority `json:"authority" gorm:"ForeignKey:AuthorityId;AssociationForeignKey:AuthorityId"`
 	AuthorityId string       `json:"authorityId" gorm:"default:9528"`

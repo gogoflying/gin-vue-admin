@@ -218,7 +218,7 @@ func (info *EnterpriseInfo) GetInfoListSearch(keyword string, cityId, page, page
 	if len(keyword) > 0 {
 		db = db.Where("enterprise_name LIKE ? ", "%"+keyword+"%")
 	}
-	err = db.Limit(limit).Offset(offset).Order("updated_at desc").Find(&infoList).Error
+	err = db.Limit(limit).Offset(offset).Order("enterprise_hot desc").Order("updated_at desc").Find(&infoList).Error
 	return err, infoList, total
 }
 

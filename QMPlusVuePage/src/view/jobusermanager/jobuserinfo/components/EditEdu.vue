@@ -6,7 +6,7 @@
         @click="addEdu"
         size="small"
         type="text"
-        style="padding-left:60%;font-size: 15px;"
+        style="margin-left:50%;font-size: 15px;"
         :disabled="enable"
       >新增</el-button>
     </h2>
@@ -19,11 +19,11 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-form :model="edu_info" v-show="isShow">
-      <el-form-item label="学校名称" label-width="80px">
+    <el-form :rules="rules" ref="eduForm" label-width="80px" :model="edu_info" v-show="isShow">
+      <el-form-item label="学校名称" prop="schoolname">
         <el-input v-model="edu_info.schoolname" placeholder="请输入学校"></el-input>
       </el-form-item>
-      <el-form-item label="开始时间" label-width="80px">
+      <el-form-item label="开始时间" prop="graduation">
         <el-date-picker
           placeholder="选择开始时间"
           type="date"
@@ -34,7 +34,7 @@
           v-model="edu_info.graduation"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="结束时间" label-width="80px">
+      <el-form-item label="结束时间" prop="graduationTime">
         <el-date-picker
           placeholder="选择结束时间"
           type="date"
@@ -45,17 +45,17 @@
           v-model="edu_info.graduationTime"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="学历" label-width="80px">
+      <el-form-item label="学历" prop="edulevelindex">
         <el-select @change="selectJobedu" placeholder="请输入学历" v-model="edu_info.edulevelindex">
           <el-option :key="item.name" :label="item.name" :value="item.ID" v-for="item in option.el"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="专业" label-width="80px">
+      <el-form-item label="专业" prop="profession">
         <el-input v-model="edu_info.profession" placeholder="请输入专业"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button style="margin-left:50px;margin-top:20px;" @click="save" size="small" round>保存</el-button>
-        <el-button style="margin-left:50px;margin-top:20px;" @click="cancle" size="small" round>取消</el-button>
+        <el-button style="margin-top:20px;" @click="save" size="small" round>保存</el-button>
+        <el-button style="margin-top:20px;" @click="cancle" size="small" round>取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -70,11 +70,41 @@ import {
 export default {
   props: ["eduExperience", "option", "openid"],
   data() {
+    const checkEndTime = (rule, value, callback) => {
+      if (value < this.edu_info.graduation) {
+        return callback(new Error("结束时间<开始时间"));
+      } else {
+        callback();
+      }
+    };
     return {
       enable: false,
       isShow: false,
       isEdit: false,
-      edu_info: {}
+      edu_info: {},
+      rules: {
+        schoolname: [
+          {
+            required: true,
+            message: "请输入学校名称",
+            trigger: "blur"
+          }
+        ],
+        graduation: [
+          { required: true, message: "请选择开始时间", trigger: "blur" }
+        ],
+        graduationTime: [
+          { required: true, message: "请选择结束时间", trigger: "blur" },
+          {
+            validator: checkEndTime,
+            trigger: "blur"
+          }
+        ],
+        edulevelindex: [
+          { required: true, message: "请选择学历", trigger: "blur" }
+        ],
+        profession: [{ required: true, message: "请输入专业", trigger: "blur" }]
+      }
     };
   },
   computed: {
@@ -136,21 +166,25 @@ export default {
       }
     },
     async save() {
-      let res;
-      if (this.isEdit) {
-        res = await updateUsereducation(this.edu_info);
-      } else {
-        this.edu_info.openid = this.openid;
-        res = await createUsereducation(this.edu_info);
-      }
-      if (res.success) {
-        this.$message({ type: "success", message: "创建成功" });
-      } else {
-        this.$message({ type: "error", message: "添加失败!" });
-      }
-      this.$emit("freshResume");
-      this.isShow = false;
-      this.enable = false;
+      this.$refs.eduForm.validate(async valid => {
+        if (valid) {
+          let res;
+          if (this.isEdit) {
+            res = await updateUsereducation(this.edu_info);
+          } else {
+            this.edu_info.openid = this.openid;
+            res = await createUsereducation(this.edu_info);
+          }
+          if (res.success) {
+            this.$message({ type: "success", message: "创建成功" });
+          } else {
+            this.$message({ type: "error", message: "添加失败!" });
+          }
+          this.$emit("freshResume");
+          this.isShow = false;
+          this.enable = false;
+        }
+      });
     },
     cancle() {
       if (this.edu_info.ID == null) {
@@ -165,4 +199,8 @@ export default {
 </script>
 
 <style lang="scss">
+// .el-form-item {
+//   margin-bottom: 3px;
+//   margin-top:10px;
+// }
 </style>

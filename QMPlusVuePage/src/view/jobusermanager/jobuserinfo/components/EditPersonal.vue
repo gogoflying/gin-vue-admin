@@ -7,20 +7,20 @@
         @click="addPerson"
         size="small"
         type="text"
-        style="padding-left:60%;font-size: 15px;"
+        style="margin-left:50%;font-size: 15px;"
       >保存</el-button>
     </h2>
-    <el-form>
-      <el-form-item label="姓名" label-width="80px">
+    <el-form :rules="rules" ref="baseForm" :model="user_base_info" label-width="80px">
+      <el-form-item label="姓名" prop="userName">
         <el-input v-model="user_base_info.userName" placeholder="请输入姓名"></el-input>
       </el-form-item>
-      <el-form-item label="性别" label-width="80px">
+      <el-form-item label="性别" prop="genderindex">
         <el-radio-group v-model="user_base_info.genderindex">
           <el-radio :label="0">男</el-radio>
           <el-radio :label="1">女</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="最高学历" label-width="80px">
+      <el-form-item label="最高学历" prop="edulevelindex">
         <el-select
           @change="selectJobedu"
           placeholder="请输入学历"
@@ -29,7 +29,7 @@
           <el-option :key="item.name" :label="item.name" :value="item.ID" v-for="item in option.el"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="工作年限" label-width="80px">
+      <el-form-item label="工作年限" prop="worksYearindex">
         <el-select
           @change="selectWorkYear"
           placeholder="请输入工作年限"
@@ -43,7 +43,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="所在城市" label-width="80px">
+      <el-form-item label="所在城市" prop="cityindex">
         <el-select @change="selectCityName" placeholder="所在城市" v-model="user_base_info.cityindex">
           <el-option
             :key="item.name"
@@ -53,15 +53,15 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="联系电话" label-width="80px">
+      <el-form-item label="联系电话" prop="contact">
         <el-input v-model="user_base_info.contact" placeholder="请输入联系电话"></el-input>
       </el-form-item>
-      <el-form-item label="联系邮箱" label-width="80px">
+      <el-form-item label="联系邮箱" prop="email">
         <el-input v-model="user_base_info.email" placeholder="请输入联系邮箱"></el-input>
       </el-form-item>
-      <el-form-item label="生日" label-width="80px">
+      <el-form-item label="生日" prop="birthday">
         <el-date-picker
-          placeholder="选择结束时间"
+          placeholder="选择生日"
           type="date"
           :editable="false"
           format="yyyy-MM-dd"
@@ -70,7 +70,7 @@
           v-model="user_base_info.birthday"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="头像" label-width="80px">
+      <el-form-item label="头像" prop="avatarUrl">
         <el-upload
           :headers="{'x-token':token}"
           :on-success="handleAvatarSuccess"
@@ -96,7 +96,32 @@ export default {
   props: ["user_base_info", "option", "openid"],
   data() {
     return {
-      path: path
+      path: path,
+      rules: {
+        userName: [
+          {
+            required: true,
+            message: "请输入姓名",
+            trigger: "blur"
+          }
+        ],
+        genderindex: [
+          { required: true, message: "请选择年龄", trigger: "blur" }
+        ],
+        edulevelindex: [
+          { required: true, message: "请选择学历", trigger: "blur" }
+        ],
+        worksYearindex: [
+          { required: true, message: "请选择工作年限", trigger: "blur" }
+        ],
+        cityindex: [{ required: true, message: "请选择城市", trigger: "blur" }],
+        contact: [
+          { required: true, message: "请输入联系方式", trigger: "blur" }
+        ],
+        email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
+        birthday: [{ required: true, message: "请输入生日", trigger: "blur" }],
+        avatarUrl: [{ required: true, message: "请上传头像", trigger: "blur" }]
+      }
     };
   },
   computed: {
@@ -125,19 +150,23 @@ export default {
       this.user_base_info.edu_level = selectedItem;
     },
     async addPerson() {
-      let res;
-      if (this.user_base_info.ID == null) {
-        this.user_base_info.openid = this.openid;
-        res = await createUserBaseInfo(this.user_base_info);
-      } else {
-        res = await updateUserBaseInfo(this.user_base_info);
-      }
-      if (res.success) {
-        this.$message({ type: "success", message: "创建成功" });
-      } else {
-        this.$message({ type: "error", message: "添加失败!" });
-      }
-      this.$emit("freshResume");
+      this.$refs.baseForm.validate(async valid => {
+        if (valid) {
+          let res;
+          if (this.user_base_info.ID == null) {
+            this.user_base_info.openid = this.openid;
+            res = await createUserBaseInfo(this.user_base_info);
+          } else {
+            res = await updateUserBaseInfo(this.user_base_info);
+          }
+          if (res.success) {
+            this.$message({ type: "success", message: "创建成功" });
+          } else {
+            this.$message({ type: "error", message: "添加失败!" });
+          }
+          this.$emit("freshResume");
+        }
+      });
     },
     handleAvatarSuccess(res) {
       this.user_base_info.avatarUrl = res.data.file.url;
@@ -186,9 +215,10 @@ export default {
   height: 178px;
   display: block;
 }
-.el-form-item {
-  margin-bottom: 3px;
-}
+// .el-form-item {
+//   margin-bottom: 3px;
+//   margin-top:10px;
+// }
 </style>
 
 

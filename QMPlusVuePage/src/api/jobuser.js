@@ -50,6 +50,14 @@ export const createUsers = (data) => {
     })
 }
 
+export const findUsersResumeInfo = (data) => {
+    return service({
+        url: "/users/findUsersResumeInfo",
+        method: 'post',
+        data
+    })
+}
+
 export const getUserOptions = (data) => {
     return service({
         url: "/users/getUserOptions",

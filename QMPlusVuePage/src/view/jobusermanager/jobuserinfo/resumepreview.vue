@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { findJobUserById, findUsersByOpenid } from "@/api/jobuser";
+import { findJobUserById, findUsersResumeInfo } from "@/api/jobuser";
 import ShowBox from "./components/ShowBox";
 import html2canvas from "html2canvas";
 import jspdf from "jspdf";
@@ -115,7 +115,7 @@ export default {
       const row = {
         openid: this.resume.openid
       };
-      findUsersByOpenid(row).then(res => {
+      findUsersResumeInfo(row).then(res => {
         if (res.success) {
           this.resume.user = res.data.user;
           this.resume.user_base_info = res.data.base;

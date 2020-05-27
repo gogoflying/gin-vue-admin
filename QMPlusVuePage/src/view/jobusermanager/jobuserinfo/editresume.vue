@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-row>
-      <el-col :span="10">
+      <el-col :xs="24" :sm="10" :md="10" :lg="10">
         <!-- 左边编辑器 -->
         <EditBox v-on:freshResume="loadResume" v-bind:resume="resume" />
       </el-col>
-      <el-col :span="14">
+      <el-col :xs="24" :sm="14" :md="14" :lg="14">
         <!-- 右边预览 -->
         <ShowBox v-bind:resume="resume" class="showBox" />
       </el-col>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { findJobUserById, findUsersByOpenid } from "@/api/jobuser";
+import { findJobUserById, findUsersResumeInfo } from "@/api/jobuser";
 import EditBox from "./components/EditBox";
 import ShowBox from "./components/ShowBox";
 import html2canvas from "html2canvas";
@@ -111,7 +111,7 @@ export default {
       const row = {
         openid: this.resume.openid
       };
-      findUsersByOpenid(row).then(res => {
+      findUsersResumeInfo(row).then(res => {
         if (res.success) {
           if (res.data.user != null) {
             this.resume.user = res.data.user;

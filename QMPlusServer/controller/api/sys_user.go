@@ -36,7 +36,7 @@ type RegestStuct struct {
 	Username       string `json:"userName"`
 	Password       string `json:"passWord"`
 	EnterPriseName string `json:"enterprise_name"`
-	NickName       string `json:"nickName" gorm:"default:'QMPlusUser'"`
+	NickName       string `json:"nickName" gorm:"default:'BDAPlusUser'"`
 	HeaderImg      string `json:"headerImg" gorm:"default:'https://bda-edu-hr.oss-cn-beijing.aliyuncs.com/002.png'"`
 	AuthorityId    string `json:"authorityId" gorm:"default:9528"`
 	Email          string `json:"email" gorm:"email"`
@@ -59,9 +59,6 @@ type ForgetPass struct {
 func Register(c *gin.Context) {
 	var R RegestStuct
 	_ = c.ShouldBindJSON(&R)
-	if R.AuthorityId == "" {
-		R.AuthorityId = "9528"
-	}
 	user := &sysModel.SysUser{Username: R.Username, NickName: R.NickName, Password: R.Password, HeaderImg: R.HeaderImg, AuthorityId: R.AuthorityId, Email: R.Email}
 	err, user := user.Register()
 	if err != nil {

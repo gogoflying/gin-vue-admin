@@ -9,16 +9,27 @@
             <ul>
               <li>姓名：{{resume.user_base_info.userName || '你的名字'}}</li>
               <li>性别：{{resume.user_base_info.genderindex == 0 ? '男':'女'}}</li>
-              <li v-if="resume.user_base_info.edu_level">最高学历：{{resume.user_base_info.edu_level.name || '最高学历'}}</li>
-              <li v-if="resume.user_base_info.job_work_expire">工作年限：{{resume.user_base_info.job_work_expire.name || '工作年限'}}</li>
-              <li v-if="resume.user_base_info.city_name">所在城市：{{resume.user_base_info.city_name.name || '所在城市'}}</li>
+              <li
+                v-if="resume.user_base_info.edu_level"
+              >最高学历：{{resume.user_base_info.edu_level.name || '最高学历'}}</li>
+              <li
+                v-if="resume.user_base_info.job_work_expire"
+              >工作年限：{{resume.user_base_info.job_work_expire.name || '工作年限'}}</li>
+              <li
+                v-if="resume.user_base_info.city_name"
+              >所在城市：{{resume.user_base_info.city_name.name || '所在城市'}}</li>
               <li>联系电话：{{resume.user_base_info.contact || '联系电话'}}</li>
               <li>联系邮箱：{{resume.user_base_info.email || '联系邮箱'}}</li>
               <li>生日：{{resume.user_base_info.birthday || '生日'}}</li>
             </ul>
           </div>
-          <div class="print">
-            <img :src="resume.user_base_info.avatarUrl" height="100" width="100" />
+          <div class="print" v-if="resume.user_base_info.avatarUrl != ''">
+            <img
+              :src="resume.user_base_info.avatarUrl + '?' + new Date().getTime()"
+              crossorigin="anonymous"
+              height="100"
+              width="100"
+            />
           </div>
         </div>
       </section>
@@ -28,7 +39,13 @@
           <li>起止日期：{{work.join || '开始日期'}}-{{work.leave || '结束日期'}}</li>
           <li>公司名称：{{work.companyname || '公司名称'}}</li>
           <li>工作职位：{{work.department || '职位'}}</li>
-          <li>工作描述：{{work.workContent || '工作描述'}}</li>
+          <li>
+            <div style="float:left">工作描述：</div>
+            <div
+              style="float:left"
+              v-html="work.workContent ? work.workContent.replace(/\n/g, '<br/>') : '工作描述'"
+            ></div>
+          </li>
         </ul>
       </section>
       <section v-if="filter(resume.user_edus).length > 0 ">
@@ -44,10 +61,18 @@
         <h3>期望职位</h3>
         <ul>
           <li>期望职位：{{resume.user_dreams.dreamposi || '期望职位'}}</li>
-          <li v-if="resume.user_dreams.job_work_type">工作类型：{{resume.user_dreams.job_work_type.name || '工作类型'}}</li>
-          <li v-if="resume.user_dreams.job_salary">期望薪资：{{resume.user_dreams.job_salary.name || '期望薪资'}}</li>
-          <li v-if="resume.user_dreams.city_name">期望城市：{{resume.user_dreams.city_name.name || '期望城市'}}</li>
-          <li v-if="resume.user_dreams.job_duty_time">到岗时间：{{resume.user_dreams.job_duty_time.name || '到岗时间'}}</li>
+          <li
+            v-if="resume.user_dreams.job_work_type"
+          >工作类型：{{resume.user_dreams.job_work_type.name || '工作类型'}}</li>
+          <li
+            v-if="resume.user_dreams.job_salary"
+          >期望薪资：{{resume.user_dreams.job_salary.name || '期望薪资'}}</li>
+          <li
+            v-if="resume.user_dreams.city_name"
+          >期望城市：{{resume.user_dreams.city_name.name || '期望城市'}}</li>
+          <li
+            v-if="resume.user_dreams.job_duty_time"
+          >到岗时间：{{resume.user_dreams.job_duty_time.name || '到岗时间'}}</li>
         </ul>
       </section>
     </div>

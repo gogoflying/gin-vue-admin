@@ -6,7 +6,7 @@
           <el-input placeholder="姓名" clearable v-model="searchInfo.userName" size="small"></el-input>
         </el-form-item>
         <el-form-item label="手机号" label-width="80px">
-          <el-input placeholder="手机号" clearable v-model="searchInfo.mobile" size="small"></el-input>
+          <el-input placeholder="手机号" clearable v-model="searchInfo.contact" size="small"></el-input>
         </el-form-item>
         <el-form-item label="期望职位" label-width="80px">
           <el-input placeholder="期望职位" clearable v-model="searchInfo.dreamposi" size="small"></el-input>
@@ -134,9 +134,11 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe>
-      <el-table-column label="用户标识" min-width="150" prop="openid"></el-table-column>
-      <el-table-column label="手机号" min-width="150" prop="mobile"></el-table-column>
-      <el-table-column label="是否存在简历" min-width="150" prop="is_resume">
+      <!-- <el-table-column label="用户标识" min-width="150" prop="openid"></el-table-column> -->
+      <el-table-column label="姓名" min-width="100" prop="userName"></el-table-column>
+      <el-table-column label="手机号" min-width="100" prop="contact"></el-table-column>
+      <el-table-column label="期望职位" min-width="100" prop="dreamposi"></el-table-column>
+      <el-table-column label="是否存在简历" min-width="100" prop="is_resume">
         <template slot-scope="scope">
           <el-radio-group @change="changestatus(scope.row)" v-model="scope.row.is_resume">
             <el-radio :label="0">否</el-radio>
@@ -144,7 +146,7 @@
           </el-radio-group>
         </template>
       </el-table-column>
-      <el-table-column label="用户状态" min-width="100" prop="status">
+      <el-table-column label="用户状态" min-width="150" prop="status">
         <template slot-scope="scope">
           <el-switch
             @change="changestatus(scope.row)"
@@ -166,9 +168,7 @@
               :icon="scope.row.is_resume == 0 ? 'el-icon-plus':'el-icon-edit'"
             >{{scope.row.is_resume == 0 ? '新建':'编辑'}}</el-button>
           </router-link>
-          <router-link :to="{name:'userpreview', query: { id: scope.row.ID }}">
-            <el-button type="text" size="small" icon="el-icon-view">查看</el-button>
-          </router-link>
+          <el-button @click="editpreview(scope.row)" type="text" size="small" icon="el-icon-view">查看</el-button>
           <router-link :to="{name:'resumelist', query: { id: scope.row.ID }}">
             <el-button type="text" size="small" icon="el-icon-more">投递记录</el-button>
           </router-link>
@@ -227,13 +227,20 @@ export default {
     clearOptionDT() {
       this.searchInfo.dutyTimeindex = null;
     },
-    clearOptionPhoto(){
+    clearOptionPhoto() {
       this.searchInfo.hasAvatarurl = null;
     },
     onSubmit() {
       this.page = 1;
       this.pageSize = 10;
       this.getTableData();
+    },
+    async editpreview(row) {
+      const { href } = this.$router.resolve({
+        name: "userpreview",
+        query: { id: row.ID }
+      });
+      window.open(href, "_blank");
     },
     async changestatus(row) {
       const res = await updateUsers(row);

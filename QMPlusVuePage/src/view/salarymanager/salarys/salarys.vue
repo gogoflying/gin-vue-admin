@@ -58,7 +58,7 @@
           <el-input placeholder="年" style="width:80px" clearable v-model.number="searchInfo.year"></el-input>
         </el-form-item>
         <el-form-item label="月">
-          <el-input placeholder="月" style="width:50px" clearable v-model.number="searchInfo.month"></el-input>
+          <el-input placeholder="月" style="width:80px" clearable v-model.number="searchInfo.month"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="onSubmit" type="primary" icon="el-icon-search">查询</el-button>

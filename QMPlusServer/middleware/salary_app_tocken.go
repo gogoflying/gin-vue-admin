@@ -21,30 +21,30 @@ import (
 	"time"
 )
 
-type ContentInfo struct {
+type ContentInfo_Sa struct {
 	Content string `json:"content"`
 }
 
-type ReturnErrorInfo struct {
+type ReturnErrorInfo_Sa struct {
 	ErrCode int    `json:"errcode"`
 	ErrMsg  string `json:"errmsg"`
 }
 
-type WX_Access struct {
-	access_token string
+type WX_Access_Sa struct {
+	access_token_sa string
 }
 
-var g_tocken WX_Access
+var g_tocken_sa WX_Access_Sa
+var mtx_sa sync.Mutex
 
-var appid string = config.GinVueAdminconfig.WeiXin.ResumeApp.Appid
-var appSecret string = config.GinVueAdminconfig.WeiXin.ResumeApp.AppSecret
+var salaryAppId string = config.GinVueAdminconfig.WeiXin.SalaryApp.Appid
+var salaryAppSecretId string = config.GinVueAdminconfig.WeiXin.SalaryApp.AppSecret
 
 const salaryAppName = "salary-app"
-const resumeAppName = "resume-app"
 
 //敏感词过滤
-func GetAccessTocken() (string, error) {
-	url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", appid, appSecret)
+func GetAccessTocken_Sa(appId, secretId string) (string, error) {
+	url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", appId, secretId)
 	body, err := servers.GetEx(url)
 	if err != nil {
 		return "", fmt.Errorf("param empty")
@@ -58,7 +58,7 @@ func GetAccessTocken() (string, error) {
 	return mapResult["access_token"].(string), nil
 }
 
-func CheckWordsIllegal(words string) (bool, error) {
+func CheckWordsIllegal_Sa(words string) (bool, error) {
 	if len(words) == 0 {
 		return true, nil
 	}
@@ -66,14 +66,14 @@ func CheckWordsIllegal(words string) (bool, error) {
 		return false, fmt.Errorf("鉴权文本字节<500k")
 	}
 
-	//var access_token string
-	if g_tocken.access_token == "" {
+	//var access_token_re string
+	if g_tocken_sa.access_token_sa == "" {
 		fmt.Printf("access tocken illegal")
 		return false, fmt.Errorf("access tocken illegal")
 	}
 
-	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=%s", g_tocken.access_token)
-	con := ContentInfo{
+	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=%s", g_tocken_sa.access_token_sa)
+	con := ContentInfo_Sa{
 		Content: words,
 	}
 
@@ -81,16 +81,17 @@ func CheckWordsIllegal(words string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	var returnErr ReturnErrorInfo
+	var returnErr ReturnErrorInfo_Sa
 	json.Unmarshal([]byte(body), &returnErr)
 	if returnErr.ErrCode != 0 {
+		RefreshTockenFromDB_Sa()
 		return false, fmt.Errorf("%v", "禁止上传敏感信息")
 	}
 
 	return true, nil
 }
 
-func WechatDetectImg(file *multipart.FileHeader) (bool, error) {
+func WechatDetectImg_Sa(file *multipart.FileHeader) (bool, error) {
 	var bufReader bytes.Buffer
 	b, err := file.Open()
 	if err != nil {
@@ -100,26 +101,14 @@ func WechatDetectImg(file *multipart.FileHeader) (bool, error) {
 	if err != nil {
 		log.Fatal("copying contents:", err)
 	}
-	/*var bufReader bytes.Buffer
-	mpWriter := multipart.NewWriter(&bufReader)
-	//文件名无所谓
-	fileName := "./tmp/detect.tmp"
-	writer, err := mpWriter.CreateFormFile("media", fileName)
-	if err != nil {
-		return false, err
-	}
-	reader := bytes.NewReader(bts)
-	io.Copy(writer, reader)
-	//关闭了才能把内容写入
-	mpWriter.Close()*/
 
-	if g_tocken.access_token == "" {
+	if g_tocken_sa.access_token_sa == "" {
 		fmt.Printf("access tocken illegal")
 		return false, fmt.Errorf("access tocken illegal")
 	}
 
 	client := http.DefaultClient
-	destURL := "https://api.weixin.qq.com/wxa/img_sec_check?access_token=" + g_tocken.access_token
+	destURL := "https://api.weixin.qq.com/wxa/img_sec_check?access_token=" + g_tocken_sa.access_token_sa
 	req, _ := http.NewRequest("POST", destURL, &bufReader)
 	//从mpWriter中获取content-Type
 	req.Header.Set("Content-Type", "application/octet-stream")
@@ -140,42 +129,44 @@ func WechatDetectImg(file *multipart.FileHeader) (bool, error) {
 	//errcode 存在，且为0，返回通过
 	if _, ok := vs["errcode"]; ok && vs["errcode"].(float64) == 0.0 {
 		return true, nil
+	} else {
+		RefreshTockenFromDB_Sa()
 	}
 
 	return false, err
 }
 
-func NewFilterTocken() *WX_Access {
-	return &WX_Access{
-		access_token: "",
+func NewFilterTocken_Sa() *WX_Access_Sa {
+	return &WX_Access_Sa{
+		access_token_sa: "",
 	}
 }
 
-func (wx_a *WX_Access) StartRun() {
-	var mtx sync.Mutex
+func (wx_a *WX_Access_Sa) StartRun() {
 	var tocken string
 	for {
-		//tocken = sysModel.GetNewFilterTocken(salaryAppName)
+		hfirst := sysModel.GetWxFliterTockenHndle(salaryAppName, "")
+		tocken = hfirst.GetNewFilterTocken(salaryAppName)
 		if tocken == "" {
-			ntoken, err := GetAccessTocken()
+			ntoken, err := GetAccessTocken_Sa(salaryAppId, salaryAppSecretId)
 			if err != nil {
 				time.Sleep(time.Second)
 				continue
 			} else {
-				mtx.Lock()
-				g_tocken.access_token = ntoken
-				mtx.Unlock()
+				mtx_sa.Lock()
+				g_tocken_sa.access_token_sa = ntoken
+				mtx_sa.Unlock()
 				h := sysModel.GetWxFliterTockenHndle(salaryAppName, tocken)
 				h.UpdateFilterTocken(salaryAppName, ntoken)
 
 				time.Sleep(time.Hour)
 			}
 		} else {
-			err := checkTockenExpired(tocken)
+			err := checkTockenExpired_Sa(tocken)
 			if err != nil {
-				fmt.Printf("tocken :%s had expired,need refresh", tocken)
+				fmt.Printf("tocken :%s had expired,need refresh:%v", tocken, err)
 				for {
-					tocken, err = GetAccessTocken()
+					tocken, err = GetAccessTocken_Sa(salaryAppId, salaryAppSecretId)
 					if err != nil {
 						time.Sleep(time.Second)
 						continue
@@ -183,13 +174,13 @@ func (wx_a *WX_Access) StartRun() {
 						break
 					}
 				}
+				h := sysModel.GetWxFliterTockenHndle(salaryAppName, tocken)
+				h.UpdateFilterTocken(salaryAppName, tocken)
 				fmt.Printf("new tocken :%s", tocken)
 			}
-			mtx.Lock()
-			g_tocken.access_token = tocken
-			mtx.Unlock()
-			h := sysModel.GetWxFliterTockenHndle(salaryAppName, tocken)
-			h.UpdateFilterTocken(salaryAppName, tocken)
+			mtx_sa.Lock()
+			g_tocken_sa.access_token_sa = tocken
+			mtx_sa.Unlock()
 
 			time.Sleep(time.Hour)
 		}
@@ -197,7 +188,7 @@ func (wx_a *WX_Access) StartRun() {
 	}
 }
 
-func WordFilterHandler() gin.HandlerFunc {
+func WordFilterHandler_Sa() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Body == nil {
 			c.Next()
@@ -210,7 +201,7 @@ func WordFilterHandler() gin.HandlerFunc {
 				c.Request.Body = ioutil.NopCloser(bytes.NewReader(bodyData))
 			}
 			//
-			_, err = CheckWordsIllegal(bodyCopy.String())
+			_, err = CheckWordsIllegal_Sa(bodyCopy.String())
 			if err == nil {
 				c.Next()
 			} else {
@@ -222,11 +213,16 @@ func WordFilterHandler() gin.HandlerFunc {
 	}
 }
 
-/*func ImgFilterHandler() gin.HandlerFunc {
-	return
-}*/
-
-func checkTockenExpired(tocken string) error {
-	_, err := CheckWordsIllegal("test content")
+func checkTockenExpired_Sa(tocken string) error {
+	mtx_sa.Lock()
+	g_tocken_sa.access_token_sa = tocken
+	mtx_sa.Unlock()
+	_, err := CheckWordsIllegal_Sa("test content")
 	return err
+}
+func RefreshTockenFromDB_Sa() {
+	mtx_sa.Lock()
+	h := sysModel.GetWxFliterTockenHndle(salaryAppName, "")
+	g_tocken_sa.access_token_sa = h.GetNewFilterTocken(salaryAppName)
+	mtx_sa.Unlock()
 }

@@ -266,6 +266,13 @@ func GetJoblistListBackend(c *gin.Context) {
 	)
 	_ = c.ShouldBindJSON(&req)
 
+	ei, exist := c.Get("enpInfo")
+
+	if exist {
+		enpInfo := ei.(*userJobs.EnterpriseInfo)
+		req.SearchInfo.EnterpriseId = int(enpInfo.ID)
+	}
+
 	err, list, total = new(userJobs.Joblist).GetSearchlistForVue(req.SearchInfo, req.PageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})

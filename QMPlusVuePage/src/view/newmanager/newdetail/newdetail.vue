@@ -5,7 +5,7 @@
         <el-form-item label="新闻标题" label-width="80px" prop="title">
           <el-input v-model="user_news.title" style="width:50%;" placeholder="请输入新闻标题"></el-input>
         </el-form-item>
-        <el-form-item label="新闻副标题" prop="sub_title">
+        <el-form-item label="副标题" prop="sub_title">
           <el-input v-model="user_news.sub_title" style="width:50%;" placeholder="请输入新闻副标题"></el-input>
         </el-form-item>
         <el-form-item label="排序" prop="order">

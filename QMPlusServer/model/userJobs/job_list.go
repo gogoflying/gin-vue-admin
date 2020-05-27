@@ -41,6 +41,7 @@ type Joblist struct {
 }
 type SearchInfo struct {
 	EnterPriseName string `json:"enterprise_name"`
+	EnterpriseId   int
 	Jobname        string `json:"p_name"`
 	JobCityId      *int   `json:"p_city_id"`
 	JobYearsId     *int   `json:"p_edujy_id"`
@@ -288,6 +289,9 @@ func (jl *Joblist) GetSearchlistForVue(sc SearchInfo, info modelInterface.PageIn
 	db := qmsql.DEFAULTDB
 	var reJoblistList []Joblist
 
+	if sc.EnterpriseId > 0 {
+		db = db.Where("company_id = ?", sc.EnterpriseId)
+	}
 	if sc.EnterPriseName != "" {
 		db = db.Where("company_name LIKE ?", "%"+sc.EnterPriseName+"%")
 	}

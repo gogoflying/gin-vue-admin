@@ -148,6 +148,23 @@ func FindUsersByOpenid(c *gin.Context) {
 	}
 }
 
+func FindUsersResumeInfo(c *gin.Context) {
+	var users userJobs.Users
+	_ = c.ShouldBindJSON(&users)
+	err, user, edus, works, base, dream := users.FindResumeInfoByOpenId()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"user":  user,
+			"edus":  edus,
+			"works": works,
+			"base":  base,
+			"dream": dream,
+		})
+	}
+}
+
 func GetUserOptions(c *gin.Context) {
 	err, wt, el, jwe, js, jdt, citys := new(userJobs.Users).GetAllInfoOption()
 	if err != nil {

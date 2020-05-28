@@ -40,11 +40,13 @@
           <li>公司名称：{{work.companyname || '公司名称'}}</li>
           <li>工作职位：{{work.department || '职位'}}</li>
           <li>
-            <div style="float:left">工作描述：</div>
+            <div style="display:inline">
+            <div style="float:left;width:15%">工作描述：</div>
             <div
-              style="float:left"
+              style="float:left;width:85%"
               v-html="work.workContent ? work.workContent.replace(/\n/g, '<br/>') : '工作描述'"
             ></div>
+            </div>
           </li>
         </ul>
       </section>

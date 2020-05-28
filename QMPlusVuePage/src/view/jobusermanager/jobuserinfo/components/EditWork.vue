@@ -26,7 +26,7 @@
       <el-form-item label="开始时间" prop="join">
         <el-date-picker
           placeholder="选择开始时间"
-          type="date"
+          type="month"
           :editable="false"
           format="yyyy-MM"
           value-format="yyyy-MM"
@@ -37,7 +37,7 @@
       <el-form-item label="结束时间" prop="leave">
         <el-date-picker
           placeholder="选择结束时间"
-          type="date"
+          type="month"
           :editable="false"
           format="yyyy-MM"
           value-format="yyyy-MM"
@@ -49,7 +49,7 @@
         <el-input v-model="work_info.department" placeholder="请输入部门"></el-input>
       </el-form-item>
       <el-form-item label="工作内容" prop="workContent">
-        <el-input type="textarea" v-model="work_info.workContent" placeholder="请输入专业"></el-input>
+        <el-input type="textarea" rows="8" v-model="work_info.workContent" placeholder="请输入工作内容"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button style="margin-top:20px;" @click="save" size="small" round>保存</el-button>

@@ -35,7 +35,7 @@
       <section v-if="filter(resume.user_works).length > 0 ">
         <h3>工作经历</h3>
         <ul v-for="(work,index) in filter(resume.user_works)" :key="index">
-          <li>起止日期：{{work.join || '开始日期'}}-{{work.leave || '结束日期'}}</li>
+          <li>起止日期：{{work.join || '开始日期'}}至{{work.leave || '结束日期'}}</li>
           <li>公司名称：{{work.companyname || '公司名称'}}</li>
           <li>工作职位：{{work.department || '职位'}}</li>
           <li>工作描述：{{work.workContent || '工作描述'}}</li>
@@ -44,7 +44,7 @@
       <section v-if="filter(resume.user_edus).length > 0 ">
         <h3>教育信息</h3>
         <ul v-for="(edu,index) in filter(resume.user_edus)" :key="index">
-          <li>起止日期：{{edu.graduation || '开始日期'}}-{{edu.graduationTime || '结束日期'}}</li>
+          <li>起止日期：{{edu.graduation || '开始日期'}}至{{edu.graduationTime || '结束日期'}}</li>
           <li>学校名称：{{edu.schoolname || '学校名称'}}</li>
           <li v-if="edu.edu_level">学历：{{edu.edu_level.name || '学历'}}</li>
           <li>专业：{{edu.profession || '专业'}}</li>

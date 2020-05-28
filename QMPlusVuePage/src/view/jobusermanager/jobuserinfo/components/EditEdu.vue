@@ -28,8 +28,8 @@
           placeholder="选择开始时间"
           type="date"
           :editable="false"
-          format="yyyy/MM"
-          value-format="yyyy/MM"
+          format="yyyy-MM"
+          value-format="yyyy-MM"
           style="width:80%;"
           v-model="edu_info.graduation"
         ></el-date-picker>
@@ -39,8 +39,8 @@
           placeholder="选择结束时间"
           type="date"
           :editable="false"
-          format="yyyy/MM"
-          value-format="yyyy/MM"
+          format="yyyy-MM"
+          value-format="yyyy-MM"
           style="width:80%;"
           v-model="edu_info.graduationTime"
         ></el-date-picker>
@@ -71,8 +71,8 @@ export default {
   props: ["eduExperience", "option", "openid"],
   data() {
     const checkEndTime = (rule, value, callback) => {
-      if (value < this.edu_info.graduation) {
-        return callback(new Error("结束时间<开始时间"));
+      if (value <= this.edu_info.graduation) {
+        return callback(new Error("结束时间<=开始时间"));
       } else {
         callback();
       }

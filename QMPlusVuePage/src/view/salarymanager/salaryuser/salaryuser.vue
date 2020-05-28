@@ -299,7 +299,7 @@
             placeholder="选择入职日期"
             type="date"
             :editable="false"
-            format="yyyy 年 MM 月 dd 日"
+            format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
             v-model="salaryuserinfo.enter_time"
           ></el-date-picker>
@@ -309,7 +309,7 @@
             placeholder="选择离职日期"
             type="date"
             :editable="false"
-            format="yyyy 年 MM 月 dd 日"
+            format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
             v-model="salaryuserinfo.leave_time"
           ></el-date-picker>

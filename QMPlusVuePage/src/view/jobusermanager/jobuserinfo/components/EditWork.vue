@@ -28,8 +28,8 @@
           placeholder="选择开始时间"
           type="date"
           :editable="false"
-          format="yyyy-MM"
-          value-format="yyyy-MM"
+          format="yyyy/MM"
+          value-format="yyyy/MM"
           style="width:80%;"
           v-model="work_info.join"
         ></el-date-picker>
@@ -65,7 +65,7 @@ export default {
   props: ["workExperience", "option", "openid"],
   data() {
     const checkEndTime = (rule, value, callback) => {
-      if (value < this.edu_info.graduation) {
+      if (value < this.work_info.join) {
         return callback(new Error("结束时间<开始时间"));
       } else {
         callback();

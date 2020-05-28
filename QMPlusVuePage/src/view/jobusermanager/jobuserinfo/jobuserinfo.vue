@@ -145,7 +145,7 @@
       <el-table-column label="期望薪资" min-width="100" prop="salaryindex" :formatter="salaryFormat"></el-table-column>
       <el-table-column label="期望城市" min-width="100" prop="cityindex" :formatter="cityFormat"></el-table-column>
       <el-table-column label="到岗时间" min-width="100" prop="dutyTimeindex" :formatter="dtFormat"></el-table-column>
-      <el-table-column label="有无简历" min-width="120" prop="is_resume">
+      <el-table-column label="有无简历" min-width="130" prop="is_resume">
         <template slot-scope="scope">
           <el-radio-group @change="changestatus(scope.row)" v-model="scope.row.is_resume">
             <el-radio :label="0">无</el-radio>

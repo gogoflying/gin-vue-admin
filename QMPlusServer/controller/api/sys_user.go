@@ -10,6 +10,7 @@ import (
 	"gin-vue-admin/model/userJobs"
 	"math/rand"
 	"mime/multipart"
+	"strings"
 	"time"
 
 	"github.com/dchest/captcha"
@@ -134,6 +135,7 @@ func VerifyEmailCode(c *gin.Context) {
 		servers.ReportFormat(c, false, "重置密码失败", gin.H{})
 		return
 	}
+	servers.DelMap(req.Username)
 	servers.ReportFormat(c, true, "密码重置为：12345678, 请登录后及时修改！", gin.H{})
 }
 
@@ -156,8 +158,9 @@ func SendEmailForget(c *gin.Context) {
 			servers.ReportFormat(c, false, fmt.Sprintf("发送邮箱验证码失败", err), gin.H{})
 			return
 		}
+		msg := user.Email[:3] + "***" + user.Email[strings.Index(user.Email, "@"):]
 		servers.AddMap(req.Username, s)
-		servers.ReportFormat(c, true, "发送成功，请登录邮箱获取验证码", gin.H{})
+		servers.ReportFormat(c, true, "已发送邮箱验证码至:"+msg, gin.H{})
 	} else {
 		servers.ReportFormat(c, false, "验证码错误", gin.H{})
 	}

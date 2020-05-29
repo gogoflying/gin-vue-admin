@@ -43,7 +43,7 @@ func (et *JobSalary) FindById() (err error, reet JobSalary) {
 // 分页获取JobSalary
 func (et *JobSalary) GetInfoList(info modelInterface.PageInfo) (err error, list interface{}, total int) {
 	// 封装分页方法 调用即可 传入 当前的结构体和分页信息
-	err, db, total := servers.PagingServer(et, info)
+	err, db, total := servers.PagingServerAsc(et, info)
 	if err != nil {
 		return
 	} else {

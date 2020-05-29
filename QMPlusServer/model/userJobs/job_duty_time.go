@@ -41,7 +41,7 @@ func (et *JobDutyTime) FindById() (err error, reet JobDutyTime) {
 // 分页获取JobDutyTime
 func (et *JobDutyTime) GetInfoList(info modelInterface.PageInfo) (err error, list interface{}, total int) {
 	// 封装分页方法 调用即可 传入 当前的结构体和分页信息
-	err, db, total := servers.PagingServer(et, info)
+	err, db, total := servers.PagingServerAsc(et, info)
 	if err != nil {
 		return
 	} else {

@@ -38,6 +38,7 @@ type Joblist struct {
 	Top          int     `json:"p_top" gorm:"column:p_top;comment:'0:普通1:置顶'"`
 	Filter       int     `json:"p_filter" gorm:"column:p_filter;comment:'过滤状态，0不启用过滤，1启用过滤'"`
 	SendEmail    string  `json:"p_send_email" gorm:"column:p_send_email;comment:'发送邮件,多个用分号划分'"`
+	CountTodi    int     `json:"p_count_todi" gorm:"-"`
 }
 type SearchInfo struct {
 	EnterPriseName string `json:"enterprise_name"`
@@ -137,6 +138,7 @@ func (jl *Joblist) GetInfoList(info modelInterface.PageInfo) (err error, list in
 		} else {
 			err = db.Find(&reJoblistList).Error
 		}
+
 		return err, reJoblistList, total
 	}
 }
@@ -287,7 +289,7 @@ func (jl *Joblist) GetSearchlistForVue(sc SearchInfo, info modelInterface.PageIn
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := qmsql.DEFAULTDB
-	var reJoblistList []Joblist
+	var reJoblistList []*Joblist
 
 	if sc.EnterpriseId > 0 {
 		db = db.Where("company_id = ?", sc.EnterpriseId)
@@ -322,5 +324,12 @@ func (jl *Joblist) GetSearchlistForVue(sc SearchInfo, info modelInterface.PageIn
 		return err, reJoblistList, total
 	}
 	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&reJoblistList).Error
+
+	var rs *ResumeStatus
+
+	for i := 0; i < len(reJoblistList); i++ {
+		rs = &ResumeStatus{Jobid: int(reJoblistList[i].ID)}
+		_, reJoblistList[i].CountTodi = rs.GetCount()
+	}
 	return err, reJoblistList, total
 }

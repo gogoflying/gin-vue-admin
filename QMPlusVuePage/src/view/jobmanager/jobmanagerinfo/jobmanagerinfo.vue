@@ -136,6 +136,7 @@
       <el-table-column label="最低学历" min-width="150" prop="p_education"></el-table-column>-->
       <el-table-column label="状态" min-width="100" prop="p_status" :formatter="StatusFormat"></el-table-column>
       <el-table-column label="浏览数" min-width="100" prop="p_views"></el-table-column>
+      <el-table-column label="投递数" min-width="100" prop="p_count_todi"></el-table-column>
       <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
       <!-- <el-table-column label="工作描述" min-width="150" prop="p_des" :show-overflow-tooltip="true"></el-table-column> -->
       <el-table-column label="操作" width="300">

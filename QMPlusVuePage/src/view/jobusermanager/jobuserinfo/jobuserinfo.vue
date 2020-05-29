@@ -133,9 +133,13 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="tableData" border stripe>
+    <el-table :data="tableData" border stripe @cell-click="gotopreview">
       <!-- <el-table-column label="用户标识" min-width="150" prop="openid"></el-table-column> -->
-      <el-table-column label="姓名" min-width="100" prop="userName"></el-table-column>
+      <el-table-column label="姓名" min-width="100" prop="userName">
+        <template slot-scope="scope">
+          <el-link type="primary">{{scope.row.userName}}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="手机号" min-width="100" prop="contact"></el-table-column>
       <el-table-column label="期望职位" min-width="100" prop="dreamposi"></el-table-column>
       <el-table-column label="性别" min-width="100" prop="genderindex" :formatter="genderFormat"></el-table-column>
@@ -310,6 +314,16 @@ export default {
       this.page = 1;
       this.pageSize = 10;
       this.getTableData();
+    },
+    async gotopreview(row, column) {
+      //当某行被点击时，去到某行
+      if (column.label == "姓名") {
+        const { href } = this.$router.resolve({
+          name: "userpreview",
+          query: { id: row.ID }
+        });
+        window.open(href, "_blank");
+      }
     },
     async editpreview(row) {
       const { href } = this.$router.resolve({

@@ -84,6 +84,34 @@ func (dm *UserDream) FindById() (err error, redm UserDream) {
 // 根据openid查看单条UserDream
 func (dm *UserDream) FindByOpenid() (err error, redm UserDream) {
 	err = qmsql.DEFAULTDB.Model(dm).Preload("Jobsalary").Preload("Jobdutytime").Preload("JobworkType").Preload("Cityname").Where("openid = ?", dm.Openid).First(&redm).Error
+	if redm.DutyTimeindex == 0 {
+		var dt JobDutyTime
+		err = qmsql.DEFAULTDB.Where("id = ?", 0).First(&dt).Error
+		if err == nil {
+			redm.Jobdutytime = dt
+		}
+	}
+	if redm.Salaryindex == 0 {
+		var si JobSalary
+		err = qmsql.DEFAULTDB.Where("id = ?", 0).First(&si).Error
+		if err == nil {
+			redm.Jobsalary = si
+		}
+	}
+	if redm.WorkTypeindex == 0 {
+		var jwt JobWorkType
+		err = qmsql.DEFAULTDB.Where("id = ?", 0).First(&jwt).Error
+		if err == nil {
+			redm.JobworkType = jwt
+		}
+	}
+	if redm.Cityindex == 0 {
+		var cn userCity.Cityname
+		err = qmsql.DEFAULTDB.Where("id = ?", 0).First(&cn).Error
+		if err == nil {
+			redm.Cityname = cn
+		}
+	}
 	return err, redm
 }
 

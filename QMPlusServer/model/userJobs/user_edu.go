@@ -92,5 +92,14 @@ func (ed *UserEducation) GetInfoListByOpenid(openId string, page, pageSize int) 
 	if err != nil {
 		return
 	}
+	for _, re := range reUserEduList {
+		if re.EdulevelIndex == 0 {
+			var el EduLevel
+			err = qmsql.DEFAULTDB.Where("id = ?", 0).First(&el).Error
+			if err == nil {
+				re.Edulevel = el
+			}
+		}
+	}
 	return nil, reUserEduList, total
 }

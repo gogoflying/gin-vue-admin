@@ -96,6 +96,27 @@ func (bf *UserBaseInfo) FindById() (err error, rebf UserBaseInfo) {
 // 根据openid查看单条UserBaseInfo
 func (bf *UserBaseInfo) FindByOpenid() (err error, rebf UserBaseInfo) {
 	err = qmsql.DEFAULTDB.Model(bf).Preload("JobWorkExpire").Preload("Edulevel").Preload("Cityname").Where("openid = ?", bf.Openid).First(&rebf).Error
+	if rebf.EdulevelIndex == 0 {
+		var el EduLevel
+		err = qmsql.DEFAULTDB.Where("id = ?", 0).First(&el).Error
+		if err == nil {
+			rebf.Edulevel = el
+		}
+	}
+	if rebf.WorksYearindex == 0 {
+		var je JobWorkExpire
+		err = qmsql.DEFAULTDB.Where("id = ?", 0).First(&je).Error
+		if err == nil {
+			rebf.JobWorkExpire = je
+		}
+	}
+	if rebf.Cityindex == 0 {
+		var cn userCity.Cityname
+		err = qmsql.DEFAULTDB.Where("id = ?", 0).First(&cn).Error
+		if err == nil {
+			rebf.Cityname = cn
+		}
+	}
 	return err, rebf
 }
 

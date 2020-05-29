@@ -184,20 +184,14 @@ func (info *EnterpriseInfo) GetInfoList(pinfo modelInterface.PageInfo) (err erro
 			return err, reEnterpriseInfoList, total
 		} else {
 			err = db.Find(&reEnterpriseInfoList).Error
-			/*for _, reP := range reEnterpriseInfoList {
-				var count int
-				qmsql.DEFAULTDB.Model(new(Joblist)).Where("company_id = ?", reP.ID).Count(&count)
-				reP.JobCount = count
-			}*/
-		}
-		/*err = db.Find(&reEnterpriseInfoList).Error
-		if err == nil {
-			for _, reP := range reEnterpriseInfoList {
-				var count int
-				qmsql.DEFAULTDB.Model(new(Joblist)).Where("company_id = ?", reP.ID).Count(&count)
-				reP.JobCount = count
+			if err == nil {
+				for _, reP := range reEnterpriseInfoList {
+					var count int
+					qmsql.DEFAULTDB.Model(new(Joblist)).Where("company_id = ?", reP.ID).Count(&count)
+					reP.JobCount = count
+				}
 			}
-		}*/
+		}
 		return err, reEnterpriseInfoList, total
 	}
 }

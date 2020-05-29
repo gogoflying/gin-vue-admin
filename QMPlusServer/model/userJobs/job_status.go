@@ -175,3 +175,8 @@ func (rs *ResumeStatus) GetResumeStatus(openId string, status, page, limit int) 
 	}
 	return err, *rs, total
 }
+
+func (rs *ResumeStatus) GetCount() (err error, count int) {
+	err = qmsql.DEFAULTDB.Model(rs).Where("job_id = ?", rs.Jobid).Count(&count).Error
+	return err, count
+}

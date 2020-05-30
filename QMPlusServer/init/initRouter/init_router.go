@@ -61,6 +61,7 @@ func InitRouter() *gin.Engine {
 	router.InitSalarysRouter(ApiGroup)
 	router.InitSalaryContractRouter(ApiGroup)
 	router.InitSalaryUsersRouter(ApiGroup)
+	router.InitSalaryTemplatesRouter(ApiGroup)
 	router.InitUserAuthRouter(ApiGroup)
 	router.InitSbConfRouter(ApiGroup)
 	router.InitSbOrdersRouter(ApiGroup)

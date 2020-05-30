@@ -151,18 +151,6 @@ func GetSalarysList(c *gin.Context) {
 	if exist {
 		enpInfo := ei.(*userJobs.EnterpriseInfo)
 		enPriseID = int(enpInfo.ID)
-	} else {
-		if c.Query("id") != "" {
-			id, _ := strconv.Atoi(c.Query("id"))
-			if id != 0 {
-				err, _ := new(userJobs.EnterpriseInfo).GeteEpById(id)
-				if err != nil {
-					servers.ReportFormat(c, false, fmt.Sprintf("获取企业信息失败，%v", err), gin.H{})
-					return
-				}
-				enPriseID = id
-			}
-		}
 	}
 	sp.Salarys.EnterpriseId = enPriseID
 
@@ -219,7 +207,7 @@ func ImportSalarys(c *gin.Context) {
 		id, _ = strconv.Atoi(c.Query("id"))
 		err, ep := new(userJobs.EnterpriseInfo).GeteEpById(id)
 		if err != nil {
-			servers.ReportFormat(c, false, fmt.Sprintf("上传文件失败，%v", err), gin.H{})
+			servers.ReportFormat(c, false, fmt.Sprintf("获取企业信息失败，%v", err), gin.H{})
 			return
 		}
 		epName = ep.EnterPriseName

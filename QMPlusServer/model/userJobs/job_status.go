@@ -168,7 +168,7 @@ func (rs *ResumeStatus) GetResumeStatus(openId string, status, page, limit int) 
 	}
 	for _, v := range rss {
 		jb := new(Joblist)
-		err = qmsql.DEFAULTDB.Model(new(Joblist)).Where("id = ?", v.Jobid).Find(jb).Error
+		err = qmsql.DEFAULTDB.Model(new(Joblist)).Where("id = ? and p_status != 3 and (p_outdate >= ? or p_outdate = 0 ) and p_count > 0", v.Jobid, time.Now().Unix()).Find(jb).Error
 		if err != nil {
 			continue
 		}
@@ -178,6 +178,6 @@ func (rs *ResumeStatus) GetResumeStatus(openId string, status, page, limit int) 
 }
 
 func (rs *ResumeStatus) GetCount() (err error, count int) {
-	err = qmsql.DEFAULTDB.Model(rs).Where("job_id = ? and p_status != 3 and (p_outdate >= ? or p_outdate = 0 ) and p_count > 0", rs.Jobid, time.Now().Unix()).Count(&count).Error
+	err = qmsql.DEFAULTDB.Model(rs).Where("job_id = ?", rs.Jobid).Count(&count).Error
 	return err, count
 }

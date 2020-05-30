@@ -166,7 +166,7 @@ func (jl *Joblist) GetInfoListSearchDetail(keyword string, cityId, order int, in
 
 	outData := time.Now().Unix()
 
-	db := qmsql.DEFAULTDB.Model(jl).Where("p_status != 3 and (p_outdate >= ? or p_outdata = 0 ) and p_count > 0", outData)
+	db := qmsql.DEFAULTDB.Model(jl).Where("p_status != 3 and (p_outdate >= ? or p_outdate = 0 ) and p_count > 0", outData)
 
 	if cityId > 0 {
 		db = db.Where("job_city_id = ?", cityId)

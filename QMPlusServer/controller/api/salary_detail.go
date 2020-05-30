@@ -44,6 +44,7 @@ func CreateSalarys(c *gin.Context) {
 	if len(openid) == 0 {
 		fmt.Errorf("checkSalarysUserInTable user:%s not in table salaryUser", un.Name)
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
+		return
 	}
 	fmt.Printf("checkSalarysUserInTable openid:%s\n", openid)
 	un.Openid = openid
@@ -86,6 +87,19 @@ func DeleteSalarys(c *gin.Context) {
 func UpdateSalarys(c *gin.Context) {
 	var un userSalary.Salarys
 	_ = c.ShouldBindJSON(&un)
+	ei, exist := c.Get("enpInfo")
+	if exist {
+		enpInfo := ei.(*userJobs.EnterpriseInfo)
+		un.Enterprise = enpInfo.EnterPriseName
+		un.EnterpriseId = int(enpInfo.ID)
+	}
+	openid, err := checkSalarysUserInTable(un.Name, un.Enterprise, un.EnterpriseId)
+	if len(openid) == 0 {
+		fmt.Errorf("checkSalarysUserInTable user:%s not in table salaryUser", un.Name)
+		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
+		return
+	}
+
 	err, reun := un.UpdateSalarys()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})

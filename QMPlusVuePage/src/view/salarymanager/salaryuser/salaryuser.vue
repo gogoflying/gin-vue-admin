@@ -40,7 +40,7 @@
             :on-success="onSuccess"
             :show-file-list="false"
           >
-            <el-tooltip class="item" effect="dark" content="请先选择企业" placement="top-start">
+            <el-tooltip :disabled="enPriseId != 0" class="item" effect="dark" content="请先选择企业" placement="top-start">
               <el-button type="success" :icon="importDataBtnIcon">{{importDataBtnText}}</el-button>
             </el-tooltip>
           </el-upload>

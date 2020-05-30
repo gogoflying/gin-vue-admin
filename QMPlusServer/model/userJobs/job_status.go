@@ -6,6 +6,7 @@ import (
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
 	"strings"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -177,6 +178,6 @@ func (rs *ResumeStatus) GetResumeStatus(openId string, status, page, limit int) 
 }
 
 func (rs *ResumeStatus) GetCount() (err error, count int) {
-	err = qmsql.DEFAULTDB.Model(rs).Where("job_id = ?", rs.Jobid).Count(&count).Error
+	err = qmsql.DEFAULTDB.Model(rs).Where("job_id = ? and p_status != 3 and (p_outdate >= ? or p_outdate = 0 ) and p_count > 0", rs.Jobid, time.Now().Unix()).Count(&count).Error
 	return err, count
 }

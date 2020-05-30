@@ -9,7 +9,7 @@ import (
 func InitSalaryTemplatesRouter(Router *gin.RouterGroup) {
 	SalaryTemplatesRouter := Router.Group("un") //.Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())
 	{
-		SalaryTemplatesRouter.POST("createSalaryTemplates", api.CreateSalaryTemplates)                                                                         // 新建SalaryTemplates
+		SalaryTemplatesRouter.POST("createSalaryTemplates", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.CreateSalaryTemplates)                   // 新建SalaryTemplates
 		SalaryTemplatesRouter.POST("deleteSalaryTemplates", api.DeleteSalaryTemplates)                                                                         //删除SalaryTemplates
 		SalaryTemplatesRouter.POST("updateSalaryTemplates", api.UpdateSalaryTemplates)                                                                         //更新SalaryTemplates
 		SalaryTemplatesRouter.POST("findSalaryTemplates", api.FindSalaryTemplates)                                                                             // 根据ID获取SalaryTemplates

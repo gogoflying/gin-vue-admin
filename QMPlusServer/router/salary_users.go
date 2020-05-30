@@ -17,7 +17,7 @@ func InitSalaryUsersRouter(Router *gin.RouterGroup) {
 		SalaryUsersRouter.POST("findSalaryUsers", api.FindSalaryUsers)                                                             // 根据ID获取SalaryUsers
 		SalaryUsersRouter.POST("getSalaryUsersList", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.GetSalaryUsersList) //获取SalaryUsers列表
 		SalaryUsersRouter.POST("findSalaryUsersByOpenid", api.FindSalaryUsersByOpenid)
-		SalaryUsersRouter.POST("importsalaryuser", api.ImportSalaryUsers)
+		SalaryUsersRouter.POST("importsalaryuser", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.ImportSalaryUsers)
 		SalaryUsersRouter.POST("updateSalaryUsersLeaveStep", api.UpdateSalaryUsersLeaveStep)
 		SalaryUsersRouter.POST("updateSalaryUsersEnterStep", api.UpdateSalaryUsersEnterStep)
 		SalaryUsersRouter.Static("template", "./static/template")

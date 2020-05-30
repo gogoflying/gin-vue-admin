@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -66,6 +67,6 @@ func (jc *JobCollect) GetInfoListByOpenid(openid string, page, pageSize int) (er
 		jobIds = append(jobIds, j.JobId)
 	}
 	var jbs []Joblist
-	db.Model(new(Joblist)).Where("id IN (?)", jobIds).Find(&jbs)
+	db.Model(new(Joblist)).Where("id IN (?) and p_status != 3 and (p_outdate >= ? or p_outdate = 0 ) and p_count > 0", jobIds, time.Now().Unix()).Find(&jbs)
 	return nil, jbs
 }

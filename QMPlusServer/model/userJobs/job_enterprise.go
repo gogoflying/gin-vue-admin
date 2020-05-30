@@ -7,6 +7,7 @@ import (
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userCity"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -141,8 +142,9 @@ func (info *EnterpriseInfo) FindPositionsByCompId(page, pageSize int) (err error
 	}
 	limit := pageSize
 	offset := pageSize * (page - 1)
+	outData := time.Now().Unix()
 	var jobList []Joblist
-	err = qmsql.DEFAULTDB.Model(new(Joblist)).Where("company_id = ?", info.ID).Limit(limit).Offset(offset).Order("id desc").Find(&jobList).Error
+	err = qmsql.DEFAULTDB.Model(new(Joblist)).Where("company_id = ? and p_status != 3 and (p_outdate >= ? or p_outdate = 0 ) and p_count > 0", info.ID, outData).Limit(limit).Offset(offset).Order("id desc").Find(&jobList).Error
 	if err != nil {
 		return
 	}

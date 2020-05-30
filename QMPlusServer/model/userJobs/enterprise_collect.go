@@ -66,6 +66,6 @@ func (jc *EnterpriseCollect) GetInfoListByOpenid(openid string, page, pageSize i
 		enpIds = append(enpIds, j.EnterpriseId)
 	}
 	var eps []EnterpriseInfo
-	db.Model(new(EnterpriseInfo)).Where("id IN (?)", enpIds).Find(&eps)
+	db.Model(new(EnterpriseInfo)).Where("id IN (?) and status = 1", enpIds).Find(&eps)
 	return nil, eps
 }

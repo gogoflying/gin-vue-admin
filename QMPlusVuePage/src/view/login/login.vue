@@ -185,6 +185,7 @@ export default {
         this.isOk = true;
         this.timer = setInterval(this.callbackTimer, 1000);
         this.btnEnable = true;
+         this.$message({ type: "success", message: res.msg });
       } else {
         this.$message({ type: "error", message: res.msg });
       }
@@ -212,6 +213,7 @@ export default {
         var res = await forgetVerify(this.forgetForm);
         if (res.success) {
           this.$message({ type: "success", message: res.msg });
+          this.dialogFormVisible = !this.dialogFormVisible;
         } else {
           this.$message({ type: "error", message: res.msg });
         }

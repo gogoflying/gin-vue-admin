@@ -11,7 +11,8 @@ func SendEmail(to, subject, body string) error {
 	m := gomail.NewMessage()
 
 	m.SetHeader("To", to)
-	//m.SetAddressHeader("From", fromEmail, "")
+
+	m.SetAddressHeader("From", config.GinVueAdminconfig.SendEmail.FromEmail, "")
 	// 主题
 	m.SetHeader("Subject", subject)
 

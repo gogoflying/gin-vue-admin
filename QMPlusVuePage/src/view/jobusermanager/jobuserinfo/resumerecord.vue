@@ -18,7 +18,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-            <el-button @click="onSearch()" type="primary">搜索</el-button>
+            <el-button @click="onSearch" type="primary">搜索</el-button>
             </el-col>
           </el-row>
           <el-row>

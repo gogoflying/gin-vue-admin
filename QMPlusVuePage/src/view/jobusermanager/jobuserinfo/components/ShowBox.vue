@@ -104,7 +104,7 @@
           flex-grow: 2;
           > ul {
             padding: 8px;
-            width: 100%;
+            width: 95%;
             overflow: hidden;
             font-size: 16px;
             > li {

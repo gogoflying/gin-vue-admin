@@ -237,6 +237,7 @@ func runPDFConvert(c *gin.Context, localPath, openId string) {
 	jpgPathList, err := servers.SplitPdf(localPath, openId, "tmp")
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("split contract pdf err ：%v", err), gin.H{})
+		return
 	}
 	fmt.Printf("SplitPdf result :%v", jpgPathList)
 
@@ -264,7 +265,16 @@ func runPDFConvert(c *gin.Context, localPath, openId string) {
 	err = updateSalarysUserStep(openId)
 	if err != nil {
 		log.L.Info("updateSalarysUserStep update err:", err)
+		return
 	}
+
+	//notify send sms message to user
+	userName, mobile, err := getUserInfoByOpenid(openId)
+	if err != nil {
+		log.L.Info("updateSalarysUserStep update err:", err)
+		return
+	}
+	servers.SendEnterContractMsg(mobile, userName)
 	//var un userSalary.SalaryContract
 	_ = c.ShouldBindJSON(&sc)
 	log.L.Info("UploadUserContract new json:", sc)
@@ -428,4 +438,26 @@ func updateSalarysUserStep(openid string) error {
 	}
 	fmt.Printf("updateSalarysUserStep update success")
 	return nil
+}
+
+func getUserInfoByOpenid(openid string) (string, string, error) {
+	if openid == "" {
+		return "", "", fmt.Errorf("openid empty")
+	}
+	//var un userSalary.SalaryUsers
+	salaryUser := userSalary.SalaryUsers{
+		Openid: openid,
+	}
+	err, userInfo := salaryUser.FindByOpenid()
+	if err != nil {
+		fmt.Printf("FindByOpenid err:%v", err)
+		return "", "", err
+	}
+
+	if len(userInfo.Name) == 0 || len(userInfo.Mobile) == 0 {
+		fmt.Printf("getUserInfoByOpenid param err is:%v", userInfo)
+		return "", "", err
+	}
+	fmt.Printf("getUserInfoByOpenid update success")
+	return userInfo.Name, userInfo.Mobile, nil
 }

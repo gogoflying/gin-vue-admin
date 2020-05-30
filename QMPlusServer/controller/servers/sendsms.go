@@ -66,3 +66,41 @@ func SendSms(sendToTel, verificationCode string) error {
 
 	return nil
 }
+
+func SendEnterContractMsg(sendToTel, userAccount string) error {
+	if !VerifyMobileFormat(sendToTel) || len(user) == 0 {
+		fmt.Printf("illdge mobile num please check\n")
+		return nil
+	}
+	msgContext := fmt.Sprintf("亲爱的用户:%s 您好，电子合同已生成，请及时阅读确认签字。如非本人操作请忽略。回TD退订 ", userAccount)
+	msg := "LoginName=" + user
+	msg += "&Password="
+	msg += md5V(password)[8:24]
+	msg += "&SmsKind=" + smsKind
+	msg += "&SendSim="
+	msg += sendToTel
+	msg += "&ExpSmsId="
+	msg += "&MsgContext="
+	msg += msgContext
+	msg += "【亦庄云学堂】"
+	fmt.Printf("http msg :%v", msg)
+
+	url := "http://sdk.zyer.cn/SmsService/SmsService.asmx/SendEx"
+	req, err := http.NewRequest("POST", url, bytes.NewBufferString(msg))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Printf("http err :%v", err)
+		return err
+	}
+	defer resp.Body.Close()
+	statuscode := resp.StatusCode
+	hea := resp.Header
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
+	fmt.Println(statuscode)
+	fmt.Println(hea)
+
+	return nil
+}

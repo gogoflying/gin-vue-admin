@@ -274,7 +274,7 @@ func runPDFConvert(c *gin.Context, localPath, openId string) {
 		log.L.Info("updateSalarysUserStep update err:", err)
 		return
 	}
-	servers.SendEnterContractMsg(mobile, userName)
+	servers.SendSms(mobile, userName, servers.SMSMSGTYPE_ENTER_CONTRACT)
 	//var un userSalary.SalaryContract
 	_ = c.ShouldBindJSON(&sc)
 	log.L.Info("UploadUserContract new json:", sc)

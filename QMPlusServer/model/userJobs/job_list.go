@@ -270,7 +270,7 @@ func (jl *Joblist) GetAllInfoOption() (err error, list1, list2, list3, list4, li
 	if err != nil {
 		return err, jbe, js, jwt, el, citys
 	}
-	err = qmsql.DEFAULTDB.Select("id,name").Find(&citys).Error
+	err = qmsql.DEFAULTDB.Select("id,name").Where("type = 0").Find(&citys).Error
 	if err != nil {
 		return err, jbe, js, jwt, el, citys
 	}

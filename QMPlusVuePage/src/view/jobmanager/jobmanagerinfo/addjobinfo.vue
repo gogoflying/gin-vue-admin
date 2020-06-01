@@ -121,6 +121,7 @@
         </el-form-item>
         <el-form-item label="招聘人数" prop="p_count">
           <el-input
+            type="p_count"
             v-model.number="jobmanagerinfo.p_count"
             placeholder="请输入招聘人数"
             style="width:50%;"
@@ -343,6 +344,11 @@ export default {
         ],
         p_type_id: [
           { required: true, message: "请输入工作类型", trigger: "blur" }
+        ],
+        p_count: [
+          { required: true, message: "请输入招聘人数", trigger: "blur" },
+          { type: "number", message: "人数必须为数字", trigger: "blur"},
+          { type: "number", min: 0, message: "人数必须为大于零", trigger: "blur" }
         ],
         p_desc: [{ required: true, message: "请输入工作描述", trigger: "blur" }]
       },

@@ -9,7 +9,12 @@
           <el-input v-model="user_news.sub_title" style="width:50%;" placeholder="请输入新闻副标题"></el-input>
         </el-form-item>
         <el-form-item label="排序" prop="order">
-          <el-input v-model.number="user_news.order" style="width:25%;" placeholder="请输入顺序"></el-input>
+          <el-input
+            type="order"
+            v-model.number="user_news.order"
+            style="width:25%;"
+            placeholder="请输入顺序"
+          ></el-input>
           <label>【数值越大,越靠前】</label>
         </el-form-item>
         <el-form-item label="新闻类型" prop="news_type">
@@ -86,6 +91,16 @@ export default {
       rules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
         news_type: [{ required: true, message: "请输入类型", trigger: "blur" }],
+        order: [
+          { required: true, message: "请输入排序", trigger: "blur" },
+          { type: "number", message: "排序必须为数字", trigger: "blur" },
+          {
+            type: "number",
+            min: 0,
+            message: "排序必须为大于零",
+            trigger: "blur"
+          }
+        ],
         content: [{ required: true, message: "请输入内容", trigger: "blur" }]
       }
     };

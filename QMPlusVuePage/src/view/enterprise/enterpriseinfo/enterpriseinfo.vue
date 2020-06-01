@@ -153,7 +153,7 @@
           <el-input v-model="enterpriseInfo.enterprise_name"></el-input>
         </el-form-item>
         <el-form-item label="企业规模" label-width="80px" prop="enterprise_scale">
-          <el-input v-model.number="enterpriseInfo.enterprise_scale"></el-input>
+          <el-input type="enterprise_scale" v-model.number="enterpriseInfo.enterprise_scale"></el-input>
         </el-form-item>
         <el-form-item label="企业性质" label-width="80px" prop="enterprise_type">
           <el-select
@@ -185,7 +185,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="企业热度" label-width="80px" prop="enterprise_hot">
-          <el-input v-model.number="enterpriseInfo.enterprise_hot"></el-input>
+          <el-input type="enterprise_hot" v-model.number="enterpriseInfo.enterprise_hot"></el-input>
         </el-form-item>
         <el-form-item label="企业描述" label-width="80px" prop="enterprise_desc">
           <quill-editor
@@ -216,7 +216,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
-            :before-upload="beforeAvatarUpload"
+            :before-upload="beforeAvatarUploadLogo"
           >
             <img
               :src="enterpriseInfo.enterprise_logo"
@@ -234,7 +234,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
-            :before-upload="beforeAvatarUpload"
+            :before-upload="beforeAvatarUploadImg"
           >
             <img
               :src="enterpriseInfo.enterprise_img"
@@ -252,7 +252,7 @@
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
             class="avatar-uploader"
             name="file"
-            :before-upload="beforeAvatarUpload"
+            :before-upload="beforeAvatarUploadQfc"
           >
             <img
               :src="enterpriseInfo.enterprise_qfc"
@@ -328,13 +328,25 @@ export default {
           { required: true, message: "请输入注册地址", trigger: "blur" }
         ],
         enterprise_scale: [
-          { required: true, message: "请输入企业规模", trigger: "blur" }
+          { required: true, message: "请输入企业规模", trigger: "blur" },
+          { type: "number", message: "规模必须为数字" },
+          { type: "number", min: 0, message: "规模必须为大于零" }
         ],
         enterprise_type: [
           { required: true, message: "请输入企业性质", trigger: "blur" }
         ],
         industry_type: [
           { required: true, message: "请输入行业类别", trigger: "blur" }
+        ],
+        enterprise_hot: [
+          // { required: true, message: "请输入企业热度", trigger: "blur" },
+          { type: "number", message: "热度必须为数字", trigger: "blur" },
+          {
+            type: "number",
+            min: 0,
+            message: "热度必须为大于零",
+            trigger: "blur"
+          }
         ],
         enterprise_desc: [
           { required: true, message: "请输入企业描述", trigger: "blur" }
@@ -522,7 +534,7 @@ export default {
     handleAvatarQfcSuccess(res) {
       this.enterpriseInfo.enterprise_qfc = res.data.file.url;
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUploadLogo(file) {
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
       const extension = testmsg === "jpg";
       const extension2 = testmsg === "png";
@@ -542,6 +554,48 @@ export default {
         return false;
       }
       return (extension || extension2) && isLt50KB;
+    },
+    beforeAvatarUploadImg(file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension = testmsg === "jpg";
+      const extension2 = testmsg === "png";
+      const isLt500KB = file.size / 1024 < 500;
+      if (!extension && !extension2) {
+        this.$message({
+          message: "上传文件只能是 jpg、png格式!",
+          type: "warning"
+        });
+        return false;
+      }
+      if (!isLt500KB) {
+        this.$message({
+          message: "上传文件大小不能超过 500KB!",
+          type: "warning"
+        });
+        return false;
+      }
+      return (extension || extension2) && isLt500KB;
+    },
+    beforeAvatarUploadQfc(file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension = testmsg === "jpg";
+      const extension2 = testmsg === "png";
+      const isLt2MB = file.size / 1024 / 1024 < 2;
+      if (!extension && !extension2) {
+        this.$message({
+          message: "上传文件只能是 jpg、png格式!",
+          type: "warning"
+        });
+        return false;
+      }
+      if (!isLt2MB) {
+        this.$message({
+          message: "上传文件大小不能超过 2MB!",
+          type: "warning"
+        });
+        return false;
+      }
+      return (extension || extension2) && isLt2MB;
     }
   },
   async created() {

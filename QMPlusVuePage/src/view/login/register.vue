@@ -22,7 +22,7 @@
               <i :class="'el-input__icon el-icon-' + lock" @click="changeLock" slot="suffix"></i>
             </el-input>
           </el-form-item>
-          <el-form-item  prop="rePassword">
+          <el-form-item prop="rePassword">
             <el-input
               :type="lock==='lock'?'password':'text'"
               placeholder="请再一次输入密码"
@@ -33,10 +33,10 @@
           </el-form-item>
           <br />
           <br />
-          <el-form-item  prop="enterprise_name">
+          <el-form-item prop="enterprise_name">
             <el-input placeholder="请输入企业名称" v-model="registerForm.enterprise_name"></el-input>
           </el-form-item>
-          <el-form-item  prop="authorityId">
+          <el-form-item prop="authorityId">
             <el-select placeholder="请选择用户角色" v-model="registerForm.authorityId" style="width:100%">
               <el-option :key="role.name" :label="role.name" :value="role.id" v-for="role in roles"></el-option>
             </el-select>
@@ -79,14 +79,14 @@ export default {
         callback();
       }
     };
-    const checkEmail = (rule, value, callback) => {
-      var regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-      if (value != '' && !regEmail.test(value)) {
-        return callback(new Error("请输入正确的邮箱地址"));
-      } else {
-        callback();
-      }
-    };
+    // const checkEmail = (rule, value, callback) => {
+    //   var regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+    //   if (value != "" && !regEmail.test(value)) {
+    //     return callback(new Error("请输入正确的邮箱地址"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
     const checkPassword = (rule, value, callback) => {
       if (value.length < 6 || value.length > 12) {
         return callback(new Error("请输入正确的密码"));
@@ -106,7 +106,7 @@ export default {
       lock: "lock",
       registerForm: {
         userName: "",
-        email:"",
+        email: "",
         passWord: "",
         rePassword: "",
         enterprise_name: "",
@@ -123,7 +123,14 @@ export default {
         }
       ],
       rules: {
-        email: [{ validator: checkEmail, trigger: "blur" }],
+        email: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          {
+            type: "email",
+            message: "邮箱格式不正确",
+            trigger: "blur"
+          }
+        ],
         userName: [{ validator: checkUsername, trigger: "blur" }],
         passWord: [{ validator: checkPassword, trigger: "blur" }],
         rePassword: [{ validator: ratioPassword, trigger: "blur" }],

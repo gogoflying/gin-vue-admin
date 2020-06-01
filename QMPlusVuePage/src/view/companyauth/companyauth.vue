@@ -7,14 +7,22 @@
       label-width="80px"
       :disabled="authform.status == 1"
     >
-      <el-form-item label="提示信息" prop="errors" v-show="authform.errors != '' && authform.status == 0">
+      <el-form-item
+        label="提示信息"
+        prop="errors"
+        v-show="authform.errors != '' && authform.status == 0"
+      >
         <span style="color:red">{{authform.errors}}</span>
       </el-form-item>
       <el-form-item label="企业名称" prop="enterprise_name">
         <el-input v-model="authform.enterprise_name" style="width:50%;"></el-input>
       </el-form-item>
       <el-form-item label="企业规模" prop="enterprise_scale">
-        <el-input type="number" v-model.number="authform.enterprise_scale" style="width:50%;"></el-input>
+        <el-input
+          type="enterprise_scale"
+          v-model.number="authform.enterprise_scale"
+          style="width:50%;"
+        ></el-input>
       </el-form-item>
       <el-form-item label="企业性质" prop="enterprise_type">
         <el-select @change="selectEnpType" placeholder="请选择企业性质" v-model="authform.enterprise_type">
@@ -58,7 +66,7 @@
           :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
           class="avatar-uploader"
           name="file"
-          :before-upload="beforeAvatarUpload"
+          :before-upload="beforeAvatarUploadLogo"
         >
           <img :src="authform.enterprise_logo" class="avatar" v-if="authform.enterprise_logo" />
           <i class="el-icon-plus avatar-uploader-icon" v-else></i>
@@ -72,7 +80,7 @@
           :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
           class="avatar-uploader"
           name="file"
-          :before-upload="beforeAvatarUpload"
+          :before-upload="beforeAvatarUploadImg"
         >
           <img :src="authform.enterprise_img" class="avatar" v-if="authform.enterprise_img" />
           <i class="el-icon-plus avatar-uploader-icon" v-else></i>
@@ -86,7 +94,7 @@
           :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
           class="avatar-uploader"
           name="file"
-          :before-upload="beforeAvatarUpload"
+          :before-upload="beforeAvatarUploadQfc"
         >
           <img :src="authform.enterprise_qfc" class="avatar" v-if="authform.enterprise_qfc" />
           <i class="el-icon-plus avatar-uploader-icon" v-else></i>
@@ -128,7 +136,7 @@ export default {
         enterprise_logo: "",
         enterprise_img: "",
         enterprise_qfc: "",
-        errors:""
+        errors: ""
       },
       rules: {
         enterprise_name: [
@@ -142,7 +150,14 @@ export default {
           { required: true, message: "请输入注册地址", trigger: "blur" }
         ],
         enterprise_scale: [
-          { required: true, message: "请输入企业规模", trigger: "blur" }
+          { required: true, message: "请输入企业规模", trigger: "blur" },
+          { type: "number", message: "规模必须为数字", trigger: "blur" },
+          {
+            type: "number",
+            min: 0,
+            message: "规模必须为大于零",
+            trigger: "blur"
+          }
         ],
         enterprise_type: [
           { required: true, message: "请输入企业类型", trigger: "blur" }
@@ -249,7 +264,7 @@ export default {
     handleAvatarQfcSuccess(res) {
       this.authform.enterprise_qfc = res.data.file.url;
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUploadLogo(file) {
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
       const extension = testmsg === "jpg";
       const extension2 = testmsg === "png";
@@ -269,6 +284,48 @@ export default {
         return false;
       }
       return (extension || extension2) && isLt50KB;
+    },
+    beforeAvatarUploadImg(file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension = testmsg === "jpg";
+      const extension2 = testmsg === "png";
+      const isLt500KB = file.size / 1024 < 500;
+      if (!extension && !extension2) {
+        this.$message({
+          message: "上传文件只能是 jpg、png格式!",
+          type: "warning"
+        });
+        return false;
+      }
+      if (!isLt500KB) {
+        this.$message({
+          message: "上传文件大小不能超过 500KB!",
+          type: "warning"
+        });
+        return false;
+      }
+      return (extension || extension2) && isLt500KB;
+    },
+    beforeAvatarUploadQfc(file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension = testmsg === "jpg";
+      const extension2 = testmsg === "png";
+      const isLt2MB = file.size / 1024 / 1024 < 2;
+      if (!extension && !extension2) {
+        this.$message({
+          message: "上传文件只能是 jpg、png格式!",
+          type: "warning"
+        });
+        return false;
+      }
+      if (!isLt2MB) {
+        this.$message({
+          message: "上传文件大小不能超过 2MB!",
+          type: "warning"
+        });
+        return false;
+      }
+      return (extension || extension2) && isLt2MB;
     }
   },
   created() {

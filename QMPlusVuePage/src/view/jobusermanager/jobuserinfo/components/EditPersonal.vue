@@ -118,7 +118,14 @@ export default {
         contact: [
           { required: true, message: "请输入联系方式", trigger: "blur" }
         ],
-        email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
+        email: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          {
+            type: "email",
+            message: "邮箱格式不正确",
+            trigger: "blur"
+          }
+        ],
         birthday: [{ required: true, message: "请输入生日", trigger: "blur" }],
         avatarUrl: [{ required: true, message: "请上传头像", trigger: "blur" }]
       }

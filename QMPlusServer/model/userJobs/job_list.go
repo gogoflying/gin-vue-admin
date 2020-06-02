@@ -31,6 +31,8 @@ type Joblist struct {
 	CompanyId    int     `json:"enterprise_id" gorm:"column:company_id;comment:'公司id，关联enterprise_infos表'"`
 	CompanyImg   string  `json:"enterprise_logo" gorm:"column:company_img;comment:'公司logo url'"`
 	JobDes       string  `json:"p_desc" gorm:"column:job_des;comment:'工作描述'"`
+	JobContact   string  `json:"p_contact" gorm:"column:job_contact;comment:'职位联系人'"`
+	JobInterview string  `json:"p_interview" gorm:"column:job_interview;comment:'面试地点'"`
 	Views        int     `json:"p_views" gorm:"column:p_views;comment:'浏览数量'"`
 	Status       int     `json:"p_status" gorm:"column:p_status;comment:'职位状态，0普通，1急招，2热门，3下线'"`
 	Count        int     `json:"p_count" gorm:"column:p_count;comment:'招聘人数'"`

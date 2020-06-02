@@ -23,7 +23,7 @@
               <li>生日：{{resume.user_base_info.birthday || '生日'}}</li>
             </ul>
           </div>
-          <div class="print" v-if="resume.user_base_info.avatarUrl != ''">
+          <div class="print" v-if="resume.user_base_info.avatarUrl != '' && resume.user_base_info.avatarUrl != null">
             <img
               :src="resume.user_base_info.avatarUrl + '?' + new Date().getTime()"
               crossorigin="anonymous"

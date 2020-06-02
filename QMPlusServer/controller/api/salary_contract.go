@@ -223,6 +223,7 @@ func UploadUserContract(c *gin.Context) {
 	}
 
 	go runPDFConvert(c, uci.TmpContractPath, uci.OpenId)
+	servers.DelLocalFile(uci.TmpContractPath)
 	//return nil
 }
 

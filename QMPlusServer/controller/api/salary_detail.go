@@ -327,6 +327,17 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 			gjj := strings.Trim(row.Cells[30].Value, " ")
 			dkgs := strings.Trim(row.Cells[31].Value, " ")
 			sfgz := strings.Trim(row.Cells[32].Value, " ")
+
+			ext1 := strings.Trim(row.Cells[33].Value, " ")
+			ext2 := strings.Trim(row.Cells[34].Value, " ")
+			ext3 := strings.Trim(row.Cells[35].Value, " ")
+			ext4 := strings.Trim(row.Cells[36].Value, " ")
+			ext5 := strings.Trim(row.Cells[37].Value, " ")
+			ext6 := strings.Trim(row.Cells[38].Value, " ")
+			ext7 := strings.Trim(row.Cells[39].Value, " ")
+			ext8 := strings.Trim(row.Cells[40].Value, " ")
+			ext9 := strings.Trim(row.Cells[41].Value, " ")
+			ext10 := strings.Trim(row.Cells[42].Value, " ")
 			//salary, _ := strconv.Atoi(strings.Trim(row.Cells[4].Value, " "))
 			//contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " "))
 			un := userSalary.Salarys{
@@ -364,6 +375,16 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 				Gjj:          gjj,
 				Dkgs:         dkgs,
 				Sfgz:         sfgz,
+				Ext1:         ext1,
+				Ext2:         ext2,
+				Ext3:         ext3,
+				Ext4:         ext4,
+				Ext5:         ext5,
+				Ext6:         ext6,
+				Ext7:         ext7,
+				Ext8:         ext8,
+				Ext9:         ext9,
+				Ext10:        ext10,
 			}
 			err := un.CreateSalarys()
 			//err = tx.Create(un).Error

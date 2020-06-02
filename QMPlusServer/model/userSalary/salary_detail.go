@@ -46,6 +46,17 @@ type Salarys struct {
 	Gjj          string `json:"gjj" gorm:"column:gjj"`
 	Dkgs         string `json:"dkgs" gorm:"column:dkgs"`
 	Sfgz         string `json:"sfgz" gorm:"column:sfgz"`
+
+	Ext1  string `json:"ext1" gorm:"column:ext1"`
+	Ext2  string `json:"ext2" gorm:"column:ext2"`
+	Ext3  string `json:"ext3" gorm:"column:ext3"`
+	Ext4  string `json:"ext4" gorm:"column:ext4"`
+	Ext5  string `json:"ext5" gorm:"column:ext5"`
+	Ext6  string `json:"ext6" gorm:"column:ext6"`
+	Ext7  string `json:"ext7" gorm:"column:ext7"`
+	Ext8  string `json:"ext8" gorm:"column:ext8"`
+	Ext9  string `json:"ext9" gorm:"column:ext9"`
+	Ext10 string `json:"ext10" gorm:"column:ext10"`
 }
 
 // 创建Salarys

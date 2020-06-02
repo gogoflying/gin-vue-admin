@@ -2,9 +2,11 @@
 package userJobs
 
 import (
+	"errors"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+	"gin-vue-admin/model/userSalary"
 	"strings"
 	"time"
 
@@ -85,6 +87,44 @@ func (rs *ResumeStatus) UpdateResumeStatus() (err error, rers ResumeStatus) {
 		return err, *rs
 	}
 	return err, *rs
+}
+
+func (rs *ResumeStatus) UpdateResumeByOpenidAndJobid() (err error) {
+	return qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and job_id = ?", rs.Openid, rs.Jobid).Update("resume_status", rs.ResumeStatus).Error
+}
+
+func (rs *ResumeStatus) EnterJob() (err error) {
+	if rs.ResumeStatus == 6 { //入职
+		bf := &UserBaseInfo{
+			Openid: rs.Openid,
+		}
+		err, rebf := bf.FindByOpenid()
+		if err != nil {
+			return err
+		}
+		if len(rebf.IdCard) == 0 {
+			return errors.New("请先去 '简历编辑' 补充身份证号")
+		}
+		if err = rs.UpdateResumeByOpenidAndJobid(); err != nil {
+			return err
+		}
+		us := &userSalary.SalaryUsers{
+			Name:         rebf.UserName,
+			Mobile:       rebf.Mobile,
+			Card:         rebf.IdCard,
+			Enterprise:   rs.CompanyName,
+			EnterpriseId: rs.CompanyId,
+			JobName:      rs.Jobname,
+			Email:        rebf.Email,
+		}
+		return us.CreateSalaryUsers()
+
+	} else if rs.ResumeStatus == 7 {
+		if err = rs.UpdateResumeByOpenidAndJobid(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // 根据ID查看单条ResumeStatus

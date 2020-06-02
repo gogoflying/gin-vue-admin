@@ -171,3 +171,14 @@ func GetResumeByStatus(c *gin.Context) {
 		})
 	}
 }
+
+func JobEnterStatus(c *gin.Context) {
+	var req userJobs.ResumeStatus
+	_ = c.ShouldBindJSON(&req)
+	err := req.EnterJob()
+	if err != nil {
+		servers.ReportFormat(c, false, err.Error(), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "", gin.H{})
+	}
+}

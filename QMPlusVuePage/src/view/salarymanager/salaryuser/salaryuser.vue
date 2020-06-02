@@ -138,7 +138,7 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column label="id" min-width="60" prop="ID"></el-table-column>
+      <el-table-column label="id" min-width="60" prop="ID" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="姓名" min-width="80" prop="name"></el-table-column>
       <!-- <el-table-column label="手机" min-width="110" prop="mobile"></el-table-column> -->
       <el-table-column label="岗位名称" min-width="100" prop="job_name"></el-table-column>
@@ -674,7 +674,7 @@ export default {
       const isLt1MB = file.size / 1024 / 1024 < 1;
       if (!extension) {
         this.$message({
-          message: "上传文件只能是 jpg、png格式!",
+          message: "上传合同只能是pdf格式!",
           type: "warning"
         });
         return false;

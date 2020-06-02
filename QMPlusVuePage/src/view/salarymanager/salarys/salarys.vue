@@ -66,7 +66,7 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe>
-      <el-table-column label="id" min-width="60" prop="ID"></el-table-column>
+      <el-table-column label="id" min-width="60" prop="ID" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="姓名" min-width="100" prop="name"></el-table-column>
       <el-table-column label="年" min-width="60" prop="year"></el-table-column>
       <el-table-column label="月" min-width="40" prop="month"></el-table-column>

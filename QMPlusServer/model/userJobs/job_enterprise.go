@@ -25,13 +25,13 @@ type EnterpriseInfo struct {
 	EnterpriseQfc        string    `json:"enterprise_qfc" gorm:"column:enterprise_qfc;comment:'企业资质 url'"`
 	EnterpriseAddress    string    `json:"enterprise_address" gorm:"column:enterprise_address;comment:'企业所在城市名称'"`
 	EnterpriseScale      int       `json:"enterprise_scale" gorm:"column:enterprise_scale;comment:'企业人员规模，如200，小程序会显示为200+'"`
-	EnterpriseType       int       `json:"enterprise_type" gorm:"column:enterprise_type;comment:'企业类型id，关联enterprise_type'"`
+	EnterpriseType       *int      `json:"enterprise_type" gorm:"column:enterprise_type;comment:'企业类型id，关联enterprise_type'"`
 	EnterpriseTypeInfo   string    `json:"enterprise_type_info" gorm:"column:enterprise_type_info;comment:'企业类型'"`
 	EnterpriseHot        int       `json:"enterprise_hot" gorm:"column:enterprise_hot;comment:'企业热度'"`
-	IndustryType         int       `json:"industry_type" gorm:"column:industry_type;comment:'行业类型id，关联enterprise_industs'"`
+	IndustryType         *int      `json:"industry_type" gorm:"column:industry_type;comment:'行业类型id，关联enterprise_industs'"`
 	EnterpriseIndustInfo string    `json:"enterprise_indust_info" gorm:"column:enterprise_indust_info;comment:'行业类型'"`
 	EnterpriseDesc       string    `json:"enterprise_desc" gorm:"column:enterprise_desc;comment:'企业描述信息'"`
-	EnterpriseCityId     int       `json:"city_id" gorm:"column:city_id;comment:'城市id，关联citynames'"`
+	EnterpriseCityId     *int      `json:"city_id" gorm:"column:city_id;comment:'城市id，关联citynames'"`
 	JobCount             int       `json:"job_count" gorm:"column:job_count;comment:'该企业发布的职位数量'"`
 	Status               int       `json:"status" gorm:"column:status;comment:'0、未审核1、审核通过'"`
 	Errors               string    `json:"errors" gorm:"column:errors;comment:'信息错误反馈内容'"`
@@ -166,19 +166,19 @@ func (info *EnterpriseInfo) GetInfoList(pinfo modelInterface.PageInfo) (err erro
 			db = db.Where("enterprise_name LIKE ?", "%"+info.EnterPriseName+"%")
 		}
 
-		if info.IndustryType > 0 {
-			model = model.Where("industry_type = ?", info.IndustryType)
-			db = db.Where("industry_type = ?", info.IndustryType)
+		if info.IndustryType != nil {
+			model = model.Where("industry_type = ?", *info.IndustryType)
+			db = db.Where("industry_type = ?", *info.IndustryType)
 		}
 
-		if info.EnterpriseType > 0 {
-			model = model.Where("enterprise_type = ?", info.EnterpriseType)
-			db = db.Where("enterprise_type = ?", info.EnterpriseType)
+		if info.EnterpriseType != nil {
+			model = model.Where("enterprise_type = ?", *info.EnterpriseType)
+			db = db.Where("enterprise_type = ?", *info.EnterpriseType)
 		}
 
-		if info.EnterpriseCityId > 0 {
-			model = model.Where("city_id = ?", info.EnterpriseCityId)
-			db = db.Where("city_id = ?", info.EnterpriseCityId)
+		if info.EnterpriseCityId != nil && *info.EnterpriseCityId != 0 {
+			model = model.Where("city_id = ?", *info.EnterpriseCityId)
+			db = db.Where("city_id = ?", *info.EnterpriseCityId)
 		}
 
 		err = model.Find(&reEnterpriseInfoList).Count(&total).Error
@@ -241,7 +241,7 @@ func (info *EnterpriseInfo) GetAllInfoOption() (err error, list1 interface{}, li
 	if err != nil {
 		return err, enPtype, enPindust, citys
 	}
-	err = qmsql.DEFAULTDB.Select("id,name").Find(&citys).Error
+	err = qmsql.DEFAULTDB.Select("id,name").Where("type = 0").Find(&citys).Error
 	if err != nil {
 		return err, enPtype, enPindust, citys
 	}

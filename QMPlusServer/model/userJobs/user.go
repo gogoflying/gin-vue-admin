@@ -151,7 +151,7 @@ func (users *Users) GetAllInfoOption() (err error, list1, list2, list3, list4, l
 		return err, wt, el, jwe, js, jdt, citys
 	}
 
-	err = qmsql.DEFAULTDB.Select("id,name").Find(&citys).Error
+	err = qmsql.DEFAULTDB.Select("id,name").Where("type = 0").Find(&citys).Error
 	if err != nil {
 		return err, wt, el, jwe, js, jdt, citys
 	}
@@ -251,7 +251,7 @@ func (users *Users) GetInfoListNew(ruv ResumeUserView, info modelInterface.PageI
 	if ruv.WorkTypeindex != nil {
 		table = table.Where("user_dreams.workTypeindex = ?", *ruv.WorkTypeindex)
 	}
-	if ruv.Cityindex != nil {
+	if ruv.Cityindex != nil && *ruv.Cityindex != 0 {
 		table = table.Where("user_dreams.cityindex = ?", *ruv.Cityindex)
 	}
 	if ruv.Salaryindex != nil {

@@ -127,6 +127,12 @@
             style="width:50%;"
           ></el-input>
         </el-form-item>
+        <el-form-item label="联系人" prop="p_contact">
+          <el-input v-model="jobmanagerinfo.p_contact" placeholder="请输入联系人" style="width:50%;"></el-input>
+        </el-form-item>
+        <el-form-item label="面试地点" prop="p_interview">
+          <el-input v-model="jobmanagerinfo.p_interview" placeholder="请输入面试地点" style="width:50%;"></el-input>
+        </el-form-item>
         <el-form-item label="失效日期" prop="p_outdate">
           <el-date-picker
             placeholder="选择结束时间"
@@ -211,6 +217,8 @@ export default {
         p_type: "",
         p_type_id: "",
         p_desc: "",
+        p_contact: "",
+        p_interview: "",
         p_status: 0,
         p_count: "",
         p_outdate: "",
@@ -347,8 +355,19 @@ export default {
         ],
         p_count: [
           { required: true, message: "请输入招聘人数", trigger: "blur" },
-          { type: "number", message: "人数必须为数字", trigger: "blur"},
-          { type: "number", min: 0, message: "人数必须为大于零", trigger: "blur" }
+          { type: "number", message: "人数必须为数字", trigger: "blur" },
+          {
+            type: "number",
+            min: 0,
+            message: "人数必须为大于零",
+            trigger: "blur"
+          }
+        ],
+        p_contact: [
+          { required: true, message: "请输入联系人", trigger: "blur" }
+        ],
+        p_interview: [
+          { required: true, message: "请输入面试地点", trigger: "blur" }
         ],
         p_desc: [{ required: true, message: "请输入工作描述", trigger: "blur" }]
       },
@@ -545,7 +564,8 @@ export default {
         //this.remoteMethod(this.jobmanagerinfo.enterprise_name);
         this.enterpriseInfo.push({
           ID: this.jobmanagerinfo.enterprise_id,
-          enterprise_name: this.jobmanagerinfo.enterprise_name
+          enterprise_name: this.jobmanagerinfo.enterprise_name,
+          enterprise_logo: this.jobmanagerinfo.enterprise_logo
         });
       }
       // getEnterpriseAllInfo().then(res => {

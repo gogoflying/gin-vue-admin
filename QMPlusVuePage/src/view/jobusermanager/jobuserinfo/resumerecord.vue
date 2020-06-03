@@ -18,7 +18,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-            <el-button @click="onSearch" type="primary">搜索</el-button>
+              <el-button @click="onSearch" type="primary">搜索</el-button>
             </el-col>
           </el-row>
           <el-row>
@@ -30,14 +30,15 @@
                 <el-radio :label="2">有意向</el-radio>
                 <el-radio :label="3">约面试</el-radio>
                 <el-radio :label="4">不合适</el-radio>
+                <el-radio :label="5">待入职</el-radio>
+                <el-radio :label="6">已入职</el-radio>
+                <el-radio :label="7">已拒绝</el-radio>
               </el-radio-group>
             </el-col>
           </el-row>
         </div>
       </el-form>
-      <div>
-        
-      </div>
+      <div></div>
     </div>
 
     <el-row class="grid-warp">
@@ -67,6 +68,9 @@
                 <span v-if="scope.row.resume_status == 2">有意向</span>
                 <span v-if="scope.row.resume_status == 3">约面试</span>
                 <span v-if="scope.row.resume_status == 4">不合适</span>
+                <span v-if="scope.row.resume_status == 5">待入职</span>
+                <span v-if="scope.row.resume_status == 6">已入职</span>
+                <span v-if="scope.row.resume_status == 7">已拒绝</span>
               </template>
             </el-table-column>
           </el-table>

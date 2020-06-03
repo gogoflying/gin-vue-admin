@@ -3,8 +3,8 @@
     <div class="search-panel clear">
       <el-form :model="searchInfo">
         <div class="search-condition left">
-          <el-row :gutter="50">
-            <el-col :span="18">
+          <el-row :gutter="10">
+            <el-col :span="12" :xs="24">
               <el-form-item label="时间" label-width="80px">
                 <el-date-picker
                   v-model="searchInfo.dateRange"
@@ -17,12 +17,12 @@
                 ></el-date-picker>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="6" :xs="24" :offset="1">
               <el-button @click="onSearch" type="primary">搜索</el-button>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="23" :offset="1">
+            <el-col :span="24" :xs="12" :offset="1">
               <el-radio-group @change="onSearch" v-model="searchInfo.resume_status">
                 <el-radio :label="-1">全部</el-radio>
                 <el-radio :label="0">未读</el-radio>
@@ -143,7 +143,7 @@ export default {
 
 <style lang="scss" scoped>
 .search-panel {
-  width: 600px;
+  width: 900px;
   margin-bottom: 20px;
   .search-condition {
     padding-right: 20px;

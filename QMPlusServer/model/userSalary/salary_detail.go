@@ -82,6 +82,10 @@ func (un *Salarys) DeleteSalarys() (err error) {
 	err = qmsql.DEFAULTDB.Delete(un).Error
 	return err
 }
+func (un *Salarys) DeleteSalarysEx() (err error) {
+	qmsql.DEFAULTDB.Unscoped().Delete(un)
+	return nil
+}
 
 // 更新Salarys
 func (un *Salarys) UpdateSalarys() (err error, reun Salarys) {

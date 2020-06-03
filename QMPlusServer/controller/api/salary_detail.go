@@ -68,7 +68,7 @@ func CreateSalarys(c *gin.Context) {
 func DeleteSalarys(c *gin.Context) {
 	var un userSalary.Salarys
 	_ = c.ShouldBindJSON(&un)
-	err := un.DeleteSalarys()
+	err := un.DeleteSalarysEx()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("删除失败：%v", err), gin.H{})
 	} else {

@@ -14,7 +14,7 @@ type UserEducation struct {
 	Graduation     string   `json:"graduation" gorm:"column:graduation;comment:''"`
 	Schoolname     string   `json:"schoolname" gorm:"column:schoolname;comment:''"`
 	EdulevelIndex  int      `json:"edulevelindex" gorm:"column:edulevelindex;comment:''"`
-	Edulevel       EduLevel `json:"edu_level" gorm:"ForeignKey:EdulevelIndex;AssociationForeignKey:ID"`
+	Edulevel       EduLevel `json:"edu_level" gorm:"ForeignKey:EdulevelIndex;AssociationForeignKey:ID;save_associations:false"`
 	Profession     string   `json:"profession" gorm:"column:profession;comment:''"`
 	GraduationTime string   `json:"graduationTime" gorm:"column:graduationTime;comment:''"`
 	Openid         string   `json:"openid" gorm:"column:openid"`

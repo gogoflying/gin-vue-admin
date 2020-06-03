@@ -27,8 +27,8 @@ type ResumeStatus struct {
 	JobYearsId        int          `json:"p_edujy_id" gorm:"-"`
 	JobEduId          int          `json:"p_education_id" gorm:"-"`
 	JobTypeId         int          `json:"p_type_id" gorm:"-"`
-	JobInfo           Joblist      `json:"job_info" gorm:"ForeignKey:Jobid;AssociationForeignKey:ID"`
-	UserInfo          UserBaseInfo `json:"user_info" gorm:"ForeignKey:Openid;AssociationForeignKey:Openid"`
+	JobInfo           Joblist      `json:"job_info" gorm:"ForeignKey:Jobid;AssociationForeignKey:ID;save_associations:false"`
+	UserInfo          UserBaseInfo `json:"user_info" gorm:"ForeignKey:Openid;AssociationForeignKey:Openid;save_associations:false"`
 	Memo              string       `json:"p_memo" gorm:"column:memo;comment:'memo'"`
 	Remark            string       `json:"p_remark" gorm:"column:remark;comment:'给投递人的备注'"`
 	Mobile            string       `json:"mobile" gorm:"-"`

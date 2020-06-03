@@ -23,10 +23,10 @@ type UserDream struct {
 	Salaryindex   int               `json:"salaryindex" gorm:"column:salaryindex;comment:'期望薪资范围id，关联job_salary表'"`
 	DutyTimeindex int               `json:"dutyTimeindex" gorm:"column:dutyTimeindex;comment:'到岗时间id，关联job_duty_time表'"`
 	Openid        string            `json:"openid" gorm:"column:openid;comment:'用户唯一标识'"`
-	Jobdutytime   JobDutyTime       `json:"job_duty_time" gorm:"ForeignKey:DutyTimeindex;AssociationForeignKey:ID"`
-	Jobsalary     JobSalary         `json:"job_salary" gorm:"ForeignKey:Salaryindex;AssociationForeignKey:ID"`
-	JobworkType   JobWorkType       `json:"job_work_type" gorm:"ForeignKey:WorkTypeindex;AssociationForeignKey:ID"`
-	Cityname      userCity.Cityname `json:"city_name" gorm:"ForeignKey:Cityindex;AssociationForeignKey:ID"`
+	Jobdutytime   JobDutyTime       `json:"job_duty_time" gorm:"ForeignKey:DutyTimeindex;AssociationForeignKey:ID;save_associations:false"`
+	Jobsalary     JobSalary         `json:"job_salary" gorm:"ForeignKey:Salaryindex;AssociationForeignKey:ID;save_associations:false"`
+	JobworkType   JobWorkType       `json:"job_work_type" gorm:"ForeignKey:WorkTypeindex;AssociationForeignKey:ID;save_associations:false"`
+	Cityname      userCity.Cityname `json:"city_name" gorm:"ForeignKey:Cityindex;AssociationForeignKey:ID";save_associations:false`
 }
 
 // 创建UserDream
@@ -84,6 +84,9 @@ func (dm *UserDream) FindById() (err error, redm UserDream) {
 // 根据openid查看单条UserDream
 func (dm *UserDream) FindByOpenid() (err error, redm UserDream) {
 	err = qmsql.DEFAULTDB.Model(dm).Preload("Jobsalary").Preload("Jobdutytime").Preload("JobworkType").Preload("Cityname").Where("openid = ?", dm.Openid).First(&redm).Error
+	if err != nil {
+		return err, redm
+	}
 	if redm.DutyTimeindex == 0 {
 		var dt JobDutyTime
 		err = qmsql.DEFAULTDB.Where("id = ?", 0).First(&dt).Error

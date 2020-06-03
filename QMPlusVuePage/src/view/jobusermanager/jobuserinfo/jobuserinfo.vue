@@ -135,6 +135,7 @@
     </div>
     <el-table :data="tableData" border stripe @cell-click="gotopreview">
       <!-- <el-table-column label="用户标识" min-width="150" prop="openid"></el-table-column> -->
+      <el-table-column label="id" min-width="60" prop="ID" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="姓名" min-width="100" prop="userName">
         <template slot-scope="scope">
           <el-link type="primary">{{scope.row.userName}}</el-link>
@@ -204,6 +205,7 @@
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
 const path = process.env.VUE_APP_BASE_API;
 import { getUsersList, updateUsers, getUserOptions } from "@/api/jobuser";
+import { mapGetters } from "vuex";
 import infoList from "@/components/mixins/infoList";
 export default {
   name: "Jobuser",
@@ -215,6 +217,9 @@ export default {
       path: path,
       option: {}
     };
+  },
+  computed: {
+    ...mapGetters("user", ["enPriseId"])
   },
   methods: {
     genderFormat(row) {

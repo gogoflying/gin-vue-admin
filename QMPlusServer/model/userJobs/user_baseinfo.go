@@ -21,11 +21,11 @@ type UserBaseInfo struct {
 	AvatarUrl      string            `json:"avatarUrl" gorm:"column:avatarUrl;comment:'用户头像url，暂未使用'"`
 	Genderindex    int               `json:"genderindex" gorm:"column:genderindex;comment:'性别，0男1女'"`
 	EdulevelIndex  int               `json:"edulevelindex" gorm:"column:edulevelindex;comment:'最高学历id'"`
-	Edulevel       EduLevel          `json:"edu_level" gorm:"ForeignKey:EdulevelIndex;AssociationForeignKey:ID"`
+	Edulevel       EduLevel          `json:"edu_level" gorm:"ForeignKey:EdulevelIndex;AssociationForeignKey:ID;save_associations:false"`
 	WorksYearindex int               `json:"worksYearindex" gorm:"column:worksYearindex;comment:'工作年限id，关联job_work_expire'"`
-	JobWorkExpire  JobWorkExpire     `json:"job_work_expire" gorm:"ForeignKey:WorksYearindex;AssociationForeignKey:ID"`
+	JobWorkExpire  JobWorkExpire     `json:"job_work_expire" gorm:"ForeignKey:WorksYearindex;AssociationForeignKey:ID;save_associations:false"`
 	Cityindex      int               `json:"cityindex" gorm:"column:cityindex;comment:'城市id，关联citynames'"`
-	Cityname       userCity.Cityname `json:"city_name" gorm:"ForeignKey:Cityindex;AssociationForeignKey:ID"`
+	Cityname       userCity.Cityname `json:"city_name" gorm:"ForeignKey:Cityindex;AssociationForeignKey:ID;save_associations:false"`
 	Mobile         string            `json:"contact" gorm:"column:mobile;comment:'手机号'"`
 	IdCard         string            `json:"idcard" gorm:"column:idcard;comment:'身份证号'"`
 	Email          string            `json:"email" gorm:"column:email;comment:'邮箱'"`
@@ -97,6 +97,9 @@ func (bf *UserBaseInfo) FindById() (err error, rebf UserBaseInfo) {
 // 根据openid查看单条UserBaseInfo
 func (bf *UserBaseInfo) FindByOpenid() (err error, rebf UserBaseInfo) {
 	err = qmsql.DEFAULTDB.Model(bf).Preload("JobWorkExpire").Preload("Edulevel").Preload("Cityname").Where("openid = ?", bf.Openid).First(&rebf).Error
+	if err != nil {
+		return err, rebf
+	}
 	if rebf.EdulevelIndex == 0 {
 		var el EduLevel
 		err = qmsql.DEFAULTDB.Where("id = ?", 0).First(&el).Error

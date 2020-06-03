@@ -30,6 +30,7 @@ type ResumeStatus struct {
 	JobInfo           Joblist      `json:"job_info" gorm:"ForeignKey:Jobid;AssociationForeignKey:ID"`
 	UserInfo          UserBaseInfo `json:"user_info" gorm:"ForeignKey:Openid;AssociationForeignKey:Openid"`
 	Memo              string       `json:"p_memo" gorm:"column:memo;comment:'memo'"`
+	Remark            string       `json:"p_remark" gorm:"column:remark;comment:'给投递人的备注'"`
 	Mobile            string       `json:"mobile" gorm:"-"`
 	UserName          string       `json:"userName" gorm:"-"`
 	ResumeStatuSearch *int         `json:"resume_status_search" gorm:"-"`
@@ -59,6 +60,10 @@ func (rs *ResumeStatus) DeleteResumeStatus() (err error) {
 
 func (rs *ResumeStatus) UpdateMemo() error {
 	return qmsql.DEFAULTDB.Model(rs).Update("memo", rs.Memo).Error
+}
+
+func (rs *ResumeStatus) UpdateRemark() error {
+	return qmsql.DEFAULTDB.Model(rs).Update("remark", rs.Remark).Error
 }
 
 // 更新ResumeStatus

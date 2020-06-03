@@ -17,6 +17,7 @@ func InitResumeStatusRouter(Router *gin.RouterGroup) {
 		ResumeStatusRouter.POST("getResumeStatusList", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.GetResumeStatusList) //获取ResumeStatus列表
 		ResumeStatusRouter.POST("getResumeStatus", api.GetResumeByStatus)
 		ResumeStatusRouter.POST("updateResumeMemo", api.UpdateResumeMemo)
+		ResumeStatusRouter.POST("updateResumeRemark", api.UpdateResumeRemark)
 		ResumeStatusRouter.POST("jobEnterStatus", api.JobEnterStatus)
 	}
 }

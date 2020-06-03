@@ -45,6 +45,14 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="面试提示" :visible.sync="dialogRemarkVisible" append-to-body>
+      <el-input type="textarea" :rows="3" placeholder="请输入面试相关信息" v-model="p_remark"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogRemarkVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogRemarkOK()">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <el-table :data="tableData" border stripe>
       <!-- <el-table-column type="selection" min-width="55"></el-table-column> -->
       <el-table-column label="id" min-width="60" prop="ID" v-if="enPriseId == 0"></el-table-column>
@@ -52,8 +60,18 @@
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="投递人" min-width="100" prop="user_info.userName"></el-table-column>
       <el-table-column label="手机号" min-width="150" prop="user_info.contact"></el-table-column>
-      <el-table-column label="工作年限" min-width="150" prop="user_info.worksYearindex" :formatter="wyFormat"></el-table-column>
-      <el-table-column label="学历" min-width="150" prop="user_info.edulevelindex" :formatter="elFormat"></el-table-column>
+      <el-table-column
+        label="工作年限"
+        min-width="150"
+        prop="user_info.worksYearindex"
+        :formatter="wyFormat"
+      ></el-table-column>
+      <el-table-column
+        label="学历"
+        min-width="150"
+        prop="user_info.edulevelindex"
+        :formatter="elFormat"
+      ></el-table-column>
       <el-table-column label="年龄" min-width="150" prop="user_info.birthday" :formatter="ageFormat"></el-table-column>
       <el-table-column label="简历状态" min-width="150">
         <template slot-scope="scope">
@@ -108,7 +126,8 @@ const path = process.env.VUE_APP_BASE_API;
 import {
   getResumeStatusList,
   updateResumeStatus,
-  updateResumeMemo
+  updateResumeMemo,
+  updateResumeRemark
 } from "@/api/resumestatus";
 import { getUserOptions } from "@/api/jobuser";
 import { mapGetters } from "vuex";
@@ -122,9 +141,11 @@ export default {
       listKey: "resumeStatusList",
       path: path,
       p_memo: "",
+      p_remark: "",
       Id: 0,
       option: {},
       dialogFormVisible: false,
+      dialogRemarkVisible: false,
       resume_status_infos: [
         {
           id: 0,
@@ -146,7 +167,7 @@ export default {
           id: 4,
           name: "不合适"
         },
-                {
+        {
           id: 5,
           name: "待入职"
         },
@@ -191,7 +212,7 @@ export default {
       if (row.user_info.birthday != "") {
         var date = new Date(row.user_info.birthday);
         var d = new Date();
-        return d.getFullYear()-date.getFullYear()
+        return d.getFullYear() - date.getFullYear();
       } else {
         return "";
       }
@@ -231,11 +252,26 @@ export default {
       this.getTableData();
       this.dialogFormVisible = false;
     },
-
+    async dialogRemarkOK() {
+      const res = await updateResumeRemark({
+        ID: this.Id,
+        p_remark: this.p_remark
+      });
+      if (res.success) {
+        this.$message({ type: "success", message: "更新提示信息成功" });
+      }
+      this.getTableData();
+      this.dialogRemarkVisible = false;
+    },
     async changeResumeStatus(row) {
       const res = await updateResumeStatus(row);
       if (res.success) {
         this.$message({ type: "success", message: "状态设置成功" });
+      }
+      if (row.resume_status == 3) {
+        this.Id = row.ID;
+        this.p_remark = row.p_remark;
+        this.dialogRemarkVisible = !this.dialogRemarkVisible;
       }
     }
   },

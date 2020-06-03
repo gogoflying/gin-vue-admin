@@ -81,6 +81,17 @@ func UpdateResumeMemo(c *gin.Context) {
 	}
 }
 
+func UpdateResumeRemark(c *gin.Context) {
+	var rs userJobs.ResumeStatus
+	_ = c.ShouldBindJSON(&rs)
+	err := rs.UpdateRemark()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "更新成功", gin.H{})
+	}
+}
+
 // @Tags ResumeStatus
 // @Summary 用id查询ResumeStatus
 // @Security ApiKeyAuth

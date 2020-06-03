@@ -61,6 +61,7 @@
       <el-form-item label="企业logo" prop="enterprise_logo">
         <el-upload
           :headers="{'x-token':token}"
+          :on-error="onError"
           :on-success="handleAvatarLogoSuccess"
           :show-file-list="false"
           :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
@@ -75,6 +76,7 @@
       <el-form-item label="企业主图" prop="enterprise_img">
         <el-upload
           :headers="{'x-token':token}"
+          :on-error="onError"
           :on-success="handleAvatarImgSuccess"
           :show-file-list="false"
           :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
@@ -89,6 +91,7 @@
       <el-form-item label="企业资质" prop="enterprise_qfc">
         <el-upload
           :headers="{'x-token':token}"
+          :on-error="onError"
           :on-success="handleAvatarQfcSuccess"
           :show-file-list="false"
           :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
@@ -253,6 +256,12 @@ export default {
             this.$message({ type: "error", message: "添加失败!" });
           }
         }
+      });
+    },
+    onError() {
+      this.$message({
+        type: "error",
+        message: "上传失败"
       });
     },
     handleAvatarLogoSuccess(res) {

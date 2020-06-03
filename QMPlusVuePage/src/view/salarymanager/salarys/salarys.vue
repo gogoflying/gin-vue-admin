@@ -40,7 +40,13 @@
             :on-success="onSuccess"
             :show-file-list="false"
           >
-            <el-tooltip :disabled="enPriseId != 0" class="item" effect="dark" content="请先选择企业" placement="top-start">
+            <el-tooltip
+              :disabled="enPriseId != 0"
+              class="item"
+              effect="dark"
+              content="请先选择企业"
+              placement="top-start"
+            >
               <el-button type="success" :icon="importDataBtnIcon">{{importDataBtnText}}</el-button>
             </el-tooltip>
           </el-upload>
@@ -685,6 +691,10 @@ export default {
         });
     },
     onError() {
+      this.$message({
+        type: "error",
+        message: "导入失败"
+      });
       this.importDataBtnText = "导入数据";
       this.importDataBtnIcon = "el-icon-upload2";
       this.importDataDisabled = false;
@@ -694,9 +704,14 @@ export default {
       if (res.success) {
         this.$message({
           type: "success",
-          message: "上传成功"
+          message: res.msg
         });
         this.getTableData();
+      } else {
+        this.$message({
+          type: "error",
+          message: res.msg
+        });
       }
       this.importDataBtnText = "导入数据";
       this.importDataBtnIcon = "el-icon-upload2";

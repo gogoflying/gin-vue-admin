@@ -25,6 +25,7 @@
         <el-form-item label="新闻图片" prop="img">
           <el-upload
             :headers="{'x-token':token}"
+            :on-error="onError"
             :on-success="handleAvatarSuccess"
             :show-file-list="false"
             :action="`${path}/fileUploadAndDownload/upload?noSave=1`"
@@ -111,6 +112,12 @@ export default {
     }
   },
   methods: {
+    onError() {
+      this.$message({
+        type: "error",
+        message: "上传失败"
+      });
+    },
     handleAvatarSuccess(res) {
       this.user_news.img = res.data.file.url;
     },

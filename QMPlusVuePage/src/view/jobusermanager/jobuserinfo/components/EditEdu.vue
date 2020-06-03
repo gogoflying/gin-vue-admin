@@ -26,7 +26,7 @@
       <el-form-item label="开始时间" prop="graduation">
         <el-date-picker
           placeholder="选择开始时间"
-          type="date"
+          type="month"
           :editable="false"
           format="yyyy-MM"
           value-format="yyyy-MM"
@@ -37,7 +37,7 @@
       <el-form-item label="结束时间" prop="graduationTime">
         <el-date-picker
           placeholder="选择结束时间"
-          type="date"
+          type="month"
           :editable="false"
           format="yyyy-MM"
           value-format="yyyy-MM"

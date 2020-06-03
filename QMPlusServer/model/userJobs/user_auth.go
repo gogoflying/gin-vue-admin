@@ -79,15 +79,18 @@ func (ua *UserAuth) GetInfoList(info modelInterface.PageInfo) (err error, list i
 		return
 	} else {
 		reUserauthList := make([]*UserAuth, 0)
+		model := qmsql.DEFAULTDB.Model(info)
 		if ua.EnterPriseName != "" {
+			model = model.Where("enterprise_name LIKE ?", "%"+ua.EnterPriseName+"%")
 			db = db.Where("enterprise_name LIKE ?", "%"+ua.EnterPriseName+"%")
 		}
 
 		if ua.Username != "" {
+			model = model.Where("userName LIKE ?", "%"+ua.Username+"%")
 			db = db.Where("userName LIKE ?", "%"+ua.Username+"%")
 		}
 
-		err = db.Find(&reUserauthList).Count(&total).Error
+		err = model.Find(&reUserauthList).Count(&total).Error
 		if err != nil {
 			return err, reUserauthList, total
 		} else {

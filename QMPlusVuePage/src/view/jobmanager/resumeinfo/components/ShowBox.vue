@@ -19,10 +19,14 @@
               >所在城市：{{resume.user_base_info.city_name.name || '所在城市'}}</li>
               <li>联系电话：{{resume.user_base_info.contact || '联系电话'}}</li>
               <li>联系邮箱：{{resume.user_base_info.email || '联系邮箱'}}</li>
+              <li>身份证号：{{resume.user_base_info.idcard || '身份证号'}}</li>
               <li>生日：{{resume.user_base_info.birthday || '生日'}}</li>
             </ul>
           </div>
-          <div class="print" v-if="resume.user_base_info.avatarUrl != '' && resume.user_base_info.avatarUrl != null ">
+          <div
+            class="print"
+            v-if="resume.user_base_info.avatarUrl != '' && resume.user_base_info.avatarUrl != null "
+          >
             <img
               :src="resume.user_base_info.avatarUrl + '?' + new Date().getTime()"
               crossorigin="anonymous"

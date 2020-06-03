@@ -59,6 +59,9 @@
       <el-form-item label="联系邮箱" prop="email">
         <el-input v-model="user_base_info.email" placeholder="请输入联系邮箱"></el-input>
       </el-form-item>
+      <el-form-item label="身份证号" prop="idcard">
+        <el-input v-model="user_base_info.idcard" placeholder="请输入身份证号码"></el-input>
+      </el-form-item>
       <el-form-item label="生日" prop="birthday">
         <el-date-picker
           placeholder="选择生日"
@@ -123,6 +126,14 @@ export default {
           {
             type: "email",
             message: "邮箱格式不正确",
+            trigger: "blur"
+          }
+        ],
+        idcard: [
+          { required: true, message: "请输入身份证号码", trigger: "blur" },
+          {
+            pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
+            message: "身份证号码格式不正确",
             trigger: "blur"
           }
         ],

@@ -29,6 +29,7 @@ export default {
           worksYear: "",
           city: "",
           mobile: "",
+          idcard: "",
           email: "",
           edu_level: {
             name: ""

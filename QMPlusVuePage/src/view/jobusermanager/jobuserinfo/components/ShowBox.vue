@@ -20,10 +20,14 @@
               >所在城市：{{resume.user_base_info.city_name.name || '所在城市'}}</li>
               <li>联系电话：{{resume.user_base_info.contact || '联系电话'}}</li>
               <li>联系邮箱：{{resume.user_base_info.email || '联系邮箱'}}</li>
+              <li>身份证号：{{resume.user_base_info.idcard || '身份证号'}}</li>
               <li>生日：{{resume.user_base_info.birthday || '生日'}}</li>
             </ul>
           </div>
-          <div class="print" v-if="resume.user_base_info.avatarUrl != '' && resume.user_base_info.avatarUrl != null">
+          <div
+            class="print"
+            v-if="resume.user_base_info.avatarUrl != '' && resume.user_base_info.avatarUrl != null"
+          >
             <img
               :src="resume.user_base_info.avatarUrl + '?' + new Date().getTime()"
               crossorigin="anonymous"
@@ -41,11 +45,11 @@
           <li>工作职位：{{work.department || '职位'}}</li>
           <li>
             <div style="display:inline">
-            <div style="float:left;width:15%">工作描述：</div>
-            <div
-              style="float:left;width:85%"
-              v-html="work.workContent ? work.workContent.replace(/\n/g, '<br/>') : '工作描述'"
-            ></div>
+              <div style="float:left;width:15%">工作描述：</div>
+              <div
+                style="float:left;width:85%"
+                v-html="work.workContent ? work.workContent.replace(/\n/g, '<br/>') : '工作描述'"
+              ></div>
             </div>
           </li>
         </ul>

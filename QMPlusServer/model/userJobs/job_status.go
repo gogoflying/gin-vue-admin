@@ -217,6 +217,7 @@ func (rs *ResumeStatus) GetResumeStatus(openId string, status, page, limit int) 
 		if err != nil {
 			continue
 		}
+		jb.Memo = v.Remark
 		rs.Results = append(rs.Results, *jb)
 	}
 	return err, *rs, total

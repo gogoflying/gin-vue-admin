@@ -41,6 +41,7 @@ type Joblist struct {
 	Filter       int     `json:"p_filter" gorm:"column:p_filter;comment:'过滤状态，0不启用过滤，1启用过滤'"`
 	SendEmail    string  `json:"p_send_email" gorm:"column:p_send_email;comment:'发送邮件,多个用分号划分'"`
 	CountTodi    int     `json:"p_count_todi" gorm:"-"`
+	Memo         string  `json:"p_memo" gorm:"-"`
 }
 type SearchInfo struct {
 	EnterPriseName string `json:"enterprise_name"`

@@ -389,8 +389,10 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 				Ext10:        ext10,
 			}
 			//err := un.CreateSalarys()
-			tx.Create(un)
-
+			err :=tx.Create(un)
+			if err != nil{
+				break
+			}
 		}
 	}
 	tx.Commit()

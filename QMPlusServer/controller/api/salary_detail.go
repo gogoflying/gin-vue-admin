@@ -276,8 +276,6 @@ func UploadFileLocalEx(file *multipart.FileHeader, id int, ep string) (err error
 func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 	fmt.Printf("batchInsertSalarys: %v--%v\n", id, ep)
 	var un userSalary.Salarys
-	//var err error
-	//tx := un.GetDbTx().Begin()
 
 	tx := un.GetDbTx().Begin()
 	defer tx.Rollback()
@@ -389,9 +387,9 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 				Ext10:        ext10,
 			}
 			//err := un.CreateSalarys()
-			err :=tx.Create(un)
-			if err != nil{
-				return fmt.Errorf("insert import err:%v",err)
+			err := tx.Create(un)
+			if err != nil {
+				return fmt.Errorf("insert import err:%v", err)
 			}
 		}
 	}

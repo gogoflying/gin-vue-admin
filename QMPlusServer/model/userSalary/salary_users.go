@@ -75,6 +75,13 @@ func (un *SalaryUsers) DeleteSalaryUsers() (err error) {
 	err = qmsql.DEFAULTDB.Delete(un).Error
 	return err
 }
+func (un *SalaryUsers) DeleteSalaryUsersEx() (err error) {
+	err = qmsql.DEFAULTDB.Unscoped().Delete(un).Error
+	return err
+}
+func (un *SalaryUsers) GetUserTx() *gorm.DB {
+	return qmsql.DEFAULTDB
+}
 
 // 更新SalaryUsers
 func (un *SalaryUsers) UpdateSalaryUsers() (err error, reun SalaryUsers) {

@@ -59,7 +59,7 @@ func CreateSalaryUsers(c *gin.Context) {
 func DeleteSalaryUsers(c *gin.Context) {
 	var un userSalary.SalaryUsers
 	_ = c.ShouldBindJSON(&un)
-	err := un.DeleteSalaryUsers()
+	err := un.DeleteSalaryUsersEx()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("删除失败：%v", err), gin.H{})
 	} else {
@@ -319,6 +319,10 @@ func saveXlsxFile(filename, time string, src []byte) error {
 }
 
 func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
+	var un userSalary.SalaryUsers
+	tx := un.GetUserTx().Begin()
+	defer tx.Rollback()
+
 	for _, sheet := range file.Sheets {
 		fmt.Printf("Sheet Name: %s\n", sheet.Name)
 		for rowIndex, row := range sheet.Rows {
@@ -352,13 +356,18 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 				Enterprise:   ep,
 				PassWord:     passwd,
 			}
-			err := un.CreateSalaryUsersTx()
+			/*err := un.CreateSalaryUsersTx()
 			if err != nil {
 				fmt.Println(err)
 				continue
+			}*/
+			err := tx.Create(un)
+			if err != nil {
+				return fmt.Errorf("insert import salaryuser err:%v", err)
 			}
 		}
 	}
+	tx.Commit()
 	return nil
 }
 

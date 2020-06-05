@@ -140,7 +140,7 @@
       <el-table-column label="投递数" min-width="100" prop="p_count_todi"></el-table-column>
       <el-table-column label="失效时间" min-width="100" prop="p_outdate" :formatter="dateFormat"></el-table-column>
       <!-- <el-table-column label="工作描述" min-width="150" prop="p_des" :show-overflow-tooltip="true"></el-table-column> -->
-      <el-table-column label="操作" width="300">
+      <el-table-column label="操作" width="310">
         <template slot-scope="scope">
           <router-link :to="{name:'newjobinfo', query: { id: scope.row.ID }}">
             <el-button type="text" size="small" icon="el-icon-edit">编辑</el-button>

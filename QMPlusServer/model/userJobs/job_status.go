@@ -31,7 +31,9 @@ type ResumeStatus struct {
 	JobInfo           Joblist      `json:"job_info" gorm:"ForeignKey:Jobid;AssociationForeignKey:ID;save_associations:false"`
 	UserInfo          UserBaseInfo `json:"user_info" gorm:"ForeignKey:Openid;AssociationForeignKey:Openid;save_associations:false"`
 	Memo              string       `json:"p_memo" gorm:"column:memo;comment:'memo'"`
-	Remark            string       `json:"p_remark" gorm:"column:remark;comment:'给投递人的备注'"`
+	Contact           string       `json:"p_contact" gorm:"column:contact;comment:'联系人'"`
+	InterviewLoc      string       `json:"p_interview_loc" gorm:"column:interview_loc;comment:'面试地点'"`
+	Remark            string       `json:"p_remark" gorm:"column:remark;comment:'备注信息'"`
 	Mobile            string       `json:"mobile" gorm:"-"`
 	UserName          string       `json:"userName" gorm:"-"`
 	ResumeStatuSearch *int         `json:"resume_status_search" gorm:"-"`

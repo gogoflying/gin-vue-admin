@@ -46,7 +46,17 @@
     </el-dialog>
 
     <el-dialog title="面试提示" :visible.sync="dialogRemarkVisible" append-to-body>
-      <el-input type="textarea" :rows="3" placeholder="请输入面试相关信息" v-model="p_remark"></el-input>
+      <el-form :rules="rules" ref="enterpriseForm" :model="resume_info" label-width="80px" >
+        <el-form-item label="联系人" prop="p_contact">
+          <el-input placeholder="请输入联系人" v-model="resume_info.p_contact"></el-input>
+        </el-form-item>
+        <el-form-item label="面试地点" prop="p_interview_loc">
+          <el-input placeholder="请输入面试地点" v-model="resume_info.p_interview_loc"></el-input>
+        </el-form-item>
+        <el-form-item label="备注" prop="p_remark">
+          <el-input type="textarea" :rows="3" placeholder="请输入备注信息" v-model="resume_info.p_remark"></el-input>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogRemarkVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogRemarkOK()">确 定</el-button>
@@ -127,7 +137,6 @@ import {
   getResumeStatusList,
   updateResumeStatus,
   updateResumeMemo,
-  updateResumeRemark
 } from "@/api/resumestatus";
 import { getUserOptions } from "@/api/jobuser";
 import { mapGetters } from "vuex";
@@ -146,6 +155,7 @@ export default {
       option: {},
       dialogFormVisible: false,
       dialogRemarkVisible: false,
+      resume_info: {},
       resume_status_infos: [
         {
           id: 0,
@@ -253,10 +263,7 @@ export default {
       this.dialogFormVisible = false;
     },
     async dialogRemarkOK() {
-      const res = await updateResumeRemark({
-        ID: this.Id,
-        p_remark: this.p_remark
-      });
+      const res = await updateResumeStatus(this.resume_info);
       if (res.success) {
         this.$message({ type: "success", message: "更新提示信息成功" });
       }
@@ -264,13 +271,19 @@ export default {
       this.dialogRemarkVisible = false;
     },
     async changeResumeStatus(row) {
+      row.p_badge = 1;
       const res = await updateResumeStatus(row);
       if (res.success) {
         this.$message({ type: "success", message: "状态设置成功" });
       }
       if (row.resume_status == 3) {
-        this.Id = row.ID;
-        this.p_remark = row.p_remark;
+        if (row.p_contact == "") {
+          row.p_contact = row.job_info.p_contact;
+        }
+        if (row.p_interview_loc == "") {
+          row.p_interview_loc = row.job_info.p_interview;
+        }
+        this.resume_info = row;
         this.dialogRemarkVisible = !this.dialogRemarkVisible;
       }
     }

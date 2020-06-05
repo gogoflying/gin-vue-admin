@@ -19,5 +19,6 @@ func InitResumeStatusRouter(Router *gin.RouterGroup) {
 		ResumeStatusRouter.POST("updateResumeMemo", api.UpdateResumeMemo)
 		ResumeStatusRouter.POST("updateResumeRemark", api.UpdateResumeRemark)
 		ResumeStatusRouter.POST("jobEnterStatus", api.JobEnterStatus)
+		ResumeStatusRouter.POST("badgeStatus", api.BadgeStatus)
 	}
 }

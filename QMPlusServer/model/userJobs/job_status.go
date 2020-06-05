@@ -27,6 +27,7 @@ type ResumeStatus struct {
 	JobYearsId        int          `json:"p_edujy_id" gorm:"-"`
 	JobEduId          int          `json:"p_education_id" gorm:"-"`
 	JobTypeId         int          `json:"p_type_id" gorm:"-"`
+	Badge             int          `json:"p_badge" gorm"column:badge;comment:'小程序是否显示badge,1显示'"`
 	JobInfo           Joblist      `json:"job_info" gorm:"ForeignKey:Jobid;AssociationForeignKey:ID;save_associations:false"`
 	UserInfo          UserBaseInfo `json:"user_info" gorm:"ForeignKey:Openid;AssociationForeignKey:Openid;save_associations:false"`
 	Memo              string       `json:"p_memo" gorm:"column:memo;comment:'memo'"`
@@ -50,6 +51,37 @@ func (rs *ResumeStatus) CreateResumeStatus() (list interface{}, err error) {
 	}
 	_, list = (new(Joblist)).GetInfoListSearchSimilar(ids, rs.Jobname, rs.JobYearsId, rs.JobEduId, rs.JobTypeId, rs.JobCityId, rs.JobsalaLow, 1, 5)
 	return
+}
+
+func (rs *ResumeStatus) GetBadgeStatus() (status []bool) {
+	var yd, yx, ms, rz, bhs int
+	status = make([]bool, 6)
+	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 1 and badge = 1", rs.Openid).Count(&yd)
+	if yd > 0 {
+		status[1] = true
+		qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 1 and badge = 1", rs.Openid).Update("badge", 0)
+	}
+	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 2 and badge = 1", rs.Openid).Count(&yx)
+	if yx > 0 {
+		status[2] = true
+		qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 2 and badge = 1", rs.Openid).Update("badge", 0)
+	}
+	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 3 and badge = 1", rs.Openid).Count(&ms)
+	if ms > 0 {
+		status[3] = true
+		qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 3 and badge = 1", rs.Openid).Update("badge", 0)
+	}
+	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 4 and badge = 1", rs.Openid).Count(&bhs)
+	if bhs > 0 {
+		status[4] = true
+		qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 4 and badge = 1", rs.Openid).Update("badge", 0)
+	}
+	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 5 and badge = 1", rs.Openid).Count(&rz)
+	if rz > 0 {
+		status[5] = true
+		qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 5 and badge = 1", rs.Openid).Update("badge", 0)
+	}
+	return status
 }
 
 // 删除ResumeStatus

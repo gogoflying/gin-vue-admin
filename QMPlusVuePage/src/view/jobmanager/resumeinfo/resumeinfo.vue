@@ -46,7 +46,7 @@
     </el-dialog>
 
     <el-dialog title="面试提示" :visible.sync="dialogRemarkVisible" append-to-body>
-      <el-form :rules="rules" ref="enterpriseForm" :model="resume_info" label-width="80px" >
+      <el-form :model="resume_info" label-width="80px" >
         <el-form-item label="联系人" prop="p_contact">
           <el-input placeholder="请输入联系人" v-model="resume_info.p_contact"></el-input>
         </el-form-item>

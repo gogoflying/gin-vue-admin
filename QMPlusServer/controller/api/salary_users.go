@@ -361,10 +361,10 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 				fmt.Println(err)
 				continue
 			}*/
-			err := tx.Create(un)
-			if err != nil {
+			tx.Create(un)
+			/*if err != nil {
 				return fmt.Errorf("insert import salaryuser err")
-			}
+			}*/
 		}
 	}
 	tx.Commit()

@@ -162,7 +162,8 @@ func (wx_a *WX_Access) StartRun() {
 	//start salary app token goriutine
 	saToken := NewFilterTocken_Sa()
 	go saToken.StartRun()
-
+	//start Run write new tocken
+	RefreshTockenFromDB_Re()
 	var tocken string
 	for {
 		hfirst := sysModel.GetWxFliterTockenHndle(resumeAppName, "")

@@ -144,6 +144,8 @@ func NewFilterTocken_Sa() *WX_Access_Sa {
 
 func (wx_a *WX_Access_Sa) StartRun() {
 	var tocken string
+	//start Run write new tocken
+	RefreshTockenFromDB_Sa()
 	for {
 		hfirst := sysModel.GetWxFliterTockenHndle(salaryAppName, "")
 		tocken = hfirst.GetNewFilterTocken(salaryAppName)

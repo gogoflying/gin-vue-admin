@@ -389,7 +389,7 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 			//err := un.CreateSalarys()
 			err := tx.Create(un)
 			if err != nil {
-				return fmt.Errorf("insert import err:%v", err)
+				return fmt.Errorf("insert import err")
 			}
 		}
 	}

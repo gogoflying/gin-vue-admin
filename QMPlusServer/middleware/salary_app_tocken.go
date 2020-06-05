@@ -227,7 +227,6 @@ func checkTockenExpired_Sa(tocken string) error {
 	return err
 }
 func RefreshTockenFromDB_Sa() {
-
 	mtx_sa.Lock()
 	for {
 		ntoken, err := GetAccessTocken_Sa(salaryAppId, salaryAppSecretId)
@@ -243,5 +242,4 @@ func RefreshTockenFromDB_Sa() {
 	h := sysModel.GetWxFliterTockenHndle(salaryAppName, g_tocken_sa.access_token_sa)
 	h.UpdateFilterTocken(salaryAppName, g_tocken_sa.access_token_sa)
 	fmt.Printf("RefreshTockenFromDB_Sa Refresh tocken success")
-
 }

@@ -40,10 +40,6 @@ var mtx sync.Mutex
 var resumeAppId string = config.GinVueAdminconfig.WeiXin.ResumeApp.Appid
 var resumeAppSecretId string = config.GinVueAdminconfig.WeiXin.ResumeApp.AppSecret
 
-//var salaryAppId string = config.GinVueAdminconfig.WeiXin.SalaryApp.Appid
-//var salaryAppSecretId string = config.GinVueAdminconfig.WeiXin.SalaryApp.AppSecret
-
-//const salaryAppName = "salary-app"
 const resumeAppName = "resume-app"
 
 //敏感词过滤
@@ -164,7 +160,6 @@ func NewFilterTocken() *WX_Access {
 
 func (wx_a *WX_Access) StartRun() {
 	//start salary app token goriutine
-	//time.Sleep(time.Second * 10)
 	saToken := NewFilterTocken_Sa()
 	go saToken.StartRun()
 	//return

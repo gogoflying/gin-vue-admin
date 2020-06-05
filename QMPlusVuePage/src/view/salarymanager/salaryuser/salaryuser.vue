@@ -302,6 +302,7 @@
         </el-form-item>
         <el-form-item label="入职日期" label-width="80px" prop="enter_time">
           <el-date-picker
+            :disabled="salaryuserinfo.leave_step > 0"
             placeholder="选择入职日期"
             type="date"
             :editable="false"
@@ -310,7 +311,21 @@
             v-model="salaryuserinfo.enter_time"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="离职日期" label-width="80px" prop="leave_time">
+        <el-form-item label="入职进度" label-width="80px" prop="enter_step">
+          <el-select
+            placeholder="请选择入职进度"
+            v-model="salaryuserinfo.enter_step"
+            :disabled="salaryuserinfo.leave_step > 0"
+          >
+            <el-option :key="es.name" :label="es.name" :value="es.id" v-for="es in enterSteps"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          v-show="salaryuserinfo.leave_step > 0"
+          label="离职日期"
+          label-width="80px"
+          prop="leave_time"
+        >
           <el-date-picker
             placeholder="选择离职日期"
             type="date"
@@ -320,18 +335,26 @@
             v-model="salaryuserinfo.leave_time"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="入职进度" label-width="80px" prop="enter_step">
-          <el-select placeholder="请选择入职进度" v-model="salaryuserinfo.enter_step">
-            <el-option :key="es.name" :label="es.name" :value="es.id" v-for="es in enterSteps"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="离职进度" label-width="80px" prop="leave_step">
+        <el-form-item
+          v-show="salaryuserinfo.leave_step > 0"
+          label="离职进度"
+          label-width="80px"
+          prop="leave_step"
+        >
           <el-select placeholder="请选择离职进度" v-model="salaryuserinfo.leave_step">
             <el-option :key="ls.name" :label="ls.name" :value="ls.id" v-for="ls in leaveSteps"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item v-show="isShow" label="备注" label-width="80px" prop="errors">
-          <el-input v-model="salaryuserinfo.errors"></el-input>
+          <el-input v-model="salaryuserinfo.errors" style="width:90%"></el-input>
+        </el-form-item>
+        <el-form-item
+          v-show="salaryuserinfo.leave_step > 0"
+          label="离职原因"
+          label-width="80px"
+          prop="reason"
+        >
+          <el-input v-model="salaryuserinfo.reason" style="width:90%" disabled></el-input>
         </el-form-item>
       </el-form>
       <div class="dialog-footer" slot="footer">
@@ -386,6 +409,13 @@ export default {
   name: "Salaryuser",
   mixins: [infoList],
   data() {
+    const checkLeaveTime = (rule, value, callback) => {
+      if (value <= this.salaryuserinfo.enter_time) {
+        return callback(new Error("离职时间<=入职时间"));
+      } else {
+        callback();
+      }
+    };
     return {
       fullscreenLoading: false,
       listApi: getSalaryUsersList,
@@ -397,6 +427,7 @@ export default {
       user_cons: [],
       isEdit: false,
       isShow: false,
+      isShowReason: false,
       title: "",
       loading: false,
       importDataBtnText: "导入数据",
@@ -418,7 +449,8 @@ export default {
         leave_time: "",
         enter_step: "",
         leave_step: "",
-        errors: ""
+        errors: "",
+        reason: ""
       },
       rules: {
         name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
@@ -443,6 +475,12 @@ export default {
         ],
         enter_time: [
           { required: true, message: "请输入入职日期", trigger: "blur" }
+        ],
+        leave_time: [
+          {
+            validator: checkLeaveTime,
+            trigger: "blur"
+          }
         ]
       },
       enterSteps: [
@@ -533,7 +571,7 @@ export default {
       this.salaryuserinfo.enterprise = selectedItem.enterprise_name;
     },
     changeData(curval, oldval) {
-      if (curval < oldval) {
+      if (oldval != "" && curval < oldval) {
         this.isShow = true;
       }
     },
@@ -599,9 +637,12 @@ export default {
         leave_time: "",
         enter_step: "",
         leave_step: "",
-        errors: ""
+        errors: "",
+        reason: ""
       };
       this.addSalaryUserDialog = false;
+      this.isShow = false;
+      this.isShowReason = false
     },
     //新增企业
     addSalaryUser() {
@@ -686,7 +727,7 @@ export default {
     beforeUploadPdf(file) {
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
       const extension = testmsg === "pdf";
-      const isLt1MB = file.size / 1024 / 1024 < 1;
+      const isLt10MB = file.size / 1024 / 1024 < 10;
       if (!extension) {
         this.$message({
           message: "上传合同只能是pdf格式!",
@@ -694,14 +735,14 @@ export default {
         });
         return false;
       }
-      if (!isLt1MB) {
+      if (!isLt10MB) {
         this.$message({
-          message: "上传文件大小不能超过 1MB!",
+          message: "上传文件大小不能超过 10MB!",
           type: "warning"
         });
         return false;
       }
-      return extension && isLt1MB;
+      return extension && isLt10MB;
     },
     onErrorUc() {
       this.$message({

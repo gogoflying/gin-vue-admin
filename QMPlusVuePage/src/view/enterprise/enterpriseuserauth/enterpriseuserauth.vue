@@ -33,7 +33,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="80">
+      <el-table-column fixed="right" label="操作" width="80" v-if="false">
         <template slot-scope="scope">
           <el-button @click="deleteUserAuth(scope.row.ID)" size="small" type="text">删除</el-button>
         </template>

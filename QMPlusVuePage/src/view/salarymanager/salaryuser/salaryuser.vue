@@ -410,7 +410,7 @@ export default {
   mixins: [infoList],
   data() {
     const checkLeaveTime = (rule, value, callback) => {
-      if (value <= this.salaryuserinfo.enter_time) {
+      if (value != "" && value <= this.salaryuserinfo.enter_time) {
         return callback(new Error("离职时间<=入职时间"));
       } else {
         callback();

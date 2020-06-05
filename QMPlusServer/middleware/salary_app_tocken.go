@@ -54,6 +54,10 @@ func GetAccessTocken_Sa(appId, secretId string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if mapResult["access_token"] == nil {
+		fmt.Printf("salary result is empty %s--%s\n", salaryAppId, salaryAppSecretId)
+		return "", fmt.Errorf("result is empty")
+	}
 
 	return mapResult["access_token"].(string), nil
 }
@@ -224,7 +228,18 @@ func checkTockenExpired_Sa(tocken string) error {
 }
 func RefreshTockenFromDB_Sa() {
 	mtx_sa.Lock()
-	h := sysModel.GetWxFliterTockenHndle(salaryAppName, "")
-	g_tocken_sa.access_token_sa = h.GetNewFilterTocken(salaryAppName)
+	for {
+		ntoken, err := GetAccessTocken_Sa(salaryAppName, salaryAppSecretId)
+		if err != nil {
+			time.Sleep(time.Second)
+			continue
+		} else {
+			g_tocken_sa.access_token_sa = ntoken
+			break
+		}
+	}
 	mtx_sa.Unlock()
+	h := sysModel.GetWxFliterTockenHndle(salaryAppName, g_tocken_sa.access_token_sa)
+	h.UpdateFilterTocken(salaryAppName, g_tocken_sa.access_token_sa)
+	fmt.Printf("RefreshTockenFromDB_Sa Refresh tocken success")
 }

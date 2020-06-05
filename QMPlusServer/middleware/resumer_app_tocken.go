@@ -58,6 +58,10 @@ func GetAccessTocken(appId, secretId string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if mapResult["access_token"] == nil {
+		fmt.Printf("resumer result is empty\n")
+		return "", fmt.Errorf("result is empty")
+	}
 
 	return mapResult["access_token"].(string), nil
 }
@@ -160,6 +164,7 @@ func NewFilterTocken() *WX_Access {
 
 func (wx_a *WX_Access) StartRun() {
 	//start salary app token goriutine
+	//time.Sleep(time.Second * 10)
 	saToken := NewFilterTocken_Sa()
 	go saToken.StartRun()
 	//start Run write new tocken
@@ -243,7 +248,18 @@ func checkTockenExpired_Re(tocken string) error {
 }
 func RefreshTockenFromDB_Re() {
 	mtx.Lock()
-	h := sysModel.GetWxFliterTockenHndle(resumeAppName, "")
-	g_tocken.access_token_re = h.GetNewFilterTocken(resumeAppName)
+	for {
+		ntoken, err := GetAccessTocken(resumeAppId, resumeAppSecretId)
+		if err != nil {
+			time.Sleep(time.Second)
+			continue
+		} else {
+			g_tocken.access_token_re = ntoken
+			break
+		}
+	}
 	mtx.Unlock()
+	h := sysModel.GetWxFliterTockenHndle(resumeAppName, g_tocken.access_token_re)
+	h.UpdateFilterTocken(resumeAppName, g_tocken.access_token_re)
+	fmt.Printf("RefreshTockenFromDB_Re Refresh tocken success")
 }

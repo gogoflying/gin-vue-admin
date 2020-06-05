@@ -59,7 +59,7 @@ func GetAccessTocken(appId, secretId string) (string, error) {
 		return "", err
 	}
 	if mapResult["access_token"] == nil {
-		fmt.Printf("resumer result is empty\n")
+		//fmt.Printf("resumer result is empty\n")
 		return "", fmt.Errorf("result is empty")
 	}
 
@@ -167,6 +167,7 @@ func (wx_a *WX_Access) StartRun() {
 	//time.Sleep(time.Second * 10)
 	saToken := NewFilterTocken_Sa()
 	go saToken.StartRun()
+	//return
 	//start Run write new tocken
 	RefreshTockenFromDB_Re()
 	var tocken string
@@ -251,7 +252,7 @@ func RefreshTockenFromDB_Re() {
 	for {
 		ntoken, err := GetAccessTocken(resumeAppId, resumeAppSecretId)
 		if err != nil {
-			time.Sleep(time.Second)
+			time.Sleep(time.Second * 5)
 			continue
 		} else {
 			g_tocken.access_token_re = ntoken

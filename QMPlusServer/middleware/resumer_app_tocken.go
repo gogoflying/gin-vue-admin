@@ -40,10 +40,6 @@ var mtx sync.Mutex
 var resumeAppId string = config.GinVueAdminconfig.WeiXin.ResumeApp.Appid
 var resumeAppSecretId string = config.GinVueAdminconfig.WeiXin.ResumeApp.AppSecret
 
-//var salaryAppId string = config.GinVueAdminconfig.WeiXin.SalaryApp.Appid
-//var salaryAppSecretId string = config.GinVueAdminconfig.WeiXin.SalaryApp.AppSecret
-
-//const salaryAppName = "salary-app"
 const resumeAppName = "resume-app"
 
 //敏感词过滤
@@ -59,7 +55,7 @@ func GetAccessTocken(appId, secretId string) (string, error) {
 		return "", err
 	}
 	if mapResult["access_token"] == nil {
-		fmt.Printf("resumer result is empty\n")
+		//fmt.Printf("resumer result is empty\n")
 		return "", fmt.Errorf("result is empty")
 	}
 
@@ -164,9 +160,9 @@ func NewFilterTocken() *WX_Access {
 
 func (wx_a *WX_Access) StartRun() {
 	//start salary app token goriutine
-	//time.Sleep(time.Second * 10)
 	saToken := NewFilterTocken_Sa()
 	go saToken.StartRun()
+	//return
 	//start Run write new tocken
 	RefreshTockenFromDB_Re()
 	var tocken string
@@ -251,7 +247,7 @@ func RefreshTockenFromDB_Re() {
 	for {
 		ntoken, err := GetAccessTocken(resumeAppId, resumeAppSecretId)
 		if err != nil {
-			time.Sleep(time.Second)
+			time.Sleep(time.Second * 5)
 			continue
 		} else {
 			g_tocken.access_token_re = ntoken

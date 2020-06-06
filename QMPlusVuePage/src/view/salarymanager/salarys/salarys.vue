@@ -491,7 +491,22 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("user", ["enPriseId", "token"])
+    ...mapGetters("user", ["enPriseId", "token"]),
+    bthj() {
+      return (
+        parseFloat(this.salarydetailinfo.txbt) +
+        parseFloat(this.salarydetailinfo.csbt) +
+        parseFloat(this.salarydetailinfo.jtbt) +
+        parseFloat(this.salarydetailinfo.qtbt)
+      );
+    },
+    kkhj() {
+      return (
+        parseFloat(this.salarydetailinfo.cdkk) +
+        parseFloat(this.salarydetailinfo.bjkk) +
+        parseFloat(this.salarydetailinfo.sjkk)
+      );
+    }
   },
   watch: {
     enterprise_id(val) {

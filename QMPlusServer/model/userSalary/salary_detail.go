@@ -65,14 +65,6 @@ func (un *Salarys) CreateSalarys() (err error) {
 	return err
 }
 
-func (un *Salarys) CreateSalarysTx() (err error) {
-	tx := qmsql.DEFAULTDB.Begin()
-	defer tx.Rollback()
-	err = tx.Create(un).Error
-	tx.Commit()
-	return err
-}
-
 func (un *Salarys) GetDbTx() *gorm.DB {
 	return qmsql.DEFAULTDB
 }

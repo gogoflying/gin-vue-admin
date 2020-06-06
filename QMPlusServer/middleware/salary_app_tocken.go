@@ -55,7 +55,7 @@ func GetAccessTocken_Sa(appId, secretId string) (string, error) {
 		return "", err
 	}
 	if mapResult["access_token"] == nil {
-		fmt.Printf("salary result is empty %s--%s\n", salaryAppId, salaryAppSecretId)
+		//fmt.Printf("salary result is empty %s--%s\n", salaryAppId, salaryAppSecretId)
 		return "", fmt.Errorf("result is empty")
 	}
 
@@ -229,9 +229,9 @@ func checkTockenExpired_Sa(tocken string) error {
 func RefreshTockenFromDB_Sa() {
 	mtx_sa.Lock()
 	for {
-		ntoken, err := GetAccessTocken_Sa(salaryAppName, salaryAppSecretId)
+		ntoken, err := GetAccessTocken_Sa(salaryAppId, salaryAppSecretId)
 		if err != nil {
-			time.Sleep(time.Second)
+			time.Sleep(time.Second * 5)
 			continue
 		} else {
 			g_tocken_sa.access_token_sa = ntoken

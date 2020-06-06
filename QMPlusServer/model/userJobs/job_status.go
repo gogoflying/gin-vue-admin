@@ -252,6 +252,8 @@ func (rs *ResumeStatus) GetResumeStatus(openId string, status, page, limit int) 
 			continue
 		}
 		jb.Memo = v.Remark
+		jb.JobContact = v.Contact
+		jb.JobInterview = v.InterviewLoc
 		rs.Results = append(rs.Results, *jb)
 	}
 	return err, *rs, total

@@ -11,12 +11,14 @@ import (
 	"gin-vue-admin/model/userSalary"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"mime/multipart"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/dchest/captcha"
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/gin-gonic/gin"
@@ -129,6 +131,102 @@ func FindSalaryUsers(c *gin.Context) {
 			"reun": reun,
 		})
 	}
+}
+
+func SalaryUserSendEmail(c *gin.Context) {
+	var req userSalary.SalaryUsers
+	_ = c.ShouldBindJSON(&req)
+	if captcha.VerifyString(req.CaptchaId, req.Captcha) {
+		err, _ := req.GetUserByIdcardAndEmail()
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("用户不存在"), gin.H{})
+			return
+		}
+		code := GenerateCode(4)
+		servers.AddMap(req.Email, code)
+		if err := servers.SendEmail(req.Email, "密码找回", "你正在使用邮箱找回密码功能，本次邮箱验证码为:"+code); err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("发送邮箱验证码失败", err), gin.H{})
+			return
+		}
+		servers.ReportFormat(c, true, "已发送邮箱验证码", gin.H{})
+	} else {
+		servers.ReportFormat(c, false, "图片验证码错误", gin.H{})
+	}
+}
+
+func SalaryUserSendSMS(c *gin.Context) {
+	var req userSalary.SalaryUsers
+
+	_ = c.ShouldBindJSON(&req)
+	if captcha.VerifyString(req.CaptchaId, req.Captcha) {
+		err, _ := req.GetUserByIdcardAndMobile()
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("用户不存在"), gin.H{})
+			return
+		}
+		code := GenerateCode(4)
+		servers.AddMap(req.Mobile, code)
+		if err := servers.SendSms(req.Mobile, code, servers.SMSMSGTYPE_VERIFY); err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("发送短信失败"), gin.H{})
+			return
+		}
+		servers.ReportFormat(c, true, "已发送验证码", gin.H{})
+	} else {
+		servers.ReportFormat(c, false, "图片验证码错误", gin.H{})
+	}
+}
+
+func SalaryUserFindPass(c *gin.Context) {
+	var req userSalary.SalaryUsers
+
+	_ = c.ShouldBindJSON(&req)
+	if req.OpType == 0 {
+		if req.Code != "" && req.Code == servers.GetMap(req.Email).(string) {
+			err, reun := req.GetUserByIdcardAndEmail()
+			if err != nil {
+				servers.ReportFormat(c, false, fmt.Sprintf("用户不存在"), gin.H{})
+				return
+			}
+			req.Openid = reun.Openid
+			if err = req.UpdatePasswdByOpenid(); err != nil {
+				servers.ReportFormat(c, false, fmt.Sprintf("修改密码失败"), gin.H{})
+				return
+			}
+			servers.DelMap(req.Email)
+			servers.ReportFormat(c, true, "密码重置成功", gin.H{})
+		} else {
+			servers.ReportFormat(c, false, fmt.Sprintf("邮箱验证码错误"), gin.H{})
+			return
+		}
+
+	} else {
+		if req.Code != "" && req.Code == servers.GetMap(req.Mobile).(string) {
+			err, reun := req.GetUserByIdcardAndMobile()
+			if err != nil {
+				servers.ReportFormat(c, false, fmt.Sprintf("用户不存在"), gin.H{})
+				return
+			}
+			req.Openid = reun.Openid
+			if err = req.UpdatePasswdByOpenid(); err != nil {
+				servers.ReportFormat(c, false, fmt.Sprintf("修改密码失败"), gin.H{})
+				return
+			}
+			servers.DelMap(req.Mobile)
+			servers.ReportFormat(c, true, "密码重置成功", gin.H{})
+		} else {
+			servers.ReportFormat(c, false, fmt.Sprintf("手机验证码错误"), gin.H{})
+			return
+		}
+	}
+}
+
+func GenerateCode(n int) string {
+	var s string
+	for i := 0; i < n; i++ {
+		rand.Seed(time.Now().UnixNano())
+		s = s + fmt.Sprintf("%v", rand.Intn(10))
+	}
+	return s
 }
 
 func SalaryUserUpdatePassword(c *gin.Context) {

@@ -39,6 +39,10 @@ type SalaryUsers struct {
 	Checkups     []string `json:"checkups" gorm:"-"`
 	LeaveProve   string   `json:"leave_prove" gorm:"column:leave_prove;comment:'上家公司离职证明照片'"`
 	Leaves       []string `json:"leaves" gorm:"-"`
+	CaptchaId    string   `json:"captcha_id" gorm:"-"`
+	Captcha      string   `json:"captcha" gorm:"-"`
+	Code         string   `json:"code" gorm:"-"`
+	OpType       int      `json:"op_type" gorm:"-"`
 	Diploma      string   `json:"diploma" gorm:"column:diploma;comment:'毕业证照片'"`
 	Diplomas     []string `json:"diplomas" gorm:"-"`
 	Email        string   `json:"email" gorm:"column:email"`
@@ -51,6 +55,22 @@ type SalaryUsers struct {
 	Errors       string   `json:"errors" gorm:"column:errors;comment:'信息错误反馈内容'"`
 	EnterStep    int      `json:"enter_step" gorm:"column:EnterStep;comment:'入职进度,0初始状态,待用户确认信息 1 用户基本信息已确认,待补充图片材料 2补充图片材料完毕 3待用户网签合同 4合同签约完毕'"`
 	LeaveStep    int      `json:"leave_step" gorm:"column:LeaveStep;comment:'离职进度,0初始状态 1用户提交离职 2管理员审批，补充离职日期 3已离职，补充离职证明和减员年月具体到月就好'"`
+}
+
+func (un *SalaryUsers) GetUserByIdcardAndEmail() (err error, u SalaryUsers) {
+	var ru SalaryUsers
+	err = qmsql.DEFAULTDB.Model(un).Where("card = ? and email = ?", un.Card, un.Email).Find(&ru).Error
+	return err, ru
+}
+
+func (un *SalaryUsers) GetUserByIdcardAndMobile() (err error, u SalaryUsers) {
+	var ru SalaryUsers
+	err = qmsql.DEFAULTDB.Model(un).Where("card = ? and mobile = ?", un.Card, un.Mobile).Find(&ru).Error
+	return err, ru
+}
+
+func (un *SalaryUsers) UpdatePasswdByOpenid() (err error) {
+	return qmsql.DEFAULTDB.Model(un).Where("openid = ?", un.Openid).Update("password", MD5PassWord(un.PassWord)).Error
 }
 
 // 创建SalaryUsers
@@ -133,6 +153,11 @@ func (un *SalaryUsers) LoginMobile() (err error, reun SalaryUsers) {
 func (un *SalaryUsers) UpdatePassword() (err error) {
 	err = qmsql.DEFAULTDB.Model(un).Where("openid = ? and password = ?", un.Openid, un.PassWord).Update("password", un.NewPassWord).Error
 	return
+}
+
+func MD5PassWord(ps string) string {
+	bMd5 := md5.Sum([]byte(ps))
+	return hex.EncodeToString(bMd5[:])
 }
 
 // 根据ID查看单条SalaryUsers

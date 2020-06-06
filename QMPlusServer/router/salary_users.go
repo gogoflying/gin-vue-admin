@@ -23,5 +23,8 @@ func InitSalaryUsersRouter(Router *gin.RouterGroup) {
 		SalaryUsersRouter.Static("template", "./static/template")
 		SalaryUsersRouter.POST("salaryUsersLogin", api.SalaryUserLoginMobile)
 		SalaryUsersRouter.POST("updateSalaryUsersPassword", api.SalaryUserUpdatePassword)
+		SalaryUsersRouter.POST("sendemail", api.SalaryUserSendEmail)
+		SalaryUsersRouter.POST("sendsms", api.SalaryUserSendSMS)
+		SalaryUsersRouter.POST("findpass", api.SalaryUserFindPass)
 	}
 }

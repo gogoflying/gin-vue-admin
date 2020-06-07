@@ -455,7 +455,7 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 				PassWord:     passwd,
 			}
 
-			err := tx.Create(un).Error
+			err := tx.Create(&un).Error
 			if err != nil {
 				return fmt.Errorf("import insert salaryuser err")
 			}

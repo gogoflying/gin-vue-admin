@@ -64,6 +64,8 @@ func UpdateResumeStatus(c *gin.Context) {
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
 	} else {
+		//send sms
+		servers.SendSmsInterview(rs.UserInfo.Mobile, rs.UserInfo.UserName, rs.CompanyName,rs.InterviewLoc)
 		servers.ReportFormat(c, true, "更新成功", gin.H{
 			"rers": rers,
 		})

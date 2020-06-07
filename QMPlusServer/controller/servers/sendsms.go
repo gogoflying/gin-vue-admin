@@ -21,6 +21,7 @@ const (
 	SMSMSGTYPE_VERIFY SmsMsgType = iota
 	SMSMSGTYPE_ENTER_CONTRACT
 	SMSMSGTYPE_LEAVEL_CONTRACT
+	SMSMSGTYPE_INTERVIEW
 
 	SMSMSGTYPE_MAX
 )
@@ -93,6 +94,21 @@ func SendSms(sendToTel, userAccount string, msgType SmsMsgType) error {
 		msgContext := fmt.Sprintf("亲爱的用户:%s 您好，离职手续已顺利办理完成，祝您工作顺利，下次合作。如非本人操作请忽略。回TD退订 ", userAccount)
 		err := SendSmsMsg(sendToTel, msgContext)
 		return err
+	case SMSMSGTYPE_INTERVIEW:
+		msgContext := fmt.Sprintf("亲爱的用户:%s 您好，约您在%s 来面试。如非本人操作请忽略。回TD退订 ", userAccount,)
+		err := SendSmsMsg(sendToTel, msgContext)
+		return err
 	}
 	return nil
+}
+
+func SendSmsInterview(sendToTel, userAccount ,empName,interviewTime string) error {
+	if !VerifyMobileFormat(sendToTel) || len(user) == 0 {
+		fmt.Printf("illdge mobile num please check\n")
+		return fmt.Errorf("param input err")
+	}
+	
+	msgContext := fmt.Sprintf("亲爱的用户:%s 您好，%s 约您在%s 来公司面试。如非本人操作请忽略。回TD退订 ", userAccount,empName,interviewTime)
+	err := SendSmsMsg(sendToTel, msgContext)
+	return err
 }

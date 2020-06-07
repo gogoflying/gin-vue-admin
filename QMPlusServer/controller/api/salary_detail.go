@@ -49,6 +49,9 @@ func CreateSalarys(c *gin.Context) {
 	fmt.Printf("checkSalarysUserInTable openid:%s\n", openid)
 	un.Openid = openid
 
+	un.Base = servers.DataEncryPt(un.Base)
+	un.Sfgz = servers.DataEncryPt(un.Sfgz)
+
 	err = un.CreateSalarys()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
@@ -76,14 +79,6 @@ func DeleteSalarys(c *gin.Context) {
 	}
 }
 
-// @Tags Salarys
-// @Summary 更新Salarys
-// @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
-// @Param data body userSalary.Salarys true "更新Salarys"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /un/updateSalarys [post]
 func UpdateSalarys(c *gin.Context) {
 	var un userSalary.Salarys
 	_ = c.ShouldBindJSON(&un)
@@ -100,6 +95,9 @@ func UpdateSalarys(c *gin.Context) {
 		return
 	}
 
+	un.Base = servers.DataEncryPt(un.Base)
+	un.Sfgz = servers.DataEncryPt(un.Sfgz)
+
 	err, reun := un.UpdateSalarys()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
@@ -110,21 +108,16 @@ func UpdateSalarys(c *gin.Context) {
 	}
 }
 
-// @Tags Salarys
-// @Summary 用id查询Salarys
-// @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
-// @Param data body userSalary.Salarys true "用id查询Salarys"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /un/findSalarys [post]
 func FindSalarys(c *gin.Context) {
 	var un userSalary.Salarys
 	_ = c.ShouldBindJSON(&un)
+
 	err, reun := un.FindById()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
 	} else {
+		reun.Base = servers.DataDecode(reun.Base)
+		reun.Sfgz = servers.DataDecode(reun.Sfgz)
 		servers.ReportFormat(c, true, "查询成功", gin.H{
 			"reun": reun,
 		})
@@ -134,24 +127,22 @@ func FindSalarys(c *gin.Context) {
 func FindSalarysByIdAndOpenid(c *gin.Context) {
 	var un userSalary.Salarys
 	_ = c.ShouldBindJSON(&un)
+
+	un.Base = servers.DataDecode(un.Base)
+	un.Sfgz = servers.DataDecode(un.Sfgz)
+
 	err, reun := un.FindByIdAndOpenid()
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
 	} else {
+		reun.Base = servers.DataDecode(reun.Base)
+		reun.Sfgz = servers.DataDecode(reun.Sfgz)
 		servers.ReportFormat(c, true, "查询成功", gin.H{
 			"reun": reun,
 		})
 	}
 }
 
-// @Tags Salarys
-// @Summary 分页获取Salarys列表
-// @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
-// @Param data body modelInterface.PageInfo true "分页获取Salarys列表"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /un/getSalarysList [post]
 func GetSalarysList(c *gin.Context) {
 
 	type searchParams struct {
@@ -172,6 +163,13 @@ func GetSalarysList(c *gin.Context) {
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
+		var reSalarysList []userSalary.Salarys
+		for _, sa := range list.([]userSalary.Salarys) {
+			sa.Base = servers.DataDecode(sa.Base)
+			sa.Sfgz = servers.DataDecode(sa.Sfgz)
+			reSalarysList = append(reSalarysList, sa)
+		}
+		list = reSalarysList
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
 			"userSalaryList": list,
 			"total":          total,
@@ -338,6 +336,9 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 			ext8 := strings.Trim(row.Cells[40].Value, " ")
 			ext9 := strings.Trim(row.Cells[41].Value, " ")
 			ext10 := strings.Trim(row.Cells[42].Value, " ")
+
+			base = servers.DataEncryPt(base)
+			sfgz = servers.DataEncryPt(sfgz)
 			//salary, _ := strconv.Atoi(strings.Trim(row.Cells[4].Value, " "))
 			//contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " "))
 			un = userSalary.Salarys{
@@ -387,8 +388,9 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 				Ext10:        ext10,
 			}
 			//err := un.CreateSalarys()
-			err := tx.Create(un).Error
+			err := tx.Create(&un).Error
 			if err != nil {
+				fmt.Printf("import insert salarys err:%v", err)
 				return fmt.Errorf("import insert salarys err")
 			}
 		}

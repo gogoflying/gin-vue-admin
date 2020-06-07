@@ -83,32 +83,32 @@ func SendSms(sendToTel, userAccount string, msgType SmsMsgType) error {
 	}
 	switch msgType {
 	case SMSMSGTYPE_VERIFY:
-		msgContext := fmt.Sprintf("请输入验证码 %s 完成手机验证（5分钟内有效）。如非本人操作请忽略。回TD退订 ", userAccount)
+		msgContext := fmt.Sprintf("请输入验证码 %s 完成手机验证（5分钟内有效）。如非本人操作请忽略。", userAccount)
 		err := SendSmsMsg(sendToTel, msgContext)
 		return err
 	case SMSMSGTYPE_ENTER_CONTRACT:
-		msgContext := fmt.Sprintf("亲爱的用户:%s 您好，入职电子合同已生成，请及时阅读确认签字。如非本人操作请忽略。回TD退订 ", userAccount)
+		msgContext := fmt.Sprintf("亲爱的用户:%s 您好，入职电子合同已生成，请及时阅读确认签字。如非本人操作请忽略。", userAccount)
 		err := SendSmsMsg(sendToTel, msgContext)
 		return err
 	case SMSMSGTYPE_LEAVEL_CONTRACT:
-		msgContext := fmt.Sprintf("亲爱的用户:%s 您好，离职手续已顺利办理完成，祝您工作顺利，下次合作。如非本人操作请忽略。回TD退订 ", userAccount)
+		msgContext := fmt.Sprintf("亲爱的用户:%s 您好，离职手续已顺利办理完成，祝您工作顺利，下次合作。如非本人操作请忽略。", userAccount)
 		err := SendSmsMsg(sendToTel, msgContext)
 		return err
 	case SMSMSGTYPE_INTERVIEW:
-		msgContext := fmt.Sprintf("亲爱的用户:%s 您好，约您在%s 来面试。如非本人操作请忽略。回TD退订 ", userAccount,)
+		msgContext := fmt.Sprintf("亲爱的用户:%s 您好，约您在%s 来面试。如非本人操作请忽略。回TD退订 ", userAccount)
 		err := SendSmsMsg(sendToTel, msgContext)
 		return err
 	}
 	return nil
 }
 
-func SendSmsInterview(sendToTel, userAccount ,empName,interviewTime string) error {
+func SendSmsInterview(sendToTel, userAccount, empName, interviewTime string) error {
 	if !VerifyMobileFormat(sendToTel) || len(user) == 0 {
 		fmt.Printf("illdge mobile num please check\n")
 		return fmt.Errorf("param input err")
 	}
-	
-	msgContext := fmt.Sprintf("亲爱的用户:%s 您好，%s 约您在%s 来公司面试。如非本人操作请忽略。回TD退订 ", userAccount,empName,interviewTime)
+
+	msgContext := fmt.Sprintf("亲爱的用户:%s 您好，%s 约您在%s 来公司面试。如非本人操作请忽略。", userAccount, empName, interviewTime)
 	err := SendSmsMsg(sendToTel, msgContext)
 	return err
 }

@@ -46,9 +46,19 @@
     </el-dialog>
 
     <el-dialog title="面试提示" :visible.sync="dialogRemarkVisible" append-to-body>
-      <el-form :model="resume_info" label-width="80px" >
+      <el-form :model="resume_info" label-width="80px">
         <el-form-item label="联系人" prop="p_contact">
           <el-input placeholder="请输入联系人" v-model="resume_info.p_contact"></el-input>
+        </el-form-item>
+        <el-form-item label="面试时间" prop="p_interview_time">
+          <el-date-picker
+            placeholder="请输入面试时间"
+            type="datetime"
+            :editable="false"
+            format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            v-model="resume_info.p_interview_time"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="面试地点" prop="p_interview_loc">
           <el-input placeholder="请输入面试地点" v-model="resume_info.p_interview_loc"></el-input>
@@ -136,7 +146,7 @@ const path = process.env.VUE_APP_BASE_API;
 import {
   getResumeStatusList,
   updateResumeStatus,
-  updateResumeMemo,
+  updateResumeMemo
 } from "@/api/resumestatus";
 import { getUserOptions } from "@/api/jobuser";
 import { mapGetters } from "vuex";
@@ -150,7 +160,6 @@ export default {
       listKey: "resumeStatusList",
       path: path,
       p_memo: "",
-      p_remark: "",
       Id: 0,
       option: {},
       dialogFormVisible: false,
@@ -263,6 +272,10 @@ export default {
       this.dialogFormVisible = false;
     },
     async dialogRemarkOK() {
+      if ((this.resume_info.p_contact == "") || (this.resume_info.p_interview_time == "") || (this.resume_info.p_interview_loc == "") || (this.resume_info.p_remark == "")){
+        this.$message({ type: "error", message: "请填写全部信息" });
+        return;
+      }
       const res = await updateResumeStatus(this.resume_info);
       if (res.success) {
         this.$message({ type: "success", message: "更新提示信息成功" });

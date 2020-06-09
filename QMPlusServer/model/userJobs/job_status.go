@@ -33,6 +33,7 @@ type ResumeStatus struct {
 	Memo              string       `json:"p_memo" gorm:"column:memo;comment:'memo'"`
 	Contact           string       `json:"p_contact" gorm:"column:contact;comment:'联系人'"`
 	InterviewLoc      string       `json:"p_interview_loc" gorm:"column:interview_loc;comment:'面试地点'"`
+	InterviewTime     string       `json:"p_interview_time" gorm:"column:interview_time;comment:'面试时间'"`
 	Remark            string       `json:"p_remark" gorm:"column:remark;comment:'备注信息'"`
 	Mobile            string       `json:"mobile" gorm:"-"`
 	UserName          string       `json:"userName" gorm:"-"`

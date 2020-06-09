@@ -448,7 +448,7 @@ export default {
       }
     };
     const isYFTZVlidator = (rule, value, callback) => {
-      var pattern = /^(\-|\+)?\d+.?\d{0,2}$/;
+      var pattern = /^(-|\+)?\d+.?\d{0,2}$/;
       if (value.length <= 0) {
         return callback(new Error("不能为空"));
       }

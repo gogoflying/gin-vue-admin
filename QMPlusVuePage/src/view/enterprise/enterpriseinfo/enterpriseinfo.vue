@@ -347,7 +347,7 @@ export default {
           {
             type: "number",
             min: 0,
-            message: "热度必须为大于零",
+            message: "热度必须为大于等于零",
             trigger: "blur"
           }
         ],
@@ -473,6 +473,7 @@ export default {
         enterprise_qfc: "",
         errors: ""
       };
+      this.$refs.enterpriseForm.resetFields();
       this.addCompanyDialog = false;
     },
     clearCitystatus() {

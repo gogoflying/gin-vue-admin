@@ -359,7 +359,7 @@ export default {
           {
             type: "number",
             min: 0,
-            message: "人数必须为大于零",
+            message: "人数必须为大于等于零",
             trigger: "blur"
           }
         ],

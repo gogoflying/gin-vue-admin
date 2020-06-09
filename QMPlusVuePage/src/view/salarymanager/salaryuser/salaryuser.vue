@@ -640,9 +640,10 @@ export default {
         errors: "",
         reason: ""
       };
+      this.$refs.salaryuserForm.resetFields();
       this.addSalaryUserDialog = false;
       this.isShow = false;
-      this.isShowReason = false
+      this.isShowReason = false;
     },
     //新增企业
     addSalaryUser() {

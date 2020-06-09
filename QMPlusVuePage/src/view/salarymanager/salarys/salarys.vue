@@ -215,12 +215,12 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="5">
               <el-form-item label="姓名" label-width="50px" prop="name">
                 <el-input v-model="salarydetailinfo.name"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="3">
+            <el-col :span="4">
               <el-form-item label="年" label-width="40px" prop="year">
                 <el-input v-model.number="salarydetailinfo.year"></el-input>
               </el-form-item>
@@ -264,7 +264,7 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="月度奖金" label-width="80px" prop="ydjj">
-                <el-input v-model="salarydetailinfo.ydjj"></el-input>
+                <el-input :value="ydjj"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
@@ -281,7 +281,7 @@
           <el-row style="margin-top:-20px">
             <el-col :span="12">
               <el-form-item label="薪资合计" label-width="80px" prop="xzhj">
-                <el-input style="200px" v-model="salarydetailinfo.xzhj"></el-input>
+                <el-input style="200px" :value="xzhj"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -313,7 +313,7 @@
           <el-row style="margin-top:-20px">
             <el-col :span="12">
               <el-form-item label="补贴合计" label-width="80px" prop="bthj">
-                <el-input style="200px" v-model="salarydetailinfo.bthj"></el-input>
+                <el-input style="200px" :value="bthj"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -363,7 +363,7 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="扣款合计" label-width="80px" prop="kkhj">
-                <el-input v-model="salarydetailinfo.kkhj"></el-input>
+                <el-input :value="kkhj"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -393,7 +393,7 @@
           <el-row>
             <el-col :span="8">
               <el-form-item label="应发工资" label-width="80px" prop="byyf">
-                <el-input v-model="salarydetailinfo.byyf"></el-input>
+                <el-input :value="byyf"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -403,7 +403,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="实发工资" label-width="80px" prop="sfgz">
-                <el-input v-model="salarydetailinfo.sfgz"></el-input>
+                <el-input :value="sfgz"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -436,6 +436,28 @@ export default {
   name: "Salarys",
   mixins: [infoList],
   data() {
+    const isFloatVlidator = (rule, value, callback) => {
+      var pattern = /^\d+.?\d{0,2}$/;
+      if (value.length <= 0) {
+        return callback(new Error("不能为空"));
+      }
+      if (!pattern.test(value)) {
+        return callback(new Error("请输入非负数并且最多两位小数"));
+      } else {
+        return callback();
+      }
+    };
+    const isYFTZVlidator = (rule, value, callback) => {
+      var pattern = /^(\-|\+)?\d+.?\d{0,2}$/;
+      if (value.length <= 0) {
+        return callback(new Error("不能为空"));
+      }
+      if (!pattern.test(value)) {
+        return callback(new Error("请输入数字并且最多两位小数"));
+      } else {
+        return callback();
+      }
+    };
     return {
       listApi: getSalarysList,
       listKey: "userSalaryList",
@@ -487,25 +509,152 @@ export default {
         dkgs: "",
         sfgz: ""
       },
-      rules: {}
+      rules: {
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        year: [{ required: true, message: "请输入年", trigger: "blur" }],
+        month: [{ required: true, message: "请输入月", trigger: "blur" }],
+        base: [{ validator: isFloatVlidator, trigger: "blur" }],
+        gangwei: [{ validator: isFloatVlidator, trigger: "blur" }],
+        //xzhj: [{ validator: isFloatVlidator, trigger: "blur" }],
+        yjtc: [{ validator: isFloatVlidator, trigger: "blur" }],
+        jjjs: [{ validator: isFloatVlidator, trigger: "blur" }],
+        fdxs: [{ validator: isFloatVlidator, trigger: "blur" }],
+        //ydjj: [{ validator: isFloatVlidator, trigger: "blur" }],
+        gzts: [{ validator: isFloatVlidator, trigger: "blur" }],
+        jbf: [{ validator: isFloatVlidator, trigger: "blur" }],
+        txbt: [{ validator: isFloatVlidator, trigger: "blur" }],
+        csbt: [{ validator: isFloatVlidator, trigger: "blur" }],
+        jtbt: [{ validator: isFloatVlidator, trigger: "blur" }],
+        qtbt: [{ validator: isFloatVlidator, trigger: "blur" }],
+        //bthj: [{ validator: isFloatVlidator, trigger: "blur" }],
+        qtjq: [{ validator: isFloatVlidator, trigger: "blur" }],
+        njts: [{ validator: isFloatVlidator, trigger: "blur" }],
+        cdkk: [{ validator: isFloatVlidator, trigger: "blur" }],
+        bjts: [{ validator: isFloatVlidator, trigger: "blur" }],
+        bjkk: [{ validator: isFloatVlidator, trigger: "blur" }],
+        sjts: [{ validator: isFloatVlidator, trigger: "blur" }],
+        sjkk: [{ validator: isFloatVlidator, trigger: "blur" }],
+        //kkhj: [{ validator: isFloatVlidator, trigger: "blur" }],
+        yftz: [{ validator: isYFTZVlidator, trigger: "blur" }],
+        //byyf: [{ validator: isFloatVlidator, trigger: "blur" }],
+        dkwx: [{ validator: isFloatVlidator, trigger: "blur" }],
+        gjj: [{ validator: isFloatVlidator, trigger: "blur" }],
+        dkgs: [{ validator: isFloatVlidator, trigger: "blur" }]
+        //sfgz: [{ validator: isFloatVlidator, trigger: "blur" }]
+      }
     };
   },
   computed: {
     ...mapGetters("user", ["enPriseId", "token"]),
-    bthj() {
-      return (
-        parseFloat(this.salarydetailinfo.txbt) +
-        parseFloat(this.salarydetailinfo.csbt) +
-        parseFloat(this.salarydetailinfo.jtbt) +
-        parseFloat(this.salarydetailinfo.qtbt)
-      );
+    ydjj: {
+      get() {
+        let sum = 0;
+        if (
+          !isNaN(parseFloat(this.salarydetailinfo.jjjs)) &&
+          !isNaN(parseFloat(this.salarydetailinfo.fdxs))
+        ) {
+          sum =
+            parseFloat(this.salarydetailinfo.jjjs) *
+            parseFloat(this.salarydetailinfo.fdxs);
+        }
+        //return sum.toFixed(2);
+        return Math.round(sum * 100) / 100;
+      }
     },
-    kkhj() {
-      return (
-        parseFloat(this.salarydetailinfo.cdkk) +
-        parseFloat(this.salarydetailinfo.bjkk) +
-        parseFloat(this.salarydetailinfo.sjkk)
-      );
+    xzhj: {
+      get() {
+        let sum = 0;
+        if (!isNaN(parseFloat(this.salarydetailinfo.base))) {
+          sum += parseFloat(this.salarydetailinfo.base);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.gangwei))) {
+          sum += parseFloat(this.salarydetailinfo.gangwei);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.yjtc))) {
+          sum += parseFloat(this.salarydetailinfo.yjtc);
+        }
+        if (!isNaN(parseFloat(this.ydjj))) {
+          sum += parseFloat(this.ydjj);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.jbf))) {
+          sum += parseFloat(this.salarydetailinfo.jbf);
+        }
+        //return sum.toFixed(2);
+        return Math.round(sum * 100) / 100;
+      }
+    },
+    bthj: {
+      get() {
+        let sum = 0;
+        if (!isNaN(parseFloat(this.salarydetailinfo.txbt))) {
+          sum += parseFloat(this.salarydetailinfo.txbt);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.csbt))) {
+          sum += parseFloat(this.salarydetailinfo.csbt);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.jtbt))) {
+          sum += parseFloat(this.salarydetailinfo.jtbt);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.qtbt))) {
+          sum += parseFloat(this.salarydetailinfo.qtbt);
+        }
+        //return sum.toFixed(2);
+        return Math.round(sum * 100) / 100;
+      }
+    },
+    kkhj: {
+      get() {
+        let sum = 0;
+        if (!isNaN(parseFloat(this.salarydetailinfo.cdkk))) {
+          sum += parseFloat(this.salarydetailinfo.cdkk);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.bjkk))) {
+          sum += parseFloat(this.salarydetailinfo.bjkk);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.sjkk))) {
+          sum += parseFloat(this.salarydetailinfo.sjkk);
+        }
+        //return sum.toFixed(2);
+        return Math.round(sum * 100) / 100;
+      }
+    },
+    byyf: {
+      get() {
+        let sum = 0;
+        if (!isNaN(parseFloat(this.xzhj))) {
+          sum += parseFloat(this.xzhj);
+        }
+        if (!isNaN(parseFloat(this.bthj))) {
+          sum += parseFloat(this.bthj);
+        }
+        if (!isNaN(parseFloat(this.kkhj))) {
+          sum -= parseFloat(this.kkhj);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.dkwx))) {
+          sum -= parseFloat(this.salarydetailinfo.dkwx);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.gjj))) {
+          sum -= parseFloat(this.salarydetailinfo.gjj);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.dkgs))) {
+          sum -= parseFloat(this.salarydetailinfo.dkgs);
+        }
+        //return sum.toFixed(2);
+        return Math.round(sum * 100) / 100;
+      }
+    },
+    sfgz: {
+      get() {
+        let sum = 0;
+        if (!isNaN(parseFloat(this.byyf))) {
+          sum += parseFloat(this.byyf);
+        }
+        if (!isNaN(parseFloat(this.salarydetailinfo.yftz))) {
+          sum += parseFloat(this.salarydetailinfo.yftz);
+        }
+        //return sum.toFixed(2);
+        return Math.round(sum * 100) / 100;
+      }
     }
   },
   watch: {
@@ -576,13 +725,8 @@ export default {
       });
       this.salarydetailinfo.base = selectedItem.base;
       this.salarydetailinfo.gangwei = selectedItem.gangwei;
-      this.salarydetailinfo.xzhj = selectedItem.xzhj;
-      this.salarydetailinfo.yjtc = selectedItem.yjtc;
       this.salarydetailinfo.jjjs = selectedItem.jjjs;
-      this.salarydetailinfo.fdxs = selectedItem.fdxs;
-      this.salarydetailinfo.ydjj = selectedItem.ydjj;
       this.salarydetailinfo.gzts = selectedItem.gzts;
-      this.salarydetailinfo.jbf = selectedItem.jbf;
       this.salarydetailinfo.txbt = selectedItem.txbt;
       this.salarydetailinfo.csbt = selectedItem.csbt;
       this.salarydetailinfo.jtbt = selectedItem.jtbt;
@@ -600,6 +744,12 @@ export default {
       link.click();
     },
     async enterAddSalaryDetailDialog() {
+      this.salarydetailinfo.ydjj = this.ydjj.toString();
+      this.salarydetailinfo.xzhj = this.xzhj.toString();
+      this.salarydetailinfo.bthj = this.bthj.toString();
+      this.salarydetailinfo.kkhj = this.kkhj.toString();
+      this.salarydetailinfo.byyf = this.byyf.toString();
+      this.salarydetailinfo.sfgz = this.sfgz.toString();
       this.$refs.salarydetailForm.validate(async valid => {
         if (valid) {
           let res;
@@ -655,21 +805,25 @@ export default {
         dkgs: "",
         sfgz: ""
       };
+      this.$refs.salarydetailForm.resetFields();
+      this.salarytemp_id = "";
+      this.salarytemplates = [];
+      this.enterpriseInfo = [];
       this.addSalaryDetailDialog = false;
     },
     //新增企业
     addSalaryDetail() {
       this.title = "新增薪资";
       this.isEdit = false;
-      this.enterpriseInfo = [];
       this.salarytemplates = [];
+      this.enterpriseInfo = [];
       this.addSalaryDetailDialog = true;
     },
     //编辑企业
     async editSalaryDetail(row) {
       this.title = "编辑薪资";
-      this.enterpriseInfo = [];
       this.salarytemplates = [];
+      this.enterpriseInfo = [];
       const res = await findSalarys(row);
       this.salarydetailinfo = res.data.reun;
       if (this.salarydetailinfo != null) {

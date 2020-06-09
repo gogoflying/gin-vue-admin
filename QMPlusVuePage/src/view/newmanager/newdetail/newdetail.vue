@@ -94,12 +94,11 @@ export default {
         news_type: [{ required: true, message: "请输入类型", trigger: "blur" }],
         order: [
           { required: true, message: "请输入排序", trigger: "blur" },
-          { type: "number", message: "排序必须为数字", trigger: "blur" },
+          { type: "number", message: "排序必须为数字"},
           {
             type: "number",
             min: 0,
-            message: "排序必须为大于零",
-            trigger: "blur"
+            message: "排序必须为大于等于零"
           }
         ],
         content: [{ required: true, message: "请输入内容", trigger: "blur" }]

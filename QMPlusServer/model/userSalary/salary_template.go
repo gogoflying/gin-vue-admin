@@ -15,13 +15,8 @@ type SalaryTemplates struct {
 	GwTempName   string `json:"gwtemp_name" gorm:"column:gwtemp_name"`
 	Base         string `json:"base" gorm:"column:base"`
 	Gangwei      string `json:"gangwei" gorm:"column:gangwei"`
-	Xzhj         string `json:"xzhj" gorm:"column:xzhj"`
-	Yjtc         string `json:"yjtc" gorm:"column:yjtc"`
 	Jjjs         string `json:"jjjs" gorm:"column:jjjs"`
-	Fdxs         string `json:"fdxs" gorm:"column:fdxs"`
-	Ydjj         string `json:"ydjj" gorm:"column:ydjj"`
 	Gzts         string `json:"gzts" gorm:"column:gzts"`
-	Jbf          string `json:"jbf" gorm:"column:jbf"`
 	Txbt         string `json:"txbt" gorm:"column:txbt"`
 	Csbt         string `json:"csbt" gorm:"column:csbt"`
 	Jtbt         string `json:"jtbt" gorm:"column:jtbt"`
@@ -30,17 +25,6 @@ type SalaryTemplates struct {
 	Dkwx         string `json:"dkwx" gorm:"column:dkwx"`
 	Gjj          string `json:"gjj" gorm:"column:gjj"`
 	Dkgs         string `json:"dkgs" gorm:"column:dkgs"`
-	//Qtjq         string `json:"qtjq" gorm:"column:qtjq"`
-	//Njts         string `json:"njts" gorm:"column:njts"`
-	//Cdkk         string `json:"cdkk" gorm:"column:cdkk"`
-	//Bjts string `json:"bjts" gorm:"column:bjts"`
-	//Bjkk         string `json:"bjkk" gorm:"column:bjkk"`
-	//Sjts string `json:"sjts" gorm:"column:sjts"`
-	//Sjkk         string `json:"sjkk" gorm:"column:sjkk"`
-	//Kkhj         string `json:"kkhj" gorm:"column:kkhj"`
-	//Yftz         string `json:"yftz" gorm:"column:yftz"`
-	//Byyf string `json:"byyf" gorm:"column:byyf"`
-	//Sfgz         string `json:"sfgz" gorm:"column:sfgz"`
 }
 
 // 创建SalaryTemplates

@@ -10,13 +10,8 @@
       <el-table-column label="薪资构成" align="center">
         <el-table-column label="基本工资" min-width="100" prop="base"></el-table-column>
         <el-table-column label="岗位工资" min-width="100" prop="gangwei"></el-table-column>
-        <el-table-column label="业绩提成" min-width="80" prop="yjtc"></el-table-column>
         <el-table-column label="奖金基数" min-width="80" prop="jjjs"></el-table-column>
-        <el-table-column label="浮动系数" min-width="80" prop="fdxs"></el-table-column>
-        <el-table-column label="月度奖金" min-width="80" prop="ydjj"></el-table-column>
         <el-table-column label="工作天数" min-width="120" prop="gzts"></el-table-column>
-        <el-table-column label="加班费" min-width="80" prop="jbf"></el-table-column>
-        <el-table-column label="薪资合计" min-width="80" prop="xzhj"></el-table-column>
       </el-table-column>
       <el-table-column label="补贴明细" align="center">
         <el-table-column label="通讯补贴" min-width="80" prop="txbt"></el-table-column>
@@ -25,28 +20,11 @@
         <el-table-column label="其他补贴" min-width="80" prop="qtbt"></el-table-column>
         <el-table-column label="补贴合计" min-width="80" prop="bthj"></el-table-column>
       </el-table-column>
-      <!-- <el-table-column label="假期明细" align="center">
-        <el-table-column label="年假天数" min-width="80" prop="njts"></el-table-column>
-        <el-table-column label="病假天数" min-width="80" prop="bjts"></el-table-column>
-        <el-table-column label="事假天数" min-width="80" prop="sjts"></el-table-column>
-        <el-table-column label="其他假期" min-width="80" prop="qtjq"></el-table-column>
-      </el-table-column>
-      <el-table-column label="扣款明细" align="center">
-        <el-table-column label="迟到扣款" min-width="80" prop="cdkk"></el-table-column>
-        <el-table-column label="病假扣款" min-width="80" prop="bjkk"></el-table-column>
-        <el-table-column label="事假扣款" min-width="80" prop="sjkk"></el-table-column>
-        <el-table-column label="扣款合计" min-width="80" prop="kkhj"></el-table-column>
-      </el-table-column> -->
       <el-table-column label="五险一金" align="center">
         <el-table-column label="代扣五险" min-width="80" prop="dkwx"></el-table-column>
         <el-table-column label="代扣住房公积金" min-width="80" prop="gjj"></el-table-column>
         <el-table-column label="代扣个人所得税" min-width="80" prop="dkgs"></el-table-column>
       </el-table-column>
-      <!-- <el-table-column label="应发调整" align="center">
-        <el-table-column label="应发工资" min-width="80" prop="byyf"></el-table-column>
-        <el-table-column label="应发调整" min-width="80" prop="yftz"></el-table-column>
-        <el-table-column label="实发工资" min-width="80" prop="sfgz"></el-table-column>
-      </el-table-column> -->
       <el-table-column fixed="right" label="操作" width="180">
         <template slot-scope="scope">
           <el-button
@@ -133,42 +111,13 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="业绩提成" label-width="80px" prop="yjtc">
-                <el-input v-model="SalaryTemplatesinfo.yjtc"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
               <el-form-item label="奖金基数" label-width="80px" prop="jjjs">
                 <el-input v-model="SalaryTemplatesinfo.jjjs"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row style="margin-top:-20px">
-            <el-col :span="6">
-              <el-form-item label="浮动系数" label-width="80px" prop="fdxs">
-                <el-input v-model="SalaryTemplatesinfo.fdxs"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="月度奖金" label-width="80px" prop="ydjj">
-                <el-input v-model="SalaryTemplatesinfo.ydjj"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="工作天数" label-width="80px" prop="gzts">
                 <el-input v-model="SalaryTemplatesinfo.gzts"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="加班费" label-width="80px" prop="jbf">
-                <el-input v-model="SalaryTemplatesinfo.jbf"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row style="margin-top:-20px">
-            <el-col :span="12">
-              <el-form-item label="薪资合计" label-width="80px" prop="xzhj">
-                <el-input style="200px" v-model="SalaryTemplatesinfo.xzhj"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -199,62 +148,12 @@
           </el-row>
           <el-row style="margin-top:-20px">
             <el-col :span="12">
-              <el-form-item label="补贴合计" label-width="80px" prop="bthj">
-                <el-input style="200px" v-model="SalaryTemplatesinfo.bthj"></el-input>
+              <el-form-item label="补贴合计" label-width="80px">
+                <el-input style="200px" :value="bthj"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
         </section>
-        <!-- <section>
-          <h3>假期明细</h3>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="年假天数" label-width="80px" prop="njts">
-                <el-input v-model="SalaryTemplatesinfo.njts"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="病假天数" label-width="80px" prop="bjts">
-                <el-input v-model="SalaryTemplatesinfo.bjts"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="事假天数" label-width="80px" prop="sjts">
-                <el-input v-model="SalaryTemplatesinfo.sjts"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="其他假期" label-width="80px" prop="qtjq">
-                <el-input v-model="SalaryTemplatesinfo.qtjq"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </section>
-        <section>
-          <h3>扣款明细</h3>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="迟到扣款" label-width="80px" prop="cdkk">
-                <el-input v-model="SalaryTemplatesinfo.cdkk"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="病假扣款" label-width="80px" prop="bjkk">
-                <el-input v-model="SalaryTemplatesinfo.bjkk"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="事假扣款" label-width="80px" prop="sjkk">
-                <el-input v-model="SalaryTemplatesinfo.sjkk"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="扣款合计" label-width="80px" prop="kkhj">
-                <el-input v-model="SalaryTemplatesinfo.kkhj"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </section>-->
         <section>
           <h3>五险一金</h3>
           <el-row>
@@ -275,26 +174,6 @@
             </el-col>
           </el-row>
         </section>
-        <!-- <section>
-          <h3>应发调整</h3>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="应发工资" label-width="80px" prop="byyf">
-                <el-input v-model="SalaryTemplatesinfo.byyf"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="应发调整" label-width="80px" prop="yftz">
-                <el-input v-model="SalaryTemplatesinfo.yftz"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="实发工资" label-width="80px" prop="sfgz">
-                <el-input v-model="SalaryTemplatesinfo.sfgz"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </section>-->
       </el-form>
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeAddSalaryTemplatesDialog">取 消</el-button>
@@ -322,6 +201,17 @@ export default {
   name: "SalaryTemplatess",
   mixins: [infoList],
   data() {
+    const isFloatVlidator = (rule, value, callback) => {
+      var pattern = /^\d+.?\d{0,2}$/;
+      if (value.length <= 0) {
+        return callback(new Error("不能为空"));
+      }
+      if (!pattern.test(value)) {
+        return callback(new Error("请输入非负数并且最多两位小数"));
+      } else {
+        return callback();
+      }
+    };
     return {
       listApi: getSalaryTemplatesList,
       listKey: "stList",
@@ -332,18 +222,13 @@ export default {
       title: "",
       enterpriseInfo: [],
       SalaryTemplatesinfo: {
+        enterprise: "",
+        enterprise_id: "",
         gwtemp_name: "",
         base: "",
         gangwei: "",
-        enterprise: "",
-        enterprise_id: "",
-        xzhj: "",
-        yjtc: "",
         jjjs: "",
-        fdxs: "",
-        ydjj: "",
         gzts: "",
-        jbf: "",
         txbt: "",
         csbt: "",
         jtbt: "",
@@ -352,23 +237,47 @@ export default {
         dkwx: "",
         gjj: "",
         dkgs: ""
-        // qtjq: "",
-        // njts: "",
-        // cdkk: "",
-        // bjts: "",
-        // bjkk: "",
-        // sjts: "",
-        // sjkk: "",
-        // kkhj: "",
-        // yftz: "",
-        // byyf: "",
-        // sfgz: ""
       },
-      rules: {}
+      rules: {
+        gwtemp_name: [
+          { required: true, message: "请输入模板名称", trigger: "blur" }
+        ],
+        base: [{ validator: isFloatVlidator, trigger: "blur" }],
+        gangwei: [{ validator: isFloatVlidator, trigger: "blur" }],
+        jjjs: [{ validator: isFloatVlidator, trigger: "blur" }],
+        gzts: [{ validator: isFloatVlidator, trigger: "blur" }],
+        txbt: [{ validator: isFloatVlidator, trigger: "blur" }],
+        csbt: [{ validator: isFloatVlidator, trigger: "blur" }],
+        jtbt: [{ validator: isFloatVlidator, trigger: "blur" }],
+        qtbt: [{ validator: isFloatVlidator, trigger: "blur" }],
+        //bthj: [{ validator: isFloatVlidator, trigger: "blur" }],
+        dkwx: [{ validator: isFloatVlidator, trigger: "blur" }],
+        gjj: [{ validator: isFloatVlidator, trigger: "blur" }],
+        dkgs: [{ validator: isFloatVlidator, trigger: "blur" }]
+      }
     };
   },
   computed: {
-    ...mapGetters("user", ["enPriseId"])
+    ...mapGetters("user", ["enPriseId"]),
+    bthj: {
+      get() {
+        let sum = 0;
+        if (!isNaN(parseFloat(this.SalaryTemplatesinfo.txbt))) {
+          sum += parseFloat(this.SalaryTemplatesinfo.txbt);
+        }
+        if (!isNaN(parseFloat(this.SalaryTemplatesinfo.csbt))) {
+          sum += parseFloat(this.SalaryTemplatesinfo.csbt);
+        }
+        if (!isNaN(parseFloat(this.SalaryTemplatesinfo.jtbt))) {
+          sum += parseFloat(this.SalaryTemplatesinfo.jtbt);
+        }
+        if (!isNaN(parseFloat(this.SalaryTemplatesinfo.qtbt))) {
+          sum += parseFloat(this.SalaryTemplatesinfo.qtbt);
+        }
+        //return sum.toFixed(2);
+        return Math.round(sum * 100) / 100;
+      }
+    }
   },
   methods: {
     remoteMethod(query) {
@@ -411,6 +320,7 @@ export default {
       link.click();
     },
     async enterAddSalaryTemplatesDialog() {
+      this.SalaryTemplatesinfo.bthj = this.bthj.toString();
       this.$refs.SalaryTemplatesForm.validate(async valid => {
         if (valid) {
           let res;
@@ -431,18 +341,13 @@ export default {
     },
     closeAddSalaryTemplatesDialog() {
       this.SalaryTemplatesinfo = {
+        enterprise: "",
+        enterprise_id: "",
         gwtemp_name: "",
         base: "",
         gangwei: "",
-        enterprise: "",
-        enterprise_id: "",
-        xzhj: "",
-        yjtc: "",
         jjjs: "",
-        fdxs: "",
-        ydjj: "",
         gzts: "",
-        jbf: "",
         txbt: "",
         csbt: "",
         jtbt: "",
@@ -451,18 +356,8 @@ export default {
         dkwx: "",
         gjj: "",
         dkgs: ""
-        // qtjq: "",
-        // njts: "",
-        // cdkk: "",
-        // bjts: "",
-        // bjkk: "",
-        // sjts: "",
-        // sjkk: "",
-        // kkhj: "",
-        // yftz: "",
-        // byyf: "",
-        // sfgz: ""
       };
+      this.$refs.SalaryTemplatesForm.resetFields();
       this.addSalaryTemplatesDialog = false;
     },
     //新增企业

@@ -13,35 +13,36 @@ import (
 
 type Joblist struct {
 	gorm.Model
-	Jobname      string  `json:"p_name" gorm:"column:job_name;comment:'工作名称'"`
-	JobsalaId    int     `json:"p_salary_id" gorm:"column:job_salary_id;comment:'薪资限度id，关联job_salaries表'"`
-	Jobsala      string  `json:"p_salary" gorm:"column:job_salary;comment:'薪资限度，关联job_salaries表名称'"`
-	JobLatitude  float32 `json:"p_latitude" gorm:"column:job_latitude;comment:'工作地点纬度'"`
-	JobLongitude float32 `json:"p_longitude" gorm:"column:job_longitude;comment:'工作地点经度'"`
-	JobAddress   string  `json:"p_address" gorm:"column:job_address;comment:'工作地点'"`
-	JobCity      string  `json:"p_city" gorm:"column:job_city;comment:'工作城市'"`
-	JobCityId    int     `json:"p_city_id" gorm:"column:job_city_id;comment:'工作城市id，关联citynames表id'"`
-	JobYears     string  `json:"p_edujy" gorm:"column:job_years;comment:'工作年限'"`
-	JobYearsId   int     `json:"p_edujy_id" gorm:"column:job_years_id;comment:'工作年限id，关联job_work_expire表id'"`
-	JobEdu       string  `json:"p_education" gorm:"column:job_edu;comment:'工作最低学历'"`
-	JobEduId     int     `json:"p_education_id" gorm:"column:job_edu_id;comment:'学历id，-1其他0不限1初中2高中3中专4大专5本科6硕士7博士'"`
-	JobType      string  `json:"p_type" gorm:"column:job_type;comment:'工作类型'"`
-	JobTypeId    int     `json:"p_type_id" gorm:"column:job_type_id;comment:'工作类型id，0 全职1 兼职2 实习3 志愿者'"`
-	CompanyName  string  `json:"enterprise_name" gorm:"column:company_name;comment:'公司名称'"`
-	CompanyId    int     `json:"enterprise_id" gorm:"column:company_id;comment:'公司id，关联enterprise_infos表'"`
-	CompanyImg   string  `json:"enterprise_logo" gorm:"column:company_img;comment:'公司logo url'"`
-	JobDes       string  `json:"p_desc" gorm:"column:job_des;comment:'工作描述'"`
-	JobContact   string  `json:"p_contact" gorm:"column:job_contact;comment:'职位联系人'"`
-	JobInterview string  `json:"p_interview" gorm:"column:job_interview;comment:'面试地点'"`
-	Views        int     `json:"p_views" gorm:"column:p_views;comment:'浏览数量'"`
-	Status       int     `json:"p_status" gorm:"column:p_status;comment:'职位状态，0普通，1急招，2热门，3下线'"`
-	Count        int     `json:"p_count" gorm:"column:p_count;comment:'招聘人数'"`
-	OutDate      int64   `json:"p_outdate" gorm:"column:p_outdate;comment:'有效日期，如2020-08-08为失效日期的unix时间戳'"`
-	Top          int     `json:"p_top" gorm:"column:p_top;comment:'0:普通1:置顶'"`
-	Filter       int     `json:"p_filter" gorm:"column:p_filter;comment:'过滤状态，0不启用过滤，1启用过滤'"`
-	SendEmail    string  `json:"p_send_email" gorm:"column:p_send_email;comment:'发送邮件,多个用分号划分'"`
-	CountTodi    int     `json:"p_count_todi" gorm:"-"`
-	Memo         string  `json:"p_memo" gorm:"-"`
+	Jobname          string  `json:"p_name" gorm:"column:job_name;comment:'工作名称'"`
+	JobsalaId        int     `json:"p_salary_id" gorm:"column:job_salary_id;comment:'薪资限度id，关联job_salaries表'"`
+	Jobsala          string  `json:"p_salary" gorm:"column:job_salary;comment:'薪资限度，关联job_salaries表名称'"`
+	JobLatitude      float32 `json:"p_latitude" gorm:"column:job_latitude;comment:'工作地点纬度'"`
+	JobLongitude     float32 `json:"p_longitude" gorm:"column:job_longitude;comment:'工作地点经度'"`
+	JobAddress       string  `json:"p_address" gorm:"column:job_address;comment:'工作地点'"`
+	JobCity          string  `json:"p_city" gorm:"column:job_city;comment:'工作城市'"`
+	JobCityId        int     `json:"p_city_id" gorm:"column:job_city_id;comment:'工作城市id，关联citynames表id'"`
+	JobYears         string  `json:"p_edujy" gorm:"column:job_years;comment:'工作年限'"`
+	JobYearsId       int     `json:"p_edujy_id" gorm:"column:job_years_id;comment:'工作年限id，关联job_work_expire表id'"`
+	JobEdu           string  `json:"p_education" gorm:"column:job_edu;comment:'工作最低学历'"`
+	JobEduId         int     `json:"p_education_id" gorm:"column:job_edu_id;comment:'学历id，-1其他0不限1初中2高中3中专4大专5本科6硕士7博士'"`
+	JobType          string  `json:"p_type" gorm:"column:job_type;comment:'工作类型'"`
+	JobTypeId        int     `json:"p_type_id" gorm:"column:job_type_id;comment:'工作类型id，0 全职1 兼职2 实习3 志愿者'"`
+	CompanyName      string  `json:"enterprise_name" gorm:"column:company_name;comment:'公司名称'"`
+	CompanyId        int     `json:"enterprise_id" gorm:"column:company_id;comment:'公司id，关联enterprise_infos表'"`
+	CompanyImg       string  `json:"enterprise_logo" gorm:"column:company_img;comment:'公司logo url'"`
+	JobDes           string  `json:"p_desc" gorm:"column:job_des;comment:'工作描述'"`
+	JobContact       string  `json:"p_contact" gorm:"column:job_contact;comment:'职位联系人'"`
+	JobInterview     string  `json:"p_interview" gorm:"column:job_interview;comment:'面试地点'"`
+	JobInterViewTime string  `json:"p_interview_time" gorm:"-"`
+	Views            int     `json:"p_views" gorm:"column:p_views;comment:'浏览数量'"`
+	Status           int     `json:"p_status" gorm:"column:p_status;comment:'职位状态，0普通，1急招，2热门，3下线'"`
+	Count            int     `json:"p_count" gorm:"column:p_count;comment:'招聘人数'"`
+	OutDate          int64   `json:"p_outdate" gorm:"column:p_outdate;comment:'有效日期，如2020-08-08为失效日期的unix时间戳'"`
+	Top              int     `json:"p_top" gorm:"column:p_top;comment:'0:普通1:置顶'"`
+	Filter           int     `json:"p_filter" gorm:"column:p_filter;comment:'过滤状态，0不启用过滤，1启用过滤'"`
+	SendEmail        string  `json:"p_send_email" gorm:"column:p_send_email;comment:'发送邮件,多个用分号划分'"`
+	CountTodi        int     `json:"p_count_todi" gorm:"-"`
+	Memo             string  `json:"p_memo" gorm:"-"`
 }
 type SearchInfo struct {
 	EnterPriseName string `json:"enterprise_name"`

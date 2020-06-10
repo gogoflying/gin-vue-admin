@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
@@ -136,6 +137,21 @@ func (un *SalaryUsers) UpdateEnterStep() error {
 func (un *SalaryUsers) FindById() (err error, reun SalaryUsers) {
 	err = qmsql.DEFAULTDB.Where("id = ?", un.ID).First(&reun).Error
 	return err, reun
+}
+
+//SELECT syu.email,syu.username,ua.enterprise_name FROM user_auths ua,sys_users syu WHERE ua.enterprise_id = 11
+//   AND ua.username = syu.username
+func (un *SalaryUsers) FindEmailByEnterStepId(enterpriseId int) (err error, emails []string) {
+	rows, err := qmsql.DEFAULTDB.Table("user_auths ua,sys_users syu").Select("DISTINCT syu.email").Where(" ua.enterprise_id = ? AND ua.username = syu.username ", enterpriseId).Rows()
+	//err = qmsql.DEFAULTDB.Where("id = ?", un.ID).First(&reun).Error
+	defer rows.Close()
+	for rows.Next() {
+		var email string
+		rows.Scan(&email)
+		emails = append(emails, email)
+		fmt.Printf("email :%v\n", email)
+	}
+	return err, emails
 }
 
 func (un *SalaryUsers) LoginMobile() (err error, reun SalaryUsers) {

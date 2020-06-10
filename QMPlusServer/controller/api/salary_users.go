@@ -81,9 +81,24 @@ func UpdateSalaryUsers(c *gin.Context) {
 	var un userSalary.SalaryUsers
 	_ = c.ShouldBindJSON(&un)
 	err, reun := un.UpdateSalaryUsers()
+	//fmt.Printf("lrl1 :%v---%v\n", reun, un)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
 	} else {
+		fmt.Printf("lrl1 :%v---%v\n", reun.EnterStep, un.EnterStep)
+		if un.LeaveStep == 1 {
+			err, emails := un.FindEmailByEnterStepId(un.EnterpriseId)
+			if err != nil {
+				servers.ReportFormat(c, false, fmt.Sprintf("email 联合查询失败：%v", err), gin.H{})
+				return
+			}
+			err = userLeaveSendEmail(emails, un.Name, un.Enterprise)
+			if err != nil {
+				servers.ReportFormat(c, false, fmt.Sprintf("userLeaveSendEmail 发送失败：%v", err), gin.H{})
+				return
+			}
+			fmt.Printf("lrl : email :%v,enpname:%s,user:%s\n", emails, un.Enterprise, un.Name)
+		}
 		servers.ReportFormat(c, true, "更新成功", gin.H{
 			"reun": reun,
 		})
@@ -94,9 +109,11 @@ func UpdateSalaryUsersLeaveStep(c *gin.Context) {
 	var un userSalary.SalaryUsers
 	_ = c.ShouldBindJSON(&un)
 	err := un.UpdateLeaveStep()
+
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
 	} else {
+
 		servers.ReportFormat(c, true, "更新成功", gin.H{})
 	}
 }
@@ -105,6 +122,7 @@ func UpdateSalaryUsersEnterStep(c *gin.Context) {
 	var un userSalary.SalaryUsers
 	_ = c.ShouldBindJSON(&un)
 	err := un.UpdateEnterStep()
+
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
 	} else {
@@ -474,4 +492,16 @@ func NewOpenID() string {
 
 	dst := md5.Sum(buf.Bytes())
 	return hex.EncodeToString(dst[:])
+}
+
+func userLeaveSendEmail(emails []string, leaveUser, enterprise string) error {
+	if len(emails) == 0 || leaveUser == "" || enterprise == "" {
+		return fmt.Errorf("userLeaveSendEmail param empty")
+	}
+	msgContext := fmt.Sprintf("%s公司管理员您好，本公司员工%s 正式提出离职，日期:%v 请知晓 ", enterprise, leaveUser, time.Now().Format("2006-01-02"))
+
+	if err := servers.UserLeaveSendEmail(emails, "员工离职通知", msgContext); err != nil {
+		return fmt.Errorf("userLeaveSendEmail send err:%v", err)
+	}
+	return nil
 }

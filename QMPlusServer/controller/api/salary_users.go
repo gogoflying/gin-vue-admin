@@ -260,8 +260,9 @@ func SalaryUserLoginMobile(c *gin.Context) {
 		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "查询成功", gin.H{
-			"openid":   reun.Openid,
-			"username": reun.Name,
+			"openid":    reun.Openid,
+			"username":  reun.Name,
+			"avatarUrl": reun.AvatarUrl,
 		})
 	}
 }

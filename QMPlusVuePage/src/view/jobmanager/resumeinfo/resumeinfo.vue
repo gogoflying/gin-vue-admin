@@ -272,8 +272,12 @@ export default {
       this.dialogFormVisible = false;
     },
     async dialogRemarkOK() {
-      if ((this.resume_info.p_contact == "") || (this.resume_info.p_interview_time == "") || (this.resume_info.p_interview_loc == "") || (this.resume_info.p_remark == "")){
-        this.$message({ type: "error", message: "请填写全部信息" });
+      if (
+        this.resume_info.p_contact == "" ||
+        this.resume_info.p_interview_time == "" ||
+        this.resume_info.p_interview_loc == ""
+      ) {
+        this.$message({ type: "error", message: "请填写必要信息" });
         return;
       }
       const res = await updateResumeStatus(this.resume_info);
@@ -285,9 +289,11 @@ export default {
     },
     async changeResumeStatus(row) {
       row.p_badge = 1;
-      const res = await updateResumeStatus(row);
-      if (res.success) {
-        this.$message({ type: "success", message: "状态设置成功" });
+      if (row.resume_status != 3) {
+        const res = await updateResumeStatus(row);
+        if (res.success) {
+          this.$message({ type: "success", message: "状态设置成功" });
+        }
       }
       if (row.resume_status == 3) {
         if (row.p_contact == "") {

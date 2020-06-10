@@ -138,7 +138,7 @@ export default {
           }
         ],
         birthday: [{ required: true, message: "请输入生日", trigger: "blur" }],
-        avatarUrl: [{ required: true, message: "请上传头像", trigger: "blur" }]
+        //avatarUrl: [{ required: true, message: "请上传头像", trigger: "blur" }]
       }
     };
   },

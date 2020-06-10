@@ -321,7 +321,7 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          v-show="salaryuserinfo.leave_step > 0"
+          v-show="salaryuserinfo.leave_step >= 0 && salaryuserinfo.enter_step == 4"
           label="离职日期"
           label-width="80px"
           prop="leave_time"
@@ -336,7 +336,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item
-          v-show="salaryuserinfo.leave_step > 0"
+          v-show="salaryuserinfo.leave_step >= 0 && salaryuserinfo.enter_step == 4"
           label="离职进度"
           label-width="80px"
           prop="leave_step"

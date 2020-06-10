@@ -144,7 +144,7 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column label="id" min-width="60" prop="ID" v-if="enPriseId == 0"></el-table-column>
+      <el-table-column label="ID" min-width="60" type="index"></el-table-column>
       <el-table-column label="姓名" min-width="80" prop="name"></el-table-column>
       <!-- <el-table-column label="手机" min-width="110" prop="mobile"></el-table-column> -->
       <el-table-column label="岗位名称" min-width="100" prop="job_name"></el-table-column>

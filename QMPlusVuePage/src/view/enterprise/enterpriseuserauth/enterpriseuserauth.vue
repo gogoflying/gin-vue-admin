@@ -17,7 +17,7 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe>
-      <!-- <el-table-column label="id" min-width="60" prop="ID"></el-table-column> -->
+      <el-table-column label="ID" type="index"></el-table-column>
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name"></el-table-column>
       <el-table-column label="用户名" min-width="80" prop="userName"></el-table-column>
       <el-table-column label="角色" min-width="80" prop="authorityName"></el-table-column>
@@ -33,7 +33,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="80" v-if="false">
+      <el-table-column fixed="right" label="操作" width="80">
         <template slot-scope="scope">
           <el-button @click="deleteUserAuth(scope.row.ID)" size="small" type="text">删除</el-button>
         </template>
@@ -87,7 +87,7 @@ export default {
     },
     // 删除用户审核
     deleteUserAuth(ID) {
-      this.$confirm("此操作将永久删除改用户审核, 是否继续?", "提示", {
+      this.$confirm("此操作只删除用户与企业绑定关系(如需删除用户，请到超级管理员菜单进行操作), 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

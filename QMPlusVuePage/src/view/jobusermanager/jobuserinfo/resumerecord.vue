@@ -45,6 +45,7 @@
       <el-col :span="24">
         <div class="content">
           <el-table :data="tableData" style="width: 100%" max-height="370">
+            <el-table-column fixed label="ID" min-width="60" type="index"></el-table-column>
             <el-table-column fixed prop="job_info.enterprise_name" label="公司名字" min-width="100"></el-table-column>
             <el-table-column fixed prop="job_info.p_name" label="职位" align="center" min-width="100"></el-table-column>
             <el-table-column

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gin-vue-admin/config"
 	"gin-vue-admin/controller/servers"
+	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/middleware"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/sysModel"
@@ -307,11 +308,16 @@ func ResetPassword(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	var ur sysModel.SysUser
 	_ = c.ShouldBindJSON(&ur)
-	err := ur.DeleteUser()
-	if err != nil {
-		servers.ReportFormat(c, false, fmt.Sprintf("删除失败：%v", err), gin.H{})
+	err := qmsql.DEFAULTDB.Where("user_id = ?", ur.ID).First(&userJobs.UserAuth{}).Error
+	if err == nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("该用户与企业有绑定关系，请先解绑"), gin.H{})
 	} else {
-		servers.ReportFormat(c, true, "创建成功", gin.H{})
+		err = ur.DeleteUser()
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("删除失败：%v", err), gin.H{})
+		} else {
+			servers.ReportFormat(c, true, "删除成功", gin.H{})
+		}
 	}
 }
 

@@ -91,7 +91,7 @@
           </el-form>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="id" min-width="60" prop="ID"></el-table-column> -->
+      <el-table-column label="ID" min-width="60" type="index"></el-table-column>
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name"></el-table-column>
       <el-table-column label="企业性质" min-width="100" prop="enterprise_type_info"></el-table-column>
       <el-table-column label="行业类别" min-width="100" prop="enterprise_indust_info"></el-table-column>

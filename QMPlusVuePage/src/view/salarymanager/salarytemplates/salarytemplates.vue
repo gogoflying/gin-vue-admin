@@ -4,7 +4,7 @@
       <el-button @click="addSalaryTemplates" type="primary" icon="el-icon-plus">新增模板</el-button>
     </div>
     <el-table :data="tableData" border stripe>
-      <el-table-column label="id" min-width="60" prop="ID" v-if="enPriseId == 0"></el-table-column>
+      <el-table-column label="ID" min-width="60" type="index"></el-table-column>
       <el-table-column label="所属企业" min-width="120" prop="enterprise" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="模板名称" min-width="60" prop="gwtemp_name"></el-table-column>
       <el-table-column label="薪资构成" align="center">

@@ -135,7 +135,7 @@
     </div>
     <el-table :data="tableData" border stripe @cell-click="gotopreview">
       <!-- <el-table-column label="用户标识" min-width="150" prop="openid"></el-table-column> -->
-      <el-table-column label="id" min-width="60" prop="ID" v-if="enPriseId == 0"></el-table-column>
+      <el-table-column label="ID" min-width="60" type="index"></el-table-column>
       <el-table-column label="姓名" min-width="100" prop="userName">
         <template slot-scope="scope">
           <el-link type="primary">{{scope.row.userName}}</el-link>

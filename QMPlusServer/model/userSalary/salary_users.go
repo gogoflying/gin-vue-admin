@@ -18,6 +18,7 @@ type SalaryUsers struct {
 	gorm.Model
 	Openid       string   `json:"openid" gorm:"column:openid"`
 	Name         string   `json:"name" gorm:"column:name"`
+	AvatarUrl    string   `json:"avatarUrl" gorm:"column:avatarUrl;comment:'用户头像url'"`
 	Mobile       string   `json:"mobile" gorm:"column:mobile"`
 	PassWord     string   `json:"pass_word" gorm:"column:password"`
 	NewPassWord  string   `json:"new_pass_word" gorm:"-"`

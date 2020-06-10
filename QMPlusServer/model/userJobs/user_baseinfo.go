@@ -18,7 +18,7 @@ type EduLevel struct {
 type UserBaseInfo struct {
 	gorm.Model
 	UserName       string            `json:"userName" gorm:"column:user_name;comment:'用户姓名'"`
-	AvatarUrl      string            `json:"avatarUrl" gorm:"column:avatarUrl;comment:'用户头像url，暂未使用'"`
+	AvatarUrl      string            `json:"avatarUrl" gorm:"column:avatarUrl;comment:'用户头像url'"`
 	Genderindex    int               `json:"genderindex" gorm:"column:genderindex;comment:'性别，0男1女'"`
 	EdulevelIndex  int               `json:"edulevelindex" gorm:"column:edulevelindex;comment:'最高学历id'"`
 	Edulevel       EduLevel          `json:"edu_level" gorm:"ForeignKey:EdulevelIndex;AssociationForeignKey:ID;save_associations:false"`

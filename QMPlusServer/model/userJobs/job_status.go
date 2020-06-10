@@ -156,6 +156,7 @@ func (rs *ResumeStatus) EnterJob() (err error) {
 			EnterpriseId: rs.CompanyId,
 			JobName:      rs.Jobname,
 			Email:        rebf.Email,
+			AvatarUrl:    rebf.AvatarUrl,
 		}
 		return us.CreateSalaryUsers()
 

@@ -85,7 +85,6 @@ func UpdateSalaryUsers(c *gin.Context) {
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
 	} else {
-		fmt.Printf("lrl1 :%v---%v\n", reun.EnterStep, un.EnterStep)
 		if un.LeaveStep == 1 {
 			err, emails := un.FindEmailByEnterStepId(un.EnterpriseId)
 			if err != nil {
@@ -97,7 +96,6 @@ func UpdateSalaryUsers(c *gin.Context) {
 				servers.ReportFormat(c, false, fmt.Sprintf("userLeaveSendEmail 发送失败：%v", err), gin.H{})
 				return
 			}
-			fmt.Printf("lrl : email :%v,enpname:%s,user:%s\n", emails, un.Enterprise, un.Name)
 		}
 		servers.ReportFormat(c, true, "更新成功", gin.H{
 			"reun": reun,

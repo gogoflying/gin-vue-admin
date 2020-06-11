@@ -31,8 +31,9 @@ func SendEmail(to, subject, body string) error {
 func UserLeaveSendEmail(to []string, subject, body string) error {
 
 	m := gomail.NewMessage()
-	for _, emailAddr := range to {
-		m.SetHeader("To", emailAddr)
+	m.SetHeader("To", to[0])
+	if len(to) == 2 {
+		m.SetHeader("Cc", to[1])
 	}
 
 	m.SetAddressHeader("From", config.GinVueAdminconfig.SendEmail.FromEmail, "salary")

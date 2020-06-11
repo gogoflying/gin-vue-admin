@@ -75,7 +75,7 @@
 
     <el-table :data="tableData" border stripe>
       <!-- <el-table-column type="selection" min-width="55"></el-table-column> -->
-      <el-table-column label="ID" min-width="60" type="index"></el-table-column>
+      <el-table-column label="ID" min-width="60" type="index" :index="indexMethod"></el-table-column>
       <el-table-column label="职位名称" min-width="150" prop="job_info.p_name"></el-table-column>
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name" v-if="enPriseId == 0"></el-table-column>
       <el-table-column label="投递人" min-width="100" prop="user_info.userName"></el-table-column>
@@ -205,6 +205,9 @@ export default {
     ...mapGetters("user", ["enPriseId"])
   },
   methods: {
+    indexMethod(index) {
+      return index + 1 + (this.page - 1) * this.pageSize;
+    },
     wyFormat(row) {
       if (row.user_info.worksYearindex == null || this.option.jwe == null) {
         return "";

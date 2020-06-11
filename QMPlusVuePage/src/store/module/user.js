@@ -6,6 +6,7 @@ export const user = {
     state: {
         userInfo: {
             uuid: "",
+            userName: "",
             nickName: "",
             headerImg: "",
             authority: "",

@@ -16,7 +16,7 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe>
-      <el-table-column label="ID" min-width="60" type="index"></el-table-column>
+      <el-table-column label="ID" min-width="60" type="index" :index="indexMethod"></el-table-column>
       <el-table-column label="新闻标题" min-width="100" prop="title" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="新闻副标题" min-width="100" prop="sub_title" v-if="false"></el-table-column>
       <!-- <el-table-column label="排序" min-width="100" prop="order"></el-table-column> -->
@@ -77,6 +77,9 @@ export default {
     };
   },
   methods: {
+    indexMethod(index) {
+      return index + 1 + (this.page - 1) * this.pageSize;
+    },
     newTypeFormat(row) {
       if (row.news_type == 1) {
         return "社保";

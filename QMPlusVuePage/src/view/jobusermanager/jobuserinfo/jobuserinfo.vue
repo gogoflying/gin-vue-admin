@@ -135,7 +135,7 @@
     </div>
     <el-table :data="tableData" border stripe @cell-click="gotopreview">
       <!-- <el-table-column label="用户标识" min-width="150" prop="openid"></el-table-column> -->
-      <el-table-column label="ID" min-width="60" type="index"></el-table-column>
+      <el-table-column label="ID" min-width="60" type="index" :index="indexMethod"></el-table-column>
       <el-table-column label="姓名" min-width="100" prop="userName">
         <template slot-scope="scope">
           <el-link type="primary">{{scope.row.userName}}</el-link>
@@ -222,6 +222,9 @@ export default {
     ...mapGetters("user", ["enPriseId"])
   },
   methods: {
+    indexMethod(index) {
+      return (index + 1) + (this.page - 1) * this.pageSize;
+    },
     genderFormat(row) {
       return row.genderindex === 0 ? "男" : row.genderindex === 1 ? "女" : "";
     },

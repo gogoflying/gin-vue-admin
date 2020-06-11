@@ -17,11 +17,11 @@
       </el-form>
     </div>
     <el-table :data="tableData" border stripe>
-      <el-table-column label="ID" type="index"></el-table-column>
+      <el-table-column label="ID" type="index" :index="indexMethod"></el-table-column>
       <el-table-column label="企业名称" min-width="150" prop="enterprise_name"></el-table-column>
       <el-table-column label="用户名" min-width="80" prop="userName"></el-table-column>
       <el-table-column label="角色" min-width="80" prop="authorityName"></el-table-column>
-      <el-table-column label="审核" min-width="120"  prop="status">
+      <el-table-column label="审核" min-width="120" prop="status">
         <template slot-scope="scope">
           <el-switch
             @change="changestatus(scope.row)"
@@ -73,6 +73,9 @@ export default {
     };
   },
   methods: {
+    indexMethod(index) {
+      return index + 1 + (this.page - 1) * this.pageSize;
+    },
     //条件搜索前端看此方法
     onSubmit() {
       this.page = 1;
@@ -87,11 +90,15 @@ export default {
     },
     // 删除用户审核
     deleteUserAuth(ID) {
-      this.$confirm("此操作只删除用户与企业绑定关系(如需删除用户，请到超级管理员菜单进行操作), 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
+      this.$confirm(
+        "此操作只删除用户与企业绑定关系(如需删除用户，请到超级管理员菜单进行操作), 是否继续?",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
         .then(async () => {
           const res = await deleteUserAuth({ ID });
           if (res.success) {

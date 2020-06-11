@@ -91,11 +91,14 @@ func UpdateSalaryUsers(c *gin.Context) {
 				servers.ReportFormat(c, false, fmt.Sprintf("email 联合查询失败：%v", err), gin.H{})
 				return
 			}
-			err = userLeaveSendEmail(emails, un.Name, un.Enterprise)
-			if err != nil {
-				servers.ReportFormat(c, false, fmt.Sprintf("userLeaveSendEmail 发送失败：%v", err), gin.H{})
-				return
+			for _, email := range emails {
+				err = userLeaveSendEmail(email, un.Name, un.Enterprise)
+				if err != nil {
+					servers.ReportFormat(c, false, fmt.Sprintf("userLeaveSendEmail 发送失败：%v", err), gin.H{})
+					return
+				}
 			}
+
 		}
 		servers.ReportFormat(c, true, "更新成功", gin.H{
 			"reun": reun,
@@ -492,13 +495,13 @@ func NewOpenID() string {
 	return hex.EncodeToString(dst[:])
 }
 
-func userLeaveSendEmail(emails []string, leaveUser, enterprise string) error {
-	if len(emails) == 0 || leaveUser == "" || enterprise == "" {
+func userLeaveSendEmail(email string, leaveUser, enterprise string) error {
+	if email == "" || leaveUser == "" || enterprise == "" {
 		return fmt.Errorf("userLeaveSendEmail param empty")
 	}
 	msgContext := fmt.Sprintf("%s公司管理员您好，本公司员工%s 正式提出离职，日期:%v 请知晓 ", enterprise, leaveUser, time.Now().Format("2006-01-02"))
 
-	if err := servers.UserLeaveSendEmail(emails, "员工离职通知", msgContext); err != nil {
+	if err := servers.SendEmail(email, "员工离职通知", msgContext); err != nil {
 		return fmt.Errorf("userLeaveSendEmail send err:%v", err)
 	}
 	return nil

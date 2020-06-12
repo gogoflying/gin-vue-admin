@@ -254,6 +254,22 @@ func ChangePassword(c *gin.Context) {
 	}
 }
 
+type ChangeEmailStutrc struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+}
+
+func ChangeEmail(c *gin.Context) {
+	var params ChangeEmailStutrc
+	_ = c.ShouldBindJSON(&params)
+	U := &sysModel.SysUser{Username: params.Username}
+	if err, _ := U.ChangeEmail(params.Email); err != nil {
+		servers.ReportFormat(c, false, "修改失败，请检查用户名", gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "修改成功", gin.H{})
+	}
+}
+
 type UserHeaderImg struct {
 	HeaderImg multipart.File `json:"headerImg"`
 }

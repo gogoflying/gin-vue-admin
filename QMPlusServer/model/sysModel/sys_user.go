@@ -80,6 +80,13 @@ func (u *SysUser) ChangePassword(newPassword string) (err error, userInter *SysU
 	return err, u
 }
 
+//修改邮箱
+func (u *SysUser) ChangeEmail(email string) (err error, userInter *SysUser) {
+	var user SysUser
+	err = qmsql.DEFAULTDB.Where("username = ?", u.Username).First(&user).Update("email", email).Error
+	return err, u
+}
+
 //用户更新接口
 func (u *SysUser) SetUserAuthority(uuid uuid.UUID, AuthorityId string) (err error) {
 	err = qmsql.DEFAULTDB.Where("uuid = ?", uuid).First(&SysUser{}).Update("authority_id", AuthorityId).Error

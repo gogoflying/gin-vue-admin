@@ -13,6 +13,7 @@ func InitSalarysRouter(Router *gin.RouterGroup) {
 	{
 		SalarysRouter.POST("createSalarys", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.CreateSalarys) // 新建Salarys
 		SalarysRouter.POST("deleteSalarys", api.DeleteSalarys)                                                       //删除Salarys
+		SalarysRouter.POST("batchdeleteSalarys", api.BatchDeleteSalarys)                                             //批量删除Salarys
 		SalarysRouter.POST("updateSalarys", api.UpdateSalarys)                                                       //更新Salarys
 		SalarysRouter.POST("findSalarys", api.FindSalarys)                                                           // 根据ID获取Salarys
 		SalarysRouter.POST("findSalarysByIdAndOpenid", api.FindSalarysByIdAndOpenid)

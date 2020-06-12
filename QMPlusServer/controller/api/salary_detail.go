@@ -79,6 +79,20 @@ func DeleteSalarys(c *gin.Context) {
 	}
 }
 
+func BatchDeleteSalarys(c *gin.Context) {
+	type searchParams struct {
+		Ids []int `json:"ids"`
+	}
+	var sp searchParams
+	_ = c.ShouldBindJSON(&sp)
+	err := new(userSalary.Salarys).BatchDeleteSalarys(sp.Ids)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("批量删除失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "创建成功", gin.H{})
+	}
+}
+
 func UpdateSalarys(c *gin.Context) {
 	var un userSalary.Salarys
 	_ = c.ShouldBindJSON(&un)

@@ -11,6 +11,7 @@ func InitUserRouter(Router *gin.RouterGroup) {
 	//.Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())
 	{
 		UserRouter.POST("changePassword", api.ChangePassword)   // 修改密码
+		UserRouter.POST("changeEmail", api.ChangeEmail)         // 修改邮箱
 		UserRouter.POST("uploadHeaderImg", api.UploadHeaderImg) //上传头像
 		UserRouter.POST("resetPassword", api.ResetPassword)
 		UserRouter.POST("findSysUserById", api.FindUserById)

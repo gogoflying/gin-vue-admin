@@ -82,3 +82,11 @@ export const createSalarys = (data) => {
          data
      })
  }
+
+ export const batchdeleteSalarys = (data) => {
+    return service({
+        url: "/un/batchdeleteSalarys",
+        method: 'post',
+        data
+    })
+}

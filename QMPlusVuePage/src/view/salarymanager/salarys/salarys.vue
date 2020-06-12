@@ -71,7 +71,14 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="tableData" border stripe>
+    <el-table
+      :data="tableData"
+      border
+      stripe
+      @selection-change="handleSelectionChange"
+      ref="multipleTable"
+    >
+      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column label="ID" min-width="60" type="index" :index="indexMethod"></el-table-column>
       <el-table-column label="姓名" min-width="100" prop="name"></el-table-column>
       <el-table-column label="年" min-width="60" prop="year"></el-table-column>
@@ -134,16 +141,22 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      :current-page="page"
-      :page-size="pageSize"
-      :page-sizes="[10, 30, 50, 100]"
-      :style="{float:'right',padding:'20px'}"
-      :total="total"
-      @current-change="handleCurrentChange"
-      @size-change="handleSizeChange"
-      layout="total, sizes, prev, pager, next, jumper"
-    ></el-pagination>
+    <div :style="{padding:'20px 10px'}">
+      <el-pagination
+        :current-page="page"
+        :page-size="pageSize"
+        :pager-count="5"
+        :page-sizes="[10, 30, 50, 100]"
+        :style="{float:'right'}"
+        :total="total"
+        @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
+        layout="total, sizes, prev, pager, next, jumper"
+      ></el-pagination>
+      <el-checkbox v-model="allChecked">全选</el-checkbox>
+      <el-button size="small" @click="handleBatchDelete()">批量删除</el-button>
+      <el-button :loading="downloadLoading" size="small" @click="handleDownload()">批量导出</el-button>
+    </div>
 
     <el-dialog
       :visible.sync="addSalaryDetailDialog"
@@ -426,7 +439,8 @@ import {
   createSalarys,
   updateSalarys,
   findSalarys,
-  deleteSalarys
+  deleteSalarys,
+  batchdeleteSalarys
 } from "@/api/salarydetail";
 import { getEnterpriseListBySearch } from "@/api/enterpriseinfo";
 import { getSalaryTemplatesListBySearch } from "@/api/salarytemplate";
@@ -468,6 +482,9 @@ export default {
       isEdit: false,
       loading: false,
       title: "",
+      allChecked: false,
+      multipleSelection: [],
+      downloadLoading: false,
       importDataBtnText: "导入数据",
       importDataBtnIcon: "el-icon-upload2",
       importDataDisabled: true,
@@ -662,11 +679,153 @@ export default {
       if (val != null) {
         this.importDataDisabled = false;
       }
+    },
+    allChecked: function(allChecked) {
+      this.toggleSelection(allChecked);
     }
   },
   methods: {
     indexMethod(index) {
       return index + 1 + (this.page - 1) * this.pageSize;
+    },
+    toggleSelection(allChecked) {
+      if (allChecked) {
+        if (this.multipleSelection.length != this.pageSize) {
+          this.$refs.multipleTable.toggleAllSelection();
+        }
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    handleBatchDelete() {
+      if (this.multipleSelection.length) {
+        let idsArr = [];
+        for (let i = 0; i < this.multipleSelection.length; i++) {
+          idsArr.push(this.multipleSelection[i].ID);
+        }
+        this.$confirm("此操作将永久删除薪资信息, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(async () => {
+            const res = await batchdeleteSalarys({ ids: idsArr });
+            if (res.success) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              this.getTableData();
+            }
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除"
+            });
+          });
+      } else {
+        this.$message({
+          message: "请至少选择一项",
+          type: "warning"
+        });
+      }
+    },
+    handleDownload() {
+      if (this.multipleSelection.length) {
+        this.downloadLoading = true;
+        import("@/utils/export2excel").then(excel => {
+          const tHeader = [
+            "公司名称",
+            "姓名",
+            "年",
+            "月",
+            "基本工资",
+            "岗位工资",
+            "新增合计",
+            "业绩提成",
+            "奖金基数",
+            "浮动系数",
+            "月度奖金",
+            "本月工作日天数",
+            "加班费",
+            "通讯补贴",
+            "餐食补贴",
+            "交通补贴",
+            "其他补贴",
+            "补贴合计",
+            "其他假期",
+            "年假天数",
+            "迟到扣款",
+            "病假天数",
+            "病假扣款",
+            "事假天数",
+            "事假扣款",
+            "扣款合计",
+            "应发调整",
+            "本月应发工资",
+            "代扣五险",
+            "代扣住房公积金",
+            "代扣个人所得税",
+            "实发工资"
+          ];
+          const filterVal = [
+            "enterprise",
+            "name",
+            "year",
+            "month",
+            "base",
+            "gangwei",
+            "xzhj",
+            "yjtc",
+            "jjjs",
+            "fdxs",
+            "ydjj",
+            "gzts",
+            "jbf",
+            "txbt",
+            "csbt",
+            "jtbt",
+            "qtbt",
+            "bthj",
+            "qtjq",
+            "njts",
+            "cdkk",
+            "bjts",
+            "bjkk",
+            "sjts",
+            "sjkk",
+            "kkhj",
+            "yftz",
+            "byyf",
+            "dkwx",
+            "gjj",
+            "dkgs",
+            "sfgz"
+          ];
+          const list = this.multipleSelection;
+          const data = this.formatJson(filterVal, list);
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: this.filename
+          });
+          this.$refs.multipleTable.clearSelection();
+          this.allChecked = false;
+          this.downloadLoading = false;
+        });
+      } else {
+        this.$message({
+          message: "请至少选择一项",
+          type: "warning"
+        });
+      }
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]));
     },
     remoteMethod(query) {
       if (query !== "") {

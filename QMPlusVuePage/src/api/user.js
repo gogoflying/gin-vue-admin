@@ -118,3 +118,11 @@ export const forgetVerify = (data) =>{
         data:data
     })
 }
+ 
+export const changeEmail = (data) => {
+    return service({
+        url: "/user/changeEmail",
+        method: 'post',
+        data: data
+    })
+}

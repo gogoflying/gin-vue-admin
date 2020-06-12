@@ -35,6 +35,7 @@
                   </span>
                 </el-dropdown-item>
                 <el-dropdown-item @click.native="showPassword=true" icon="el-icon-s-custom">修改密码</el-dropdown-item>
+                <el-dropdown-item @click.native="showEmail=true" icon="el-icon-s-custom">修改邮箱</el-dropdown-item>
                 <el-dropdown-item @click.native="toPerson" icon="el-icon-s-custom">个人信息</el-dropdown-item>
                 <el-dropdown-item @click.native="LoginOut" icon="el-icon-table-lamp">登 出</el-dropdown-item>
               </el-dropdown-menu>
@@ -56,6 +57,17 @@
                 <el-button type="primary" @click="savePassword">确 定</el-button>
               </div>
             </el-dialog>
+            <el-dialog title="修改邮箱地址" :visible.sync="showEmail" @close="clearEmail" width="360px">
+              <el-form ref="modifyEmailForm" :model="emailModify" :rules="rulesEmail" label-width="80px">
+                <el-form-item prop="email" label="邮箱地址">
+                  <el-input v-model="emailModify.email"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="showEmail=false">取 消</el-button>
+                <el-button type="primary" @click="saveEmail">确 定</el-button>
+              </div>
+            </el-dialog>
           </div>
         </el-header>
         <!-- 当前面包屑用路由自动生成可根据需求修改 -->
@@ -75,7 +87,7 @@ import Aside from '@/view/layout/aside';
 import HistoryComponent from '@/view/layout/aside/historyComponent/history';
 
 import { mapGetters, mapActions } from "vuex";
-import { changePassword } from "@/api/user";
+import { changePassword, changeEmail } from "@/api/user";
 export default {
   name: "Layout",
   data() {
@@ -85,6 +97,7 @@ export default {
       isMobile: false,
       isShadowBg: false,
       showPassword: false,
+      showEmail: false,
       pwdModify: {},
       rules: {
         password: [
@@ -106,6 +119,17 @@ export default {
                 callback()
               }
             },
+            trigger: "blur"
+          }
+        ]
+      },
+      emailModify: {},
+      rulesEmail:{
+        email: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          {
+            type: "email",
+            message: "邮箱格式不正确",
             trigger: "blur"
           }
         ]
@@ -168,6 +192,27 @@ export default {
         confirmPassword: ""
       };
       this.$refs.modifyPwdForm.clearValidate();
+    },
+    saveEmail() {
+      this.$refs.modifyEmailForm.validate(valid => {
+        if (valid) {
+          changeEmail({
+            username: this.userInfo.userName,
+            email: this.emailModify.email
+          }).then(() => {
+            this.$message.success("修改邮箱成功！");
+            this.showEmail = false;
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    clearEmail() {
+      this.emailModify = {
+        email: ""
+      };
+      this.$refs.modifyEmailForm.clearValidate();
     }
   },
   computed: {

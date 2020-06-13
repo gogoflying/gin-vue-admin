@@ -217,7 +217,7 @@ func UploadUserContract(c *gin.Context) {
 	log.L.Info("UploadUserContract new json:", sc)
 	err := sc.CreateSalaryContract()
 	if err != nil {
-		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
+		servers.ReportFormat(c, false, fmt.Sprintf("用户已创建，更新用户信息，本次创建失败：%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "创建成功", gin.H{})
 	}

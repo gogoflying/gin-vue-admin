@@ -99,6 +99,9 @@ func UpdateSalaryUsers(c *gin.Context) {
 				}
 			}
 
+		} else if un.LeaveStep == 2 {
+			//用户离职短信提醒
+			servers.SendSms(un.Mobile, un.Name, servers.SMSMSGTYPE_LEAVEL_CONTRACT)
 		}
 		servers.ReportFormat(c, true, "更新成功", gin.H{
 			"reun": reun,

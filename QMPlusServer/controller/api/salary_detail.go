@@ -340,16 +340,46 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 			dkgs := strings.Trim(row.Cells[31].Value, " ")
 			sfgz := strings.Trim(row.Cells[32].Value, " ")
 
-			ext1 := strings.Trim(row.Cells[33].Value, " ")
-			ext2 := strings.Trim(row.Cells[34].Value, " ")
-			ext3 := strings.Trim(row.Cells[35].Value, " ")
-			ext4 := strings.Trim(row.Cells[36].Value, " ")
-			ext5 := strings.Trim(row.Cells[37].Value, " ")
-			ext6 := strings.Trim(row.Cells[38].Value, " ")
-			ext7 := strings.Trim(row.Cells[39].Value, " ")
-			ext8 := strings.Trim(row.Cells[40].Value, " ")
-			ext9 := strings.Trim(row.Cells[41].Value, " ")
-			ext10 := strings.Trim(row.Cells[42].Value, " ")
+			ext1 := ""
+			if strings.Trim(row.Cells[33].Value, " ") != "" {
+				ext1 = strings.Trim(row.Cells[33].Value, " ")
+			}
+			ext2 := ""
+			if strings.Trim(row.Cells[34].Value, " ") != "" {
+				ext2 = strings.Trim(row.Cells[34].Value, " ")
+			}
+			ext3 := ""
+			if strings.Trim(row.Cells[35].Value, " ") != "" {
+				ext3 = strings.Trim(row.Cells[35].Value, " ")
+			}
+			ext4 := ""
+			if strings.Trim(row.Cells[36].Value, " ") != "" {
+				ext4 = strings.Trim(row.Cells[36].Value, " ")
+			}
+			ext5 := ""
+			if strings.Trim(row.Cells[37].Value, " ") != "" {
+				ext5 = strings.Trim(row.Cells[37].Value, " ")
+			}
+			ext6 := ""
+			if strings.Trim(row.Cells[38].Value, " ") != "" {
+				ext6 = strings.Trim(row.Cells[38].Value, " ")
+			}
+			ext7 := ""
+			if strings.Trim(row.Cells[39].Value, " ") != "" {
+				ext7 = strings.Trim(row.Cells[39].Value, " ")
+			}
+			ext8 := ""
+			if strings.Trim(row.Cells[40].Value, " ") != "" {
+				ext8 = strings.Trim(row.Cells[40].Value, " ")
+			}
+			ext9 := ""
+			if strings.Trim(row.Cells[41].Value, " ") != "" {
+				ext9 = strings.Trim(row.Cells[41].Value, " ")
+			}
+			ext10 := ""
+			if strings.Trim(row.Cells[42].Value, " ") != "" {
+				ext10 = strings.Trim(row.Cells[42].Value, " ")
+			}
 
 			base = servers.DataEncryPt(base)
 			sfgz = servers.DataEncryPt(sfgz)

@@ -34,6 +34,8 @@ type SocialInsurance struct {
 	GongShangUpperLimit   float64 `json:"gongshang_upper_limit" gorm:"column:gongshang_upper_limit;comment:'工伤缴费基数上限'"`
 	GongShangCompanyRatio float64 `json:"gongshang_company_ratio" gorm:"column:gongshang_company_ratio;comment:'工伤企业缴费比例'"`
 	GongShangPersonRatio  float64 `json:"gongshang_person_ratio" gorm:"column:gongshang_person_ratio;comment:'工伤个人缴费比例'"`
+	GJJCompanyRatio       float64 `json:"gjj_company_ratio" gorm:"column:gongshang_company_ratio;comment:'公积金企业缴费比例'"`
+	GJJPersonRatio        float64 `json:"gjj_person_ratio" gorm:"column:gongshang_person_ratio;comment:'公积金个人缴费比例'"`
 }
 
 // 创建SocialInsurance

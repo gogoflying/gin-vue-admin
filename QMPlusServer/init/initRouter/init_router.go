@@ -66,6 +66,9 @@ func InitRouter() *gin.Engine {
 	router.InitSbConfRouter(ApiGroup)
 	router.InitSbOrdersRouter(ApiGroup)
 	router.InitSbUsersRouter(ApiGroup)
+	router.InitSocialUserRouter(ApiGroup)
+	router.InitSocialInsuranceRouter(ApiGroup)
+	router.InitSocialOrderRouter(ApiGroup)
 	log.L.Info("router register success")
 	return Router
 }

@@ -3,6 +3,7 @@ package registerTable
 import (
 	log "gin-vue-admin/init/initlog"
 	"gin-vue-admin/model/dbModel"
+	"gin-vue-admin/model/socialInsurance"
 	"gin-vue-admin/model/sysModel"
 	"gin-vue-admin/model/userCity"
 	"gin-vue-admin/model/userJobs"
@@ -14,6 +15,9 @@ import (
 //注册数据库表专用
 func RegisterTable(db *gorm.DB) {
 	db.AutoMigrate(
+		socialInsurance.SocialUser{},
+		socialInsurance.SocialInsurance{},
+		socialInsurance.SocialOrder{},
 		userSalary.SbConf{},
 		userSalary.SbOrders{},
 		userSalary.SbUsers{},

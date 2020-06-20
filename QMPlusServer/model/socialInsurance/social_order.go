@@ -22,8 +22,9 @@ type SocialOrder struct {
 	EmploymentInjuryIns float64 `json:"employment_injury_ins" gorm:"column:employment_injury_ins;comment:'单月工伤保险'"`
 	MaternityIns        float64 `json:"maternity_ins" gorm:"column:maternity_ins;comment:'单月生育保险'"`
 	InsuranceFee        float64 `json:"insurance_fee" gorm:"column:insurance_fee;comment:'单月保险合计'"`
+	GjjFee              float64 `json:"gjj_fee" gorm:"column:gjj_fee;comment:'单月公积金'"`
 	ServiceFee          float64 `json:"serve_fee" gorm:"column:service_fee;comment:'单月服务费'"`
-	TotalFee            float64 `json:"total_fee" gorm:"column:total_fee;comment:'单月总价'"`
+	TotalFee            float64 `json:"total_fee" gorm:"column:total_fee;comment:'单月总价=单月保险合计+单月公积金+单月服务费'"`
 }
 
 // 创建SocialOrder

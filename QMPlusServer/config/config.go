@@ -8,18 +8,19 @@ import (
 )
 
 type Config struct {
-	MysqlAdmin   MysqlAdmin   `json:"mysqlAdmin"`
-	Qiniu        Qiniu        `json:"qiniu"`
-	CasbinConfig CasbinConfig `json:"casbinConfig"`
-	RedisAdmin   RedisAdmin   `json:"redisAdmin"`
-	System       System       `json:"system"`
-	JWT          JWT          `json:"jwt"`
-	Captcha      Captcha      `json:"captcha"`
-	Log          Log          `json:"log"`
-	AliyunOss    AliyunOss    `json:"aliyunoss"`
-	WeiXin       WeiXin       `json:"weiXin"`
-	Sendsms      Sendsms      `json:"Sendsms"`
-	SendEmail    SendEmail    `json:"sendEmail"`
+	MysqlAdmin    MysqlAdmin    `json:"mysqlAdmin"`
+	Qiniu         Qiniu         `json:"qiniu"`
+	CasbinConfig  CasbinConfig  `json:"casbinConfig"`
+	RedisAdmin    RedisAdmin    `json:"redisAdmin"`
+	System        System        `json:"system"`
+	JWT           JWT           `json:"jwt"`
+	Captcha       Captcha       `json:"captcha"`
+	Log           Log           `json:"log"`
+	AliyunOss     AliyunOss     `json:"aliyunoss"`
+	WeiXin        WeiXin        `json:"weiXin"`
+	Sendsms       Sendsms       `json:"Sendsms"`
+	SendEmail     SendEmail     `json:"sendEmail"`
+	WeiXinPayInfo WeiXinPayInfo `json:"sendEmail"`
 }
 
 type SendEmail struct {
@@ -84,6 +85,12 @@ type AliyunOss struct { // 七牛 密钥配置
 type AppInfo struct { // 小程序开发者信息
 	Appid     string `json:"appid"`
 	AppSecret string `json:"appsecret"`
+}
+
+type WeiXinPayInfo struct { // 小程序开发者信息
+	SocialSecurityApp AppInfo `json:"socialsecurityapp"`
+	MchKey            string  `json:"mchkey"`
+	MchId             string  `json:"mchid"`
 }
 
 type WeiXin struct { // 小程序配置

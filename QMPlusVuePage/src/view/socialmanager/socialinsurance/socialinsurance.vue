@@ -157,7 +157,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="缴费上线" label-width="80px" prop="yanglao_upper_limit">
+              <el-form-item label="缴费上限" label-width="80px" prop="yanglao_upper_limit">
                 <el-input v-model="socialinsuranceInfo.yanglao_upper_limit"></el-input>
               </el-form-item>
             </el-col>
@@ -182,7 +182,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="缴费上线" label-width="80px" prop="yiliaoo_upper_limit">
+              <el-form-item label="缴费上限" label-width="80px" prop="yiliaoo_upper_limit">
                 <el-input v-model="socialinsuranceInfo.yiliao_upper_limit"></el-input>
               </el-form-item>
             </el-col>
@@ -207,7 +207,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="缴费上线" label-width="80px" prop="shengyu_upper_limit">
+              <el-form-item label="缴费上限" label-width="80px" prop="shengyu_upper_limit">
                 <el-input v-model="socialinsuranceInfo.shengyu_upper_limit"></el-input>
               </el-form-item>
             </el-col>
@@ -232,7 +232,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="缴费上线" label-width="80px" prop="shiye_upper_limit">
+              <el-form-item label="缴费上限" label-width="80px" prop="shiye_upper_limit">
                 <el-input v-model="socialinsuranceInfo.shiye_upper_limit"></el-input>
               </el-form-item>
             </el-col>
@@ -257,7 +257,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="缴费上线" label-width="80px" prop="gongshang_upper_limit">
+              <el-form-item label="缴费上限" label-width="80px" prop="gongshang_upper_limit">
                 <el-input v-model="socialinsuranceInfo.gongshang_upper_limit"></el-input>
               </el-form-item>
             </el-col>
@@ -282,7 +282,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="缴费上线" label-width="80px" prop="gjj_upper_limit">
+              <el-form-item label="缴费上限" label-width="80px" prop="gjj_upper_limit">
                 <el-input v-model="socialinsuranceInfo.gjj_upper_limit"></el-input>
               </el-form-item>
             </el-col>

@@ -162,7 +162,7 @@
       :visible.sync="addSalaryDetailDialog"
       custom-class="user-dialog"
       @close="closeAddSalaryDetailDialog"
-      title="新增薪资"
+      :title="title"
       width="800px"
     >
       <el-form :rules="rules" ref="salarydetailForm" :model="salarydetailinfo">

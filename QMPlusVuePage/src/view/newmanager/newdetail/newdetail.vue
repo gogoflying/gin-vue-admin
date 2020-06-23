@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 const path = process.env.VUE_APP_BASE_API;
 import { createUserNews, updateUserNews, findUserNews } from "@/api/newmanager";
 export default {
@@ -94,7 +95,7 @@ export default {
         news_type: [{ required: true, message: "请输入类型", trigger: "blur" }],
         order: [
           { required: true, message: "请输入排序", trigger: "blur" },
-          { type: "number", message: "排序必须为数字"},
+          { type: "number", message: "排序必须为数字" },
           {
             type: "number",
             min: 0,
@@ -106,6 +107,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("user", ["token"]),
     editor() {
       return this.$refs.myQuillEditor.quill;
     }

@@ -145,7 +145,7 @@
       :visible.sync="addCompanyDialog"
       custom-class="user-dialog"
       @close="closeAddCompanyDialog"
-      title="新增企业"
+      :title="title"
       width="600px"
     >
       <el-form :rules="rules" ref="enterpriseForm" :model="enterpriseInfo">

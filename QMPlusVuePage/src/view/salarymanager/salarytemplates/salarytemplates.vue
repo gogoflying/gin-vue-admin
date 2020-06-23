@@ -57,7 +57,7 @@
       :visible.sync="addSalaryTemplatesDialog"
       custom-class="user-dialog"
       @close="closeAddSalaryTemplatesDialog"
-      title="新增模板"
+      :title="title"
       width="800px"
     >
       <el-form :rules="rules" ref="SalaryTemplatesForm" :model="SalaryTemplatesinfo">

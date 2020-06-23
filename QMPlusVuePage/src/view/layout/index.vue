@@ -21,6 +21,7 @@
           <div class="fl-right right-box">
             <span v-show="enPriseId != 0" style="color: red;">请上传企业资质进行认证==></span>
             <el-button @click.native="toCompanyAuth" type="warning" size="small" v-show="enPriseId != 0" style="margin-right:40px">认证信息</el-button>
+            <!-- <Screenfull class="screenfull"></Screenfull> -->
             <el-dropdown>
               <span class="el-dropdown-link">
                 <img :src="userInfo.headerImg" height="20" width="20" />
@@ -35,7 +36,7 @@
                   </span>
                 </el-dropdown-item>
                 <el-dropdown-item @click.native="showPassword=true" icon="el-icon-s-custom">修改密码</el-dropdown-item>
-                <el-dropdown-item @click.native="showEmail=true" icon="el-icon-s-custom">修改邮箱</el-dropdown-item>
+                <el-dropdown-item @click.native="showEmail=true" icon="el-icon-s-custom" v-show="enPriseId != 0">修改邮箱</el-dropdown-item>
                 <el-dropdown-item @click.native="toPerson" icon="el-icon-s-custom">个人信息</el-dropdown-item>
                 <el-dropdown-item @click.native="LoginOut" icon="el-icon-table-lamp">登 出</el-dropdown-item>
               </el-dropdown-menu>
@@ -84,6 +85,7 @@
 
 <script>
 import Aside from '@/view/layout/aside';
+//import Screenfull from '@/view/layout/screenfull'
 import HistoryComponent from '@/view/layout/aside/historyComponent/history';
 
 import { mapGetters, mapActions } from "vuex";
@@ -138,6 +140,7 @@ export default {
   },
   components: {
     Aside,
+    //Screenfull,
     HistoryComponent
   },
   created() {
@@ -361,5 +364,8 @@ $mainHight: 100vh;
       }
     }
   }
+}
+.screenfull {
+  display: inline-block;
 }
 </style>

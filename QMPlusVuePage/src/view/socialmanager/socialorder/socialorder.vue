@@ -2,7 +2,7 @@
   <div>
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="姓名" label-width="85px">
+        <el-form-item label="姓名">
           <el-input placeholder="姓名" clearable v-model="searchInfo.name"></el-input>
         </el-form-item>
         <el-form-item label="状态" prop="cityindex">

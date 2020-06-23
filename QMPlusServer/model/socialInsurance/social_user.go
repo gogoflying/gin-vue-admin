@@ -41,12 +41,22 @@ func (su *SocialUser) FindById() (err error, reet SocialUser) {
 // 分页获取SocialUser
 func (su *SocialUser) GetInfoList(info modelInterface.PageInfo) (err error, list interface{}, total int) {
 	// 封装分页方法 调用即可 传入 当前的结构体和分页信息
-	err, db, total := servers.PagingServerAsc(su, info)
+	err, db, total := servers.PagingServer(su, info)
 	if err != nil {
 		return
 	} else {
 		var reSocialUserList []SocialUser
-		err = db.Find(&reSocialUserList).Error
+		model := qmsql.DEFAULTDB.Model(info)
+		if su.Name != "" {
+			model = model.Where("name LIKE ?", "%"+su.Name+"%")
+			db = db.Where("name LIKE ?", "%"+su.Name+"%")
+		}
+		err = model.Find(&reSocialUserList).Count(&total).Error
+		if err != nil {
+			return err, reSocialUserList, total
+		} else {
+			err = db.Find(&reSocialUserList).Error
+		}
 		return err, reSocialUserList, total
 	}
 }

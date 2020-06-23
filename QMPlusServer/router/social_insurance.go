@@ -14,5 +14,6 @@ func InitSocialInsuranceRouter(Router *gin.RouterGroup) {
 		SocialInsuranceRouter.POST("updateSocialInsurance", api.UpdateSocialInsurance)   //更新SocialInsurance
 		SocialInsuranceRouter.POST("findSocialInsurance", api.FindSocialInsurance)       // 根据ID获取SocialInsurance
 		SocialInsuranceRouter.POST("getSocialInsuranceList", api.GetSocialInsuranceList) //获取SocialInsurance列表
+		SocialInsuranceRouter.POST("getSocialInsuranceOptions", api.GetSocialInsuranceOptions)
 	}
 }

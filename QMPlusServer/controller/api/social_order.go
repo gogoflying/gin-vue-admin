@@ -121,17 +121,21 @@ func FindSocialOrder(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /so/getSocialOrderList [post]
 func GetSocialOrderList(c *gin.Context) {
-	var pageInfo modelInterface.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
-	err, list, total := new(socialInsurance.SocialOrder).GetInfoList(pageInfo)
+	type searchParams struct {
+		socialInsurance.SocialOrder
+		modelInterface.PageInfo
+	}
+	var sp searchParams
+	_ = c.ShouldBindJSON(&sp)
+	err, list, total := sp.SocialOrder.GetInfoList(sp.PageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
-			"userJobsList": list,
-			"total":        total,
-			"page":         pageInfo.Page,
-			"pageSize":     pageInfo.PageSize,
+			"socialOrderList": list,
+			"total":           total,
+			"page":            sp.PageInfo.Page,
+			"pageSize":        sp.PageInfo.PageSize,
 		})
 	}
 }

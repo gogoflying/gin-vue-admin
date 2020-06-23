@@ -5,7 +5,6 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/socialInsurance"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -98,17 +97,32 @@ func FindSocialInsurance(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /si/getSocialInsuranceList [post]
 func GetSocialInsuranceList(c *gin.Context) {
-	var pageInfo modelInterface.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
-	err, list, total := new(socialInsurance.SocialInsurance).GetInfoList(pageInfo)
+	type searchParams struct {
+		socialInsurance.SocialInsurance
+		modelInterface.PageInfo
+	}
+	var sp searchParams
+	_ = c.ShouldBindJSON(&sp)
+	err, list, total := sp.SocialInsurance.GetInfoList(sp.PageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
 			"socialInsuranceList": list,
 			"total":               total,
-			"page":                pageInfo.Page,
-			"pageSize":            pageInfo.PageSize,
+			"page":                sp.PageInfo.Page,
+			"pageSize":            sp.PageInfo.PageSize,
+		})
+	}
+}
+
+func GetSocialInsuranceOptions(c *gin.Context) {
+	err, citys := new(socialInsurance.SocialInsurance).GetAllInfoOption()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"cityinfo": citys,
 		})
 	}
 }

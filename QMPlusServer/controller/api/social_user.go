@@ -5,7 +5,6 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/socialInsurance"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -98,17 +97,21 @@ func FindSocialUser(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /su/getSocialUserList [post]
 func GetSocialUserList(c *gin.Context) {
-	var pageInfo modelInterface.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
-	err, list, total := new(socialInsurance.SocialUser).GetInfoList(pageInfo)
+	type searchParams struct {
+		socialInsurance.SocialUser
+		modelInterface.PageInfo
+	}
+	var sp searchParams
+	_ = c.ShouldBindJSON(&sp)
+	err, list, total := sp.SocialUser.GetInfoList(sp.PageInfo)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
 	} else {
 		servers.ReportFormat(c, true, "获取数据成功", gin.H{
-			"userJobsList": list,
-			"total":        total,
-			"page":         pageInfo.Page,
-			"pageSize":     pageInfo.PageSize,
+			"socialUserList": list,
+			"total":          total,
+			"page":           sp.PageInfo.Page,
+			"pageSize":       sp.PageInfo.PageSize,
 		})
 	}
 }

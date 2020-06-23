@@ -34,8 +34,10 @@ type SocialInsurance struct {
 	GongShangUpperLimit   float64 `json:"gongshang_upper_limit" gorm:"column:gongshang_upper_limit;comment:'工伤缴费基数上限'"`
 	GongShangCompanyRatio float64 `json:"gongshang_company_ratio" gorm:"column:gongshang_company_ratio;comment:'工伤企业缴费比例'"`
 	GongShangPersonRatio  float64 `json:"gongshang_person_ratio" gorm:"column:gongshang_person_ratio;comment:'工伤个人缴费比例'"`
-	GJJCompanyRatio       float64 `json:"gjj_company_ratio" gorm:"column:gongshang_company_ratio;comment:'公积金企业缴费比例'"`
-	GJJPersonRatio        float64 `json:"gjj_person_ratio" gorm:"column:gongshang_person_ratio;comment:'公积金个人缴费比例'"`
+	GJJLowerLimit         float64 `json:"gjj_lower_limit" gorm:"column:gjj_lower_limit;comment:'公积金缴费基数下限'"`
+	GJJUpperLimit         float64 `json:"gjj_upper_limit" gorm:"column:gjj_upper_limit;comment:'公积金缴费基数上限'"`
+	GJJCompanyRatio       float64 `json:"gjj_company_ratio" gorm:"column:gjj_company_ratio;comment:'公积金企业缴费比例'"`
+	GJJPersonRatio        float64 `json:"gjj_person_ratio" gorm:"column:gjj_person_ratio;comment:'公积金个人缴费比例'"`
 }
 
 // 创建SocialInsurance
@@ -65,12 +67,31 @@ func (si *SocialInsurance) FindById() (err error, reet SocialInsurance) {
 // 分页获取SocialInsurance
 func (si *SocialInsurance) GetInfoList(info modelInterface.PageInfo) (err error, list interface{}, total int) {
 	// 封装分页方法 调用即可 传入 当前的结构体和分页信息
-	err, db, total := servers.PagingServerAsc(si, info)
+	err, db, total := servers.PagingServer(si, info)
 	if err != nil {
 		return
 	} else {
 		var reSocialInsuranceList []SocialInsurance
-		err = db.Find(&reSocialInsuranceList).Error
+		model := qmsql.DEFAULTDB.Model(info)
+		if si.Cityindex != 0 {
+			model = model.Where("cityindex = ?", si.Cityindex)
+			db = db.Where("cityindex = ?", si.Cityindex)
+		}
+		err = model.Find(&reSocialInsuranceList).Count(&total).Error
+		if err != nil {
+			return err, reSocialInsuranceList, total
+		} else {
+			err = db.Find(&reSocialInsuranceList).Error
+		}
 		return err, reSocialInsuranceList, total
 	}
+}
+
+func (si *SocialInsurance) GetAllInfoOption() (err error, list interface{}) {
+	var citys []userCity.Cityname
+	err = qmsql.DEFAULTDB.Select("id,name").Where("type = 0").Find(&citys).Error
+	if err != nil {
+		return err, citys
+	}
+	return err, citys
 }

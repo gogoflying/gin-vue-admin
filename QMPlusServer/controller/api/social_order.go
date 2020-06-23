@@ -140,7 +140,7 @@ func GetSocialOrderList(c *gin.Context) {
 	}
 }
 
-func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) {
+func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) error {
 	info := make(map[string]interface{}, 0)
 
 	//fmt.Println("访问ip", index.Request.RemoteAddr)
@@ -174,6 +174,7 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) {
 	// 调用支付统一下单API
 	req, err := http.NewRequest("POST", "https://api.mch.weixin.qq.com/pay/unifiedorder", strings.NewReader(reqStr))
 	if err != nil {
+		return err
 		// handle error
 	}
 	req.Header.Set("Content-Type", "text/xml;charset=utf-8")
@@ -185,7 +186,7 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) {
 	if err != nil {
 		// handle error
 		fmt.Println("解析响应内容失败", err)
-		return
+		return err
 	}
 	fmt.Println("响应数据", string(body2))
 
@@ -193,7 +194,7 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) {
 	err = xml.Unmarshal(body2, &resp1)
 	if err != nil {
 		panic(err)
-		return
+		return err
 	}
 
 	// 返回预付单信息
@@ -216,6 +217,7 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) {
 		info["msg"] = "微信请求支付失败"
 		//index.Console(info)
 	}
+	return nil
 }
 
 //微信支付计算签名的函数
@@ -270,4 +272,43 @@ func ToStr(idata interface{}) string {
 
 func CreateRand() string {
 	return fmt.Sprintf("%18v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
+}
+
+func PaymentReq(c *gin.Context) {
+	//var req OrderReqInfo
+	//_ = c.ShouldBindJSON(&req)
+	//1. 获取orderNo test
+	var err error
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("订单支付失败，%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "请求支付成功", gin.H{
+			"open_id":   "aaaaa",
+			"order_no":  "112233",
+			"prepay_id": "aaaabbb",
+		})
+	}
+}
+
+func ConfirmPayment(c *gin.Context) {
+	var req socialInsurance.OrderReqInfo
+	_ = c.ShouldBindJSON(&req)
+
+	err := WxPay(req.Openid, req.RemoteAddr, req.OrderNo, req.TotalFee)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("订单支付失败，%v", err), gin.H{})
+	} else {
+		//1. 更新数据库状态
+		servers.ReportFormat(c, true, fmt.Sprintf("订单支付成功，%v", err), gin.H{})
+	}
+}
+
+func CancelPayment(c *gin.Context) {
+	//1. 更新订单状态
+	var err error
+	servers.ReportFormat(c, true, fmt.Sprintf("取消订单成功，%v", err), gin.H{})
+}
+
+func NotifyResult(c *gin.Context) {
+	//1. 更新订单状态
 }

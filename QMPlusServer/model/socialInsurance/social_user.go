@@ -4,6 +4,7 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -12,6 +13,7 @@ type SocialUser struct {
 	Name   string `json:"name" gorm:"column:name;comment:'姓名'"`
 	Openid string `json:"openid" gorm:"column:openid;comment:'用户openid'"`
 	IdCard string `json:"id_card" gorm:"column:id_card;comment:'身份证号'"`
+	Status int    `json:"status" gorm:"column:status;comment:'用户状态，1表示正常，其他非正常，如禁用之类的'"`
 }
 
 // 创建SocialUser

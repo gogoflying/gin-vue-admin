@@ -14,5 +14,7 @@ func InitSocialUserRouter(Router *gin.RouterGroup) {
 		SocialUserRouter.POST("updateSocialUser", api.UpdateSocialUser)   //更新SocialUser
 		SocialUserRouter.POST("findSocialUser", api.FindSocialUser)       // 根据ID获取SocialUser
 		SocialUserRouter.POST("getSocialUserList", api.GetSocialUserList) //获取SocialUser列表
+
+		SocialUserRouter.POST("socialUserLogin", api.SocialUserLogin)
 	}
 }

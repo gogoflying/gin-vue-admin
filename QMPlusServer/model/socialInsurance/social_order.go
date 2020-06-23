@@ -4,8 +4,16 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+
 	"github.com/jinzhu/gorm"
 )
+
+type OrderReqInfo struct {
+	RemoteAddr string `json:"remoteaddr"`
+	Openid     string `json:"openid"`
+	OrderNo    string `json:"orderno"`
+	TotalFee   int    `json:"totalfee"`
+}
 
 type SocialOrder struct {
 	gorm.Model
@@ -73,6 +81,14 @@ func (so *SocialOrder) GetInfoList(info modelInterface.PageInfo) (err error, lis
 		if so.Status != 0 {
 			model = model.Where("status = ?", so.Status)
 			db = db.Where("status = ?", so.Status)
+		}
+		if so.IdCard != "" {
+			model = model.Where("id_card = ?", so.IdCard)
+			db = db.Where("id_card = ?", so.IdCard)
+		}
+		if so.OrderId != "" {
+			model = model.Where("order_id = ?", so.OrderId)
+			db = db.Where("order_id = ?", so.OrderId)
 		}
 		err = model.Find(&reSocialOrderList).Count(&total).Error
 		if err != nil {

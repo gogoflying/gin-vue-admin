@@ -14,5 +14,10 @@ func InitSocialOrderRouter(Router *gin.RouterGroup) {
 		SocialOrderRouter.POST("updateSocialOrder", api.UpdateSocialOrder)   //更新SocialOrder
 		SocialOrderRouter.POST("findSocialOrder", api.FindSocialOrder)       // 根据ID获取SocialOrder
 		SocialOrderRouter.POST("getSocialOrderList", api.GetSocialOrderList) //获取SocialOrder列表
+
+		SocialOrderRouter.POST("paymentReq", api.PaymentReq)         //请求支付
+		SocialOrderRouter.POST("confirmPayment", api.ConfirmPayment) //确认支付
+		SocialOrderRouter.POST("cancelPayment", api.CancelPayment)   //取消支付
+		SocialOrderRouter.POST("notifyResult", api.NotifyResult)     //通知支付结果
 	}
 }

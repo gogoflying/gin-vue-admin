@@ -5,6 +5,8 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/socialInsurance"
+	"gin-vue-admin/model/userJobs"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -114,4 +116,33 @@ func GetSocialUserList(c *gin.Context) {
 			"pageSize":       sp.PageInfo.PageSize,
 		})
 	}
+}
+
+func SocialUserLogin(c *gin.Context) {
+	var loginInfo userJobs.UserLoginInfo
+	_ = c.ShouldBindJSON(&loginInfo)
+	if len(loginInfo.Code) == 0 {
+		servers.ReportFormat(c, false, fmt.Sprintf("创建失败"), gin.H{})
+		return
+	}
+
+	//==============develop===================
+	u := socialInsurance.SocialUser{
+		Openid: loginInfo.Code,
+		Status: 1,
+	}
+	err, _ := u.FindById()
+	if err != nil {
+		_ = c.ShouldBindJSON(&u)
+		err = u.CreateSocialUser()
+		if err != nil {
+			servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
+			return
+		}
+	}
+	//var isMobile bool = true
+
+	//tokenNext_wx(c, u.Openid, "", isMobile)
+	//========================================
+
 }

@@ -42,7 +42,15 @@
           <li>起止日期：{{work.join || '开始日期'}}至{{work.leave || '结束日期'}}</li>
           <li>公司名称：{{work.companyname || '公司名称'}}</li>
           <li>工作职位：{{work.department || '职位'}}</li>
-          <li>工作描述：{{work.workContent || '工作描述'}}</li>
+          <li>
+            <div style="display:inline">
+              <div style="float:left;">工作描述：</div>
+              <div
+                style="float:left;width:85%;"
+                v-html="work.workContent ? work.workContent.replace(/\n/g, '<br/>') : '工作描述'"
+              ></div>
+            </div>
+          </li>
         </ul>
       </section>
       <section v-if="filter(resume.user_edus).length > 0 ">
@@ -94,17 +102,17 @@
       overflow: auto;
       > .message {
         display: flex;
-        padding: 8px;
+        //padding: 4px;
         > .content {
           flex-grow: 2;
           > ul {
             padding: 8px;
-            width: 100%;
+            width: 95%;
             overflow: hidden;
             font-size: 16px;
             > li {
-              padding: 10px;
-              line-height: 4px;
+              padding: 5px;
+              line-height: 20px;
             }
           }
         }

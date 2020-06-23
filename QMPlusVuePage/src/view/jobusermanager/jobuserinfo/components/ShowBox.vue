@@ -45,9 +45,9 @@
           <li>工作职位：{{work.department || '职位'}}</li>
           <li>
             <div style="display:inline">
-              <div style="float:left;width:15%">工作描述：</div>
+              <div style="float:left;">工作描述：</div>
               <div
-                style="float:left;width:85%"
+                style="float:left;width:85%;"
                 v-html="work.workContent ? work.workContent.replace(/\n/g, '<br/>') : '工作描述'"
               ></div>
             </div>
@@ -103,7 +103,7 @@
       overflow: auto;
       > .message {
         display: flex;
-        padding: 8px;
+        //padding: 8px;
         > .content {
           flex-grow: 2;
           > ul {

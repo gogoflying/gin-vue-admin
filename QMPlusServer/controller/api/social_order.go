@@ -154,16 +154,16 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) error {
 	//随机数
 	nonceStr := time.Now().Format("20060102150405") + CreateRand()
 	var reqMap = make(map[string]interface{}, 0)
-	reqMap["appid"] = ssAppid                                     //微信小程序appid
-	reqMap["body"] = body                                         //商品描述
-	reqMap["mch_id"] = mchid                                      //商户号
-	reqMap["nonce_str"] = nonceStr                                //随机数
-	reqMap["notify_url"] = "http://test.com.cn/weixinNotice.jspx" //通知地址
-	reqMap["openid"] = openId                                     //商户唯一标识 openid
-	reqMap["out_trade_no"] = orderNo                              //订单号
-	reqMap["spbill_create_ip"] = ip                               //用户端ip   //订单生成的机器 IP
-	reqMap["total_fee"] = total_fee * 100                         //订单总金额，单位为分
-	reqMap["trade_type"] = "JSAPI"                                //trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识
+	reqMap["appid"] = ssAppid                                      //微信小程序appid
+	reqMap["body"] = body                                          //商品描述
+	reqMap["mch_id"] = mchid                                       //商户号
+	reqMap["nonce_str"] = nonceStr                                 //随机数
+	reqMap["notify_url"] = "http://127.0.0.1:8888/si/notifyResult" //通知地址
+	reqMap["openid"] = openId                                      //商户唯一标识 openid
+	reqMap["out_trade_no"] = orderNo                               //订单号
+	reqMap["spbill_create_ip"] = ip                                //用户端ip   //订单生成的机器 IP
+	reqMap["total_fee"] = total_fee * 100                          //订单总金额，单位为分
+	reqMap["trade_type"] = "JSAPI"                                 //trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识
 	reqMap["sign"] = WxPayCalcSign(reqMap, mchkey)
 
 	reqStr := Map2Xml(reqMap)
@@ -195,6 +195,9 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) error {
 	if err != nil {
 		panic(err)
 		return err
+	}
+	if strings.ToUpper(resp1.Return_code) == "FAIL" {
+		return fmt.Errorf("wx response err ,info:%s", string(body2))
 	}
 
 	// 返回预付单信息
@@ -311,4 +314,5 @@ func CancelPayment(c *gin.Context) {
 
 func NotifyResult(c *gin.Context) {
 	//1. 更新订单状态
+	fmt.Printf("notify.result is :%v\n", c)
 }

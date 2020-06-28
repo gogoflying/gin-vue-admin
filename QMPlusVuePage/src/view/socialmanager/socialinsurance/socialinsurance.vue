@@ -419,18 +419,25 @@ export default {
         gjj_person_ratio: [{ validator: isFloatVlidator, trigger: "blur" }],
         gjj_company_ratio: [{ validator: isFloatVlidator, trigger: "blur" }]
       },
-
       insuredtypes: [
         {
           id: 1,
-          name: "城镇社保"
+          name: "本地城镇"
         },
         {
           id: 2,
-          name: "农村社保"
+          name: "本地农村"
         },
         {
           id: 3,
+          name: "外地城镇"
+        },
+        {
+          id: 4,
+          name: "外地农村"
+        },
+        {
+          id: 5,
           name: "其他"
         }
       ]

@@ -270,8 +270,9 @@
           <el-input v-model.number="salaryuserinfo.salary" style="width:90%"></el-input>
         </el-form-item>
         <el-form-item label="合同期限" label-width="80px" prop="contract_date">
-          <el-input v-model.number="salaryuserinfo.contract_date" style="width:90%"></el-input>
-          <span>月</span>
+          <el-input v-model.number="salaryuserinfo.contract_date" style="width:90%">
+            <template slot="append">月</template>
+          </el-input>
         </el-form-item>
         <el-form-item v-show="enPriseId == 0" label="入职企业" label-width="90px" prop="enterprise_id">
           <!-- <el-select @change="selectEp" placeholder="请选择企业" v-model="salaryuserinfo.enterprise_id">

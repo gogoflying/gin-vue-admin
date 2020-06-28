@@ -12,6 +12,7 @@ type SocialUser struct {
 	gorm.Model
 	Name   string `json:"name" gorm:"column:name;comment:'姓名'"`
 	Openid string `json:"openid" gorm:"column:openid;comment:'用户openid'"`
+	Mobile string `json:"mobile" gorm:"column:moblie;comment:'用户手机号'"`
 	IdCard string `json:"id_card" gorm:"column:id_card;comment:'身份证号'"`
 	Status int    `json:"status" gorm:"column:status;comment:'用户状态，1表示正常，其他非正常，如禁用之类的'"`
 }

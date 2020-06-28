@@ -19,6 +19,7 @@
       <el-table-column label="ID" min-width="60" type="index" :index="indexMethod"></el-table-column>
       <el-table-column label="姓名" min-width="150" prop="name"></el-table-column>
       <el-table-column label="身份证号" min-width="100" prop="id_card"></el-table-column>
+      <el-table-column label="手机号" min-width="100" prop="mobile"></el-table-column>
 
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
@@ -48,6 +49,9 @@
       <el-form :rules="rules" ref="SocialUserForm" :model="socialuserInfo">
         <el-form-item label="姓名" label-width="80px" prop="name">
           <el-input v-model="socialuserInfo.name"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" label-width="80px" prop="mobile">
+          <el-input v-model="socialuserInfo.mobile"></el-input>
         </el-form-item>
         <el-form-item label="身份证号" label-width="80px" prop="id_card">
           <el-input v-model="socialuserInfo.id_card"></el-input>
@@ -86,6 +90,7 @@ export default {
       title: "",
       socialuserInfo: {
         name: "",
+        mobile: "",
         id_card: ""
       },
       rules: {
@@ -93,6 +98,13 @@ export default {
           {
             required: true,
             message: "请输入姓名",
+            trigger: "blur"
+          }
+        ],
+        mobile: [
+          {
+            required: true,
+            message: "请输入手机号",
             trigger: "blur"
           }
         ],
@@ -139,6 +151,7 @@ export default {
     closeaddSocialUserDialog() {
       this.socialuserInfo = {
         name: "",
+        mobile: "",
         id_card: ""
       };
       this.$refs.SocialUserForm.resetFields();

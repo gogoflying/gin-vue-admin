@@ -12,7 +12,7 @@ type SocialInsurance struct {
 	gorm.Model
 	Cityindex   int               `json:"cityindex" gorm:"column:cityindex;comment:'城市id，关联citynames'"`
 	Cityname    userCity.Cityname `json:"city_name" gorm:"ForeignKey:Cityindex;AssociationForeignKey:ID;save_associations:false"`
-	InsuredType int               `json:"insured_type" gorm:"column:insured_type;comment:'参保类型:1、城镇社保2、农村社保3、其他'"`
+	InsuredType int               `json:"insured_type" gorm:"column:insured_type;comment:'参保类型:1、本地城镇2、本地农村3、外地城镇4、外地农村5、其他'"`
 	//InsInfo               string            `json:"ins_info" gorm:"column:ins_info;comment:'缴费比例:json格式'"`
 	YangLaoLowerLimit     float64 `json:"yanglao_lower_limit" gorm:"column:yanglao_lower_limit;comment:'养老缴费基数下限'"`
 	YangLaoUpperLimit     float64 `json:"yanglao_upper_limit" gorm:"column:yanglao_upper_limit;comment:'养老缴费基数上限'"`

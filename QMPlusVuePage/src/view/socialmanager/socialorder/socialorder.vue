@@ -27,23 +27,45 @@
 
     <el-table :data="tableData" border stripe>
       <el-table-column label="ID" min-width="60" type="index" :index="indexMethod"></el-table-column>
-      <el-table-column label="订单ID" min-width="100" prop="order_id"></el-table-column>
-      <el-table-column label="缴费基数" min-width="100" prop="ins_base"></el-table-column>
-      <el-table-column label="参保人姓名" min-width="100" prop="name"></el-table-column>
-      <el-table-column label="参保人身份证" min-width="110" prop="id_card"></el-table-column>
-      <el-table-column label="订单状态" min-width="80" prop="status" :formatter="otFormat"></el-table-column>
+      <el-table-column label="订单ID" min-width="100" prop="order_id" align="center"></el-table-column>
+      <el-table-column label="参保人姓名" min-width="100" prop="name" align="center"></el-table-column>
+      <el-table-column label="参保人身份证" min-width="150" prop="id_card" align="center"></el-table-column>
+      <el-table-column label="参保类型" min-width="80" prop="insured_type" :formatter="itFormat" align="center"></el-table-column>
+      <el-table-column label="订单状态" min-width="120" prop="status" align="center">
+        <template slot-scope="scope">
+          <el-select
+            @change="changeOrderStatus(scope.row)"
+            placeholder="请选择"
+            v-model="scope.row.status"
+          >
+            <el-option
+              :key="item.name"
+              :label="item.name"
+              :value="item.id"
+              v-for="item in orderstatus"
+            ></el-option>
+          </el-select>
+        </template>
+      </el-table-column>
+      <el-table-column label="开始时间" min-width="100" prop="start_time" align="center"></el-table-column>
+      <el-table-column label="结束时间" min-width="100" prop="end_time" align="center"></el-table-column>
       <el-table-column label="参保时长(月)" min-width="120" prop="duration" align="center"></el-table-column>
       <el-table-column label="缴费总金额" min-width="80" prop="pay_amount"></el-table-column>
       <el-table-column label="单月明细" align="center">
-        <el-table-column label="五险一金(单月)" align="center">
+        <el-table-column label="五险" align="center">
+          <el-table-column label="是否缴纳" min-width="80" prop="is_ins" :formatter="isInsFormat"></el-table-column>
+          <el-table-column label="缴费基数" min-width="100" prop="ins_base"></el-table-column>
           <el-table-column label="养老" min-width="80" prop="endowment_ins"></el-table-column>
           <el-table-column label="医疗" min-width="80" prop="medical_ins"></el-table-column>
           <el-table-column label="生育" min-width="80" prop="maternity_ins"></el-table-column>
           <el-table-column label="失业" min-width="80" prop="unemployment_ins"></el-table-column>
           <el-table-column label="工伤" min-width="80" prop="employment_injury_ins"></el-table-column>
           <el-table-column label="五险合计" min-width="80" prop="insurance_fee"></el-table-column>
+        </el-table-column>
+        <el-table-column label="公积金" align="center">
           <el-table-column label="是否缴纳" min-width="80" prop="is_gjj" :formatter="isGjjFormat"></el-table-column>
-          <el-table-column label="公积金" min-width="80" prop="gjj_fee"></el-table-column>
+          <el-table-column label="缴费基数" min-width="100" prop="ins_base"></el-table-column>
+          <el-table-column label="公积金合计" min-width="80" prop="gjj_fee"></el-table-column>
         </el-table-column>
         <el-table-column label="服务费" min-width="80" prop="serve_fee"></el-table-column>
         <el-table-column label="单月合计" min-width="80" prop="total_fee"></el-table-column>
@@ -157,7 +179,7 @@
 <script>
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
 const path = process.env.VUE_APP_BASE_API;
-import { getSocialOrderList, deleteSocialOrder } from "@/api/socialorder";
+import { getSocialOrderList, updateSocialOrder, deleteSocialOrder } from "@/api/socialorder";
 import infoList from "@/components/mixins/infoList";
 export default {
   name: "SocialOrder",
@@ -180,6 +202,28 @@ export default {
           id: 3,
           name: "已完成"
         }
+      ],
+      insuredtypes: [
+        {
+          id: 1,
+          name: "本地城镇"
+        },
+        {
+          id: 2,
+          name: "本地农村"
+        },
+        {
+          id: 3,
+          name: "外地城镇"
+        },
+        {
+          id: 4,
+          name: "外地农村"
+        },
+        {
+          id: 5,
+          name: "其他"
+        }
       ]
     };
   },
@@ -193,15 +237,22 @@ export default {
       this.pageSize = 10;
       this.getTableData();
     },
-    otFormat(row) {
-      if (row.status == null || this.orderstatus == null) {
+    itFormat(row) {
+      if (row.insured_type == null || this.insuredtypes == null) {
         return "";
       } else {
         var selectedItem = null;
-        selectedItem = this.orderstatus.find(item => {
-          return item.id === row.status;
+        selectedItem = this.insuredtypes.find(item => {
+          return item.id === row.insured_type;
         });
         return selectedItem == null ? "" : selectedItem.name;
+      }
+    },
+    isInsFormat(row) {
+      if (row.is_ins == 1) {
+        return "是";
+      } else {
+        return "否";
       }
     },
     isGjjFormat(row) {
@@ -213,6 +264,12 @@ export default {
     },
     clearOrderstatus() {
       this.searchInfo.status = null;
+    },
+    async changeOrderStatus(row) {
+      const res = await updateSocialOrder(row);
+      if (res.success) {
+        this.$message({ type: "success", message: "状态设置成功" });
+      }
     },
     //删除企业
     deleteSO(row) {

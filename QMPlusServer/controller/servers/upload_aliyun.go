@@ -15,7 +15,6 @@ import (
 var endPoint string = config.GinVueAdminconfig.AliyunOss.EndPoint
 var accessKeyId string = config.GinVueAdminconfig.AliyunOss.AccessKeyId
 var accessKeySecret string = config.GinVueAdminconfig.AliyunOss.AccessKeySecret
-var expiredInSec int64 = config.GinVueAdminconfig.AliyunOss.ExpiredInSec
 
 // 接收两个参数 一个文件流 一个 bucket 你的七牛云标准空间的名字
 func UploadFileOss(file *multipart.FileHeader, bucketName string, urlPath string) (err error, path string, key string) {

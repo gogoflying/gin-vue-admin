@@ -18,9 +18,9 @@ type Config struct {
 	Log           Log           `json:"log"`
 	AliyunOss     AliyunOss     `json:"aliyunoss"`
 	WeiXin        WeiXin        `json:"weiXin"`
-	Sendsms       Sendsms       `json:"Sendsms"`
+	Sendsms       Sendsms       `json:"sendSms"`
 	SendEmail     SendEmail     `json:"sendEmail"`
-	WeiXinPayInfo WeiXinPayInfo `json:"sendEmail"`
+	WeiXinPayInfo WeiXinPayInfo `json:"weixinPayinfo"`
 }
 
 type SendEmail struct {
@@ -56,7 +56,7 @@ type MysqlAdmin struct { // mysql admin 数据库配置
 	Config       string `json:"config"`
 	MaxIdleConns int    `json:"maxIdleConns"`
 	MaxOpenConns int    `json:"maxOpenConns"`
-	LogMode      bool   `json:"logmode"`
+	LogMode      bool   `json:"logMode"`
 }
 
 type RedisAdmin struct { // Redis admin 数据库配置
@@ -79,7 +79,6 @@ type AliyunOss struct { // 七牛 密钥配置
 	EndPoint        string `json:"endPoint"`
 	AccessKeyId     string `json:"accessKeyId"`
 	AccessKeySecret string `json:"accessKeySecret"`
-	ExpiredInSec    int64  `json:"expiredInSec"`
 }
 
 type AppInfo struct { // 小程序开发者信息

@@ -235,39 +235,17 @@ func JobUserLogin(c *gin.Context) {
 
 	//==============product==================
 
-	// openid, session_key, err := sendWxAuthAPI(loginInfo.Code)
-	// if err != nil {
-	// 	servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
-	// 	return
-	// }
+	openid, session_key, err := sendWxAuthAPI(loginInfo.Code)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
+		return
+	}
 
-	// u := userJobs.Users{
-	// 	Openid: openid,
-	// 	Status: 1,
-	// }
-	// err, reuser := u.GetByOpenId()
-	// if err != nil {
-	// 	_ = c.ShouldBindJSON(&u)
-	// 	err = u.CreateUsers()
-	// 	if err != nil {
-	// 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
-	// 		return
-	// 	}
-	// }
-	// var isMobile bool = false
-	// if len(reuser.Mobile) > 0 {
-	// 	isMobile = true
-	// }
-	// tokenNext_wx(c, openid, session_key, isMobile)
-	// fmt.Printf("get openId:%v\n", openid)
-	//========================================
-
-	//==============develop===================
 	u := userJobs.Users{
-		Openid: loginInfo.Code,
+		Openid: openid,
 		Status: 1,
 	}
-	err, _ := u.GetByOpenId()
+	err, reuser := u.GetByOpenId()
 	if err != nil {
 		_ = c.ShouldBindJSON(&u)
 		err = u.CreateUsers()
@@ -276,9 +254,31 @@ func JobUserLogin(c *gin.Context) {
 			return
 		}
 	}
-	var isMobile bool = true
+	var isMobile bool = false
+	if len(reuser.Mobile) > 0 {
+		isMobile = true
+	}
+	tokenNext_wx(c, openid, session_key, isMobile)
+	// fmt.Printf("get openId:%v\n", openid)
+	//========================================
 
-	tokenNext_wx(c, u.Openid, "", isMobile)
+	//==============develop===================
+	// u := userJobs.Users{
+	// 	Openid: loginInfo.Code,
+	// 	Status: 1,
+	// }
+	// err, _ := u.GetByOpenId()
+	// if err != nil {
+	// 	_ = c.ShouldBindJSON(&u)
+	// 	err = u.CreateUsers()
+	// 	if err != nil {
+	// 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
+	// 		return
+	// 	}
+	// }
+	// var isMobile bool = true
+
+	// tokenNext_wx(c, u.Openid, "", isMobile)
 	//========================================
 
 }

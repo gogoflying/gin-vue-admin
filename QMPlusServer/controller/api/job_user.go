@@ -21,6 +21,8 @@ import (
 
 var appid string = config.GinVueAdminconfig.WeiXin.ResumeApp.Appid
 var appSecret string = config.GinVueAdminconfig.WeiXin.ResumeApp.AppSecret
+var customerTelephone string = config.GinVueAdminconfig.ContactInfo.CustomerTelephone
+var weichatID string = config.GinVueAdminconfig.ContactInfo.WeichatID
 
 func CreateUsers(c *gin.Context) {
 	var users userJobs.Users
@@ -415,4 +417,17 @@ func PKCS7UnPadding(origData []byte) []byte {
 	length := len(origData)
 	unpadding := int(origData[length-1])
 	return origData[:(length - unpadding)]
+}
+
+func GetContactInfo(c *gin.Context) {
+
+	if customerTelephone == "" || weichatID == "" {
+		servers.ReportFormat(c, false, fmt.Sprintf("创建失败"), gin.H{})
+		return
+	} else {
+		servers.ReportFormat(c, true, "获取成功", gin.H{
+			"customerTelephone": customerTelephone,
+			"weichatID":         weichatID,
+		})
+	}
 }

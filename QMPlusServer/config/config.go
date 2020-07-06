@@ -21,6 +21,7 @@ type Config struct {
 	Sendsms       Sendsms       `json:"sendSms"`
 	SendEmail     SendEmail     `json:"sendEmail"`
 	WeiXinPayInfo WeiXinPayInfo `json:"weixinPayinfo"`
+	ContactInfo   ContactInfo   `json:"contactinfo"`
 }
 
 type SendEmail struct {
@@ -101,6 +102,11 @@ type Sendsms struct {
 	User    string `json:"user"`
 	Passwd  string `json:"passwd"`
 	SmsKind string `json:"smsKind"`
+}
+
+type ContactInfo struct {
+	CustomerTelephone string `json:"customerTelephone"`
+	WeichatID         string `json:"weichatID"`
 }
 
 /**

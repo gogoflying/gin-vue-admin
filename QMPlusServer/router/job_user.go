@@ -24,5 +24,6 @@ func InitUsersRouter(Router *gin.RouterGroup) {
 		UsersRouter.POST("decodeMobile", api.DecodeMobile)
 		UsersRouter.POST("getEduLevels", api.GetEduLevels)
 		UsersRouter.POST("getWorkTypes", api.GetWorkTypes)
+		UsersRouter.GET("getContactInfo", api.GetContactInfo)
 	}
 }

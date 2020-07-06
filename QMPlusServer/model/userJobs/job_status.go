@@ -38,7 +38,7 @@ type ResumeStatus struct {
 	Mobile            string       `json:"mobile" gorm:"-"`
 	UserName          string       `json:"userName" gorm:"-"`
 	ResumeStatuSearch *int         `json:"resume_status_search" gorm:"-"`
-	Flag              bool         `json:"flag" gorm:"_"`
+	Flag              bool         `json:"flag" gorm:"-"`
 }
 
 // 创建ResumeStatus

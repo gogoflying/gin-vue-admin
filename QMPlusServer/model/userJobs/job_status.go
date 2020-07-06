@@ -68,28 +68,28 @@ func (rs *ResumeStatus) GetBadgeStatus(flag bool) (status []bool) {
 		}
 	}
 	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 2 and badge = 1", rs.Openid).Count(&yx)
-	if yx > 0 && flag {
+	if yx > 0 {
 		status[2] = true
 		if flag {
 			qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 2 and badge = 1", rs.Openid).Update("badge", 0)
 		}
 	}
 	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 3 and badge = 1", rs.Openid).Count(&ms)
-	if ms > 0 && flag {
+	if ms > 0 {
 		status[3] = true
 		if flag {
 			qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 3 and badge = 1", rs.Openid).Update("badge", 0)
 		}
 	}
 	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 4 and badge = 1", rs.Openid).Count(&bhs)
-	if bhs > 0 && flag {
+	if bhs > 0 {
 		status[4] = true
 		if flag {
 			qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 4 and badge = 1", rs.Openid).Update("badge", 0)
 		}
 	}
 	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 5 and badge = 1", rs.Openid).Count(&rz)
-	if rz > 0 && flag {
+	if rz > 0 {
 		status[5] = true
 		if flag {
 			qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 5 and badge = 1", rs.Openid).Update("badge", 0)

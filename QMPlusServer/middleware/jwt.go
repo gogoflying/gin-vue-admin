@@ -7,6 +7,7 @@ import (
 	"gin-vue-admin/model/sysModel"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 	"time"
 )
@@ -44,6 +45,16 @@ func JWTAuth() gin.HandlerFunc {
 				return
 			}
 			servers.ReportFormat(c, false, err.Error(), gin.H{
+				"reload": true,
+			})
+			c.Abort()
+			return
+		}
+		ur := &sysModel.SysUser{
+			Model: gorm.Model{ID: claims.ID},
+		}
+		if err, _ := ur.FindById(); err != nil {
+			servers.ReportFormat(c, false, "用户已删除", gin.H{
 				"reload": true,
 			})
 			c.Abort()

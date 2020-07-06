@@ -38,6 +38,7 @@ type ResumeStatus struct {
 	Mobile            string       `json:"mobile" gorm:"-"`
 	UserName          string       `json:"userName" gorm:"-"`
 	ResumeStatuSearch *int         `json:"resume_status_search" gorm:"-"`
+	Flag              bool         `json:"flag" gorm:"_"`
 }
 
 // 创建ResumeStatus
@@ -56,31 +57,31 @@ func (rs *ResumeStatus) CreateResumeStatus() (list interface{}, err error) {
 	return
 }
 
-func (rs *ResumeStatus) GetBadgeStatus() (status []bool) {
+func (rs *ResumeStatus) GetBadgeStatus(flag bool) (status []bool) {
 	var yd, yx, ms, rz, bhs int
 	status = make([]bool, 6)
 	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 1 and badge = 1", rs.Openid).Count(&yd)
-	if yd > 0 {
+	if yd > 0 && flag {
 		status[1] = true
 		qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 1 and badge = 1", rs.Openid).Update("badge", 0)
 	}
 	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 2 and badge = 1", rs.Openid).Count(&yx)
-	if yx > 0 {
+	if yx > 0 && flag {
 		status[2] = true
 		qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 2 and badge = 1", rs.Openid).Update("badge", 0)
 	}
 	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 3 and badge = 1", rs.Openid).Count(&ms)
-	if ms > 0 {
+	if ms > 0 && flag {
 		status[3] = true
 		qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 3 and badge = 1", rs.Openid).Update("badge", 0)
 	}
 	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 4 and badge = 1", rs.Openid).Count(&bhs)
-	if bhs > 0 {
+	if bhs > 0 && flag {
 		status[4] = true
 		qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 4 and badge = 1", rs.Openid).Update("badge", 0)
 	}
 	qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 5 and badge = 1", rs.Openid).Count(&rz)
-	if rz > 0 {
+	if rz > 0 && flag {
 		status[5] = true
 		qmsql.DEFAULTDB.Model(rs).Where("open_id = ? and resume_status = 5 and badge = 1", rs.Openid).Update("badge", 0)
 	}

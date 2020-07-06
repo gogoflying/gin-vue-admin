@@ -201,7 +201,7 @@ func JobEnterStatus(c *gin.Context) {
 func BadgeStatus(c *gin.Context) {
 	var req userJobs.ResumeStatus
 	_ = c.ShouldBindJSON(&req)
-	status := req.GetBadgeStatus()
+	status := req.GetBadgeStatus(req.Flag)
 	servers.ReportFormat(c, true, "", gin.H{
 		"status": status,
 	})

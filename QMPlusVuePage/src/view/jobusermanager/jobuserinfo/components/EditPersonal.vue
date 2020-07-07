@@ -67,8 +67,8 @@
           placeholder="选择生日"
           type="date"
           :editable="false"
-          format="yyyy-MM-dd"
-          value-format="yyyy-MM-dd"
+          format="yyyy-MM"
+          value-format="yyyy-MM"
           style="width:80%;"
           v-model="user_base_info.birthday"
         ></el-date-picker>
@@ -130,7 +130,6 @@ export default {
           }
         ],
         idcard: [
-          { required: true, message: "请输入身份证号码", trigger: "blur" },
           {
             pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
             message: "身份证号码格式不正确",

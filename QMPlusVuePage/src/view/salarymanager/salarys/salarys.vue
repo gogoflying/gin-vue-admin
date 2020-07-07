@@ -33,7 +33,7 @@
           <el-upload
             :disabled="importDataDisabled"
             style="display: inline-flex;margin-right: 8px;"
-            :action="`${path}/un/importsalarys?id=${enterprise_id}`"
+            :action="`${path}/salary/importsalarys?id=${enterprise_id}`"
             :before-upload="beforeUpload"
             :headers="{'x-token':token}"
             :on-error="onError"
@@ -900,7 +900,7 @@ export default {
     },
     downSalarytemplate() {
       const link = document.createElement("a");
-      const url = `${path}/un/template/salarys.xlsx`;
+      const url = `${path}/template/salarys.xlsx`;
       link.setAttribute("href", url);
       link.setAttribute("download", "薪资模板");
       link.click();

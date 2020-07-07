@@ -33,7 +33,7 @@
           <el-upload
             :disabled="importDataDisabled"
             style="display: inline-flex;margin-right: 8px;"
-            :action="`${path}/un/importsalaryuser?id=${enterprise_id}`"
+            :action="`${path}/salary/importsalaryuser?id=${enterprise_id}`"
             :before-upload="beforeUpload"
             :headers="{'x-token':token}"
             :on-error="onError"
@@ -201,7 +201,7 @@
 
           <el-upload
             :disabled="scope.row.enter_step < 2"
-            :action="`${path}/un/importUserContract?openid=${scope.row.openid}`"
+            :action="`${path}/salary/importUserContract?openid=${scope.row.openid}`"
             style="display: inline-block;"
             :headers="{'x-token':token}"
             :on-error="onErrorUc"
@@ -595,7 +595,7 @@ export default {
     },
     downSalarytemplate() {
       const link = document.createElement("a");
-      const url = `${path}/un/template/salaryuser.xlsx`;
+      const url = `${path}/template/salaryuser.xlsx`;
       link.setAttribute("href", url);
       link.setAttribute("download", "员工模板");
       link.click();

@@ -315,13 +315,6 @@ export default {
       });
       this.SalaryTemplatesinfo.enterprise = selectedItem.enterprise_name;
     },
-    downSalaryTemplatestemplate() {
-      const link = document.createElement("a");
-      const url = `${path}/un/template/SalaryTemplatess.xlsx`;
-      link.setAttribute("href", url);
-      link.setAttribute("download", "薪资模板");
-      link.click();
-    },
     async enterAddSalaryTemplatesDialog() {
       this.SalaryTemplatesinfo.bthj = this.bthj.toString();
       this.$refs.SalaryTemplatesForm.validate(async valid => {

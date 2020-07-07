@@ -41,12 +41,20 @@ export default {
         if (this.enterpriseInfo.enterprise_logo != "") {
           this.userInfo.headerImg = this.enterpriseInfo.enterprise_logo;
         }
-        if (this.enterpriseInfo.status != 1) {
+        if (this.enterpriseInfo.enterprise_qfc == "") {
           this.$notify({
             title: "提示",
             message: "请上传企业资质，等待管理员审核",
             duration: 0
           });
+        } else {
+          if (this.enterpriseInfo.status != 1) {
+            this.$notify({
+              title: "提示",
+              message: "管理员审核中...",
+              duration: 0
+            });
+          }
         }
       }
     }

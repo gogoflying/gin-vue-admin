@@ -3,7 +3,7 @@ import service from '@/utils/request'
 
 export const createUsers = (data) => {
      return service({
-         url: "/users/createUsers",
+         url: "/jobuser/createUsers",
          method: 'post',
          data
      })
@@ -11,7 +11,7 @@ export const createUsers = (data) => {
 
  export const deleteUsers = (data) => {
      return service({
-         url: "/users/deleteUsers",
+         url: "/jobuser/deleteUsers",
          method: 'post',
          data
      })
@@ -19,7 +19,7 @@ export const createUsers = (data) => {
 
  export const updateUsers = (data) => {
      return service({
-         url: "/users/updateUsers",
+         url: "/jobuser/updateUsers",
          method: 'post',
          data
      })
@@ -28,7 +28,7 @@ export const createUsers = (data) => {
 
  export const findJobUserById = (data) => {
      return service({
-         url: "/users/findJobUserById",
+         url: "/jobuser/findJobUserById",
          method: 'post',
          data
      })
@@ -36,23 +36,15 @@ export const createUsers = (data) => {
 
  export const getUsersList = (data) => {
      return service({
-         url: "/users/getUsersList",
+         url: "/jobuser/getUsersList",
          method: 'post',
          data
      })
  }
 
- export const findUsersByOpenid = (data) => {
-    return service({
-        url: "/users/findUsersByOpenid",
-        method: 'post',
-        data
-    })
-}
-
 export const findUsersResumeInfo = (data) => {
     return service({
-        url: "/users/findUsersResumeInfo",
+        url: "/jobuser/findUsersResumeInfo",
         method: 'post',
         data
     })
@@ -60,7 +52,7 @@ export const findUsersResumeInfo = (data) => {
 
 export const getUserOptions = (data) => {
     return service({
-        url: "/users/getUserOptions",
+        url: "/jobuser/getUserOptions",
         method: 'post',
         data
     })
@@ -68,15 +60,23 @@ export const getUserOptions = (data) => {
 
 export const getUserResumeList = (data) => {
     return service({
-        url: "/users/getUserResumeList",
+        url: "/jobuser/getUserResumeList",
         method: 'post',
+        data
+    })
+}
+
+export const getContactInfo = (data) => {
+    return service({
+        url: "/jobuser/getContactInfo",
+        method: 'get',
         data
     })
 }
 
 export const createUserBaseInfo = (data) => {
     return service({
-        url: "/bf/createUserBaseInfo",
+        url: "/jobuser/createUserBaseInfo",
         method: 'post',
         data
     })
@@ -84,7 +84,7 @@ export const createUserBaseInfo = (data) => {
 
 export const updateUserBaseInfo = (data) => {
     return service({
-        url: "/bf/updateUserBaseInfo",
+        url: "/jobuser/updateUserBaseInfo",
         method: 'post',
         data
     })
@@ -100,7 +100,7 @@ export const createUserDream = (data) => {
 
 export const updateUserDream = (data) => {
     return service({
-        url: "/dm/updateUserDream",
+        url: "/jobuser/updateUserDream",
         method: 'post',
         data
     })
@@ -108,7 +108,7 @@ export const updateUserDream = (data) => {
 
 export const createUserWork = (data) => {
     return service({
-        url: "/wk/createUserWork",
+        url: "/jobuser/createUserWork",
         method: 'post',
         data
     })
@@ -116,7 +116,7 @@ export const createUserWork = (data) => {
 
 export const deleteUserWork = (data) => {
     return service({
-        url: "/wk/deleteUserWork",
+        url: "/jobuser/deleteUserWork",
         method: 'post',
         data
     })
@@ -124,7 +124,7 @@ export const deleteUserWork = (data) => {
 
 export const updateUserWork = (data) => {
     return service({
-        url: "/wk/updateUserWork",
+        url: "/jobuser/updateUserWork",
         method: 'post',
         data
     })
@@ -132,7 +132,7 @@ export const updateUserWork = (data) => {
 
 export const createUsereducation = (data) => {
     return service({
-        url: "/ed/createUsereducation",
+        url: "/jobuser/createUsereducation",
         method: 'post',
         data
     })
@@ -140,7 +140,7 @@ export const createUsereducation = (data) => {
 
 export const deleteUsereducation = (data) => {
     return service({
-        url: "/ed/deleteUsereducation",
+        url: "/jobuser/deleteUsereducation",
         method: 'post',
         data
     })
@@ -148,7 +148,7 @@ export const deleteUsereducation = (data) => {
 
 export const updateUsereducation = (data) => {
     return service({
-        url: "/ed/updateUsereducation",
+        url: "/jobuser/updateUsereducation",
         method: 'post',
         data
     })

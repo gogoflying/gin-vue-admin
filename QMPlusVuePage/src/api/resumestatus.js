@@ -7,10 +7,10 @@ import service from '@/utils/request'
 // @Produce application/json
 // @Param data body resumeStatus.ResumeStatus true "创建ResumeStatus"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /jobstatus/createResumeStatus [post]
+// @Router /jst/createResumeStatus [post]
 export const createResumeStatus = (data) => {
      return service({
-         url: "/jobstatus/createResumeStatus",
+         url: "/jst/createResumeStatus",
          method: 'post',
          data
      })
@@ -24,10 +24,10 @@ export const createResumeStatus = (data) => {
 // @Produce application/json
 // @Param data body resumeStatus.ResumeStatus true "删除ResumeStatus"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /jobstatus/deleteResumeStatus [post]
+// @Router /jst/deleteResumeStatus [post]
  export const deleteResumeStatus = (data) => {
      return service({
-         url: "/jobstatus/deleteResumeStatus",
+         url: "/jst/deleteResumeStatus",
          method: 'post',
          data
      })
@@ -40,10 +40,10 @@ export const createResumeStatus = (data) => {
 // @Produce application/json
 // @Param data body resumeStatus.ResumeStatus true "更新ResumeStatus"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /jobstatus/updateResumeStatus [post]
+// @Router /jst/updateResumeStatus [post]
  export const updateResumeStatus = (data) => {
      return service({
-         url: "/jobstatus/updateResumeStatus",
+         url: "/jst/updateResumeStatus",
          method: 'post',
          data
      })
@@ -57,10 +57,10 @@ export const createResumeStatus = (data) => {
 // @Produce application/json
 // @Param data body resumeStatus.ResumeStatus true "用id查询ResumeStatus"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /jobstatus/findResumeStatus [post]
+// @Router /jst/findResumeStatus [post]
  export const findResumeStatus = (data) => {
      return service({
-         url: "/jobstatus/findResumeStatus",
+         url: "/jst/findResumeStatus",
          method: 'post',
          data
      })
@@ -74,10 +74,10 @@ export const createResumeStatus = (data) => {
 // @Produce application/json
 // @Param data body modelInterface.PageInfo true "分页获取ResumeStatus列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /jobstatus/getResumeStatusList [post]
+// @Router /jst/getResumeStatusList [post]
  export const getResumeStatusList = (data) => {
      return service({
-         url: "/jobstatus/getResumeStatusList",
+         url: "/jst/getResumeStatusList",
          method: 'post',
          data
      })
@@ -85,7 +85,7 @@ export const createResumeStatus = (data) => {
 
  export const updateResumeMemo = (data) => {
     return service({
-        url: "/jobstatus/updateResumeMemo",
+        url: "/jst/updateResumeMemo",
         method:'post',
         data
     })
@@ -93,8 +93,16 @@ export const createResumeStatus = (data) => {
 
 export const updateResumeRemark = (data) => {
     return service({
-        url: "/jobstatus/updateResumeRemark",
+        url: "/jst/updateResumeRemark",
         method:'post',
+        data
+    })
+}
+
+export const findUsersByOpenid = (data) => {
+    return service({
+        url: "/jst/findUsersByOpenid",
+        method: 'post',
         data
     })
 }

@@ -7,10 +7,10 @@ import service from '@/utils/request'
 // @Produce application/json
 // @Param data body userSalary.SalaryUsers true "创建SalaryUsers"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /un/createSalaryUsers [post]
+// @Router /salary/createSalaryUsers [post]
 export const createSalaryUsers = (data) => {
      return service({
-         url: "/un/createSalaryUsers",
+         url: "/salary/createSalaryUsers",
          method: 'post',
          data
      })
@@ -24,10 +24,10 @@ export const createSalaryUsers = (data) => {
 // @Produce application/json
 // @Param data body userSalary.SalaryUsers true "删除SalaryUsers"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /un/deleteSalaryUsers [post]
+// @Router /salary/deleteSalaryUsers [post]
  export const deleteSalaryUsers = (data) => {
      return service({
-         url: "/un/deleteSalaryUsers",
+         url: "/salary/deleteSalaryUsers",
          method: 'post',
          data
      })
@@ -40,10 +40,10 @@ export const createSalaryUsers = (data) => {
 // @Produce application/json
 // @Param data body userSalary.SalaryUsers true "更新SalaryUsers"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /un/updateSalaryUsers [post]
+// @Router /salary/updateSalaryUsers [post]
  export const updateSalaryUsers = (data) => {
      return service({
-         url: "/un/updateSalaryUsers",
+         url: "/salary/updateSalaryUsers",
          method: 'post',
          data
      })
@@ -57,10 +57,10 @@ export const createSalaryUsers = (data) => {
 // @Produce application/json
 // @Param data body userSalary.SalaryUsers true "用id查询SalaryUsers"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /un/findSalaryUsers [post]
+// @Router /salary/findSalaryUsers [post]
  export const findSalaryUsers = (data) => {
      return service({
-         url: "/un/findSalaryUsers",
+         url: "/salary/findSalaryUsers",
          method: 'post',
          data
      })
@@ -74,10 +74,10 @@ export const createSalaryUsers = (data) => {
 // @Produce application/json
 // @Param data body modelInterface.PageInfo true "分页获取SalaryUsers列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /un/getSalaryUsersList [post]
+// @Router /salary/getSalaryUsersList [post]
  export const getSalaryUsersList = (data) => {
      return service({
-         url: "/un/getSalaryUsersList",
+         url: "/salary/getSalaryUsersList",
          method: 'post',
          data
      })
@@ -85,7 +85,7 @@ export const createSalaryUsers = (data) => {
 
  export const uploadUserContract = (data) => {
     return service({
-        url: "/un/uploadUserContract",
+        url: "/salary/uploadUserContract",
         method: 'post',
         data
     })
@@ -93,7 +93,7 @@ export const createSalaryUsers = (data) => {
 
 export const downloadContractList = (data) => {
     return service({
-        url: "/un/downloadContractList",
+        url: "/salary/downloadContractList",
         method: 'post',
         data
     })

@@ -29,31 +29,48 @@ export const captcha = (data) => {
 // @Param data body {username:"string",password:"string"}
 // @Router /base/resige [post]
 export const register = (data) => {
-        return service({
-            url: "/base/register",
-            method: 'post',
-            data: data
-        })
-    }
-    // @Summary 修改密码
-    // @Produce  application/json
-    // @Param data body {username:"string",password:"string",newPassword:"string"}
-    // @Router /user/changePassword [post]
+    return service({
+        url: "/base/register",
+        method: 'post',
+        data: data
+    })
+}
+
+export const forgetSendEmail = (data) => {
+    return service({
+        url: "/base/forgetSendEmail",
+        method: 'post',
+        data: data
+    })
+}
+
+export const forgetVerify = (data) => {
+    return service({
+        url: "/base/forgetVerify",
+        method: 'post',
+        data: data
+    })
+}
+
+// @Summary 修改密码
+// @Produce  application/json
+// @Param data body {username:"string",password:"string",newPassword:"string"}
+// @Router /user/changePassword [post]
 export const changePassword = (data) => {
-        return service({
-            url: "/user/changePassword",
-            method: 'post',
-            data: data
-        })
-    }
-    // @Tags User
-    // @Summary 分页获取用户列表
-    // @Security ApiKeyAuth
-    // @accept application/json
-    // @Produce application/json
-    // @Param data body modelInterface.PageInfo true "分页获取用户列表"
-    // @Success 200 {string} json "{"success":true,"data":{},"msg":"获取成功"}"
-    // @Router /user/getUserList [post]
+    return service({
+        url: "/user/changePassword",
+        method: 'post',
+        data: data
+    })
+}
+// @Tags User
+// @Summary 分页获取用户列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body modelInterface.PageInfo true "分页获取用户列表"
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /user/getUserList [post]
 export const getUserList = (data) => {
     return service({
         url: "/user/getUserList",
@@ -103,22 +120,6 @@ export const deleteSysUser = (data) => {
     })
 }
 
-export const forgetSendEmail = (data) =>{
-    return service({
-        url:"/user/forgetSendEmail",
-        method:'post',
-        data:data
-    })
-}
-
-export const forgetVerify = (data) =>{
-    return service({
-        url:"/user/forgetVerify",
-        method:'post',
-        data:data
-    })
-}
- 
 export const changeEmail = (data) => {
     return service({
         url: "/user/changeEmail",

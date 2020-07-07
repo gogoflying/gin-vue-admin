@@ -38,6 +38,7 @@
                 <el-dropdown-item @click.native="showPassword=true" icon="el-icon-s-custom">修改密码</el-dropdown-item>
                 <el-dropdown-item @click.native="showEmail=true" icon="el-icon-s-custom" v-show="enPriseId != 0">修改邮箱</el-dropdown-item>
                 <el-dropdown-item @click.native="toPerson" icon="el-icon-s-custom">个人信息</el-dropdown-item>
+                <el-dropdown-item @click.native="toCompanyAuth" icon="el-icon-s-check" v-show="enPriseId != 0">企业认证</el-dropdown-item>
                 <el-dropdown-item @click.native="LoginOut" icon="el-icon-table-lamp">登 出</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

@@ -7,10 +7,10 @@ import service from '@/utils/request'
 // @Produce application/json
 // @Param data body socialInsurance.SocialInsurance true "创建SocialInsurance"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /si/createSocialInsurance [post]
+// @Router /social/createSocialInsurance [post]
 export const createSocialInsurance = (data) => {
      return service({
-         url: "/si/createSocialInsurance",
+         url: "/social/createSocialInsurance",
          method: 'post',
          data
      })
@@ -24,10 +24,10 @@ export const createSocialInsurance = (data) => {
 // @Produce application/json
 // @Param data body socialInsurance.SocialInsurance true "删除SocialInsurance"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /si/deleteSocialInsurance [post]
+// @Router /social/deleteSocialInsurance [post]
  export const deleteSocialInsurance = (data) => {
      return service({
-         url: "/si/deleteSocialInsurance",
+         url: "/social/deleteSocialInsurance",
          method: 'post',
          data
      })
@@ -40,10 +40,10 @@ export const createSocialInsurance = (data) => {
 // @Produce application/json
 // @Param data body socialInsurance.SocialInsurance true "更新SocialInsurance"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /si/updateSocialInsurance [post]
+// @Router /social/updateSocialInsurance [post]
  export const updateSocialInsurance = (data) => {
      return service({
-         url: "/si/updateSocialInsurance",
+         url: "/social/updateSocialInsurance",
          method: 'post',
          data
      })
@@ -57,10 +57,10 @@ export const createSocialInsurance = (data) => {
 // @Produce application/json
 // @Param data body socialInsurance.SocialInsurance true "用id查询SocialInsurance"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /si/findSocialInsurance [post]
+// @Router /social/findSocialInsurance [post]
  export const findSocialInsurance = (data) => {
      return service({
-         url: "/si/findSocialInsurance",
+         url: "/social/findSocialInsurance",
          method: 'post',
          data
      })
@@ -74,10 +74,10 @@ export const createSocialInsurance = (data) => {
 // @Produce application/json
 // @Param data body modelInterface.PageInfo true "分页获取SocialInsurance列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /si/getSocialInsuranceList [post]
+// @Router /social/getSocialInsuranceList [post]
  export const getSocialInsuranceList = (data) => {
      return service({
-         url: "/si/getSocialInsuranceList",
+         url: "/social/getSocialInsuranceList",
          method: 'post',
          data
      })
@@ -85,7 +85,7 @@ export const createSocialInsurance = (data) => {
 
  export const getSocialInsuranceOptions = (data) => {
     return service({
-        url: "/si/getSocialInsuranceOptions",
+        url: "/social/getSocialInsuranceOptions",
         method: 'post',
         data
     })

@@ -9,17 +9,21 @@ import (
 )
 
 func InitSalarysRouter(Router *gin.RouterGroup) {
-	SalarysRouter := Router.Group("un") //.Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())
+	SalarysRouter := Router.Group("salary").Use(middleware.JWTAuth()).Use(middleware.CasbinHandler()).Use(middleware.EnterpriseHandler())
 	{
-		SalarysRouter.POST("createSalarys", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.CreateSalarys) // 新建Salarys
-		SalarysRouter.POST("deleteSalarys", api.DeleteSalarys)                                                       //删除Salarys
-		SalarysRouter.POST("batchdeleteSalarys", api.BatchDeleteSalarys)                                             //批量删除Salarys
-		SalarysRouter.POST("updateSalarys", api.UpdateSalarys)                                                       //更新Salarys
-		SalarysRouter.POST("findSalarys", api.FindSalarys)                                                           // 根据ID获取Salarys
-		SalarysRouter.POST("findSalarysByIdAndOpenid", api.FindSalarysByIdAndOpenid)
-		SalarysRouter.POST("getSalarysList", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.GetSalarysList) //获取Salarys列表
-		SalarysRouter.POST("getSalarysListSearch", api.GetSalarysListSearch)
+		SalarysRouter.POST("createSalarys", api.CreateSalarys)           // 新建Salarys
+		SalarysRouter.POST("deleteSalarys", api.DeleteSalarys)           //删除Salarys
+		SalarysRouter.POST("batchdeleteSalarys", api.BatchDeleteSalarys) //批量删除Salarys
+		SalarysRouter.POST("updateSalarys", api.UpdateSalarys)           //更新Salarys
+		SalarysRouter.POST("findSalarys", api.FindSalarys)               // 根据ID获取Salarys
+		SalarysRouter.POST("getSalarysList", api.GetSalarysList)         //获取Salarys列表
 		//SalarysRouter.Static("template", "./static/template")
-		SalarysRouter.POST("importsalarys", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.ImportSalarys)
+		SalarysRouter.POST("importsalarys", api.ImportSalarys)
+	}
+	SalarysRouterWx := Router.Group("un")
+	{
+		// 根据ID获取Salarys
+		SalarysRouterWx.POST("findSalarysByIdAndOpenid", api.FindSalarysByIdAndOpenid)
+		SalarysRouter.POST("getSalarysListSearch", api.GetSalarysListSearch)
 	}
 }

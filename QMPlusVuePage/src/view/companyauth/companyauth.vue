@@ -139,6 +139,7 @@ export default {
         enterprise_logo: "",
         enterprise_img: "",
         enterprise_qfc: "",
+        status: "",
         errors: ""
       },
       rules: {

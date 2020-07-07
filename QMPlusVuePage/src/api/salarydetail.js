@@ -7,10 +7,10 @@ import service from '@/utils/request'
 // @Produce application/json
 // @Param data body userSalary.Salarys true "创建Salarys"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /un/createSalarys [post]
+// @Router /salary/createSalarys [post]
 export const createSalarys = (data) => {
      return service({
-         url: "/un/createSalarys",
+         url: "/salary/createSalarys",
          method: 'post',
          data
      })
@@ -24,10 +24,10 @@ export const createSalarys = (data) => {
 // @Produce application/json
 // @Param data body userSalary.Salarys true "删除Salarys"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /un/deleteSalarys [post]
+// @Router /salary/deleteSalarys [post]
  export const deleteSalarys = (data) => {
      return service({
-         url: "/un/deleteSalarys",
+         url: "/salary/deleteSalarys",
          method: 'post',
          data
      })
@@ -40,10 +40,10 @@ export const createSalarys = (data) => {
 // @Produce application/json
 // @Param data body userSalary.Salarys true "更新Salarys"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /un/updateSalarys [post]
+// @Router /salary/updateSalarys [post]
  export const updateSalarys = (data) => {
      return service({
-         url: "/un/updateSalarys",
+         url: "/salary/updateSalarys",
          method: 'post',
          data
      })
@@ -57,10 +57,10 @@ export const createSalarys = (data) => {
 // @Produce application/json
 // @Param data body userSalary.Salarys true "用id查询Salarys"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /un/findSalarys [post]
+// @Router /salary/findSalarys [post]
  export const findSalarys = (data) => {
      return service({
-         url: "/un/findSalarys",
+         url: "/salary/findSalarys",
          method: 'post',
          data
      })
@@ -74,10 +74,10 @@ export const createSalarys = (data) => {
 // @Produce application/json
 // @Param data body modelInterface.PageInfo true "分页获取Salarys列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /un/getSalarysList [post]
+// @Router /salary/getSalarysList [post]
  export const getSalarysList = (data) => {
      return service({
-         url: "/un/getSalarysList",
+         url: "/salary/getSalarysList",
          method: 'post',
          data
      })
@@ -85,7 +85,7 @@ export const createSalarys = (data) => {
 
  export const batchdeleteSalarys = (data) => {
     return service({
-        url: "/un/batchdeleteSalarys",
+        url: "/salary/batchdeleteSalarys",
         method: 'post',
         data
     })

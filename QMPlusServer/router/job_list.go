@@ -8,17 +8,20 @@ import (
 )
 
 func InitJoblistRouter(Router *gin.RouterGroup) {
-	JoblistRouter := Router.Group("jl")
+	JoblistRouter := Router.Group("joblist").Use(middleware.JWTAuth()).Use(middleware.CasbinHandler()).Use(middleware.EnterpriseHandler())
 	{
-		JoblistRouter.POST("createJoblist", middleware.JWTAuth(), middleware.CasbinHandler(), middleware.EnterpriseHandler(), api.CreateJoblist) // 新建Joblist
-		JoblistRouter.POST("deleteJoblist", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.DeleteJoblist)                             //删除Joblist
-		JoblistRouter.POST("updateJoblist", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.UpdateJoblist)                             //更新Joblist
+		JoblistRouter.POST("createJoblist", api.CreateJoblist) // 新建Joblist
+		JoblistRouter.POST("deleteJoblist", api.DeleteJoblist) //删除Joblist
+		JoblistRouter.POST("updateJoblist", api.UpdateJoblist) //更新Joblist
 		JoblistRouter.POST("findJoblist", api.FindJoblist)
 		JoblistRouter.POST("getjoblistOptions", api.GetJoblistOptions)
-		JoblistRouter.POST("getJoblistListBackend", middleware.JWTAuth(), middleware.EnterpriseHandler(), api.GetJoblistListBackend) // 根据ID获取Joblist
-		JoblistRouter.POST("getJoblistList", api.GetJoblistList)
-		JoblistRouter.POST("updateJoblistView", api.UpdateJoblistView)
-		JoblistRouter.POST("getJoblistSearch", api.GetJoblistListSearch)
+		JoblistRouter.POST("getJoblistList", api.GetJoblistListBackend) // 根据ID获取Joblist
 	}
-
+	JoblistRouterWx := Router.Group("jl")
+	{
+		JoblistRouterWx.POST("findJoblist", api.FindJoblist)
+		JoblistRouterWx.POST("getJoblistList", api.GetJoblistList)
+		JoblistRouterWx.POST("updateJoblistView", api.UpdateJoblistView)
+		JoblistRouterWx.POST("getJoblistSearch", api.GetJoblistListSearch)
+	}
 }

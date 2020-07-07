@@ -2,11 +2,12 @@ package router
 
 import (
 	"gin-vue-admin/controller/api"
+	"gin-vue-admin/middleware"
 	"github.com/gin-gonic/gin"
 )
 
 func InitUserAuthRouter(Router *gin.RouterGroup) {
-	UserAuthRouter := Router.Group("userauth")
+	UserAuthRouter := Router.Group("userauth").Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())
 	{
 		UserAuthRouter.POST("createUserAuth", api.CreateUserAuth)   // 新建UserAuth
 		UserAuthRouter.POST("deleteUserAuth", api.DeleteUserAuth)   //删除UserAuth

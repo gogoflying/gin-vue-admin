@@ -174,7 +174,7 @@
 // 获取列表内容封装在mixins内部  getTableData方法 初始化已封装完成
 const path = process.env.VUE_APP_BASE_API;
 import {
-  getJoblistListBackend,
+  getJoblistList,
   deleteJoblist,
   updateJoblist,
   getjoblistOptions
@@ -189,7 +189,7 @@ export default {
   mixins: [infoList],
   data() {
     return {
-      listApi: getJoblistListBackend,
+      listApi: getJoblistList,
       listKey: "RspJoblistList",
       path: path,
       multipleSelection: [],

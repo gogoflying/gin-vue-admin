@@ -7,10 +7,10 @@ import service from '@/utils/request'
 // @Produce application/json
 // @Param data body userSalary.SalaryTemplates true "创建SalaryTemplates"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /un/createSalaryTemplates [post]
+// @Router /salary/createSalaryTemplates [post]
 export const createSalaryTemplates = (data) => {
      return service({
-         url: "/un/createSalaryTemplates",
+         url: "/salary/createSalaryTemplates",
          method: 'post',
          data
      })
@@ -24,10 +24,10 @@ export const createSalaryTemplates = (data) => {
 // @Produce application/json
 // @Param data body userSalary.SalaryTemplates true "删除SalaryTemplates"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /un/deleteSalaryTemplates [post]
+// @Router /salary/deleteSalaryTemplates [post]
  export const deleteSalaryTemplates = (data) => {
      return service({
-         url: "/un/deleteSalaryTemplates",
+         url: "/salary/deleteSalaryTemplates",
          method: 'post',
          data
      })
@@ -40,10 +40,10 @@ export const createSalaryTemplates = (data) => {
 // @Produce application/json
 // @Param data body userSalary.SalaryTemplates true "更新SalaryTemplates"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /un/updateSalaryTemplates [post]
+// @Router /salary/updateSalaryTemplates [post]
  export const updateSalaryTemplates = (data) => {
      return service({
-         url: "/un/updateSalaryTemplates",
+         url: "/salary/updateSalaryTemplates",
          method: 'post',
          data
      })
@@ -57,10 +57,10 @@ export const createSalaryTemplates = (data) => {
 // @Produce application/json
 // @Param data body userSalary.SalaryTemplates true "用id查询SalaryTemplates"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /un/findSalaryTemplates [post]
+// @Router /salary/findSalaryTemplates [post]
  export const findSalaryTemplates = (data) => {
      return service({
-         url: "/un/findSalaryTemplates",
+         url: "/salary/findSalaryTemplates",
          method: 'post',
          data
      })
@@ -74,10 +74,10 @@ export const createSalaryTemplates = (data) => {
 // @Produce application/json
 // @Param data body modelInterface.PageInfo true "分页获取SalaryTemplates列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /un/getSalaryTemplatesList [post]
+// @Router /salary/getSalaryTemplatesList [post]
  export const getSalaryTemplatesList = (data) => {
      return service({
-         url: "/un/getSalaryTemplatesList",
+         url: "/salary/getSalaryTemplatesList",
          method: 'post',
          data
      })
@@ -85,7 +85,7 @@ export const createSalaryTemplates = (data) => {
 
  export const getSalaryTemplatesListBySearch = (params) => {
     return service({
-        url: "/un/getSalaryTemplatesListBySearch",
+        url: "/salary/getSalaryTemplatesListBySearch",
         method: 'post',
         params
     })

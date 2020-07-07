@@ -7,10 +7,10 @@ import service from '@/utils/request'
 // @Produce application/json
 // @Param data body RspJoblist.Joblist true "创建Joblist"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /jl/createJoblist [post]
+// @Router /joblist/createJoblist [post]
 export const createJoblist = (data) => {
      return service({
-         url: "/jl/createJoblist",
+         url: "/joblist/createJoblist",
          method: 'post',
          data
      })
@@ -24,10 +24,10 @@ export const createJoblist = (data) => {
 // @Produce application/json
 // @Param data body RspJoblist.Joblist true "删除Joblist"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /jl/deleteJoblist [post]
+// @Router /joblist/deleteJoblist [post]
  export const deleteJoblist = (data) => {
      return service({
-         url: "/jl/deleteJoblist",
+         url: "/joblist/deleteJoblist",
          method: 'post',
          data
      })
@@ -40,10 +40,10 @@ export const createJoblist = (data) => {
 // @Produce application/json
 // @Param data body RspJoblist.Joblist true "更新Joblist"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /jl/updateJoblist [post]
+// @Router /joblist/updateJoblist [post]
  export const updateJoblist = (data) => {
      return service({
-         url: "/jl/updateJoblist",
+         url: "/joblist/updateJoblist",
          method: 'post',
          data
      })
@@ -57,10 +57,10 @@ export const createJoblist = (data) => {
 // @Produce application/json
 // @Param data body RspJoblist.Joblist true "用id查询Joblist"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /jl/findJoblist [post]
+// @Router /joblist/findJoblist [post]
  export const findJoblist = (data) => {
      return service({
-         url: "/jl/findJoblist",
+         url: "/joblist/findJoblist",
          method: 'post',
          data
      })
@@ -74,10 +74,10 @@ export const createJoblist = (data) => {
 // @Produce application/json
 // @Param data body modelInterface.PageInfo true "分页获取Joblist列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /jl/getJoblistListBackend [post]
- export const getJoblistListBackend = (data) => {
+// @Router /joblist/getJoblistList [post]
+ export const getJoblistList = (data) => {
      return service({
-         url: "/jl/getJoblistListBackend",
+         url: "/joblist/getJoblistList",
          method: 'post',
          data
      })
@@ -85,7 +85,7 @@ export const createJoblist = (data) => {
 
  export const getjoblistOptions = (data) => {
     return service({
-        url: "/jl/getjoblistOptions",
+        url: "/joblist/getjoblistOptions",
         method: 'post',
         data
     })

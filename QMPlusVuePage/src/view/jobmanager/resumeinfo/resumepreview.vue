@@ -13,8 +13,7 @@
 </template>
 
 <script>
-import { findResumeStatus } from "@/api/resumestatus";
-import { findUsersByOpenid } from "@/api/jobuser";
+import { findResumeStatus, findUsersByOpenid } from "@/api/resumestatus";
 import ShowBox from "./components/ShowBox";
 import html2canvas from "html2canvas";
 import jspdf from "jspdf";

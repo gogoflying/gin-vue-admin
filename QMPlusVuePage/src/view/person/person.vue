@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="fl-left left-mg-xs">
-        <img :src="userInfo.headerImg" class="avatar" v-if="userInfo.headerImg" />
-        <i class="el-icon-plus avatar-uploader-icon" v-else></i>
+      <img :src="userInfo.headerImg" class="avatar" v-if="userInfo.headerImg" />
+      <i class="el-icon-plus avatar-uploader-icon" v-else></i>
       <!-- <el-avatar :size="120" :src="userInfo.headerImg" shape="square"></el-avatar> -->
     </div>
     <div class="fl-left left-mg-lg">
@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       path: path,
-      enterpriseInfo:{}
+      enterpriseInfo: {}
     };
   },
   computed: {
@@ -38,8 +38,15 @@ export default {
       const res = await findEnterpriseInfo({ ID: this.enPriseId });
       if (res.success) {
         this.enterpriseInfo = res.data.reinfo;
-        if (this.enterpriseInfo.enterprise_logo != ""){
+        if (this.enterpriseInfo.enterprise_logo != "") {
           this.userInfo.headerImg = this.enterpriseInfo.enterprise_logo;
+        }
+        if (this.enterpriseInfo.status != 1) {
+          this.$notify({
+            title: "提示",
+            message: "请上传企业资质，等待管理员审核",
+            duration: 0
+          });
         }
       }
     }

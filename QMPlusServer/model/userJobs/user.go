@@ -307,3 +307,13 @@ func (users *Users) GetResumeList(info modelInterface.PageInfo, openid string, d
 		return err, resumeList, total
 	}
 }
+
+func (users *Users) GetResumeName(openid string) (name string) {
+	err := qmsql.DEFAULTDB.Raw("SELECT ubi.user_name FROM users u,user_base_infos ubi WHERE  u.openid = ubi.openid AND u.openid= ? AND u.is_resume = 1", openid).Scan(&name)
+	if err != nil {
+		return ""
+	}
+
+	return name
+
+}

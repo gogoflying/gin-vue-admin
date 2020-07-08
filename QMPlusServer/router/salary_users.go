@@ -20,6 +20,7 @@ func InitSalaryUsersRouter(Router *gin.RouterGroup) {
 	}
 	SalaryUsersRouterWx := Router.Group("un")
 	{
+		SalaryUsersRouterWx.POST("updateSalaryUsers", api.UpdateSalaryUsers)
 		SalaryUsersRouterWx.POST("findSalaryUsersByOpenid", api.FindSalaryUsersByOpenid)
 		SalaryUsersRouterWx.POST("updateSalaryUsersLeaveStep", api.UpdateSalaryUsersLeaveStep)
 		SalaryUsersRouterWx.POST("updateSalaryUsersEnterStep", api.UpdateSalaryUsersEnterStep)

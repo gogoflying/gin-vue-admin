@@ -28,6 +28,6 @@ func InitSalaryContractRouter(Router *gin.RouterGroup) {
 	{
 		SalaryContractRouterWx.POST("downloadContractList", api.DownloadContractList)   // 新建UserNews
 		SalaryContractRouterWx.POST("downloadLeaveContract", api.DownloadLeaveContract) //更新UserNews
-		SalaryContractRouter.POST("writeSignatureJpg", api.WriteSignatureJpg)           //签名文件写入数据库，开始合成jpg
+		SalaryContractRouterWx.POST("writeSignatureJpg", api.WriteSignatureJpg)         //签名文件写入数据库，开始合成jpg
 	}
 }

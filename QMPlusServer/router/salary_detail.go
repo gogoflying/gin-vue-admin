@@ -23,6 +23,6 @@ func InitSalarysRouter(Router *gin.RouterGroup) {
 	{
 		// 根据ID获取Salarys
 		SalarysRouterWx.POST("findSalarysByIdAndOpenid", api.FindSalarysByIdAndOpenid)
-		SalarysRouter.POST("getSalarysListSearch", api.GetSalarysListSearch)
+		SalarysRouterWx.POST("getSalarysListSearch", api.GetSalarysListSearch)
 	}
 }

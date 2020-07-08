@@ -229,6 +229,7 @@ func GetUserResumeList(c *gin.Context) {
 
 func JobUserLogin(c *gin.Context) {
 	var loginInfo userJobs.UserLoginInfo
+	var userName string
 	_ = c.ShouldBindJSON(&loginInfo)
 	if len(loginInfo.Code) == 0 {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败"), gin.H{})
@@ -255,12 +256,21 @@ func JobUserLogin(c *gin.Context) {
 			servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 			return
 		}
+	} else {
+		if reuser.IsResume == 1 {
+			var baseinfo userJobs.UserBaseInfo
+			baseinfo.Openid = openid
+			err, rebf := baseinfo.FindByOpenid()
+			if err == nil {
+				userName = rebf.UserName
+			}
+		}
 	}
 	var isMobile bool = false
 	if len(reuser.Mobile) > 0 {
 		isMobile = true
 	}
-	tokenNext_wx(c, openid, session_key, isMobile)
+	tokenNext_wx(c, openid, session_key, isMobile, userName)
 	// fmt.Printf("get openId:%v\n", openid)
 	//========================================
 
@@ -304,7 +314,7 @@ func sendWxAuthAPI(code string) (string, string, error) {
 }
 
 //登录以后签发jwt
-func tokenNext_wx(c *gin.Context, openid, session_key string, isMobile bool) {
+func tokenNext_wx(c *gin.Context, openid, session_key string, isMobile bool, userName string) {
 	j := &middleware.JWT_wx{
 		[]byte(config.GinVueAdminconfig.JWT.SigningKey), // 唯一签名
 	}
@@ -323,7 +333,7 @@ func tokenNext_wx(c *gin.Context, openid, session_key string, isMobile bool) {
 	if err != nil {
 		servers.ReportFormat(c, false, "获取token失败", gin.H{})
 	} else {
-		servers.ReportFormat(c, true, "登录成功", gin.H{"openid": openid, "isPhone": isMobile, "session_key": session_key, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
+		servers.ReportFormat(c, true, "登录成功", gin.H{"openid": openid, "userName": userName, "isPhone": isMobile, "session_key": session_key, "token": token, "expiresAt": clams.StandardClaims.ExpiresAt * 1000})
 	}
 }
 

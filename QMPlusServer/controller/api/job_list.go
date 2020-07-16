@@ -27,7 +27,7 @@ func CreateJoblist(c *gin.Context) {
 		enpInfo := ei.(*userJobs.EnterpriseInfo)
 		jl.CompanyName = enpInfo.EnterPriseName
 		jl.CompanyId = int(enpInfo.ID)
-		jl.CompanyImg = enpInfo.EnterpriseImg
+		jl.CompanyImg = enpInfo.EnterpriseLogo
 	}
 
 	err := jl.CreateJoblist()

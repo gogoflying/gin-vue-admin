@@ -80,20 +80,20 @@ func (so *SocialOrder) AddSocialOrder(req ReqAddOrder) (err error, ret SocialOrd
 
 	if req.IsIns == 1 {
 		so.IsIns = req.IsIns
-		so.InsBase = siInfo.YangLaoLowerLimit
-		so.EndowmentIns = siInfo.YangLaoLowerLimit * (siInfo.YangLaoCompanyRatio + siInfo.YangLaoPersonRatio)
-		so.MedicalIns = siInfo.YiLiaoLowerLimit * (siInfo.YiLiaoCompanyRatio + siInfo.YiLiaoPersonRatio)
-		so.UnemploymentIns = siInfo.ShiYeLowerLimit * (siInfo.ShiYeCompanyRatio + siInfo.ShiYePersonRatio)
-		so.MaternityIns = siInfo.ShengYuLowerLimit * (siInfo.ShengYuCompanyRatio + siInfo.ShengYuPersonRatio)
-		so.EmploymentInjuryIns = siInfo.GongShangLowerLimit * (siInfo.GongShangCompanyRatio + siInfo.GongShangPersonRatio)
+		so.InsBase = reet.YangLaoLowerLimit
+		so.EndowmentIns = reet.YangLaoLowerLimit * (reet.YangLaoCompanyRatio + reet.YangLaoPersonRatio)
+		so.MedicalIns = reet.YiLiaoLowerLimit * (reet.YiLiaoCompanyRatio + reet.YiLiaoPersonRatio)
+		so.UnemploymentIns = reet.ShiYeLowerLimit * (reet.ShiYeCompanyRatio + reet.ShiYePersonRatio)
+		so.MaternityIns = reet.ShengYuLowerLimit * (reet.ShengYuCompanyRatio + reet.ShengYuPersonRatio)
+		so.EmploymentInjuryIns = reet.GongShangLowerLimit * (reet.GongShangCompanyRatio + reet.GongShangPersonRatio)
 
 		totalMonth = so.EndowmentIns + so.MedicalIns + so.UnemploymentIns + so.MaternityIns + so.EmploymentInjuryIns
 	}
 
 	if req.IsGjj == 1 {
 		so.IsGjj = req.IsGjj
-		so.GjjBase = siInfo.GJJLowerLimit
-		so.GjjFee = siInfo.GJJLowerLimit * (siInfo.GJJCompanyRatio + siInfo.GJJPersonRatio)
+		so.GjjBase = reet.GJJLowerLimit
+		so.GjjFee = reet.GJJLowerLimit * (reet.GJJCompanyRatio + reet.GJJPersonRatio)
 
 		totalMonth += so.GjjFee
 	}

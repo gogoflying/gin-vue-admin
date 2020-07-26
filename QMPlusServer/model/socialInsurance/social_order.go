@@ -1,9 +1,11 @@
 package socialInsurance
 
 import (
+	"fmt"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -13,6 +15,18 @@ type OrderReqInfo struct {
 	Openid     string `json:"openid"`
 	OrderNo    string `json:"orderno"`
 	TotalFee   int    `json:"totalfee"`
+}
+
+type ReqAddOrder struct {
+	Openid      string `json:"openid"`
+	Cityindex   int    `json:"cityindex"`
+	InsuredType int    `json:"insured_type"`
+	Name        string `json:"name"`
+	IdCard      string `json:"id_card"`
+	StartTime   string `json:"start_time"`
+	Duration    int    `json:"duration"`
+	IsIns       int    `json:"is_ins"`
+	IsGjj       int    `json:"is_gjj"`
 }
 
 type SocialOrder struct {
@@ -43,6 +57,53 @@ type SocialOrder struct {
 	TotalFee            float64         `json:"total_fee" gorm:"column:total_fee;comment:'单月总价=单月保险合计+单月公积金+单月服务费'"`
 	SocialId            int             `json:"social_id" gorm:"column:social_id;comment:'社保id，关联socialinsurances'"`
 	SiInfo              SocialInsurance `json:"si_info" gorm:"ForeignKey:SocialId;AssociationForeignKey:ID;save_associations:false"`
+}
+
+func (so *SocialOrder) AddSocialOrder(req ReqAddOrder) (err error, ret SocialOrder) {
+	var totalMonth float64
+	siInfo := new(SocialInsurance)
+	err, reet := siInfo.GetByCityIndexAndType(req.Cityindex, req.InsuredType)
+	if err != nil {
+		return err, *so
+	}
+	so.OrderId = fmt.Sprintf("%v", time.Now().UnixNano())
+	so.Name = req.Name
+	so.IdCard = req.IdCard
+	so.Openid = req.Openid
+	so.Status = 1
+	so.StartTime = req.StartTime
+	so.Duration = req.Duration
+	so.IsRefund = 1
+	so.InsuredType = &req.InsuredType
+	so.ServiceFee = 100
+	so.SocialId = int(reet.ID)
+
+	if req.IsIns == 1 {
+		so.IsIns = req.IsIns
+		so.InsBase = siInfo.YangLaoLowerLimit
+		so.EndowmentIns = siInfo.YangLaoLowerLimit * (siInfo.YangLaoCompanyRatio + siInfo.YangLaoPersonRatio)
+		so.MedicalIns = siInfo.YiLiaoLowerLimit * (siInfo.YiLiaoCompanyRatio + siInfo.YiLiaoPersonRatio)
+		so.UnemploymentIns = siInfo.ShiYeLowerLimit * (siInfo.ShiYeCompanyRatio + siInfo.ShiYePersonRatio)
+		so.MaternityIns = siInfo.ShengYuLowerLimit * (siInfo.ShengYuCompanyRatio + siInfo.ShengYuPersonRatio)
+		so.EmploymentInjuryIns = siInfo.GongShangLowerLimit * (siInfo.GongShangCompanyRatio + siInfo.GongShangPersonRatio)
+
+		totalMonth = so.EndowmentIns + so.MedicalIns + so.UnemploymentIns + so.MaternityIns + so.EmploymentInjuryIns
+	}
+
+	if req.IsGjj == 1 {
+		so.IsGjj = req.IsGjj
+		so.GjjBase = siInfo.GJJLowerLimit
+		so.GjjFee = siInfo.GJJLowerLimit * (siInfo.GJJCompanyRatio + siInfo.GJJPersonRatio)
+
+		totalMonth += so.GjjFee
+	}
+
+	so.TotalFee = (totalMonth + so.ServiceFee) * float64(so.Duration)
+
+	err = so.CreateSocialOrder()
+
+	return err, *so
+
 }
 
 // 创建SocialOrder

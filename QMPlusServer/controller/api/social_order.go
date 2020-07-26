@@ -32,6 +32,20 @@ var ssAppSecret string = config.GinVueAdminconfig.WeiXinPayInfo.SocialSecurityAp
 var mchkey string = config.GinVueAdminconfig.WeiXinPayInfo.MchKey
 var mchid string = config.GinVueAdminconfig.WeiXinPayInfo.MchId
 
+func AddSocialOrder(c *gin.Context) {
+	var req socialInsurance.ReqAddOrder
+	_ = c.ShouldBindJSON(&req)
+	var so socialInsurance.SocialOrder
+	err, reet := so.AddSocialOrder(req)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("创建订单失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "创建成功", gin.H{
+			"reet": reet,
+		})
+	}
+}
+
 // @Tags SocialOrder
 // @Summary 创建SocialOrder
 // @Security ApiKeyAuth

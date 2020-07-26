@@ -41,6 +41,11 @@ func (su *SocialUser) FindById() (err error, reet SocialUser) {
 	return err, reet
 }
 
+func (su *SocialUser) FindByOpenid() (err error, reet SocialUser) {
+	err = qmsql.DEFAULTDB.Where("openid = ?", su.Openid).First(&reet).Error
+	return err, reet
+}
+
 // 分页获取SocialUser
 func (su *SocialUser) GetInfoList(info modelInterface.PageInfo) (err error, list interface{}, total int) {
 	// 封装分页方法 调用即可 传入 当前的结构体和分页信息

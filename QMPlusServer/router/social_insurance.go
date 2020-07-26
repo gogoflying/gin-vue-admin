@@ -26,5 +26,6 @@ func InitSocialInsuranceRouter(Router *gin.RouterGroup) {
 		SocialInsuranceRouterWx.POST("findSocialInsurance", api.FindSocialInsurance)       // 根据ID获取SocialInsurance
 		SocialInsuranceRouterWx.POST("getSocialInsuranceList", api.GetSocialInsuranceList) //获取SocialInsurance列表
 		SocialInsuranceRouterWx.POST("getSocialInsuranceOptions", api.GetSocialInsuranceOptions)
+		SocialInsuranceRouterWx.POST("getSocialInsuranceByCityindexAndType", api.GetSocialByCityindexAndType)
 	}
 }

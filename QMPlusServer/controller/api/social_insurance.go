@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/socialInsurance"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -123,6 +124,25 @@ func GetSocialInsuranceOptions(c *gin.Context) {
 	} else {
 		servers.ReportFormat(c, true, "查询成功", gin.H{
 			"cityinfo": citys,
+		})
+	}
+}
+
+//小程序
+func GetSocialByCityindexAndType(c *gin.Context) {
+	type Params struct {
+		CityIndex int `json:"cityindex"`
+		Type      int `json:"type"`
+	}
+	var param Params
+	_ = c.ShouldBindJSON(&param)
+	var sp socialInsurance.SocialInsurance
+	err, reet := sp.GetByCityIndexAndType(param.CityIndex, param.Type)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("获取数据失败，%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "获取数据成功", gin.H{
+			"socialInsurance": reet,
 		})
 	}
 }

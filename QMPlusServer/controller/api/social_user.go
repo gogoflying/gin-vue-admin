@@ -90,6 +90,19 @@ func FindSocialUser(c *gin.Context) {
 	}
 }
 
+func FindSocialUserByOpenid(c *gin.Context) {
+	var su socialInsurance.SocialUser
+	_ = c.ShouldBindJSON(&su)
+	err, reet := su.FindByOpenid()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("查询失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "查询成功", gin.H{
+			"reet": reet,
+		})
+	}
+}
+
 // @Tags SocialUser
 // @Summary 分页获取SocialUser列表
 // @Security ApiKeyAuth

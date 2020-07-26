@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/userCity"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -94,4 +95,10 @@ func (si *SocialInsurance) GetAllInfoOption() (err error, list interface{}) {
 		return err, citys
 	}
 	return err, citys
+}
+
+//小程序
+func (si *SocialInsurance) GetByCityIndexAndType(cityIndex, insuredType int) (err error, reet SocialInsurance) {
+	err = qmsql.DEFAULTDB.Where("cityindex = ? and insured_type = ?", cityIndex, insuredType).Find(&reet).Error
+	return err, reet
 }

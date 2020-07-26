@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/init/qmsql"
 	"gin-vue-admin/model/modelInterface"
+	"math"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -81,11 +82,11 @@ func (so *SocialOrder) AddSocialOrder(req ReqAddOrder) (err error, ret SocialOrd
 	if req.IsIns == 1 {
 		so.IsIns = req.IsIns
 		so.InsBase = reet.YangLaoLowerLimit
-		so.EndowmentIns = reet.YangLaoLowerLimit * (reet.YangLaoCompanyRatio + reet.YangLaoPersonRatio)
-		so.MedicalIns = reet.YiLiaoLowerLimit * (reet.YiLiaoCompanyRatio + reet.YiLiaoPersonRatio)
-		so.UnemploymentIns = reet.ShiYeLowerLimit * (reet.ShiYeCompanyRatio + reet.ShiYePersonRatio)
-		so.MaternityIns = reet.ShengYuLowerLimit * (reet.ShengYuCompanyRatio + reet.ShengYuPersonRatio)
-		so.EmploymentInjuryIns = reet.GongShangLowerLimit * (reet.GongShangCompanyRatio + reet.GongShangPersonRatio)
+		so.EndowmentIns = math.Floor(reet.YangLaoLowerLimit*(reet.YangLaoCompanyRatio+reet.YangLaoPersonRatio) + 0.5)
+		so.MedicalIns = math.Floor(reet.YiLiaoLowerLimit*(reet.YiLiaoCompanyRatio+reet.YiLiaoPersonRatio) + 0.5)
+		so.UnemploymentIns = math.Floor(reet.ShiYeLowerLimit*(reet.ShiYeCompanyRatio+reet.ShiYePersonRatio) + 0.5)
+		so.MaternityIns = math.Floor(reet.ShengYuLowerLimit*(reet.ShengYuCompanyRatio+reet.ShengYuPersonRatio) + 0.5)
+		so.EmploymentInjuryIns = math.Floor(reet.GongShangLowerLimit*(reet.GongShangCompanyRatio+reet.GongShangPersonRatio) + 0.5)
 
 		totalMonth = so.EndowmentIns + so.MedicalIns + so.UnemploymentIns + so.MaternityIns + so.EmploymentInjuryIns
 	}
@@ -93,7 +94,7 @@ func (so *SocialOrder) AddSocialOrder(req ReqAddOrder) (err error, ret SocialOrd
 	if req.IsGjj == 1 {
 		so.IsGjj = req.IsGjj
 		so.GjjBase = reet.GJJLowerLimit
-		so.GjjFee = reet.GJJLowerLimit * (reet.GJJCompanyRatio + reet.GJJPersonRatio)
+		so.GjjFee = math.Floor(reet.GJJLowerLimit*(reet.GJJCompanyRatio+reet.GJJPersonRatio) + 0.5)
 
 		totalMonth += so.GjjFee
 	}

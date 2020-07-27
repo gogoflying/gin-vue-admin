@@ -64,7 +64,7 @@ func (so *SocialOrder) AddSocialOrder(req ReqAddOrder) (err error, ret SocialOrd
 	var totalMonth float64
 	var tmpSo SocialOrder
 	var count int
-	qmsql.DEFAULTDB.Model(so).Where("openid = ? and status = ?").Find(&tmpSo).Count(&count)
+	qmsql.DEFAULTDB.Model(so).Where("openid = ? and status = 1", req.Openid).Find(&tmpSo).Count(&count)
 	if count > 0 {
 		err = fmt.Errorf("存在未支付订单，请处理")
 		return err, *so

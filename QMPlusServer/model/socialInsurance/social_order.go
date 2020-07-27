@@ -62,6 +62,14 @@ type SocialOrder struct {
 
 func (so *SocialOrder) AddSocialOrder(req ReqAddOrder) (err error, ret SocialOrder) {
 	var totalMonth float64
+	var tmpSo SocialOrder
+	var count int
+	qmsql.DEFAULTDB.Model(so).Where("openid = ? and status = ?").Find(&tmpSo).Count(&count)
+	if count > 0 {
+		err = fmt.Errorf("存在未支付订单，请处理")
+		return err, *so
+	}
+
 	siInfo := new(SocialInsurance)
 	err, reet := siInfo.GetByCityIndexAndType(req.Cityindex, req.InsuredType)
 	if err != nil {

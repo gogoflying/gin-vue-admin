@@ -39,6 +39,8 @@ type SocialInsurance struct {
 	GJJUpperLimit         float64 `json:"gjj_upper_limit" gorm:"column:gjj_upper_limit;comment:'公积金缴费基数上限'"`
 	GJJCompanyRatio       float64 `json:"gjj_company_ratio" gorm:"column:gjj_company_ratio;comment:'公积金企业缴费比例'"`
 	GJJPersonRatio        float64 `json:"gjj_person_ratio" gorm:"column:gjj_person_ratio;comment:'公积金个人缴费比例'"`
+	InsuredServiceFee     float64 `json:"insured_serve_fee" gorm:"column:insured_serve_fee;comment:'单月社保服务费'"`
+	GJJServiceFee         float64 `json:"gjj_serve_fee" gorm:"column:gjj_serve_fee;comment:'单月公积金服务费'"`
 }
 
 // 创建SocialInsurance

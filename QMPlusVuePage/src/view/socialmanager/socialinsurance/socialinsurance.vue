@@ -306,12 +306,12 @@
           <h3>服务费</h3>
           <el-row>
             <el-col :span="7">
-              <el-form-item label="社保服务费" label-width="90px" prop="insured_serve_fee">
+              <el-form-item label="社保服务费" label-width="100px" prop="insured_serve_fee">
                 <el-input v-model="socialinsuranceInfo.insured_serve_fee"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="7">
-              <el-form-item label="公积金服务费" label-width="90px" prop="gjj_serve_fee">
+              <el-form-item label="公积金服务费" label-width="100px" prop="gjj_serve_fee">
                 <el-input v-model="socialinsuranceInfo.gjj_serve_fee"></el-input>
               </el-form-item>
             </el-col>

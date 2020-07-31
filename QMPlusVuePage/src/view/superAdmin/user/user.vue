@@ -33,7 +33,7 @@
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="resetPass(scope.row)" size="small" type="text">重置密码</el-button>
-          <el-button @click="deleteUser(scope.row)" size="small" type="text">删除</el-button>
+          <el-button v-if="scope.row.ID !== 1" @click="deleteUser(scope.row)" size="small" type="text">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

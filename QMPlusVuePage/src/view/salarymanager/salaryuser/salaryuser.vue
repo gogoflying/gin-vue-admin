@@ -76,7 +76,7 @@
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="身份证正反面:">
-              <el-row v-if="scope.row.cards != null ">
+              <el-row v-if="scope.row.cards != null " :gutter="20">
                 <el-col :span="12" v-for="cd in scope.row.cards" :key="cd">
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
@@ -84,7 +84,7 @@
               <span v-else style="color:red">身份证未上传</span>
             </el-form-item>
             <el-form-item label="银行卡正反面:">
-              <el-row v-if="scope.row.banks != null ">
+              <el-row v-if="scope.row.banks != null " :gutter="20">
                 <el-col :span="12" v-for="cd in scope.row.banks" :key="cd">
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
@@ -92,7 +92,7 @@
               <span v-else style="color:red">银行卡未上传</span>
             </el-form-item>
             <el-form-item label="户口本照片:">
-              <el-row v-if="scope.row.hukous != null ">
+              <el-row v-if="scope.row.hukous != null " :gutter="20">
                 <el-col :span="12" v-for="cd in scope.row.hukous" :key="cd">
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
@@ -100,7 +100,7 @@
               <span v-else style="color:red">户口本未上传</span>
             </el-form-item>
             <el-form-item label="本人照片:">
-              <el-row v-if="scope.row.photos != null ">
+              <el-row v-if="scope.row.photos != null " :gutter="20">
                 <el-col :span="12" v-for="cd in scope.row.photos" :key="cd">
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
@@ -108,25 +108,23 @@
               <span v-else style="color:red">本人照片未上传</span>
             </el-form-item>
             <el-form-item label="体检报告合格照片:">
-              <el-row v-if="scope.row.checkups != null ">
+              <el-row v-if="scope.row.checkups != null " :gutter="20">
                 <el-col :span="12" v-for="cd in scope.row.checkups" :key="cd">
-                  <img :src="cd" height="100%" width="100%" />
+                  <img :src="cd" height="100%" width="100%"/>
                 </el-col>
               </el-row>
               <span v-else style="color:red">体检报告未上传</span>
             </el-form-item>
             <el-form-item label="离职证明照片:">
-              <span v-if="scope.row.leaves != null ">
-                <ul v-for="cd in scope.row.leaves" :key="cd">
-                  <li>
-                    <img :src="cd" height="500" width="500" />
-                  </li>
-                </ul>
-              </span>
+              <el-row v-if="scope.row.leaves != null " :gutter="20">
+                <el-col :span="12" v-for="cd in scope.row.leaves" :key="cd">
+                  <img :src="cd" height="100%" width="100%" />
+                </el-col>
+              </el-row>
               <span v-else style="color:red">离职证明未上传</span>
             </el-form-item>
             <el-form-item label="毕业证照片:">
-              <el-row v-if="scope.row.diplomas != null ">
+              <el-row v-if="scope.row.diplomas != null " :gutter="20">
                 <el-col :span="12" v-for="cd in scope.row.diplomas" :key="cd">
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>
@@ -134,7 +132,7 @@
               <span v-else style="color:red">毕业证未上传</span>
             </el-form-item>
             <el-form-item label="其他:">
-              <el-row v-if="scope.row.others != null ">
+              <el-row v-if="scope.row.others != null " :gutter="20">
                 <el-col :span="12" v-for="cd in scope.row.others" :key="cd">
                   <img :src="cd" height="100%" width="100%" />
                 </el-col>

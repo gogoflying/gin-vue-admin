@@ -92,6 +92,10 @@
           <el-table-column label="单位" min-width="80" prop="gjj_company_ratio"></el-table-column>
         </el-table-column>
       </el-table-column>
+      <el-table-column label="服务费" align="center">
+        <el-table-column label="保险" min-width="80" prop="insured_serve_fee"></el-table-column>
+        <el-table-column label="公积金" min-width="80" prop="gjj_serve_fee"></el-table-column>
+      </el-table-column>
 
       <el-table-column label="操作" width="180" align="center">
         <template slot-scope="scope">
@@ -298,6 +302,21 @@
             </el-col>
           </el-row>
         </section>
+        <section>
+          <h3>服务费</h3>
+          <el-row>
+            <el-col :span="7">
+              <el-form-item label="社保服务费" label-width="100px" prop="insured_serve_fee">
+                <el-input v-model="socialinsuranceInfo.insured_serve_fee"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="公积金服务费" label-width="100px" prop="gjj_serve_fee">
+                <el-input v-model="socialinsuranceInfo.gjj_serve_fee"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </section>
       </el-form>
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeaddSocialInsuranceDialog">取 消</el-button>
@@ -369,7 +388,9 @@ export default {
         gjj_lower_limit: "",
         gjj_upper_limit: "",
         gjj_person_ratio: "",
-        gjj_company_ratio: ""
+        gjj_company_ratio: "",
+        insured_serve_fee: "",
+        gjj_serve_fee: ""
       },
       rules: {
         cityindex: [
@@ -417,7 +438,9 @@ export default {
         gjj_lower_limit: [{ validator: isFloatVlidator, trigger: "blur" }],
         gjj_upper_limit: [{ validator: isFloatVlidator, trigger: "blur" }],
         gjj_person_ratio: [{ validator: isFloatVlidator, trigger: "blur" }],
-        gjj_company_ratio: [{ validator: isFloatVlidator, trigger: "blur" }]
+        gjj_company_ratio: [{ validator: isFloatVlidator, trigger: "blur" }],
+        insured_serve_fee: [{ validator: isFloatVlidator, trigger: "blur" }],
+        gjj_serve_fee: [{ validator: isFloatVlidator, trigger: "blur" }]
       },
       insuredtypes: [
         {
@@ -557,6 +580,13 @@ export default {
           this.socialinsuranceInfo.gjj_company_ratio = parseFloat(
             this.socialinsuranceInfo.gjj_company_ratio
           );
+          this.socialinsuranceInfo.insured_serve_fee = parseFloat(
+            this.socialinsuranceInfo.insured_serve_fee
+          );
+          this.socialinsuranceInfo.gjj_serve_fee = parseFloat(
+            this.socialinsuranceInfo.gjj_serve_fee
+          );
+
           let res;
           if (this.isEdit) {
             res = await updateSocialInsurance(this.socialinsuranceInfo);
@@ -600,7 +630,9 @@ export default {
         gjj_lower_limit: "",
         gjj_upper_limit: "",
         gjj_person_ratio: "",
-        gjj_company_ratio: ""
+        gjj_company_ratio: "",
+        insured_serve_fee: "",
+        gjj_serve_fee: ""
       };
       this.$refs.socialinsuranceForm.resetFields();
       this.addSocialInsuranceDialog = false;

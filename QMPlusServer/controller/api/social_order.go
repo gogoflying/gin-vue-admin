@@ -46,6 +46,27 @@ func AddSocialOrder(c *gin.Context) {
 	}
 }
 
+type ReqOrder struct {
+	Openid   string `json:"openid"`
+	Status   int    `json:"status"`
+	Page     int    `json:"page"`
+	PageSize int    `json:"pagesize"`
+}
+
+func GetOrders(c *gin.Context) {
+	var req ReqOrder
+	_ = c.ShouldBindJSON(&req)
+	var so socialInsurance.SocialOrder
+	err, reet := so.GetOrderList(req.Openid, req.Status, req.Page, req.PageSize)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("获取订单失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "获取成功", gin.H{
+			"reet": reet,
+		})
+	}
+}
+
 // @Tags SocialOrder
 // @Summary 创建SocialOrder
 // @Security ApiKeyAuth

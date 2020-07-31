@@ -139,6 +139,18 @@ func (so *SocialOrder) FindById() (err error, reet SocialOrder) {
 	return err, reet
 }
 
+func (so *SocialOrder) GetOrderList(openid string, status, page, pageSize int) (err error, list interface{}) {
+	limit := pageSize
+	offset := pageSize * (page - 1)
+
+	var orderList []SocialOrder
+	model := qmsql.DEFAULTDB.Model(so)
+
+	err = model.Where("openid = ? and status = ?", openid, status).Limit(limit).Offset(offset).Order("id desc").Find(&orderList).Error
+
+	return err, orderList
+}
+
 // 分页获取SocialOrder
 func (so *SocialOrder) GetInfoList(info modelInterface.PageInfo) (err error, list interface{}, total int) {
 	// 封装分页方法 调用即可 传入 当前的结构体和分页信息

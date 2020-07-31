@@ -84,7 +84,6 @@ func (so *SocialOrder) AddSocialOrder(req ReqAddOrder) (err error, ret SocialOrd
 	so.Duration = req.Duration
 	so.IsRefund = 1
 	so.InsuredType = &req.InsuredType
-	so.ServiceFee = 100
 	so.SocialId = int(reet.ID)
 
 	if req.IsIns == 1 {
@@ -95,7 +94,7 @@ func (so *SocialOrder) AddSocialOrder(req ReqAddOrder) (err error, ret SocialOrd
 		so.UnemploymentIns = math.Floor(reet.ShiYeLowerLimit*(reet.ShiYeCompanyRatio+reet.ShiYePersonRatio) + 0.5)
 		so.MaternityIns = math.Floor(reet.ShengYuLowerLimit*(reet.ShengYuCompanyRatio+reet.ShengYuPersonRatio) + 0.5)
 		so.EmploymentInjuryIns = math.Floor(reet.GongShangLowerLimit*(reet.GongShangCompanyRatio+reet.GongShangPersonRatio) + 0.5)
-
+		so.ServiceFee += reet.InsuredServiceFee
 		totalMonth = so.EndowmentIns + so.MedicalIns + so.UnemploymentIns + so.MaternityIns + so.EmploymentInjuryIns
 	}
 
@@ -103,7 +102,7 @@ func (so *SocialOrder) AddSocialOrder(req ReqAddOrder) (err error, ret SocialOrd
 		so.IsGjj = req.IsGjj
 		so.GjjBase = reet.GJJLowerLimit
 		so.GjjFee = math.Floor(reet.GJJLowerLimit*(reet.GJJCompanyRatio+reet.GJJPersonRatio) + 0.5)
-
+		so.ServiceFee += reet.GJJServiceFee
 		totalMonth += so.GjjFee
 	}
 

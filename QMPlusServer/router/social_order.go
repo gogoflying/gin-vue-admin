@@ -30,5 +30,6 @@ func InitSocialOrderRouter(Router *gin.RouterGroup) {
 		SocialOrderRouterWx.POST("cancelPayment", api.CancelPayment)   //取消支付
 		SocialOrderRouterWx.POST("notifyResult", api.NotifyResult)     //通知支付结果
 		SocialOrderRouterWx.POST("addSocialOrder", api.AddSocialOrder)
+		SocialOrderRouterWx.POST("getOrders", api.GetOrders)
 	}
 }

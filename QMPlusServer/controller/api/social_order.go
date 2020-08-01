@@ -46,6 +46,24 @@ func AddSocialOrder(c *gin.Context) {
 	}
 }
 
+type ReqUpdate struct {
+	Openid  string `json:"openid"`
+	OrderId string `json:"order_id"`
+	Status  int    `json:"status"`
+}
+
+func UpdateOrderStatus(c *gin.Context) {
+	var req ReqUpdate
+	_ = c.ShouldBindJSON(&req)
+	var so socialInsurance.SocialOrder
+	err := so.UpdateSocialOrderStatus(req.Openid, req.OrderId, req.Status)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("订单更新失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "更新成功", gin.H{})
+	}
+}
+
 type ReqOrder struct {
 	Openid   string `json:"openid"`
 	Status   int    `json:"status"`

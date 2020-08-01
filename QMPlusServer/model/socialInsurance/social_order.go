@@ -36,7 +36,7 @@ type SocialOrder struct {
 	Name                string          `json:"name" gorm:"column:name;comment:'参保人姓名'"`
 	IdCard              string          `json:"id_card" gorm:"column:id_card;comment:'参保人身份证号'"`
 	Openid              string          `json:"openid" gorm:"column:openid;comment:'用户openid'"`
-	Status              int             `json:"status" gorm:"column:status;comment:'订单状态 [1,2,3],[待支付,待激活,已完成]'"`
+	Status              int             `json:"status" gorm:"column:status;comment:'订单状态 [1,2,3,4,5],[待支付,待激活,已完成,已失效,已放弃]'"`
 	StartTime           string          `json:"start_time" gorm:"column:start_time;comment:'开始时间'"`
 	EndTime             string          `json:"end_time" gorm:"column:end_time;comment:'结束时间'"`
 	Duration            int             `json:"duration" gorm:"column:duration;comment:'缴费时长：单位（月）'"`
@@ -124,6 +124,10 @@ func (so *SocialOrder) CreateSocialOrder() (err error) {
 func (so *SocialOrder) DeleteSocialOrder() (err error) {
 	err = qmsql.DEFAULTDB.Delete(so).Error
 	return err
+}
+
+func (so *SocialOrder) UpdateSocialOrderStatus(openid, orderid string, status int) (err error) {
+	return qmsql.DEFAULTDB.Model(so).Where("openid = ? and order_id = ?", openid, orderid).Update("status", status).Error
 }
 
 // 更新SocialOrder

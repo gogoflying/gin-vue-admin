@@ -37,7 +37,7 @@ func (su *SocialUser) UpdateSocialUser() (err error, reet SocialUser) {
 }
 
 func (su *SocialUser) UpdateSocialUserByOpenid() (err error) {
-	return qmsql.DEFAULTDB.Model(su).Where("openid = ?", su.Openid).Update("name", su.Name, "mobile", su.Mobile, "email", su.Email, "id_card", su.IdCard).Error
+	return qmsql.DEFAULTDB.Model(su).Where("openid = ?", su.Openid).Updates(map[string]interface{}{"name": su.Name, "mobile": su.Mobile, "email": su.Email, "id_card": su.IdCard}).Error
 }
 
 // 根据ID查看单条SocialUser

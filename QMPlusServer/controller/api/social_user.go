@@ -90,6 +90,17 @@ func FindSocialUser(c *gin.Context) {
 	}
 }
 
+func UpdateUserByOpenid(c *gin.Context) {
+	var su socialInsurance.SocialUser
+	_ = c.ShouldBindJSON(&su)
+	err := su.UpdateSocialUserByOpenid()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "更新成功", gin.H{})
+	}
+}
+
 func FindSocialUserByOpenid(c *gin.Context) {
 	var su socialInsurance.SocialUser
 	_ = c.ShouldBindJSON(&su)

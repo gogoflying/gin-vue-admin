@@ -27,10 +27,10 @@ type WXPayResp struct {
 	Prepay_id   string `xml:"prepay_id"`
 }
 
-var ssAppid string = config.GinVueAdminconfig.WeiXinPayInfo.SocialSecurityApp.Appid
-var ssAppSecret string = config.GinVueAdminconfig.WeiXinPayInfo.SocialSecurityApp.AppSecret
-var mchkey string = config.GinVueAdminconfig.WeiXinPayInfo.MchKey
-var mchid string = config.GinVueAdminconfig.WeiXinPayInfo.MchId
+var ssAppid string = config.GinVueAdminconfig.WeiXin.SocialApp.Appid
+var ssAppSecret string = config.GinVueAdminconfig.WeiXin.SocialApp.AppSecret
+var mchkey string = config.GinVueAdminconfig.WeiXin.SocialApp.MchKey
+var mchid string = config.GinVueAdminconfig.WeiXin.SocialApp.MchId
 
 func AddSocialOrder(c *gin.Context) {
 	var req socialInsurance.ReqAddOrder
@@ -177,7 +177,6 @@ func GetSocialOrderList(c *gin.Context) {
 
 func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) error {
 	info := make(map[string]interface{}, 0)
-
 	//fmt.Println("访问ip", index.Request.RemoteAddr)
 	//ip := utils.Substr(index.Request.RemoteAddr, 0, strings.Index(index.Request.RemoteAddr, ":"))
 	ip := RemoteAddr
@@ -209,12 +208,16 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) error {
 	// 调用支付统一下单API
 	req, err := http.NewRequest("POST", "https://api.mch.weixin.qq.com/pay/unifiedorder", strings.NewReader(reqStr))
 	if err != nil {
+		fmt.Printf("http.NewRequest err:%v\n", err)
 		return err
-		// handle error
 	}
 	req.Header.Set("Content-Type", "text/xml;charset=utf-8")
 
 	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Printf(" client.Do err:%v\n", err)
+		return err
+	}
 	defer resp.Body.Close()
 
 	body2, err := ioutil.ReadAll(resp.Body)
@@ -228,7 +231,7 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) error {
 	var resp1 WXPayResp
 	err = xml.Unmarshal(body2, &resp1)
 	if err != nil {
-		panic(err)
+		fmt.Printf(" xml.Unmarshal:%v\n", err)
 		return err
 	}
 	if strings.ToUpper(resp1.Return_code) == "FAIL" {

@@ -8,20 +8,20 @@ import (
 )
 
 type Config struct {
-	MysqlAdmin    MysqlAdmin    `json:"mysqlAdmin"`
-	Qiniu         Qiniu         `json:"qiniu"`
-	CasbinConfig  CasbinConfig  `json:"casbinConfig"`
-	RedisAdmin    RedisAdmin    `json:"redisAdmin"`
-	System        System        `json:"system"`
-	JWT           JWT           `json:"jwt"`
-	Captcha       Captcha       `json:"captcha"`
-	Log           Log           `json:"log"`
-	AliyunOss     AliyunOss     `json:"aliyunoss"`
-	WeiXin        WeiXin        `json:"weiXin"`
-	Sendsms       Sendsms       `json:"sendSms"`
-	SendEmail     SendEmail     `json:"sendEmail"`
-	WeiXinPayInfo WeiXinPayInfo `json:"weixinPayinfo"`
-	ContactInfo   ContactInfo   `json:"contactinfo"`
+	MysqlAdmin   MysqlAdmin   `json:"mysqlAdmin"`
+	Qiniu        Qiniu        `json:"qiniu"`
+	CasbinConfig CasbinConfig `json:"casbinConfig"`
+	RedisAdmin   RedisAdmin   `json:"redisAdmin"`
+	System       System       `json:"system"`
+	JWT          JWT          `json:"jwt"`
+	Captcha      Captcha      `json:"captcha"`
+	Log          Log          `json:"log"`
+	AliyunOss    AliyunOss    `json:"aliyunoss"`
+	WeiXin       WeiXin       `json:"weiXin"`
+	Sendsms      Sendsms      `json:"sendSms"`
+	SendEmail    SendEmail    `json:"sendEmail"`
+	//WeiXinPayInfo WeiXinPayInfo `json:"weixinPayinfo"`
+	ContactInfo ContactInfo `json:"contactinfo"`
 }
 
 type SendEmail struct {
@@ -87,15 +87,17 @@ type AppInfo struct { // 小程序开发者信息
 	AppSecret string `json:"appsecret"`
 }
 
-type WeiXinPayInfo struct { // 小程序开发者信息
-	SocialSecurityApp AppInfo `json:"socialsecurityapp"`
-	MchKey            string  `json:"mchkey"`
-	MchId             string  `json:"mchid"`
+type SsAppInfo struct { // 小程序开发者信息
+	Appid     string `json:"appid"`
+	AppSecret string `json:"appsecret"`
+	MchKey    string `json:"mchkey"`
+	MchId     string `json:"mchid"`
 }
 
 type WeiXin struct { // 小程序配置
-	ResumeApp AppInfo `json:"resumeapp"`
-	SalaryApp AppInfo `json:"salaryapp"`
+	ResumeApp AppInfo   `json:"resumeapp"`
+	SalaryApp AppInfo   `json:"salaryapp"`
+	SocialApp SsAppInfo `json:"socialapp"`
 }
 
 type Sendsms struct {

@@ -193,8 +193,11 @@ func GetSocialOrderList(c *gin.Context) {
 	}
 }
 
-func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) error {
+func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) (error, map[string]interface{}) {
+
 	info := make(map[string]interface{}, 0)
+
+	var resMap = make(map[string]interface{}, 0)
 
 	//fmt.Println("访问ip", index.Request.RemoteAddr)
 	//ip := utils.Substr(index.Request.RemoteAddr, 0, strings.Index(index.Request.RemoteAddr, ":"))
@@ -227,7 +230,7 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) error {
 	// 调用支付统一下单API
 	req, err := http.NewRequest("POST", "https://api.mch.weixin.qq.com/pay/unifiedorder", strings.NewReader(reqStr))
 	if err != nil {
-		return err
+		return err, nil
 		// handle error
 	}
 	req.Header.Set("Content-Type", "text/xml;charset=utf-8")
@@ -239,25 +242,24 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) error {
 	if err != nil {
 		// handle error
 		fmt.Println("解析响应内容失败", err)
-		return err
+		return err, nil
 	}
 	fmt.Println("响应数据", string(body2))
 
 	var resp1 WXPayResp
 	err = xml.Unmarshal(body2, &resp1)
 	if err != nil {
-		panic(err)
-		return err
+		return err, nil
 	}
 	if strings.ToUpper(resp1.Return_code) == "FAIL" {
-		return fmt.Errorf("wx response err ,info:%s", string(body2))
+		return fmt.Errorf("wx response err ,info:%s", string(body2)), nil
 	}
 
 	// 返回预付单信息
 	if strings.ToUpper(resp1.Return_code) == "SUCCESS" {
 		fmt.Println("预支付申请成功")
 		// 再次签名
-		var resMap = make(map[string]interface{}, 0)
+
 		resMap["appId"] = ssAppid
 		resMap["nonceStr"] = resp1.Nonce_str               //商品描述
 		resMap["package"] = "prepay_id=" + resp1.Prepay_id //商户号
@@ -273,7 +275,7 @@ func WxPay(openId, RemoteAddr string, orderNo string, total_fee int) error {
 		info["msg"] = "微信请求支付失败"
 		//index.Console(info)
 	}
-	return nil
+	return nil, resMap
 }
 
 //微信支付计算签名的函数
@@ -350,12 +352,18 @@ func ConfirmPayment(c *gin.Context) {
 	var req socialInsurance.OrderReqInfo
 	_ = c.ShouldBindJSON(&req)
 
-	err := WxPay(req.Openid, req.RemoteAddr, req.OrderNo, req.TotalFee)
+	err, mm := WxPay(req.Openid, c.Request.RemoteAddr, req.OrderNo, req.TotalFee)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("订单支付失败，%v", err), gin.H{})
 	} else {
 		//1. 更新数据库状态
-		servers.ReportFormat(c, true, fmt.Sprintf("订单支付成功，%v", err), gin.H{})
+		servers.ReportFormat(c, true, fmt.Sprintf("订单支付成功，%v", err), gin.H{
+			"appId":     mm["appId"],
+			"nonceStr":  mm["nonceStr"],
+			"package":   mm["package"],
+			"timeStamp": mm["timeStamp"],
+			"paySign":   mm["paySign"],
+		})
 	}
 }
 

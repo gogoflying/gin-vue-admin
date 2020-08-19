@@ -25,7 +25,7 @@ func (su *SocialUser) CreateSocialUser() (err error) {
 }
 
 func (su *SocialUser) UpdateUsersMobile() (err error) {
-	err = qmsql.DEFAULTDB.Model(su).Where("openid = ?", su.Openid).Update("mobile", su.Mobile).Error
+	err = qmsql.DEFAULTDB.Model(su).Where("openid = ?", su.Openid).Update("moblie", su.Mobile).Error
 	return err
 }
 

@@ -24,6 +24,11 @@ func (su *SocialUser) CreateSocialUser() (err error) {
 	return err
 }
 
+func (su *SocialUser) UpdateUsersMobile() (err error) {
+	err = qmsql.DEFAULTDB.Model(su).Where("openid = ?", su.Openid).Update("mobile", su.Mobile).Error
+	return err
+}
+
 // 删除SocialUser
 func (su *SocialUser) DeleteSocialUser() (err error) {
 	err = qmsql.DEFAULTDB.Delete(su).Error

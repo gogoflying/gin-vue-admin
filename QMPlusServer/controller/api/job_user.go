@@ -238,7 +238,7 @@ func JobUserLogin(c *gin.Context) {
 
 	//==============product==================
 
-	openid, session_key, err := sendWxAuthAPI(loginInfo.Code)
+	openid, session_key, err := sendWxAuthAPI(appid, appSecret, loginInfo.Code)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 		return
@@ -295,7 +295,7 @@ func JobUserLogin(c *gin.Context) {
 
 }
 
-func sendWxAuthAPI(code string) (string, string, error) {
+func sendWxAuthAPI(appid, appSecret, code string) (string, string, error) {
 	url := fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", appid, appSecret, code)
 	//fmt.Printf("get url:%v\n", url)
 	resp, err := http.DefaultClient.Get(url)

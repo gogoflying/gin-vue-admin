@@ -27,5 +27,8 @@ func InitSocialUserRouter(Router *gin.RouterGroup) {
 
 		SocialUserRouterWx.POST("socialUserLogin", api.SocialUserLogin)
 		SocialUserRouterWx.POST("getSocialUserByOpenid", api.FindSocialUserByOpenid)
+		SocialUserRouterWx.POST("updateUserByOpenid", api.UpdateUserByOpenid)
+
+		SocialUserRouterWx.POST("socialBindMobile", api.DecodeSocialMobile)
 	}
 }

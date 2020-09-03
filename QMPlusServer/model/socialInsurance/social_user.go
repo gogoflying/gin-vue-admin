@@ -14,12 +14,18 @@ type SocialUser struct {
 	Openid string `json:"openid" gorm:"column:openid;comment:'用户openid'"`
 	Mobile string `json:"mobile" gorm:"column:moblie;comment:'用户手机号'"`
 	IdCard string `json:"id_card" gorm:"column:id_card;comment:'身份证号'"`
+	Email  string `json:"email" gorm:"column:email;comment:'用户邮箱'"`
 	Status int    `json:"status" gorm:"column:status;comment:'用户状态，1表示正常，其他非正常，如禁用之类的'"`
 }
 
 // 创建SocialUser
 func (su *SocialUser) CreateSocialUser() (err error) {
 	err = qmsql.DEFAULTDB.Create(su).Error
+	return err
+}
+
+func (su *SocialUser) UpdateUsersMobile() (err error) {
+	err = qmsql.DEFAULTDB.Model(su).Where("openid = ?", su.Openid).Update("moblie", su.Mobile).Error
 	return err
 }
 
@@ -33,6 +39,10 @@ func (su *SocialUser) DeleteSocialUser() (err error) {
 func (su *SocialUser) UpdateSocialUser() (err error, reet SocialUser) {
 	err = qmsql.DEFAULTDB.Save(su).Error
 	return err, *su
+}
+
+func (su *SocialUser) UpdateSocialUserByOpenid() (err error) {
+	return qmsql.DEFAULTDB.Model(su).Where("openid = ?", su.Openid).Updates(map[string]interface{}{"name": su.Name, "mobile": su.Mobile, "email": su.Email, "id_card": su.IdCard}).Error
 }
 
 // 根据ID查看单条SocialUser

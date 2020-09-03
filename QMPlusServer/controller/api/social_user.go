@@ -1,7 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
+	"gin-vue-admin/config"
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/socialInsurance"
@@ -9,6 +11,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+//var sappid string = config.GinVueAdminconfig.WeiXinPayInfo.SocialSecurityApp.Appid
+//var sappSecret string = config.GinVueAdminconfig.WeiXinPayInfo.SocialSecurityApp.AppSecret
+var sappid string = config.GinVueAdminconfig.WeiXin.SocialApp.Appid
+var sappSecret string = config.GinVueAdminconfig.WeiXin.SocialApp.AppSecret
 
 // @Tags SocialUser
 // @Summary 创建SocialUser
@@ -90,6 +97,17 @@ func FindSocialUser(c *gin.Context) {
 	}
 }
 
+func UpdateUserByOpenid(c *gin.Context) {
+	var su socialInsurance.SocialUser
+	_ = c.ShouldBindJSON(&su)
+	err := su.UpdateSocialUserByOpenid()
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("更新失败：%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, "更新成功", gin.H{})
+	}
+}
+
 func FindSocialUserByOpenid(c *gin.Context) {
 	var su socialInsurance.SocialUser
 	_ = c.ShouldBindJSON(&su)
@@ -131,31 +149,118 @@ func GetSocialUserList(c *gin.Context) {
 	}
 }
 
+// func SocialUserLogin(c *gin.Context) {
+// 	var loginInfo userJobs.UserLoginInfo
+// 	_ = c.ShouldBindJSON(&loginInfo)
+// 	if len(loginInfo.Code) == 0 {
+// 		servers.ReportFormat(c, false, fmt.Sprintf("创建失败"), gin.H{})
+// 		return
+// 	}
+
+// 	//==============develop===================
+// 	u := socialInsurance.SocialUser{
+// 		Openid: loginInfo.Code,
+// 		Status: 1,
+// 	}
+// 	err, _ := u.FindById()
+// 	if err != nil {
+// 		_ = c.ShouldBindJSON(&u)
+// 		err = u.CreateSocialUser()
+// 		if err != nil {
+// 			servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
+// 			return
+// 		}
+// 	}
+// 	//var isMobile bool = true
+
+// 	//tokenNext_wx(c, u.Openid, "", isMobile)
+// 	//========================================
+
+// }
+
 func SocialUserLogin(c *gin.Context) {
 	var loginInfo userJobs.UserLoginInfo
+	var userName string
 	_ = c.ShouldBindJSON(&loginInfo)
 	if len(loginInfo.Code) == 0 {
-		servers.ReportFormat(c, false, fmt.Sprintf("创建失败"), gin.H{})
+		servers.ReportFormat(c, false, fmt.Sprintf("登录失败"), gin.H{})
 		return
 	}
 
-	//==============develop===================
+	openid, session_key, err := sendWxAuthAPI(sappid, sappSecret, loginInfo.Code)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("登录失败：%v", err), gin.H{})
+		return
+	}
+
 	u := socialInsurance.SocialUser{
-		Openid: loginInfo.Code,
+		Openid: openid,
 		Status: 1,
 	}
-	err, _ := u.FindById()
+	err, reuser := u.FindByOpenid()
 	if err != nil {
-		_ = c.ShouldBindJSON(&u)
 		err = u.CreateSocialUser()
 		if err != nil {
 			servers.ReportFormat(c, false, fmt.Sprintf("创建失败：%v", err), gin.H{})
 			return
 		}
+	} else {
+		userName = reuser.Name
 	}
-	//var isMobile bool = true
+	var isMobile bool = false
+	if len(reuser.Mobile) > 0 {
+		isMobile = true
+	}
+	tokenNext_wx(c, openid, session_key, isMobile, userName)
+}
 
-	//tokenNext_wx(c, u.Openid, "", isMobile)
-	//========================================
+func DecodeSocialMobile(c *gin.Context) {
 
+	var enMobile userJobs.DecodeMobile
+
+	_ = c.ShouldBindJSON(&enMobile)
+
+	if len(enMobile.SessionKey) == 0 || len(enMobile.Openid) == 0 {
+		servers.ReportFormat(c, false, fmt.Sprintf("SessionKey empty err"), gin.H{})
+		return
+	}
+
+	src, err := Dncrypt(enMobile.EncrypData, enMobile.SessionKey, enMobile.IvData)
+
+	var s = map[string]interface{}{}
+
+	json.Unmarshal([]byte(src), &s)
+
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("Dncrypt ：%v", err), gin.H{})
+		return
+	}
+
+	err = updateSocialUserMobile(enMobile.Openid, s["phoneNumber"].(string))
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("updateUserMobile err :%v", err), gin.H{})
+		return
+	}
+
+	servers.ReportFormat(c, true, "更新成功", gin.H{
+		"data": "ok",
+	})
+}
+
+func updateSocialUserMobile(openId, mobileNum string) error {
+
+	if len(openId) == 0 || len(mobileNum) != 11 {
+		return fmt.Errorf("param empty ")
+	}
+
+	u := socialInsurance.SocialUser{
+		Openid: openId,
+		Mobile: mobileNum,
+	}
+
+	err := u.UpdateUsersMobile()
+	if err != nil {
+		return err
+	}
+	return nil
 }

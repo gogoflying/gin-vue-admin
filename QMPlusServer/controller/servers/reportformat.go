@@ -14,3 +14,8 @@ func ReportFormat(c *gin.Context, success bool, msg string, json gin.H) {
 		"data":    json,
 	})
 }
+
+func ReportFormatXML(c *gin.Context, msg string) {
+	// 开始时间
+	c.XML(http.StatusOK, msg)
+}

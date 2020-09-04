@@ -466,7 +466,7 @@ func NotifyResult(c *gin.Context) {
 	//1. 更新订单状态
 	fmt.Printf("notify.result is :%v\n", c)
 	var mr WXPayNotifyReq
-	err := c.ShouldBindJSON(&mr)
+	err := c.ShouldBindXML(&mr)
 	if err != nil {
 		fmt.Print("解析HTTP Body格式到xml失败，原因!", err)
 		return
@@ -491,7 +491,7 @@ func NotifyResult(c *gin.Context) {
 	reqMap["trade_type"] = mr.Trade_type
 	reqMap["transaction_id"] = mr.Transaction_id
 
-	//var resp WXPayNotifyResp
+	var resp WXPayNotifyResp
 	//进行签名校验
 	if wxpayVerifySign(reqMap, mr.Sign) {
 		//transactionId := reqMap["transaction_id"]
@@ -520,18 +520,22 @@ func NotifyResult(c *gin.Context) {
 			resp.Return_code = "FAIL"
 			resp.Return_msg = "无此订单"
 		}*/
+		resp.Return_code = "SUCCESS"
+		resp.Return_msg = "OK"
 	} else {
-		//resp.Return_code = "FAIL"
-		//resp.Return_msg = "failed to verify sign, please retry!"
+		resp.Return_code = "FAIL"
+		resp.Return_msg = "failed to verify sign, please retry!"
 	}
 
 	//结果返回，微信要求如果成功需要返回return_code "SUCCESS"
-	/*bytes, _err := xml.Marshal(resp) //string(bytes)
+	bytes, _err := xml.Marshal(resp) //string(bytes)
 	strResp := strings.Replace(bytes2str(bytes), "WXPayNotifyResp", "xml", -1)
 	if _err != nil {
 		fmt.Print("xml编码失败，原因：%v", _err)
 		return
-	}*/
+	}
+	servers.ReportFormatXML(c, strResp)
+
 	//rw.(http.ResponseWriter).WriteHeader(http.StatusOK)
 	//fmt.Fprint(rw.(http.ResponseWriter), strResp)
 }

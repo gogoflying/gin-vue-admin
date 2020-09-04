@@ -528,12 +528,14 @@ func NotifyResult(c *gin.Context) {
 	}
 
 	//结果返回，微信要求如果成功需要返回return_code "SUCCESS"
+	fmt.Print("result weixin1:%s", resp)
 	bytes, _err := xml.Marshal(resp) //string(bytes)
 	strResp := strings.Replace(bytes2str(bytes), "WXPayNotifyResp", "xml", -1)
 	if _err != nil {
 		fmt.Print("xml编码失败，原因：%v", _err)
 		return
 	}
+	fmt.Print("result weixin2:%s", strResp)
 	servers.ReportFormatXML(c, strResp)
 
 	//rw.(http.ResponseWriter).WriteHeader(http.StatusOK)
@@ -628,7 +630,7 @@ func wxpayVerifySign(needVerifyM map[string]interface{}, sign string) bool {
 	pc, _, line, _ := runtime.Caller(0)
 	fc := runtime.FuncForPC(pc)
 
-	WECHAT_API_KEY := "" //微信商户key
+	WECHAT_API_KEY := mchkey //微信商户key
 	signCalc := wxpayCalcSign(needVerifyM, WECHAT_API_KEY)
 	fmt.Print(fc.Name(), line, "计算出来的sign: ", signCalc)
 	fmt.Print(fc.Name(), line, "微信异步通知sign: ", sign)

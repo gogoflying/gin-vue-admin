@@ -12,10 +12,9 @@ import (
 )
 
 type OrderReqInfo struct {
-	RemoteAddr string  `json:"remoteaddr"`
-	Openid     string  `json:"openid"`
-	OrderNo    string  `json:"orderno"`
-	TotalFee   float64 `json:"totalfee"`
+	Openid   string  `json:"openid"`
+	OrderNo  string  `json:"orderno"`
+	TotalFee float64 `json:"totalfee"`
 }
 
 type ReqAddOrder struct {

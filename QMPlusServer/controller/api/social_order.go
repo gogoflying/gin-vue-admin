@@ -226,26 +226,26 @@ func GetSocialOrderList(c *gin.Context) {
 	}
 }
 
-func WxPay(openId, RemoteAddr string, total_fee float64) (error, map[string]interface{}) {
+func WxPay(openId, RemoteAddr, orderNo string, total_fee float64) (error, map[string]interface{}) {
 
 	info := make(map[string]interface{}, 0)
 	var resMap = make(map[string]interface{}, 0)
 	//ip := RemoteAddr
-	orderNo := "wx" + ToStr(time.Now().Unix()) + Krand()
+	//orderNo := "wx" + ToStr(time.Now().Unix()) + Krand()
 	fmt.Printf("req param %s--%s--%d:\n", openId, RemoteAddr, total_fee)
 	fmt.Printf("param %s--%s--%s--%s:\n", ssAppid, ssAppSecret, mchkey, mchid)
 	//随机数
 	//nonceStr := time.Now().Format("20060102150405") + CreateRand()
 	var reqMap = make(map[string]interface{}, 0)
-	reqMap["appid"] = ssAppid                                      //微信小程序appid
-	reqMap["body"] = "亦庄教育-费用说明" + orderNo                         //商品描述
-	reqMap["mch_id"] = mchid                                       //商户号
-	reqMap["nonce_str"] = randStr(32, "alphanum")                  //随机数
-	reqMap["notify_url"] = "http://127.0.0.1:8888/si/notifyResult" //通知地址
-	reqMap["openid"] = openId                                      //商户唯一标识 openid
-	reqMap["out_trade_no"] = orderNo                               //订单号
-	reqMap["spbill_create_ip"] = getIP(RemoteAddr)                 //用户端ip   //订单生成的机器 IP
-	reqMap["total_fee"] = total_fee * 100                          //订单总金额，单位为分
+	reqMap["appid"] = ssAppid                                          //微信小程序appid
+	reqMap["body"] = "亦庄教育-费用说明" + orderNo                             //商品描述
+	reqMap["mch_id"] = mchid                                           //商户号
+	reqMap["nonce_str"] = randStr(32, "alphanum")                      //随机数
+	reqMap["notify_url"] = "http://47.93.185.194:8888/si/notifyResult" //通知地址
+	reqMap["openid"] = openId                                          //商户唯一标识 openid
+	reqMap["out_trade_no"] = orderNo                                   //订单号
+	reqMap["spbill_create_ip"] = getIP(RemoteAddr)                     //用户端ip   //订单生成的机器 IP
+	reqMap["total_fee"] = total_fee * 100                              //订单总金额，单位为分
 	reqMap["attach"] = "abc"
 	reqMap["trade_type"] = "JSAPI" //trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识
 	reqMap["sign"] = WxPayCalcSign(reqMap, mchkey)
@@ -422,7 +422,7 @@ func PaymentReq(c *gin.Context) {
 	}
 
 	fmt.Printf("PaymentReq param %v:\n", req)
-	err, mm := WxPay(req.Openid, c.Request.RemoteAddr, req.TotalFee)
+	err, mm := WxPay(req.Openid, c.Request.RemoteAddr, req.OrderNo, req.TotalFee)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("请求下单失败，%v", err), gin.H{})
 	} else {

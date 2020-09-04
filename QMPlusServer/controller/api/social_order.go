@@ -226,7 +226,7 @@ func GetSocialOrderList(c *gin.Context) {
 	}
 }
 
-func WxPay(openId, RemoteAddr string, total_fee int) (error, map[string]interface{}) {
+func WxPay(openId, RemoteAddr string, total_fee float64) (error, map[string]interface{}) {
 
 	info := make(map[string]interface{}, 0)
 	var resMap = make(map[string]interface{}, 0)

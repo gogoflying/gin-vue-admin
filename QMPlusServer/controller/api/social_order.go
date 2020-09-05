@@ -519,28 +519,32 @@ func PaymentReq(c *gin.Context) {
 	}
 }
 
-func ConfirmPayment(c *gin.Context) {
-	/*var req socialInsurance.OrderReqInfo
-	_ = c.ShouldBindJSON(&req)
-
-	err, mm := WxPay(req.Openid, c.Request.RemoteAddr, req.OrderNo, req.TotalFee)
-	if err != nil {
-		servers.ReportFormat(c, false, fmt.Sprintf("订单支付失败，%v", err), gin.H{})
-	} else {
-		//1. 更新数据库状态
-		servers.ReportFormat(c, true, fmt.Sprintf("订单支付成功，%v", err), gin.H{
-			"appId":     mm["appId"],
-			"nonceStr":  mm["nonceStr"],
-			"package":   mm["package"],
-			"timeStamp": mm["timeStamp"],
-			"paySign":   mm["paySign"],
-		})
-	}*/
-}
-
 func CancelPayment(c *gin.Context) {
 	//1. 更新订单状态
-	var err error
+	var req socialInsurance.OrderReqInfo
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		fmt.Print("解析HTTP Body格式到xml失败，原因!", err)
+		servers.ReportFormat(c, false, fmt.Sprintf("解析HTTP Body格式到xml失败，原因，%v", err), gin.H{})
+		return
+	}
+
+	var so socialInsurance.SocialOrder
+	so.OrderId = req.OrderNo
+	err, _ = so.FindByOrderId()
+	if err != nil {
+		fmt.Print("系统订单查询价格错误", err)
+		servers.ReportFormat(c, false, fmt.Sprintf("取消订单 订单号%s在系统中没有查找到 %v", req.OrderNo, err), gin.H{})
+		return
+	}
+
+	status := 4 //订单取消，已放弃
+	err = so.UpdateSocialOrderStatus(req.Openid, req.OrderNo, status)
+	if err != nil {
+		fmt.Print("系统UpdateSocialOrderStatus 更新订单失败", err)
+		servers.ReportFormat(c, false, fmt.Sprintf("取消订单 订单号%s在系统中没有查找到 %v", req.OrderNo, err), gin.H{})
+		return
+	}
 	servers.ReportFormat(c, true, fmt.Sprintf("取消订单成功，%v", err), gin.H{})
 	//status = 4,5 已失效,已放弃
 }
@@ -615,31 +619,28 @@ func NotifyResult(c *gin.Context) {
 	//进行签名校验
 	if wxpayVerifySign(reqMap, mr.Sign) {
 		//transactionId := reqMap["transaction_id"]
-		/*orderCode := reqMap["out_trade_no"]
+		//orderCode := reqMap["out_trade_no"]
 		total_fee := reqMap["total_fee"].(float64) //分->元 除以100
-		rows, err := mysqlDB.Query("SELECT * FROM canyin_order WHERE dno = ?", orderCode)
+
+		var so socialInsurance.SocialOrder
+		so.OrderId = mr.Out_trade_no
+		err, resultOrder := so.FindByOrderId()
 		if err != nil {
-			fmt.Print("微信查询价格错误", err)
+			fmt.Print("系统订单查询价格错误", err)
 			return
 		}
-		defer rows.Close()
-		orders := RowResult(rows)
-		if len(orders) > 0 {
-			orderInfo := orders[0].(map[string]interface{})
-			//orderId := ToStr(orderInfo["id"])
-			allcost, _ := strconv.ParseFloat(ToStr(orderInfo["allcost"]), 64)
-			fmt.Print("价格比对", "---", allcost, "---", total_fee)
-			//商户系统对于支付结果通知的内容一定要做签名验证,并校验返回的订单金额是否与商户侧的订单金额一致，防止数据泄漏导致出现“假通知”，造成资金损失
-			if allcost == total_fee {
-				fmt.Print("订单验证成功")
-				//以下是业务处理
-			}
-			resp.Return_code = "SUCCESS"
-			resp.Return_msg = "OK"
-		} else {
-			resp.Return_code = "FAIL"
-			resp.Return_msg = "无此订单"
-		}*/
+		if resultOrder.TotalFee != total_fee {
+			fmt.Print("系统订单价格与支付金额不符合，错误", err)
+			return
+		}
+
+		status := 3 //订单已完成
+		err = so.UpdateSocialOrderStatus(mr.Openid, mr.Out_trade_no, status)
+		if err != nil {
+			fmt.Print("系统UpdateSocialOrderStatus 更新订单失败", err)
+			return
+		}
+
 		resp.Return_code = "SUCCESS"
 		resp.Return_msg = "OK"
 	} else {

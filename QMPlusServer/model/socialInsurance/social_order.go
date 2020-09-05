@@ -148,6 +148,11 @@ func (so *SocialOrder) FindById() (err error, reet SocialOrder) {
 	return err, reet
 }
 
+func (so *SocialOrder) FindByOrderId() (err error, reet SocialOrder) {
+	err = qmsql.DEFAULTDB.Where("status = ?", so.Status).First(&reet).Error
+	return err, reet
+}
+
 func (so *SocialOrder) GetOrderList(openid string, status, page, pageSize int) (err error, list interface{}) {
 	limit := pageSize
 	offset := pageSize * (page - 1)

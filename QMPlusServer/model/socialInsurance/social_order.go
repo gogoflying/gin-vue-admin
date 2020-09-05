@@ -17,6 +17,13 @@ type OrderReqInfo struct {
 	TotalFee float64 `json:"totalfee"`
 }
 
+type RefundReqInfo struct {
+	Openid    string  `json:"openid"`
+	OrderNo   string  `json:"orderno"`
+	TotalFee  float64 `json:"totalfee"`
+	RefundFee float64 `json:"refundfee"`
+}
+
 type ReqAddOrder struct {
 	Openid      string `json:"openid"`
 	Cityindex   int    `json:"cityindex"`

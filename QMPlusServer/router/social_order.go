@@ -25,10 +25,12 @@ func InitSocialOrderRouter(Router *gin.RouterGroup) {
 		SocialOrderRouterWx.POST("findSocialOrder", api.FindSocialOrder)       // 根据ID获取SocialOrder
 		SocialOrderRouterWx.POST("getSocialOrderList", api.GetSocialOrderList) //获取SocialOrder列表
 
-		SocialOrderRouterWx.POST("paymentReq", api.PaymentReq)         //请求支付
-		SocialOrderRouterWx.POST("confirmPayment", api.ConfirmPayment) //确认支付
-		SocialOrderRouterWx.POST("cancelPayment", api.CancelPayment)   //取消支付
-		SocialOrderRouterWx.POST("notifyResult", api.NotifyResult)     //通知支付结果
+		SocialOrderRouterWx.POST("paymentReq", api.PaymentReq)                 //请求支付
+		SocialOrderRouterWx.POST("cancelPayment", api.CancelPayment)           //取消支付
+		SocialOrderRouterWx.POST("notifyResult", api.NotifyResult)             //通知支付结果
+		SocialOrderRouterWx.POST("refundReq", api.RefundReq)                   //申请退款
+		SocialOrderRouterWx.POST("refundQuery", api.RefundQuery)               //查询退款
+		SocialOrderRouterWx.POST("notifyRefundResult", api.NotifyRefundResult) //通知退款结果
 		SocialOrderRouterWx.POST("addSocialOrder", api.AddSocialOrder)
 		SocialOrderRouterWx.POST("getOrders", api.GetOrders)
 		SocialOrderRouterWx.POST("updateOrderStatus", api.UpdateOrderStatus)

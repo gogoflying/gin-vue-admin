@@ -313,6 +313,81 @@ func WxPay(openId, RemoteAddr, orderNo string, total_fee float64) (error, map[st
 	return nil, resMap
 }
 
+func WxRefund(openId, RemoteAddr, outTradeNo string, total_fee, refund_fee float64) error {
+
+	//info := make(map[string]interface{}, 0)
+	//var resMap = make(map[string]interface{}, 0)
+	//ip := RemoteAddr
+	outRefundNo := "wx" + ToStr(time.Now().Unix()) + Krand()
+	fmt.Printf("req param %s--%s--%d:\n", openId, RemoteAddr, total_fee)
+	fmt.Printf("param %s--%s--%s--%s:\n", ssAppid, ssAppSecret, mchkey, mchid)
+	//随机数
+	//nonceStr := time.Now().Format("20060102150405") + CreateRand()
+	var reqMap = make(map[string]interface{}, 0)
+	reqMap["appid"] = ssAppid                                                //微信小程序appid
+	reqMap["body"] = "亦庄教育-费用说明" + outTradeNo                                //商品描述
+	reqMap["mch_id"] = mchid                                                 //商户号
+	reqMap["nonce_str"] = randStr(32, "alphanum")                            //随机数
+	reqMap["notify_url"] = "http://47.93.185.194:8888/si/notifyRefundResult" //通知地址
+	reqMap["openid"] = openId                                                //商户唯一标识 openid
+	reqMap["out_trade_no"] = outTradeNo                                      //订单号
+	reqMap["out_refund_no"] = outRefundNo                                    //退款单号
+	reqMap["spbill_create_ip"] = getIP(RemoteAddr)                           //用户端ip   //订单生成的机器 IP
+	reqMap["total_fee"] = total_fee * 100                                    //订单总金额，单位为分
+	reqMap["refund_fee"] = refund_fee * 100
+	reqMap["op_user_id"] = mchid
+	reqMap["trade_type"] = "JSAPI" //trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识
+	reqMap["sign"] = WxPayCalcSign(reqMap, mchkey)
+
+	//reqStr := Map2Xml(reqMap)
+	reqStr, _ := xml.Marshal(MyMap(reqMap))
+	fmt.Println("请求xml:", reqStr)
+
+	// 调用支付统一下单API
+	bytes_req := []byte(reqStr)
+	req, err := http.NewRequest("POST", "https://api.mch.weixin.qq.com/secapi/pay/refund", bytes.NewReader(bytes_req))
+	if err != nil {
+		return err
+		// handle error
+	}
+	req.Header.Set("Accept", "application/xml")
+	req.Header.Set("Content-Type", "application/xml;charset=utf-8")
+	//req.Header.Set("Content-Type", "text/xml;charset=utf-8")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Printf(" client.Do err:%v\n", err)
+		return err
+	}
+	defer resp.Body.Close()
+
+	body2, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		// handle error
+		fmt.Println("解析响应内容失败", err)
+		return err
+	}
+	fmt.Println("响应数据", string(body2))
+
+	var resp1 WXPayResp
+	err = xml.Unmarshal(body2, &resp1)
+	if err != nil {
+		return err
+	}
+	if strings.ToUpper(resp1.Return_code) == "FAIL" {
+		return fmt.Errorf("wx response err ,info:%s", string(body2))
+	}
+
+	// 返回预付单信息
+	if strings.ToUpper(resp1.Return_code) == "SUCCESS" {
+		return nil
+	} else {
+		return fmt.Errorf("微信请求支付失败")
+		//index.Console(info)
+	}
+}
+
 //微信支付计算签名的函数
 func WxPayCalcSign(mReq map[string]interface{}, key string) (sign string) {
 	//STEP 1, 对key进行升序排序.
@@ -418,10 +493,17 @@ func PaymentReq(c *gin.Context) {
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		fmt.Print("解析HTTP Body格式到xml失败，原因!", err)
+		servers.ReportFormat(c, false, fmt.Sprintf("解析HTTP Body格式到xml失败，原因，%v", err), gin.H{})
 		return
 	}
 
 	fmt.Printf("PaymentReq param %v:\n", req)
+	if len(req.Openid) <= 0 || len(req.OrderNo) == 0 || req.TotalFee <= 0 {
+		fmt.Print("请求参数错误 ", err)
+		servers.ReportFormat(c, false, fmt.Sprintf("请求参数错误"), gin.H{})
+		return
+	}
+
 	err, mm := WxPay(req.Openid, c.Request.RemoteAddr, req.OrderNo, req.TotalFee)
 	if err != nil {
 		servers.ReportFormat(c, false, fmt.Sprintf("请求下单失败，%v", err), gin.H{})
@@ -460,6 +542,44 @@ func CancelPayment(c *gin.Context) {
 	//1. 更新订单状态
 	var err error
 	servers.ReportFormat(c, true, fmt.Sprintf("取消订单成功，%v", err), gin.H{})
+	//status = 4,5 已失效,已放弃
+}
+
+//订单退款
+func RefundReq(c *gin.Context) {
+	var req socialInsurance.RefundReqInfo
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		fmt.Print("解析HTTP Body格式到xml失败，原因!", err)
+		servers.ReportFormat(c, false, fmt.Sprintf("解析HTTP Body格式到xml失败，原因，%v", err), gin.H{})
+		return
+	}
+
+	fmt.Printf("PaymentReq param %v:\n", req)
+	if len(req.Openid) <= 0 || len(req.OrderNo) == 0 || req.TotalFee <= 0 {
+		fmt.Print("请求参数错误 ", err)
+		servers.ReportFormat(c, false, fmt.Sprintf("请求参数错误"), gin.H{})
+		return
+	}
+
+	err = WxRefund(req.Openid, c.Request.RemoteAddr, req.OrderNo, req.TotalFee, req.RefundFee)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("申请退款失败，%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, fmt.Sprintf("申请退款成功，%v", err), gin.H{})
+	}
+}
+
+//查询退款
+//提交退款申请后，通过调用该接口查询退款状态。退款有一定延时，用零钱支付的退款20分钟内到账，银行卡支付的退款3个工作日后重新查询退款状态。
+//注意：如果单个支付订单部分退款次数超过20次请使用退款单号查询
+func RefundQuery(c *gin.Context) {
+	/*err := WxRefund(req.Openid, c.Request.RemoteAddr, req.OrderNo, req.TotalFee, req.RefundFee)
+	if err != nil {
+		servers.ReportFormat(c, false, fmt.Sprintf("申请退款失败，%v", err), gin.H{})
+	} else {
+		servers.ReportFormat(c, true, fmt.Sprintf("申请退款成功，%v", err), gin.H{})
+	}*/
 }
 
 func NotifyResult(c *gin.Context) {
@@ -540,6 +660,18 @@ func NotifyResult(c *gin.Context) {
 
 	//rw.(http.ResponseWriter).WriteHeader(http.StatusOK)
 	//fmt.Fprint(rw.(http.ResponseWriter), strResp)
+}
+
+func NotifyRefundResult(c *gin.Context) {
+	//1. 更新订单状态
+	fmt.Printf("notify. refund result is :%v\n", c)
+	var mr WXPayNotifyReq
+	err := c.ShouldBindXML(&mr)
+	if err != nil {
+		fmt.Print("解析HTTP Body格式到xml失败，原因!", err)
+		return
+	}
+	return
 }
 
 func WeixinNoticeHandler(rw http.ResponseWriter, req *http.Request) {
@@ -630,8 +762,8 @@ func wxpayVerifySign(needVerifyM map[string]interface{}, sign string) bool {
 	pc, _, line, _ := runtime.Caller(0)
 	fc := runtime.FuncForPC(pc)
 
-	WECHAT_API_KEY := mchkey //微信商户key
-	signCalc := wxpayCalcSign(needVerifyM, WECHAT_API_KEY)
+	//WECHAT_API_KEY := mchkey //微信商户key
+	signCalc := wxpayCalcSign(needVerifyM, mchkey)
 	fmt.Print(fc.Name(), line, "计算出来的sign: ", signCalc)
 	fmt.Print(fc.Name(), line, "微信异步通知sign: ", sign)
 	if sign == signCalc {

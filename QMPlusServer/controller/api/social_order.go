@@ -600,20 +600,20 @@ func NotifyResult(c *gin.Context) {
 	reqMap = make(map[string]interface{}, 0)
 
 	reqMap["appid"] = mr.Appid
-	reqMap["bank_type"] = mr.Bank_type
-	reqMap["cash_fee"] = mr.Cash_fee
-	reqMap["fee_type"] = mr.Fee_type
-	reqMap["is_subscribe"] = mr.Is_subscribe
+	//reqMap["bank_type"] = mr.Bank_type
+	//reqMap["cash_fee"] = mr.Cash_fee
+	//reqMap["fee_type"] = mr.Fee_type
+	//reqMap["is_subscribe"] = mr.Is_subscribe
 	reqMap["mch_id"] = mr.Mch_id
 	reqMap["nonce_str"] = mr.Nonce_str
 	reqMap["openid"] = mr.Openid
 	reqMap["out_trade_no"] = mr.Out_trade_no
-	reqMap["result_code"] = mr.Result_code
-	reqMap["return_code"] = mr.Return_code
-	reqMap["time_end"] = mr.Time_end
+	//reqMap["result_code"] = mr.Result_code
+	//reqMap["return_code"] = mr.Return_code
+	//reqMap["time_end"] = mr.Time_end
 	reqMap["total_fee"] = mr.Total_fee
 	reqMap["trade_type"] = mr.Trade_type
-	reqMap["transaction_id"] = mr.Transaction_id
+	//reqMap["transaction_id"] = mr.Transaction_id
 
 	var resp WXPayNotifyResp
 	//进行签名校验

@@ -81,7 +81,7 @@ func (un *Salarys) DeleteSalarysEx() (err error) {
 
 // 批量删除JobSalary
 func (un *Salarys) BatchDeleteSalarys(ids []int) (err error) {
-	err = qmsql.DEFAULTDB.Where("id IN (?)", ids).Delete(Salarys{}).Error
+	err = qmsql.DEFAULTDB.Unscoped().Where("id IN (?)", ids).Delete(Salarys{}).Error
 	return err
 }
 

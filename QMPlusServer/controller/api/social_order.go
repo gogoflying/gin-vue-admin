@@ -248,7 +248,7 @@ func WxPay(openId, RemoteAddr, orderNo string, total_fee float64) (error, map[st
 	reqMap["openid"] = openId                                          //商户唯一标识 openid
 	reqMap["out_trade_no"] = orderNo                                   //订单号
 	reqMap["spbill_create_ip"] = getIP(RemoteAddr)                     //用户端ip   //订单生成的机器 IP
-	reqMap["total_fee"] = Float2String(total_fee * 10)                 //订单总金额，单位为分
+	reqMap["total_fee"] = Float2String(total_fee * 1)                  //订单总金额，单位为分
 	reqMap["trade_type"] = "JSAPI"                                     //trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识
 	reqMap["sign"] = WxPayCalcSign(reqMap, mchkey)
 
@@ -825,9 +825,9 @@ func NotifyResult(c *gin.Context) {
 		return
 	}
 	fmt.Printf("计算出来的sign:%s \n", mySign)
-	fmt.Printf("微信异步通知sign:%s \n", reqMap["sign"])
+	fmt.Printf("微信异步通知sign:%s \n", mr.Sign)
 
-	if mySign != reqMap["sign"] {
+	if mySign != mr.Sign {
 		fmt.Printf("签名交易错误")
 		sendResultRsp(c, "FAIL", "singal err!")
 	}

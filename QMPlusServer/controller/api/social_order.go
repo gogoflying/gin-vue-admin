@@ -747,16 +747,6 @@ type MiniPayAsyncResult struct {
 }
 
 func NotifyResult(c *gin.Context) {
-
-	//log.Println(w)
-	/*defer func() {
-		log.Println("log.Println(miniPayCommonResult)---before-----", miniPayCommonResult)
-		miniPayCommonResult.ReturnCode = returnCode
-		miniPayCommonResult.ReturnMsg = returnMsg
-		sendResultRsp(c, "SUCCESS", "SUCCESS")
-		log.Println("log.Println(miniPayCommonResult)---after-----", miniPayCommonResult)
-	}()*/
-
 	var mr WXPayNotifyReq
 	err := c.ShouldBindXML(&mr)
 	if err != nil {
@@ -807,8 +797,28 @@ func NotifyResult(c *gin.Context) {
 	if mySign != mr.Sign {
 		fmt.Printf("签名交易错误")
 		sendResultRsp(c, "FAIL", "singal err!")
-	}
+	} else {
+		total_fee := reqMap["total_fee"].(float64) //分->元 除以100
 
+		var so socialInsurance.SocialOrder
+		so.OrderId = mr.Out_trade_no
+		err, resultOrder := so.FindByOrderId()
+		if err != nil {
+			fmt.Print("系统订单查询价格错误", err)
+			return
+		}
+		if resultOrder.TotalFee != total_fee {
+			fmt.Print("系统订单价格与支付金额不符合，错误", err)
+			return
+		}
+
+		status := 3 //订单已完成
+		err = so.UpdateSocialOrderStatus(mr.Openid, mr.Out_trade_no, status)
+		if err != nil {
+			fmt.Print("系统UpdateSocialOrderStatus 更新订单失败", err)
+			return
+		}
+	}
 	sendResultRsp(c, "SUCCESS", "SUCCESS")
 }
 
@@ -850,89 +860,6 @@ func NotifyRefundResult(c *gin.Context) {
 		return
 	}
 	return
-}
-
-func WeixinNoticeHandler(rw http.ResponseWriter, req *http.Request) {
-	body, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		fmt.Print("读取http body失败，原因!", err)
-		http.Error(rw.(http.ResponseWriter), http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-	defer req.Body.Close()
-	fmt.Print("微信支付异步通知，HTTP Body:", string(body))
-
-	var mr WXPayNotifyReq
-	err = xml.Unmarshal(body, &mr)
-	if err != nil {
-		fmt.Print("解析HTTP Body格式到xml失败，原因!", err)
-		http.Error(rw.(http.ResponseWriter), http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-
-	var reqMap map[string]interface{}
-	reqMap = make(map[string]interface{}, 0)
-
-	reqMap["appid"] = mr.Appid
-	reqMap["bank_type"] = mr.Bank_type
-	reqMap["cash_fee"] = mr.Cash_fee
-	reqMap["fee_type"] = mr.Fee_type
-	reqMap["is_subscribe"] = mr.Is_subscribe
-	reqMap["mch_id"] = mr.Mch_id
-	reqMap["nonce_str"] = mr.Nonce_str
-	reqMap["openid"] = mr.Openid
-	reqMap["out_trade_no"] = mr.Out_trade_no
-	reqMap["result_code"] = mr.Result_code
-	reqMap["return_code"] = mr.Return_code
-	reqMap["time_end"] = mr.Time_end
-	reqMap["total_fee"] = mr.Total_fee
-	reqMap["trade_type"] = mr.Trade_type
-	reqMap["transaction_id"] = mr.Transaction_id
-
-	var resp WXPayNotifyResp
-	//进行签名校验
-	if wxpayVerifySign(reqMap, mr.Sign) {
-		//transactionId := reqMap["transaction_id"]
-		/*orderCode := reqMap["out_trade_no"]
-		total_fee := reqMap["total_fee"].(float64) //分->元 除以100
-		rows, err := mysqlDB.Query("SELECT * FROM canyin_order WHERE dno = ?", orderCode)
-		if err != nil {
-			fmt.Print("微信查询价格错误", err)
-			return
-		}
-		defer rows.Close()
-		orders := RowResult(rows)
-		if len(orders) > 0 {
-			orderInfo := orders[0].(map[string]interface{})
-			//orderId := ToStr(orderInfo["id"])
-			allcost, _ := strconv.ParseFloat(ToStr(orderInfo["allcost"]), 64)
-			fmt.Print("价格比对", "---", allcost, "---", total_fee)
-			//商户系统对于支付结果通知的内容一定要做签名验证,并校验返回的订单金额是否与商户侧的订单金额一致，防止数据泄漏导致出现“假通知”，造成资金损失
-			if allcost == total_fee {
-				fmt.Print("订单验证成功")
-				//以下是业务处理
-			}
-			resp.Return_code = "SUCCESS"
-			resp.Return_msg = "OK"
-		} else {
-			resp.Return_code = "FAIL"
-			resp.Return_msg = "无此订单"
-		}*/
-	} else {
-		resp.Return_code = "FAIL"
-		resp.Return_msg = "failed to verify sign, please retry!"
-	}
-
-	//结果返回，微信要求如果成功需要返回return_code "SUCCESS"
-	bytes, _err := xml.Marshal(resp) //string(bytes)
-	strResp := strings.Replace(bytes2str(bytes), "WXPayNotifyResp", "xml", -1)
-	if _err != nil {
-		fmt.Print("xml编码失败，原因：%v", _err)
-		http.Error(rw.(http.ResponseWriter), http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-	rw.(http.ResponseWriter).WriteHeader(http.StatusOK)
-	fmt.Fprint(rw.(http.ResponseWriter), strResp)
 }
 
 //微信支付签名验证函数

@@ -248,7 +248,7 @@ func WxPay(openId, RemoteAddr, orderNo string, total_fee float64) (error, map[st
 	reqMap["openid"] = openId                                          //商户唯一标识 openid
 	reqMap["out_trade_no"] = orderNo                                   //订单号
 	reqMap["spbill_create_ip"] = getIP(RemoteAddr)                     //用户端ip   //订单生成的机器 IP
-	reqMap["total_fee"] = Float2String(total_fee * 100)                //订单总金额，单位为分
+	reqMap["total_fee"] = Float2String(total_fee * 10)                 //订单总金额，单位为分
 	reqMap["trade_type"] = "JSAPI"                                     //trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识
 	reqMap["sign"] = WxPayCalcSign(reqMap, mchkey)
 
@@ -750,10 +750,12 @@ func NotifyResult(c *gin.Context) {
 	var returnCode = "FAIL"
 	var returnMsg = ""
 	var miniPayCommonResult MiniPayCommonResult
+	//log.Println(w)
 	defer func() {
 		log.Println("log.Println(miniPayCommonResult)---before-----", miniPayCommonResult)
 		miniPayCommonResult.ReturnCode = returnCode
 		miniPayCommonResult.ReturnMsg = returnMsg
+		sendResultRsp(c, "SUCCESS", "SUCCESS")
 		log.Println("log.Println(miniPayCommonResult)---after-----", miniPayCommonResult)
 
 	}()
@@ -771,8 +773,9 @@ func NotifyResult(c *gin.Context) {
 		returnMsg = "参数错误"
 		return &reXML, &miniPayCommonResult, errors.New(returnCode + ":" + returnMsg)
 	}*/
-	fmt.Printf("notify.result is :%v\n", c)
 	var mr WXPayNotifyReq
+	//var resp WXPayNotifyResp
+
 	err := c.ShouldBindXML(&mr)
 	if err != nil {
 		fmt.Print("解析HTTP Body格式到xml失败，原因!", err)
@@ -796,8 +799,12 @@ func NotifyResult(c *gin.Context) {
 	reqMap["total_fee"] = mr.Total_fee
 	reqMap["trade_type"] = mr.Trade_type
 	reqMap["transaction_id"] = mr.Transaction_id
-	reqMap["signType"] = "MD5"
 
+	if mr.Result_code != "SUCCESS" {
+		sendResultRsp(c, "FAIL", "failed to verify sign, please retry!")
+		return
+	}
+	//m := XmlToMap(body)
 	var signData []string
 	for k, v := range reqMap {
 		if k == "sign" {
@@ -808,56 +815,32 @@ func NotifyResult(c *gin.Context) {
 
 	log.Println(signData)
 
-	/*log.Println("minipay()----", &Minipay().Key)
-	key := Minipay().Key
-	log.Println("key------", key)
-	mySign, err := MinipaySign(key, m)
+	//log.Println("minipay()----", &Minipay().Key)
+	//key := Minipay().Key
+	//log.Println("key------", key)
+	//mySign, err := MinipaySign(key, m)
+	mySign := wxpayCalcSign(reqMap, mchkey)
 	if err != nil {
-		return &reXML, &miniPayCommonResult, err
+		sendResultRsp(c, "FAIL", "MinipaySign not eq!")
+		return
+	}
+	fmt.Printf("计算出来的sign:%s \n", mySign)
+	fmt.Printf("微信异步通知sign:%s \n", reqMap["sign"])
+
+	if mySign != reqMap["sign"] {
+		fmt.Printf("签名交易错误")
+		sendResultRsp(c, "FAIL", "singal err!")
 	}
 
-	if mySign != m["sign"] {
-		panic(errors.New("签名交易错误"))
+	sendResultRsp(c, "SUCCESS", "SUCCESS")
+}
+
+func sendResultRsp(c *gin.Context, code, msg string) {
+	resp := WXPayNotifyResp{
+		Return_code: code,
+		Return_msg:  msg,
 	}
 
-	returnCode = "SUCCESS"
-	returnMsg = "SUCCESS"
-	return &reXML, &miniPayCommonResult, nil*/
-	var resp WXPayNotifyResp
-	//进行签名校验
-	if wxpayVerifySign(reqMap, mr.Sign) {
-		//transactionId := reqMap["transaction_id"]
-		//orderCode := reqMap["out_trade_no"]
-		total_fee := reqMap["total_fee"].(float64) //分->元 除以100
-
-		var so socialInsurance.SocialOrder
-		so.OrderId = mr.Out_trade_no
-		err, resultOrder := so.FindByOrderId()
-		if err != nil {
-			fmt.Print("系统订单查询价格错误", err)
-			return
-		}
-		if resultOrder.TotalFee != total_fee {
-			fmt.Print("系统订单价格与支付金额不符合，错误", err)
-			return
-		}
-
-		status := 3 //订单已完成
-		err = so.UpdateSocialOrderStatus(mr.Openid, mr.Out_trade_no, status)
-		if err != nil {
-			fmt.Print("系统UpdateSocialOrderStatus 更新订单失败", err)
-			return
-		}
-
-		resp.Return_code = "SUCCESS"
-		resp.Return_msg = "OK"
-	} else {
-		resp.Return_code = "FAIL"
-		resp.Return_msg = "failed to verify sign, please retry!"
-	}
-
-	//结果返回，微信要求如果成功需要返回return_code "SUCCESS"
-	fmt.Print("result weixin1:%s", resp)
 	bytes, _err := xml.Marshal(resp) //string(bytes)
 	strResp := strings.Replace(bytes2str(bytes), "WXPayNotifyResp", "xml", -1)
 	if _err != nil {

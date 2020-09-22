@@ -747,35 +747,17 @@ type MiniPayAsyncResult struct {
 }
 
 func NotifyResult(c *gin.Context) {
-	var returnCode = "FAIL"
-	var returnMsg = ""
-	var miniPayCommonResult MiniPayCommonResult
+
 	//log.Println(w)
-	defer func() {
+	/*defer func() {
 		log.Println("log.Println(miniPayCommonResult)---before-----", miniPayCommonResult)
 		miniPayCommonResult.ReturnCode = returnCode
 		miniPayCommonResult.ReturnMsg = returnMsg
 		sendResultRsp(c, "SUCCESS", "SUCCESS")
 		log.Println("log.Println(miniPayCommonResult)---after-----", miniPayCommonResult)
+	}()*/
 
-	}()
-	//var reXML MiniPayAsyncResult
-	/*log.Println(body)
-	log.Println(string(body))
-	if string(body) == "" {
-		returnCode = "FAIL"
-		returnMsg = "Bodyerror"
-		return &reXML, &miniPayCommonResult, errors.New(returnCode + ":" + returnMsg)
-	}
-	err = xml.Unmarshal(body, &reXML)
-	if err != nil {
-		returnCode = "FAIL"
-		returnMsg = "参数错误"
-		return &reXML, &miniPayCommonResult, errors.New(returnCode + ":" + returnMsg)
-	}*/
 	var mr WXPayNotifyReq
-	//var resp WXPayNotifyResp
-
 	err := c.ShouldBindXML(&mr)
 	if err != nil {
 		fmt.Print("解析HTTP Body格式到xml失败，原因!", err)
@@ -814,11 +796,6 @@ func NotifyResult(c *gin.Context) {
 	}
 
 	log.Println(signData)
-
-	//log.Println("minipay()----", &Minipay().Key)
-	//key := Minipay().Key
-	//log.Println("key------", key)
-	//mySign, err := MinipaySign(key, m)
 	mySign := wxpayCalcSign(reqMap, mchkey)
 	if err != nil {
 		sendResultRsp(c, "FAIL", "MinipaySign not eq!")
@@ -848,7 +825,13 @@ func sendResultRsp(c *gin.Context, code, msg string) {
 		return
 	}
 	fmt.Print("result weixin2:%s", strResp)
-	servers.ReportFormatXML(c, strResp)
+	//servers.ReportFormatXML(c, strResp)
+	//servers.ReportFormatXMLEx(c, false, strResp, gin.H{})
+	if code != "SUCCESS" {
+		servers.ReportFormatXMLEx(c, false, strResp, gin.H{})
+	} else {
+		servers.ReportFormatXMLEx(c, true, strResp, gin.H{})
+	}
 }
 
 func NotifyRefundResult(c *gin.Context) {

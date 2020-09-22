@@ -10,7 +10,9 @@ import (
 	"gin-vue-admin/controller/servers"
 	"gin-vue-admin/model/modelInterface"
 	"gin-vue-admin/model/socialInsurance"
+	"io"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"runtime"
@@ -21,6 +23,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/shopspring/decimal"
 )
 
 type WXPayResp struct {
@@ -245,9 +248,8 @@ func WxPay(openId, RemoteAddr, orderNo string, total_fee float64) (error, map[st
 	reqMap["openid"] = openId                                          //商户唯一标识 openid
 	reqMap["out_trade_no"] = orderNo                                   //订单号
 	reqMap["spbill_create_ip"] = getIP(RemoteAddr)                     //用户端ip   //订单生成的机器 IP
-	reqMap["total_fee"] = total_fee * 100                              //订单总金额，单位为分
-	reqMap["attach"] = "abc"
-	reqMap["trade_type"] = "JSAPI" //trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识
+	reqMap["total_fee"] = Float2String(total_fee * 100)                //订单总金额，单位为分
+	reqMap["trade_type"] = "JSAPI"                                     //trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识
 	reqMap["sign"] = WxPayCalcSign(reqMap, mchkey)
 
 	//reqStr := Map2Xml(reqMap)
@@ -296,11 +298,11 @@ func WxPay(openId, RemoteAddr, orderNo string, total_fee float64) (error, map[st
 		// 再次签名
 
 		resMap["appId"] = ssAppid
-		resMap["nonceStr"] = resp1.Nonce_str               //商品描述
+		//resMap["nonceStr"] = resp1.Nonce_str               //商品描述
+		resMap["nonceStr"] = RandomString()
 		resMap["package"] = "prepay_id=" + resp1.Prepay_id //商户号
 		resMap["signType"] = "MD5"                         //签名类型
 		resMap["timeStamp"] = ToStr(time.Now().Unix())     //当前时间戳
-
 		resMap["paySign"] = WxPayCalcSign(resMap, mchkey)
 		// 返回5个支付参数及sign 用户进行确认支付
 
@@ -311,6 +313,13 @@ func WxPay(openId, RemoteAddr, orderNo string, total_fee float64) (error, map[st
 		//index.Console(info)
 	}
 	return nil, resMap
+}
+
+// 微信金额浮点转字符串
+func Float2String(moneyFee float64) string {
+	aDecimal := decimal.NewFromFloat(moneyFee)
+	bDecimal := decimal.NewFromFloat(100)
+	return aDecimal.Mul(bDecimal).Truncate(0).String()
 }
 
 func WxRefund(openId, RemoteAddr, outTradeNo string, total_fee, refund_fee float64) error {
@@ -389,7 +398,7 @@ func WxRefund(openId, RemoteAddr, outTradeNo string, total_fee, refund_fee float
 }
 
 //微信支付计算签名的函数
-func WxPayCalcSign(mReq map[string]interface{}, key string) (sign string) {
+func WxPayCalcSign_old(mReq map[string]interface{}, key string) (sign string) {
 	//STEP 1, 对key进行升序排序.
 	sorted_keys := make([]string, 0)
 	for k, _ := range mReq {
@@ -421,6 +430,35 @@ func WxPayCalcSign(mReq map[string]interface{}, key string) (sign string) {
 
 	fmt.Println("加密后-----", upperSign)
 	return upperSign
+}
+func WxPayCalcSign(m map[string]interface{}, key string) string {
+	var signData []string
+	for k, v := range m {
+		//签名之前的拼接数据，需要过滤掉sign和key关键字
+		if v != "" && k != "sign" && k != "key" {
+			signData = append(signData, fmt.Sprintf("%s=%s", k, v))
+		}
+	}
+	//按ascii字母排序
+	sort.Strings(signData)
+	//将字符串数组按照&拼接起来
+	signStr := strings.Join(signData, "&")
+	//最后拼接上key，得到签名之前的字符串
+	signStr = signStr + "&key=" + key
+	log.Println("签名之前的字符串------------", signStr)
+	md5Handle := md5.New()
+	_, err := md5Handle.Write([]byte(signStr))
+	if err != nil {
+		return ""
+	}
+	signByte := md5Handle.Sum(nil)
+	if err != nil {
+		return ""
+	}
+
+	tosign := strings.ToUpper(fmt.Sprintf("%x", signByte))
+	log.Println("签名的结果为-------", tosign)
+	return tosign
 }
 
 //微信支付计算签名的函数
@@ -458,7 +496,9 @@ func ToStr(idata interface{}) string {
 func Krand() string {
 	return fmt.Sprintf("%.4d", rand.Int31()%10000)
 }
-
+func RandomString() string {
+	return fmt.Sprintf("%d", time.Now().UnixNano())
+}
 func CreateRand() string {
 	return fmt.Sprintf("%18v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
 }
@@ -586,7 +626,7 @@ func RefundQuery(c *gin.Context) {
 	}*/
 }
 
-func NotifyResult(c *gin.Context) {
+func NotifyResult_old(c *gin.Context) {
 	//1. 更新订单状态
 	fmt.Printf("notify.result is :%v\n", c)
 	var mr WXPayNotifyReq
@@ -662,6 +702,170 @@ func NotifyResult(c *gin.Context) {
 
 	//rw.(http.ResponseWriter).WriteHeader(http.StatusOK)
 	//fmt.Fprint(rw.(http.ResponseWriter), strResp)
+}
+
+type MiniPayCommonResult struct {
+	ReturnCode string `xml:"return_code" json:"return_code,omitempty"`
+	ReturnMsg  string `xml:"return_msg" json:"return_msg,omitempty"`
+}
+type MiniPayResultData struct {
+	OpenID             string `xml:"openid,omitempty" json:"openid,omitempty"`
+	IsSubscribe        string `xml:"is_subscribe,omitempty" json:"is_subscribe,omitempty"`
+	TradeType          string `xml:"trade_type,omitempty" json:"trade_type,omitempty"`
+	TradeState         string `xml:"trade_state,omitempty" json:"trade_state,omitempty"`
+	BankType           string `xml:"bank_type,omitempty" json:"bank_type,omitempty"`
+	TotalFee           string `xml:"total_fee,omitempty" json:"total_fee,omitempty"`
+	SettlementTotalFee string `xml:"settlement_total_fee,omitempty" json:"settlement_total_fee,omitempty"`
+	FeeType            string `xml:"fee_type,omitempty" json:"fee_type,omitempty"`
+	CashFee            string `xml:"cash_fee,omitempty" json:"cash_fee,omitempty"`
+	CashFeeType        string `xml:"cash_fee_type,omitempty" json:"cash_fee_type,omitempty"`
+
+	TransactionID  string `xml:"transaction_id,omitempty" json:"transaction_id,omitempty"`
+	OutTradeNO     string `xml:"out_trade_no,omitempty" json:"out_trade_no,omitempty"`
+	Attach         string `xml:"attach,omitempty" json:"attach,omitempty"`
+	TimeEnd        string `xml:"time_end,omitempty" json:"time_end,omitempty"`
+	TradeStateDesc string `xml:"trade_state_desc" json:"trade_state_desc,omitempty"`
+}
+type MiniPayReturnSuccessData struct {
+	AppID string `xml:"appid,omitempty" json:"appid,omitempty"`
+	MchID string `xml:"mch_id,omitempty" json:"mch_id,omitempty"`
+	//DeviceInfo 统一下单默认就有，查询结果在return_code 、result_code、trade_state都为SUCCESS时有返回，这里统一放在这里
+	DeviceInfo string `xml:"device_info,omitempty" json:"device_info,omitempty"`
+	NonceStr   string `xml:"nonce_str,omitempty" json:"nonce_str,omitempty"`
+	Sign       string `xml:"sign,omitempty" json:"sign,omitempty"`
+	ResultCode string `xml:"result_code,omitempty" json:"result_code,omitempty"`
+	ErrCode    string `xml:"err_code,omitempty" json:"err_code,omitempty"`
+	ErrCodeDes string `xml:"err_code_des,omitempty" json:"err_code_des,omitempty"`
+}
+type MiniPayAsyncResult struct {
+	//统一下单与查询结果通用部分
+	MiniPayCommonResult
+	//统一下单与查询结果通用部分
+	MiniPayReturnSuccessData
+	// 查询结果或者下单返回公用部分
+	MiniPayResultData
+}
+
+func NotifyResult(c *gin.Context) {
+	var returnCode = "FAIL"
+	var returnMsg = ""
+	var miniPayCommonResult MiniPayCommonResult
+	defer func() {
+		log.Println("log.Println(miniPayCommonResult)---before-----", miniPayCommonResult)
+		miniPayCommonResult.ReturnCode = returnCode
+		miniPayCommonResult.ReturnMsg = returnMsg
+		log.Println("log.Println(miniPayCommonResult)---after-----", miniPayCommonResult)
+
+	}()
+	//var reXML MiniPayAsyncResult
+	/*log.Println(body)
+	log.Println(string(body))
+	if string(body) == "" {
+		returnCode = "FAIL"
+		returnMsg = "Bodyerror"
+		return &reXML, &miniPayCommonResult, errors.New(returnCode + ":" + returnMsg)
+	}
+	err = xml.Unmarshal(body, &reXML)
+	if err != nil {
+		returnCode = "FAIL"
+		returnMsg = "参数错误"
+		return &reXML, &miniPayCommonResult, errors.New(returnCode + ":" + returnMsg)
+	}*/
+	fmt.Printf("notify.result is :%v\n", c)
+	var mr WXPayNotifyReq
+	err := c.ShouldBindXML(&mr)
+	if err != nil {
+		fmt.Print("解析HTTP Body格式到xml失败，原因!", err)
+		return
+	}
+	var reqMap map[string]interface{}
+	reqMap = make(map[string]interface{}, 0)
+
+	reqMap["appid"] = mr.Appid
+	reqMap["bank_type"] = mr.Bank_type
+	reqMap["cash_fee"] = mr.Cash_fee
+	reqMap["fee_type"] = mr.Fee_type
+	reqMap["is_subscribe"] = mr.Is_subscribe
+	reqMap["mch_id"] = mr.Mch_id
+	reqMap["nonce_str"] = mr.Nonce_str
+	reqMap["openid"] = mr.Openid
+	reqMap["out_trade_no"] = mr.Out_trade_no
+	reqMap["result_code"] = mr.Result_code
+	reqMap["return_code"] = mr.Return_code
+	reqMap["time_end"] = mr.Time_end
+	reqMap["total_fee"] = mr.Total_fee
+	reqMap["trade_type"] = mr.Trade_type
+	reqMap["transaction_id"] = mr.Transaction_id
+	reqMap["signType"] = "MD5"
+
+	var signData []string
+	for k, v := range reqMap {
+		if k == "sign" {
+			continue
+		}
+		signData = append(signData, fmt.Sprintf("%v=%v", k, v))
+	}
+
+	log.Println(signData)
+
+	/*log.Println("minipay()----", &Minipay().Key)
+	key := Minipay().Key
+	log.Println("key------", key)
+	mySign, err := MinipaySign(key, m)
+	if err != nil {
+		return &reXML, &miniPayCommonResult, err
+	}
+
+	if mySign != m["sign"] {
+		panic(errors.New("签名交易错误"))
+	}
+
+	returnCode = "SUCCESS"
+	returnMsg = "SUCCESS"
+	return &reXML, &miniPayCommonResult, nil*/
+	var resp WXPayNotifyResp
+	//进行签名校验
+	if wxpayVerifySign(reqMap, mr.Sign) {
+		//transactionId := reqMap["transaction_id"]
+		//orderCode := reqMap["out_trade_no"]
+		total_fee := reqMap["total_fee"].(float64) //分->元 除以100
+
+		var so socialInsurance.SocialOrder
+		so.OrderId = mr.Out_trade_no
+		err, resultOrder := so.FindByOrderId()
+		if err != nil {
+			fmt.Print("系统订单查询价格错误", err)
+			return
+		}
+		if resultOrder.TotalFee != total_fee {
+			fmt.Print("系统订单价格与支付金额不符合，错误", err)
+			return
+		}
+
+		status := 3 //订单已完成
+		err = so.UpdateSocialOrderStatus(mr.Openid, mr.Out_trade_no, status)
+		if err != nil {
+			fmt.Print("系统UpdateSocialOrderStatus 更新订单失败", err)
+			return
+		}
+
+		resp.Return_code = "SUCCESS"
+		resp.Return_msg = "OK"
+	} else {
+		resp.Return_code = "FAIL"
+		resp.Return_msg = "failed to verify sign, please retry!"
+	}
+
+	//结果返回，微信要求如果成功需要返回return_code "SUCCESS"
+	fmt.Print("result weixin1:%s", resp)
+	bytes, _err := xml.Marshal(resp) //string(bytes)
+	strResp := strings.Replace(bytes2str(bytes), "WXPayNotifyResp", "xml", -1)
+	if _err != nil {
+		fmt.Print("xml编码失败，原因：%v", _err)
+		return
+	}
+	fmt.Print("result weixin2:%s", strResp)
+	servers.ReportFormatXML(c, strResp)
 }
 
 func NotifyRefundResult(c *gin.Context) {
@@ -826,4 +1030,30 @@ func bytes2str(b []byte) string {
 func getIP(ip string) string {
 	r := strings.Split(ip, ":")
 	return r[0]
+}
+
+func XmlToMap(xmlData []byte) map[string]interface{} {
+	decoder := xml.NewDecoder(bytes.NewReader(xmlData))
+	m := make(map[string]interface{})
+	var token xml.Token
+	var err error
+	var k string
+	for token, err = decoder.Token(); err == nil; token, err = decoder.Token() {
+		if v, ok := token.(xml.StartElement); ok {
+			k = v.Name.Local
+			continue
+		}
+		if v, ok := token.(xml.CharData); ok {
+			data := string(v.Copy())
+			if strings.TrimSpace(data) == "" {
+				continue
+			}
+			m[k] = data
+		}
+	}
+
+	if err != nil && err != io.EOF {
+		panic(err)
+	}
+	return m
 }

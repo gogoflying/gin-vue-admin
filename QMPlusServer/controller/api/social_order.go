@@ -835,7 +835,9 @@ func sendResultRsp(c *gin.Context, code, msg string) {
 		fmt.Print("xml编码失败，原因：%v", _err)
 		return
 	}
-	fmt.Print("result weixin2:%s\n", strResp)
+	fmt.Printf("======start=======\n")
+	fmt.Printf("result weixin2:%s\n", strResp)
+	fmt.Printf("======end=======\n")
 	//servers.ReportFormatXML(c, strResp)
 	//servers.ReportFormatXMLEx(c, false, strResp, gin.H{})
 	if code != "SUCCESS" {

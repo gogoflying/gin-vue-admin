@@ -798,7 +798,7 @@ func NotifyResult(c *gin.Context) {
 		fmt.Printf("签名交易错误")
 		sendResultRsp(c, "FAIL", "singal err!")
 	} else {
-		total_fee := reqMap["total_fee"].(float64) //分->元 除以100
+		/*total_fee := reqMap["total_fee"].(float64) //分->元 除以100
 
 		var so socialInsurance.SocialOrder
 		so.OrderId = mr.Out_trade_no
@@ -817,7 +817,7 @@ func NotifyResult(c *gin.Context) {
 		if err != nil {
 			fmt.Print("系统UpdateSocialOrderStatus 更新订单失败", err)
 			return
-		}
+		}*/
 	}
 	sendResultRsp(c, "SUCCESS", "SUCCESS")
 }

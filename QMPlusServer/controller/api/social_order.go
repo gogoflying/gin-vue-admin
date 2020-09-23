@@ -53,8 +53,8 @@ type WXPayNotifyReq struct {
 }
 
 type WXPayNotifyResp struct {
-	Return_code string `xml:"return_code,attr"`
-	Return_msg  string `xml:"return_msg,attr"`
+	Return_code string `xml:"return_code,innerxml"`
+	Return_msg  string `xml:"return_msg,innerxml"`
 }
 
 type MyMap map[string]interface{}

@@ -829,13 +829,13 @@ func sendResultRsp(c *gin.Context, code, msg string) {
 	}
 
 	bytes, _err := xml.Marshal(resp) //string(bytes)
-	nbytes, _ := xml.MarshalIndent(bytes, "", "  ")
-	strResp := strings.Replace(bytes2str(nbytes), "WXPayNotifyResp", "xml", -1)
+	//nbytes, _ := xml.MarshalIndent(bytes, "", "  ")
+	strResp := strings.Replace(bytes2str(bytes), "WXPayNotifyResp", "xml", -1)
 	if _err != nil {
 		fmt.Print("xml编码失败，原因：%v", _err)
 		return
 	}
-	fmt.Print("result weixin2:%s", strResp)
+	fmt.Print("result weixin2:%s\n", strResp)
 	//servers.ReportFormatXML(c, strResp)
 	//servers.ReportFormatXMLEx(c, false, strResp, gin.H{})
 	if code != "SUCCESS" {

@@ -53,8 +53,8 @@ type WXPayNotifyReq struct {
 }
 
 type WXPayNotifyResp struct {
-	Return_code string `xml:"return_code,innerxml"`
-	Return_msg  string `xml:"return_msg,innerxml"`
+	Return_code string `xml:"return_code"`
+	Return_msg  string `xml:"return_msg"`
 }
 
 type MyMap map[string]interface{}
@@ -838,6 +838,7 @@ func sendResultRsp(c *gin.Context, code, msg string) {
 	fmt.Printf("======start=======\n")
 	fmt.Printf("result weixin2:%s\n", strResp)
 	fmt.Printf("======end=======\n")
+
 	//servers.ReportFormatXML(c, strResp)
 	//servers.ReportFormatXMLEx(c, false, strResp, gin.H{})
 	if code != "SUCCESS" {

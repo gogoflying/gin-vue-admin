@@ -829,7 +829,8 @@ func sendResultRsp(c *gin.Context, code, msg string) {
 	}
 
 	bytes, _err := xml.Marshal(resp) //string(bytes)
-	strResp := strings.Replace(bytes2str(bytes), "WXPayNotifyResp", "xml", -1)
+	nbytes, _ := xml.MarshalIndent(bytes, "", "  ")
+	strResp := strings.Replace(bytes2str(nbytes), "WXPayNotifyResp", "xml", -1)
 	if _err != nil {
 		fmt.Print("xml编码失败，原因：%v", _err)
 		return
@@ -842,6 +843,7 @@ func sendResultRsp(c *gin.Context, code, msg string) {
 			"result_code": "FAIL",
 			"return_code": "FAIL",
 		})
+
 	} else {
 		servers.ReportFormatXMLEx(c, true, strResp, gin.H{
 			"result_code": "SUCCESS",

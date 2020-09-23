@@ -841,16 +841,14 @@ func sendResultRsp(c *gin.Context, code, msg string) {
 	//servers.ReportFormatXML(c, strResp)
 	//servers.ReportFormatXMLEx(c, false, strResp, gin.H{})
 	if code != "SUCCESS" {
-		servers.ReportFormatXMLEx(c, false, strResp, gin.H{
-			"result_code": "FAIL",
-			"return_code": "FAIL",
-		})
+		servers.ReportFormatXML(c, strResp)
 
 	} else {
-		servers.ReportFormatXMLEx(c, true, strResp, gin.H{
+		/*servers.ReportFormatXMLEx(c, true, strResp, gin.H{
 			"result_code": "SUCCESS",
 			"return_code": "SUCCESS",
-		})
+		})*/
+		servers.ReportFormatXML(c, strResp)
 	}
 }
 

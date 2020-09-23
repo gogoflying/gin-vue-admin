@@ -348,6 +348,7 @@ func WxRefund(openId, RemoteAddr, outTradeNo string, total_fee, refund_fee float
 	reqMap["trade_type"] = "JSAPI" //trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识
 	reqMap["sign"] = WxPayCalcSign(reqMap, mchkey)
 
+	//reqStr := Map2Xml(reqMap)
 	reqStr, _ := xml.Marshal(MyMap(reqMap))
 	fmt.Println("请求xml:", reqStr)
 
@@ -469,6 +470,23 @@ func Map2Xml(mReq map[string]interface{}) (xml string) {
 	}
 	sb.WriteString("</xml>")
 	return sb.String()
+}
+
+func (m MyMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if len(m) == 0 {
+		return nil
+	}
+
+	err := e.EncodeToken(start)
+	if err != nil {
+		return err
+	}
+
+	for k, v := range m {
+		e.Encode(xmlMapEntry{XMLName: xml.Name{Local: k}, Value: v})
+	}
+
+	return e.EncodeToken(start.End())
 }
 
 func ToStr(idata interface{}) string {
@@ -686,6 +704,48 @@ func NotifyResult_old(c *gin.Context) {
 	//fmt.Fprint(rw.(http.ResponseWriter), strResp)
 }
 
+type MiniPayCommonResult struct {
+	ReturnCode string `xml:"return_code" json:"return_code,omitempty"`
+	ReturnMsg  string `xml:"return_msg" json:"return_msg,omitempty"`
+}
+type MiniPayResultData struct {
+	OpenID             string `xml:"openid,omitempty" json:"openid,omitempty"`
+	IsSubscribe        string `xml:"is_subscribe,omitempty" json:"is_subscribe,omitempty"`
+	TradeType          string `xml:"trade_type,omitempty" json:"trade_type,omitempty"`
+	TradeState         string `xml:"trade_state,omitempty" json:"trade_state,omitempty"`
+	BankType           string `xml:"bank_type,omitempty" json:"bank_type,omitempty"`
+	TotalFee           string `xml:"total_fee,omitempty" json:"total_fee,omitempty"`
+	SettlementTotalFee string `xml:"settlement_total_fee,omitempty" json:"settlement_total_fee,omitempty"`
+	FeeType            string `xml:"fee_type,omitempty" json:"fee_type,omitempty"`
+	CashFee            string `xml:"cash_fee,omitempty" json:"cash_fee,omitempty"`
+	CashFeeType        string `xml:"cash_fee_type,omitempty" json:"cash_fee_type,omitempty"`
+
+	TransactionID  string `xml:"transaction_id,omitempty" json:"transaction_id,omitempty"`
+	OutTradeNO     string `xml:"out_trade_no,omitempty" json:"out_trade_no,omitempty"`
+	Attach         string `xml:"attach,omitempty" json:"attach,omitempty"`
+	TimeEnd        string `xml:"time_end,omitempty" json:"time_end,omitempty"`
+	TradeStateDesc string `xml:"trade_state_desc" json:"trade_state_desc,omitempty"`
+}
+type MiniPayReturnSuccessData struct {
+	AppID string `xml:"appid,omitempty" json:"appid,omitempty"`
+	MchID string `xml:"mch_id,omitempty" json:"mch_id,omitempty"`
+	//DeviceInfo 统一下单默认就有，查询结果在return_code 、result_code、trade_state都为SUCCESS时有返回，这里统一放在这里
+	DeviceInfo string `xml:"device_info,omitempty" json:"device_info,omitempty"`
+	NonceStr   string `xml:"nonce_str,omitempty" json:"nonce_str,omitempty"`
+	Sign       string `xml:"sign,omitempty" json:"sign,omitempty"`
+	ResultCode string `xml:"result_code,omitempty" json:"result_code,omitempty"`
+	ErrCode    string `xml:"err_code,omitempty" json:"err_code,omitempty"`
+	ErrCodeDes string `xml:"err_code_des,omitempty" json:"err_code_des,omitempty"`
+}
+type MiniPayAsyncResult struct {
+	//统一下单与查询结果通用部分
+	MiniPayCommonResult
+	//统一下单与查询结果通用部分
+	MiniPayReturnSuccessData
+	// 查询结果或者下单返回公用部分
+	MiniPayResultData
+}
+
 func NotifyResult(c *gin.Context) {
 	var mr WXPayNotifyReq
 	err := c.ShouldBindXML(&mr)
@@ -738,7 +798,7 @@ func NotifyResult(c *gin.Context) {
 		fmt.Printf("签名交易错误")
 		sendResultRsp(c, "FAIL", "singal err!")
 	} else {
-		/*total_fee := reqMap["total_fee"].(float64) //分->元 除以100
+		total_fee := reqMap["total_fee"].(float64) //分->元 除以100
 
 		var so socialInsurance.SocialOrder
 		so.OrderId = mr.Out_trade_no
@@ -757,7 +817,7 @@ func NotifyResult(c *gin.Context) {
 		if err != nil {
 			fmt.Print("系统UpdateSocialOrderStatus 更新订单失败", err)
 			return
-		}*/
+		}
 	}
 	sendResultRsp(c, "SUCCESS", "SUCCESS")
 }

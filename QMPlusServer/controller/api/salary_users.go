@@ -450,17 +450,17 @@ func batchInsertSalaryUser(file *xlsx.File, id int, ep string) error {
 			if rowIndex == 0 {
 				continue
 			}
-			if ep != strings.Trim(row.Cells[1].Value, " ") {
+			if ep != strings.Trim(row.Cells[1].Value, " \n") {
 				fmt.Errorf("batchInsertSalaryUser excel name:%s,import target name:%s", strings.Trim(row.Cells[1].Value, " "), ep)
 				return fmt.Errorf("batchInsertSalaryUser Improt enterprise nmae not eq")
 			}
-			name := strings.Trim(row.Cells[2].Value, " ")
-			mobile := strings.Trim(row.Cells[3].Value, " ")
-			jobname := strings.Trim(row.Cells[4].Value, " ")
-			salary, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " "))
-			contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[6].Value, " "))
-			card := strings.Trim(row.Cells[7].Value, " ")
-			email := strings.Trim(row.Cells[8].Value, " ")
+			name := strings.Trim(row.Cells[2].Value, " \n")
+			mobile := strings.Trim(row.Cells[3].Value, " \n")
+			jobname := strings.Trim(row.Cells[4].Value, " \n")
+			salary, _ := strconv.Atoi(strings.Trim(row.Cells[5].Value, " \n"))
+			contract_date, _ := strconv.Atoi(strings.Trim(row.Cells[6].Value, " \n"))
+			card := strings.Trim(row.Cells[7].Value, " \n")
+			email := strings.Trim(row.Cells[8].Value, " \n")
 			openid := NewOpenID()
 			bMd5 := md5.Sum([]byte(card[len(card)-6:]))
 			passwd := hex.EncodeToString(bMd5[:])

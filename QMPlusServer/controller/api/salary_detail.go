@@ -298,177 +298,177 @@ func batchInsertSalarys(file *xlsx.File, id int, ep string) error {
 			if rowIndex == 0 {
 				continue
 			}
-			if ep != strings.Trim(row.Cells[1].Value, " ") {
+			if ep != strings.Trim(row.Cells[1].Value, " \n") {
 				fmt.Errorf("batchInsertSalarys excel name:%s,import target name:%s", strings.Trim(row.Cells[1].Value, " "), ep)
 				return fmt.Errorf("Improt enterprise name not eq")
 			}
 
-			name := strings.Trim(row.Cells[2].Value, " ")
+			name := strings.Trim(row.Cells[2].Value, " \n")
 			openid, _ := checkSalarysUserInTable(name, ep, id)
 			if len(openid) == 0 {
 				fmt.Errorf("batchInsertSalarys user:%s not in table salaryUser", name)
 				return fmt.Errorf("user not in table salaryUser")
 			}
 			year := 0
-			if strings.Trim(row.Cells[3].Value, " ") != "" {
-				year, _ = strconv.Atoi(strings.Trim(row.Cells[3].Value, " "))
+			if strings.Trim(row.Cells[3].Value, " \n") != "" {
+				year, _ = strconv.Atoi(strings.Trim(row.Cells[3].Value, " \n"))
 			}
 			month := 0
-			if strings.Trim(row.Cells[4].Value, " ") != "" {
-				month, _ = strconv.Atoi(strings.Trim(row.Cells[4].Value, " "))
+			if strings.Trim(row.Cells[4].Value, " \n") != "" {
+				month, _ = strconv.Atoi(strings.Trim(row.Cells[4].Value, " \n"))
 			}
 			base := ""
-			if strings.Trim(row.Cells[5].Value, " ") != "" {
-				base = strings.Trim(row.Cells[5].Value, " ")
+			if strings.Trim(row.Cells[5].Value, " \n") != "" {
+				base = strings.Trim(row.Cells[5].Value, " \n")
 			}
 			gangwei := ""
-			if strings.Trim(row.Cells[6].Value, " ") != "" {
-				gangwei = strings.Trim(row.Cells[6].Value, " ")
+			if strings.Trim(row.Cells[6].Value, " \n") != "" {
+				gangwei = strings.Trim(row.Cells[6].Value, " \n")
 			}
 			xzhj := ""
-			if strings.Trim(row.Cells[7].Value, " ") != "" {
-				xzhj = strings.Trim(row.Cells[7].Value, " ")
+			if strings.Trim(row.Cells[7].Value, " \n") != "" {
+				xzhj = strings.Trim(row.Cells[7].Value, " \n")
 			}
 			yjtc := ""
-			if strings.Trim(row.Cells[8].Value, " ") != "" {
-				yjtc = strings.Trim(row.Cells[8].Value, " ")
+			if strings.Trim(row.Cells[8].Value, " \n") != "" {
+				yjtc = strings.Trim(row.Cells[8].Value, " \n")
 			}
 			jjjs := ""
-			if strings.Trim(row.Cells[9].Value, " ") != "" {
-				jjjs = strings.Trim(row.Cells[9].Value, " ")
+			if strings.Trim(row.Cells[9].Value, " \n") != "" {
+				jjjs = strings.Trim(row.Cells[9].Value, " \n")
 			}
 			fdxs := ""
-			if strings.Trim(row.Cells[10].Value, " ") != "" {
-				fdxs = strings.Trim(row.Cells[10].Value, " ")
+			if strings.Trim(row.Cells[10].Value, " \n") != "" {
+				fdxs = strings.Trim(row.Cells[10].Value, " \n")
 			}
 			ydjj := ""
-			if strings.Trim(row.Cells[11].Value, " ") != "" {
-				ydjj = strings.Trim(row.Cells[11].Value, " ")
+			if strings.Trim(row.Cells[11].Value, " \n") != "" {
+				ydjj = strings.Trim(row.Cells[11].Value, " \n")
 			}
 			gzts := ""
-			if strings.Trim(row.Cells[12].Value, " ") != "" {
-				gzts = strings.Trim(row.Cells[12].Value, " ")
+			if strings.Trim(row.Cells[12].Value, " \n") != "" {
+				gzts = strings.Trim(row.Cells[12].Value, " \n")
 			}
 			jbf := ""
-			if strings.Trim(row.Cells[13].Value, " ") != "" {
-				jbf = strings.Trim(row.Cells[13].Value, " ")
+			if strings.Trim(row.Cells[13].Value, " \n") != "" {
+				jbf = strings.Trim(row.Cells[13].Value, " \n")
 			}
 			txbt := ""
-			if strings.Trim(row.Cells[14].Value, " ") != "" {
-				txbt = strings.Trim(row.Cells[14].Value, " ")
+			if strings.Trim(row.Cells[14].Value, " \n") != "" {
+				txbt = strings.Trim(row.Cells[14].Value, " \n")
 			}
 			csbt := ""
-			if strings.Trim(row.Cells[15].Value, " ") != "" {
-				csbt = strings.Trim(row.Cells[15].Value, " ")
+			if strings.Trim(row.Cells[15].Value, " \n") != "" {
+				csbt = strings.Trim(row.Cells[15].Value, " \n")
 			}
 			jtbt := ""
-			if strings.Trim(row.Cells[16].Value, " ") != "" {
-				jtbt = strings.Trim(row.Cells[16].Value, " ")
+			if strings.Trim(row.Cells[16].Value, " \n") != "" {
+				jtbt = strings.Trim(row.Cells[16].Value, " \n")
 			}
 			qtbt := ""
-			if strings.Trim(row.Cells[17].Value, " ") != "" {
-				qtbt = strings.Trim(row.Cells[17].Value, " ")
+			if strings.Trim(row.Cells[17].Value, " \n") != "" {
+				qtbt = strings.Trim(row.Cells[17].Value, " \n")
 			}
 			bthj := ""
-			if strings.Trim(row.Cells[18].Value, " ") != "" {
-				bthj = strings.Trim(row.Cells[18].Value, " ")
+			if strings.Trim(row.Cells[18].Value, " \n") != "" {
+				bthj = strings.Trim(row.Cells[18].Value, " \n")
 			}
 			qtjq := ""
-			if strings.Trim(row.Cells[19].Value, " ") != "" {
-				qtjq = strings.Trim(row.Cells[19].Value, " ")
+			if strings.Trim(row.Cells[19].Value, " \n") != "" {
+				qtjq = strings.Trim(row.Cells[19].Value, " \n")
 			}
 			njts := ""
-			if strings.Trim(row.Cells[20].Value, " ") != "" {
-				njts = strings.Trim(row.Cells[20].Value, " ")
+			if strings.Trim(row.Cells[20].Value, " \n") != "" {
+				njts = strings.Trim(row.Cells[20].Value, " \n")
 			}
 			cdkk := ""
-			if strings.Trim(row.Cells[21].Value, " ") != "" {
-				cdkk = strings.Trim(row.Cells[21].Value, " ")
+			if strings.Trim(row.Cells[21].Value, " \n") != "" {
+				cdkk = strings.Trim(row.Cells[21].Value, " \n")
 			}
 			bjts := ""
-			if strings.Trim(row.Cells[22].Value, " ") != "" {
-				bjts = strings.Trim(row.Cells[22].Value, " ")
+			if strings.Trim(row.Cells[22].Value, " \n") != "" {
+				bjts = strings.Trim(row.Cells[22].Value, " \n")
 			}
 			bjkk := ""
-			if strings.Trim(row.Cells[23].Value, " ") != "" {
-				bjkk = strings.Trim(row.Cells[23].Value, " ")
+			if strings.Trim(row.Cells[23].Value, " \n") != "" {
+				bjkk = strings.Trim(row.Cells[23].Value, " \n")
 			}
 			sjts := ""
-			if strings.Trim(row.Cells[24].Value, " ") != "" {
-				sjts = strings.Trim(row.Cells[24].Value, " ")
+			if strings.Trim(row.Cells[24].Value, " \n") != "" {
+				sjts = strings.Trim(row.Cells[24].Value, " \n")
 			}
 			sjkk := ""
-			if strings.Trim(row.Cells[25].Value, " ") != "" {
-				sjkk = strings.Trim(row.Cells[25].Value, " ")
+			if strings.Trim(row.Cells[25].Value, " \n") != "" {
+				sjkk = strings.Trim(row.Cells[25].Value, " \n")
 			}
 			kkhj := ""
-			if strings.Trim(row.Cells[26].Value, " ") != "" {
-				kkhj = strings.Trim(row.Cells[26].Value, " ")
+			if strings.Trim(row.Cells[26].Value, " \n") != "" {
+				kkhj = strings.Trim(row.Cells[26].Value, " \n")
 			}
 			yftz := ""
-			if strings.Trim(row.Cells[27].Value, " ") != "" {
-				yftz = strings.Trim(row.Cells[27].Value, " ")
+			if strings.Trim(row.Cells[27].Value, " \n") != "" {
+				yftz = strings.Trim(row.Cells[27].Value, " \n")
 			}
 			byyf := ""
-			if strings.Trim(row.Cells[28].Value, " ") != "" {
-				byyf = strings.Trim(row.Cells[28].Value, " ")
+			if strings.Trim(row.Cells[28].Value, " \n") != "" {
+				byyf = strings.Trim(row.Cells[28].Value, " \n")
 			}
 			dkwx := ""
-			if strings.Trim(row.Cells[29].Value, " ") != "" {
-				dkwx = strings.Trim(row.Cells[29].Value, " ")
+			if strings.Trim(row.Cells[29].Value, " \n") != "" {
+				dkwx = strings.Trim(row.Cells[29].Value, " \n")
 			}
 			gjj := ""
-			if strings.Trim(row.Cells[30].Value, " ") != "" {
-				gjj = strings.Trim(row.Cells[30].Value, " ")
+			if strings.Trim(row.Cells[30].Value, " \n") != "" {
+				gjj = strings.Trim(row.Cells[30].Value, " \n")
 			}
 			dkgs := ""
-			if strings.Trim(row.Cells[31].Value, " ") != "" {
-				dkgs = strings.Trim(row.Cells[31].Value, " ")
+			if strings.Trim(row.Cells[31].Value, " \n") != "" {
+				dkgs = strings.Trim(row.Cells[31].Value, " \n")
 			}
 			sfgz := ""
-			if strings.Trim(row.Cells[32].Value, " ") != "" {
-				sfgz = strings.Trim(row.Cells[32].Value, " ")
+			if strings.Trim(row.Cells[32].Value, " \n") != "" {
+				sfgz = strings.Trim(row.Cells[32].Value, " \n")
 			}
 
 			ext1 := ""
-			if strings.Trim(row.Cells[33].Value, " ") != "" {
-				ext1 = strings.Trim(row.Cells[33].Value, " ")
+			if strings.Trim(row.Cells[33].Value, " \n") != "" {
+				ext1 = strings.Trim(row.Cells[33].Value, " \n")
 			}
 			ext2 := ""
-			if strings.Trim(row.Cells[34].Value, " ") != "" {
-				ext2 = strings.Trim(row.Cells[34].Value, " ")
+			if strings.Trim(row.Cells[34].Value, " \n") != "" {
+				ext2 = strings.Trim(row.Cells[34].Value, " \n")
 			}
 			ext3 := ""
-			if strings.Trim(row.Cells[35].Value, " ") != "" {
-				ext3 = strings.Trim(row.Cells[35].Value, " ")
+			if strings.Trim(row.Cells[35].Value, " \n") != "" {
+				ext3 = strings.Trim(row.Cells[35].Value, " \n")
 			}
 			ext4 := ""
-			if strings.Trim(row.Cells[36].Value, " ") != "" {
-				ext4 = strings.Trim(row.Cells[36].Value, " ")
+			if strings.Trim(row.Cells[36].Value, " \n") != "" {
+				ext4 = strings.Trim(row.Cells[36].Value, " \n")
 			}
 			ext5 := ""
-			if strings.Trim(row.Cells[37].Value, " ") != "" {
-				ext5 = strings.Trim(row.Cells[37].Value, " ")
+			if strings.Trim(row.Cells[37].Value, " \n") != "" {
+				ext5 = strings.Trim(row.Cells[37].Value, " \n")
 			}
 			ext6 := ""
-			if strings.Trim(row.Cells[38].Value, " ") != "" {
-				ext6 = strings.Trim(row.Cells[38].Value, " ")
+			if strings.Trim(row.Cells[38].Value, " \n") != "" {
+				ext6 = strings.Trim(row.Cells[38].Value, " \n")
 			}
 			ext7 := ""
-			if strings.Trim(row.Cells[39].Value, " ") != "" {
-				ext7 = strings.Trim(row.Cells[39].Value, " ")
+			if strings.Trim(row.Cells[39].Value, " \n") != "" {
+				ext7 = strings.Trim(row.Cells[39].Value, " \n")
 			}
 			ext8 := ""
-			if strings.Trim(row.Cells[40].Value, " ") != "" {
-				ext8 = strings.Trim(row.Cells[40].Value, " ")
+			if strings.Trim(row.Cells[40].Value, " \n") != "" {
+				ext8 = strings.Trim(row.Cells[40].Value, " \n")
 			}
 			ext9 := ""
-			if strings.Trim(row.Cells[41].Value, " ") != "" {
-				ext9 = strings.Trim(row.Cells[41].Value, " ")
+			if strings.Trim(row.Cells[41].Value, " \n") != "" {
+				ext9 = strings.Trim(row.Cells[41].Value, " \n")
 			}
 			ext10 := ""
-			if strings.Trim(row.Cells[42].Value, " ") != "" {
-				ext10 = strings.Trim(row.Cells[42].Value, " ")
+			if strings.Trim(row.Cells[42].Value, " \n") != "" {
+				ext10 = strings.Trim(row.Cells[42].Value, " \n")
 			}
 
 			base = servers.DataEncryPt(base)
